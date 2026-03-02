@@ -1,5 +1,5 @@
 // ============================================
-// 拼音大冒险 - 游戏逻辑
+// 拼音大冒险 - 游戏逻辑（修复版）
 // ============================================
 
 const game = {
@@ -10,6 +10,7 @@ const game = {
     stars: 3,
     soundEnabled: true,
     speechRate: 1,
+    hintUsed: false, // 标记是否使用了提示
     
     // 初始化语音合成
     initSpeech() {
@@ -18,19 +19,37 @@ const game = {
         }
     },
     
-    // 播放拼音发音
+    // 播放拼音发音 - 修复上海版语音问题
     speak(text, rate = null) {
-        if (!this.soundEnabled || !this.synth) return;
+        if (!this.soundEnabled) return;
         
-        // 取消之前的语音
-        this.synth.cancel();
+        // 尝试使用Web Speech API
+        if ('speechSynthesis' in window) {
+            this.synth.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            utterance.rate = rate || this.speechRate;
+            utterance.pitch = 1.2;
+            
+            // 尝试获取中文语音
+            const voices = this.synth.getVoices();
+            const zhVoice = voices.find(v => v.lang.includes('zh') || v.lang.includes('CN'));
+            if (zhVoice) {
+                utterance.voice = zhVoice;
+            }
+            
+            this.synth.speak(utterance);
+        }
         
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'zh-CN';
-        utterance.rate = rate || this.speechRate;
-        utterance.pitch = 1.2; // 稍微高一点，更适合儿童
-        
-        this.synth.speak(utterance);
+        // 备用：使用音频文件（如果语音合成失败）
+        this.playAudioBackup(text);
+    },
+    
+    // 备用音频播放
+    playAudioBackup(text) {
+        // 这里可以添加音频文件播放逻辑
+        // 例如：new Audio(`audio/${text}.mp3`).play();
     },
     
     // 再听一遍当前拼音
@@ -46,6 +65,7 @@ const game = {
         this.currentLevel = data.levels.find(l => l.id === levelId);
         this.score = 0;
         this.stars = 3;
+        this.hintUsed = false;
         
         if (!this.currentLevel) return;
         
@@ -64,6 +84,7 @@ const game = {
         }
         
         this.currentItem = this.shuffledItems[this.currentItemIndex];
+        this.hintUsed = false; // 重置提示标记
         this.renderQuestion();
         
         // 自动播放发音
@@ -72,7 +93,7 @@ const game = {
         }, 500);
     },
     
-    // 渲染题目
+    // 渲染题目 - 添加返回按钮
     renderQuestion() {
         const content = document.getElementById('game-content');
         const allChars = getAllPinyinChars(this.currentVersion);
@@ -156,11 +177,25 @@ const game = {
         starsEl.textContent = '⭐'.repeat(this.stars);
     },
     
-    // 显示提示
+    // 显示提示 - 修复：提示后可以返回继续答题
     showHint() {
-        if (this.currentItem) {
+        if (this.currentItem && !this.hintUsed) {
+            this.hintUsed = true;
             this.speak(`${this.currentItem.char}，${this.currentItem.word}`);
-            app.showModal('hint', `提示：${this.currentItem.word}`);
+            
+            // 显示提示弹窗，有关闭按钮
+            app.showModal('hint', `
+                <div class="hint-content">
+                    <div class="hint-icon">💡</div>
+                    <h3>提示</h3>
+                    <p>${this.currentItem.word}</p>
+                    <div class="hint-pinyin">${this.currentItem.char}</div>
+                    <button class="btn btn-primary" onclick="app.hideModal()">知道了，继续答题</button>
+                </div>
+            `);
+        } else if (this.hintUsed) {
+            // 已经用过提示了
+            app.showToast('每题只能使用一次提示哦！');
         }
     },
     
@@ -179,18 +214,25 @@ const game = {
             <h3>关卡完成！</h3>
             <p>正确率：${accuracy}%</p>
             <p>获得星星：${'⭐'.repeat(stars)}</p>
-            <button class="btn btn-primary" onclick="app.showLevelSelect()" style="margin-top: 20px;">
-                继续闯关
-            </button>
+            <p>奖励金币：${stars * 10} 🪙</p>
+            <div class="complete-buttons">
+                <button class="btn btn-primary" onclick="app.showLevelSelect(); app.hideModal();">继续闯关</button>
+                <button class="btn btn-secondary" onclick="app.backToMenu(); app.hideModal();">返回主菜单</button>
+            </div>
         `);
     },
     
-    // 暂停游戏
+    // 暂停游戏 - 添加返回关卡选择
     pauseGame() {
         app.showModal('pause', `
-            <h3>游戏暂停</h3>
-            <button class="btn btn-primary" onclick="app.hideModal()">继续游戏</button>
-            <button class="btn btn-secondary" onclick="app.backToMenu(); app.hideModal();">退出关卡</button>
+            <div class="pause-menu">
+                <h3>⏸️ 游戏暂停</h3>
+                <div class="pause-buttons">
+                    <button class="btn btn-primary" onclick="app.hideModal()">▶️ 继续游戏</button>
+                    <button class="btn btn-secondary" onclick="app.showLevelSelect(); app.hideModal();">🗺️ 返回关卡选择</button>
+                    <button class="btn btn-back" onclick="app.backToMenu(); app.hideModal();">🏠 返回主菜单</button>
+                </div>
+            </div>
         `);
     },
     
