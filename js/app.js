@@ -103,6 +103,20 @@ const app = {
                 
                 <!-- 游戏模式选择 -->
                 <h3 class="mode-title">🎮 选择游戏模式</h3>
+                
+                <!-- 成就入口 -->
+                <div class="achievement-entry" onclick="app.showAchievements()" style="background:linear-gradient(135deg,#FFD93D,#FFE66D);border-radius:15px;padding:15px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 5px 15px rgba(255,217,61,0.3);transition:all 0.3s;"
+                     onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform=''">
+                    <div style="display:flex;align-items:center;gap:15px;">
+                        <span style="font-size:40px;">🏆</span>
+                        <div>
+                            <div style="font-weight:bold;font-size:16px;">我的成就</div>
+                            <div style="font-size:12px;color:#666;">点击查看所有成就</div>
+                        </div>
+                    </div>
+                    <span style="font-size:24px;">➡️</span>
+                </div>
+                
                 <div class="game-modes-grid">
                     <div class="game-mode-btn mode-explore" onclick="app.showExplore()">
                         <div class="mode-icon">🗺️</div>
@@ -395,6 +409,45 @@ const app = {
                 <button class="btn-primary" onclick="app.renderFunLearn()">返回乐园</button>
             </div>
         `;
+    },
+    
+    // 成就系统
+    showAchievements() {
+        const achievements = [
+            { id: 'first_step', name: '初次尝试', desc: '完成第一关', icon: '🌟', unlocked: this.getTotalStars() > 0 },
+            { id: 'collector', name: '拼音收藏家', desc: '收集10个拼音', icon: '📚', unlocked: (JSON.parse(localStorage.getItem('pinyinCollection') || '[]').length >= 10) },
+            { id: 'quiz_master', name: '答题达人', desc: '闪电答题全对', icon: '⚡', unlocked: false },
+            { id: 'memory_pro', name: '记忆大师', desc: '记忆翻牌5步内完成', icon: '🧠', unlocked: false },
+            { id: 'rich', name: '小富翁', desc: '获得100金币', icon: '💰', unlocked: this.coins >= 100 },
+            { id: 'explorer', name: '探险家', desc: '完成拼音探险', icon: '🗺️', unlocked: false }
+        ];
+        
+        const container = document.getElementById('learn-content');
+        let html = `
+            <div style="padding:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;">
+                    <button class="btn-back" onclick="app.renderFunLearn()">⬅️ 返回</button>
+                    <h2>🏆 我的成就</h2>
+                    <span>已解锁 ${achievements.filter(a => a.unlocked).length}/${achievements.length}</span>
+                </div>
+                <div style="display:grid;gap:15px;">
+        `;
+        
+        achievements.forEach(ach => {
+            html += `
+                <div style="background:${ach.unlocked ? 'white' : '#f5f5f5'};border-radius:15px;padding:20px;display:flex;align-items:center;gap:15px;box-shadow:0 3px 10px rgba(0,0,0,0.08);opacity:${ach.unlocked ? 1 : 0.6};">
+                    <div style="font-size:50px;filter:${ach.unlocked ? 'none' : 'grayscale(100%)'};">${ach.icon}</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:bold;font-size:16px;margin-bottom:3px;">${ach.name}</div>
+                        <div style="font-size:13px;color:#666;">${ach.desc}</div>
+                    </div>
+                    ${ach.unlocked ? '<span style="color:#4ECDC4;font-size:24px;">✅</span>' : '<span style="color:#ccc;font-size:24px;">🔒</span>'}
+                </div>
+            `;
+        });
+        
+        html += '</div></div>';
+        container.innerHTML = html;
     },
     
     // 4. 拼音描红
