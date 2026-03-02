@@ -16,7 +16,20 @@ const game = {
     initSpeech() {
         if ('speechSynthesis' in window) {
             this.synth = window.speechSynthesis;
+            // 预加载语音列表
+            this.loadVoices();
+            // 某些浏览器需要等待语音加载
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => this.loadVoices();
+            }
         }
+    },
+    
+    // 加载语音列表
+    loadVoices() {
+        this.voices = this.synth.getVoices();
+        this.zhVoice = this.voices.find(v => v.lang.includes('zh') || v.lang.includes('CN') || v.lang.includes('zh-CN'));
+        console.log('可用语音:', this.voices.length, '中文语音:', this.zhVoice ? this.zhVoice.name : '未找到');
     },
     
     // 播放拼音发音 - 修复：正确读拼音而非英文
@@ -32,21 +45,30 @@ const game = {
             speakText = pinyinToChinese[text];
         }
         
+        console.log('朗读:', text, '->', speakText);
+        
         // 尝试使用Web Speech API
         if ('speechSynthesis' in window) {
             this.synth.cancel();
             
             const utterance = new SpeechSynthesisUtterance(speakText);
             utterance.lang = 'zh-CN';
-            // 降低语速，默认0.7倍速
-            utterance.rate = (rate || this.speechRate) * 0.7;
+            // 降低语速，默认0.6倍速
+            utterance.rate = (rate || this.speechRate) * 0.6;
             utterance.pitch = 1.0;
             
-            // 尝试获取中文语音
-            const voices = this.synth.getVoices();
-            const zhVoice = voices.find(v => v.lang.includes('zh') || v.lang.includes('CN'));
-            if (zhVoice) {
-                utterance.voice = zhVoice;
+            // 使用预加载的中文语音
+            if (this.zhVoice) {
+                utterance.voice = this.zhVoice;
+                console.log('使用语音:', this.zhVoice.name);
+            } else {
+                // 如果没有预加载到，尝试重新获取
+                const voices = this.synth.getVoices();
+                const zhVoice = voices.find(v => v.lang.includes('zh') || v.lang.includes('CN') || v.lang.includes('zh-CN'));
+                if (zhVoice) {
+                    utterance.voice = zhVoice;
+                    console.log('使用语音(重新获取):', zhVoice.name);
+                }
             }
             
             this.synth.speak(utterance);
