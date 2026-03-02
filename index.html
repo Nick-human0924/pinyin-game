@@ -155,6 +155,18 @@
         <button class="btn btn-back" onclick="app.backToMenu()">返回</button>
     </div>
 
+    <!-- 商店界面 -->
+    <div id="shop-screen" class="screen">
+        <div class="shop-header">
+            <button class="btn-icon" onclick="app.backToMenu()">⬅️</button>
+            <h2>🛒 兑换商店</h2>
+            <div class="coin-display">🪙 0</div>
+        </div>
+        <div class="shop-content" id="shop-content">
+            <!-- 动态商店内容 -->
+        </div>
+    </div>
+
     <!-- 弹窗遮罩 -->
     <div id="modal-overlay" class="modal-overlay hidden">
         <div class="modal" id="modal-content">
@@ -163,7 +175,7 @@
     </div>
 
     <script src="js/pinyin-data.js"></script>
-    <script src="js/game.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/game-new.js"></script>
+    <script src="js/app-new.js"></script>
 </body>
 </html>
