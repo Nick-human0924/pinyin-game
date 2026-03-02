@@ -77,6 +77,69 @@ const app = {
         this.showScreen('game-screen');
         game.startLevel(levelId);
     },
+
+    // 显示成就（从主菜单进入）
+    showProgress() {
+        this.showScreen('learn-screen');
+        this.showAchievements();
+    },
+
+    // 显示设置
+    showSettings() {
+        this.showScreen('learn-screen');
+        const container = document.getElementById('learn-content');
+
+        const html = `
+            <div style="padding:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;">
+                    <button class="btn-back" onclick="app.backToMenu()">⬅️ 返回</button>
+                    <h2>⚙️ 设置</h2>
+                    <span></span>
+                </div>
+
+                <div style="background:white;border-radius:20px;padding:25px;margin-bottom:20px;box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <div>
+                            <div style="font-weight:bold;font-size:16px;">🔊 声音</div>
+                            <div style="font-size:13px;color:#666;">开启或关闭游戏音效</div>
+                        </div>
+                        <button onclick="app.toggleSound()" style="padding:10px 20px;background:${this.settings.sound ? '#4ECDC4' : '#ccc'};color:white;border:none;border-radius:20px;cursor:pointer;">
+                            ${this.settings.sound ? '开启' : '关闭'}
+                        </button>
+                    </div>
+
+                    <div style="border-top:1px solid #eee;padding-top:20px;">
+                        <div style="font-weight:bold;font-size:16px;margin-bottom:10px;">🐢 朗读速度</div>
+                        <input type="range" min="0.5" max="1.5" step="0.1" value="${this.settings.speed}" onchange="app.setSpeed(this.value)" style="width:100%;">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-top:5px;">
+                            <span>慢</span>
+                            <span>${this.settings.speed}x</span>
+                            <span>快</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background:white;border-radius:20px;padding:25px;box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-weight:bold;font-size:16px;margin-bottom:15px;">📊 游戏数据</div>
+                    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                        <span>总星星</span>
+                        <span style="font-weight:bold;">⭐ ${this.getTotalStars()}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                        <span>金币</span>
+                        <span style="font-weight:bold;">🪙 ${this.coins}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:10px 0;">
+                        <span>已完成关卡</span>
+                        <span style="font-weight:bold;">${Object.keys(this.progress).length} 关</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        document.getElementById('learn-title').textContent = '⚙️ 设置';
+    },
     
     // ==================== 游戏化自由学习 ====================
     showFreeMode() {
@@ -565,39 +628,92 @@ const app = {
         this.saveSettings();
     },
     
-    // 家长功能
+    // 家长登录
     showParentLogin() {
-        this.showModal('parent-login', `
-            <h3>家长验证</h3>
-            <p>请输入家长密码查看学习报告</p>
-            <input type="password" id="parent-password" placeholder="输入密码">
-            <button class="btn btn-primary" onclick="app.checkParentPassword()">验证</button>
-        `);
+        // 直接显示密码输入界面
+        const splash = document.getElementById('splash-screen');
+        const originalContent = splash.innerHTML;
+        
+        splash.innerHTML = `
+            <div class="splash-content">
+                <div class="logo">
+                    <span class="logo-icon">🔒</span>
+                    <h1>家长验证</h1>
+                </div>
+                <p class="subtitle">请输入家长密码</p>
+                <input type="password" id="parent-password" placeholder="输入密码" style="padding:15px;font-size:18px;border:2px solid #FF6B9D;border-radius:10px;margin:20px 0;width:200px;text-align:center;">
+                <div style="display:flex;gap:15px;">
+                    <button class="btn btn-secondary" onclick="location.reload()">取消</button>
+                    <button class="btn btn-primary" onclick="app.checkParentPassword()">验证</button>
+                </div>
+                <p style="margin-top:20px;font-size:12px;color:#999;">默认密码: 1234</p>
+            </div>
+        `;
+        
+        // 保存原始内容以便恢复
+        this._originalSplash = originalContent;
     },
     
     checkParentPassword() {
         const password = document.getElementById('parent-password').value;
         if (password === '1234') {
             this.parentLoggedIn = true;
-            this.hideModal();
             this.showParentDashboard();
         } else {
-            alert('密码错误');
+            alert('密码错误，请重试');
         }
     },
     
     showParentDashboard() {
-        this.showScreen('parent-dashboard');
-        this.renderProgressReport();
+        this.showScreen('parent-screen');
+        this.renderParentProgress();
     },
     
-    renderProgressReport() {
-        const report = document.getElementById('progress-report');
-        report.innerHTML = `
-            <h4>学习统计</h4>
-            <p>总星星数: ${this.getTotalStars()}</p>
-            <p>金币数: ${this.coins}</p>
+    renderParentProgress() {
+        const container = document.getElementById('parent-content');
+        if (!container) return;
+        
+        const data = getPinyinData(this.currentVersion);
+        const progress = this.progress[this.currentVersion] || {};
+        
+        let html = `
+            <div style="padding:20px;">
+                <h3>📊 学习统计</h3>
+                <div style="background:white;border-radius:15px;padding:20px;margin:15px 0;box-shadow:0 3px 10px rgba(0,0,0,0.1);">
+                    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                        <span>总星星数</span>
+                        <span style="font-weight:bold;color:#FFD93D;">⭐ ${this.getTotalStars()}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                        <span>金币总数</span>
+                        <span style="font-weight:bold;">🪙 ${this.coins}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:10px 0;">
+                        <span>已完成关卡</span>
+                        <span style="font-weight:bold;">${Object.keys(progress).length}/${data.levels.length}</span>
+                    </div>
+                </div>
+                
+                <h3>📈 关卡进度</h3>
         `;
+        
+        data.levels.forEach(level => {
+            const stars = progress[level.id] || 0;
+            html += `
+                <div style="background:white;border-radius:10px;padding:15px;margin:10px 0;display:flex;justify-content:space-between;align-items:center;">
+                    <span>${level.name}</span>
+                    <span>${stars > 0 ? '⭐'.repeat(stars) : '⚪'}</span>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+    },
+    
+    logoutParent() {
+        this.parentLoggedIn = false;
+        this.backToSplash();
     },
     
     // 模态框
