@@ -1,16 +1,13 @@
 // ============================================
-// 拼音大冒险 - 主应用逻辑（美化版）
+// 拼音大冒险 - 完整游戏化自由学习
 // ============================================
 
 const app = {
     currentVersion: 'shanghai',
     parentLoggedIn: false,
-    settings: {
-        sound: true,
-        speed: 1
-    },
+    settings: { sound: true, speed: 1 },
     progress: {},
-    coins: 0, // 金币系统
+    coins: 0,
     
     // 初始化
     init() {
@@ -26,37 +23,16 @@ const app = {
         document.getElementById(screenId).classList.add('active');
     },
     
-    // 从启动画面开始
-    start() {
-        this.showScreen('main-menu');
-    },
+    // 基础导航
+    start() { this.showScreen('main-menu'); },
+    backToSplash() { this.showScreen('splash-screen'); },
+    backToMenu() { this.showScreen('main-menu'); },
     
-    // 返回启动画面
-    backToSplash() {
-        this.showScreen('splash-screen');
-    },
-    
-    // 返回主菜单
-    backToMenu() {
-        this.showScreen('main-menu');
-    },
-    
-    // 显示版本选择
-    showVersionSelect() {
-        this.showScreen('version-select');
-    },
-    
-    // 选择版本
+    // 版本选择
+    showVersionSelect() { this.showScreen('version-select'); },
     selectVersion(version) {
         this.currentVersion = version;
         game.currentVersion = version;
-        this.showScreen('level-select');
-        this.renderLevelMap();
-    },
-    
-    // 显示关卡选择
-    showLevelSelect() {
-        this.hideModal();
         this.showScreen('level-select');
         this.renderLevelMap();
     },
@@ -87,7 +63,6 @@ const app = {
         
         container.innerHTML = html;
         
-        // 更新总体进度
         const completed = Object.keys(progress).length;
         const total = data.levels.length;
         const percent = Math.round((completed / total) * 100);
@@ -103,572 +78,494 @@ const app = {
         game.startLevel(levelId);
     },
     
-    // 显示自由学习模式
+    // ==================== 游戏化自由学习 ====================
     showFreeMode() {
         this.showScreen('learn-screen');
-        this.renderLearnContent();
+        this.renderFunLearn();
     },
     
-    // 渲染学习内容 - 游戏化设计
-    renderLearnContent() {
+    // 游戏化学习主界面 - 美化版
+    renderFunLearn() {
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div class="fun-learn-container">
+                <!-- 玩家状态卡片 -->
+                <div class="player-card">
+                    <div class="player-avatar">👶</div>
+                    <div class="player-info">
+                        <div class="player-level">Lv.1 拼音小达人</div>
+                        <div class="player-stats">
+                            <span class="stat">🪙 ${this.coins}</span>
+                            <span class="stat">⭐ ${this.getTotalStars()}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 游戏模式选择 -->
+                <h3 class="mode-title">🎮 选择游戏模式</h3>
+                <div class="game-modes-grid">
+                    <div class="game-mode-btn mode-explore" onclick="app.showExplore()">
+                        <div class="mode-icon">🗺️</div>
+                        <h4>拼音探险</h4>
+                        <p>探索所有拼音卡片</p>
+                        <span class="reward">+5金币</span>
+                    </div>
+                    
+                    <div class="game-mode-btn mode-quiz" onclick="app.showQuiz()">
+                        <div class="mode-icon">⚡</div>
+                        <h4>闪电答题</h4>
+                        <p>听拼音选答案</p>
+                        <span class="reward">+10金币</span>
+                    </div>
+                    
+                    <div class="game-mode-btn mode-memory" onclick="app.showMemory()">
+                        <div class="mode-icon">🧠</div>
+                        <h4>记忆翻牌</h4>
+                        <p>配对挑战</p>
+                        <span class="reward">+15金币</span>
+                    </div>
+                    
+                    <div class="game-mode-btn mode-trace" onclick="app.showTrace()">
+                        <div class="mode-icon">✍️</div>
+                        <h4>拼音描红</h4>
+                        <p>跟着写拼音</p>
+                        <span class="reward">+8金币</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('learn-title').textContent = '🎮 拼音乐园';
+    },
+    
+    getTotalStars() {
+        let total = 0;
+        Object.values(this.progress || {}).forEach(v => {
+            total += Object.values(v).reduce((a, b) => a + b, 0);
+        });
+        return total;
+    },
+    
+    // 1. 拼音探险 - 美化版
+    showExplore() {
         const data = getPinyinData(this.currentVersion);
         const container = document.getElementById('learn-content');
         
         let html = `
-            <div class="learn-game-header">
-                <div class="coin-display">🪙 ${this.coins}</div>
-                <div class="learn-mode-tabs">
-                    <button class="learn-tab active" onclick="app.switchLearnMode('explore')">🔍 探索模式</button>
-                    <button class="learn-tab" onclick="app.switchLearnMode('challenge')">⚡ 挑战模式</button>
-                    <button class="learn-tab" onclick="app.switchLearnMode('collection')">🏆 收集模式</button>
+            <div class="explore-container">
+                <div class="explore-header">
+                    <button class="btn-back" onclick="app.renderFunLearn()">⬅️ 返回</button>
+                    <h2>🗺️ 拼音探险</h2>
+                    <span class="coin-display">🪙 ${this.coins}</span>
                 </div>
-            </div>
-            <div id="learn-mode-content">
-                ${this.renderExploreMode(data)}
-            </div>
+                <div class="pinyin-grid">
         `;
         
+        data.levels.forEach(level => {
+            level.items.forEach(item => {
+                html += `
+                    <div class="pinyin-card" onclick="app.speakAndShow('${item.char}', '${item.word}', '${item.emoji}')">
+                        <div class="card-emoji">${item.emoji}</div>
+                        <div class="card-char">${item.char}</div>
+                        <div class="card-word">${item.word}</div>
+                        <div class="card-sound">🔊</div>
+                    </div>
+                `;
+            });
+        });
+        
+        html += '</div></div>';
         container.innerHTML = html;
-        document.getElementById('learn-title').textContent = 
-            `${data.name} - 自由学习`;
     },
     
-    // 探索模式
-    renderExploreMode(data) {
-        return `
-            <div class="explore-map">
-                ${data.levels.map((level, idx) => `
-                    <div class="explore-island" style="animation-delay: ${idx * 0.1}s">
-                        <div class="island-icon">${['🏝️', '🏰', '🗻', '🌋', '🏯', '🎪'][idx % 6]}</div>
-                        <h4>${level.name}</h4>
-                        <div class="island-items">
-                            ${level.items.map(item => `
-                                <div class="explore-card" onclick="app.explorePinyin('${item.char}', '${item.word}', '${item.emoji}')">
-                                    <span class="card-emoji">${item.emoji}</span>
-                                    <span class="card-char">${item.char}</span>
-                                    <span class="card-word">${item.word}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `).join('')}
+    speakAndShow(char, word, emoji) {
+        game.speak(char);
+        this.showToast(`${emoji} ${char} - ${word}`);
+    },
+    
+    // 2. 闪电答题 - 美化版
+    showQuiz() {
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div class="quiz-intro">
+                <button class="btn-back" onclick="app.renderFunLearn()">⬅️</button>
+                <h2>⚡ 闪电答题</h2>
+                <div class="quiz-mascot">⚡</div>
+                <p>听拼音，选择正确的答案！</p>
+                <p>共5题，准备好了吗？</p>
+                <button class="btn-start" onclick="app.startQuiz()">开始挑战</button>
             </div>
         `;
     },
     
-    // 切换学习模式
-    switchLearnMode(mode) {
-        document.querySelectorAll('.learn-tab').forEach(tab => tab.classList.remove('active'));
-        event.target.classList.add('active');
-        
+    quizIndex: 0,
+    quizScore: 0,
+    quizItems: [],
+    
+    startQuiz() {
         const data = getPinyinData(this.currentVersion);
-        const container = document.getElementById('learn-mode-content');
-        
-        switch(mode) {
-            case 'explore':
-                container.innerHTML = this.renderExploreMode(data);
-                break;
-            case 'challenge':
-                container.innerHTML = this.renderChallengeMode(data);
-                break;
-            case 'collection':
-                container.innerHTML = this.renderCollectionMode();
-                break;
+        const allItems = data.levels.flatMap(l => l.items);
+        this.quizItems = [...allItems].sort(() => Math.random() - 0.5).slice(0, 5);
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.showQuizQuestion();
+    },
+    
+    showQuizQuestion() {
+        if (this.quizIndex >= this.quizItems.length) {
+            this.endQuiz();
+            return;
         }
-    },
-    
-    // 挑战模式
-    renderChallengeMode(data) {
-        return `
-            <div class="challenge-arena">
-                <div class="challenge-header">
-                    <h3>⚡ 快速挑战</h3>
-                    <p>限时60秒，看你能答对多少！</p>
-                </div>
-                <div class="challenge-stats">
-                    <div class="stat">⏱️ 60秒</div>
-                    <div class="stat">🎯 0分</div>
-                    <div class="stat">🔥 0连击</div>
-                </div>
-                <button class="btn btn-primary btn-large" onclick="app.startChallenge()">
-                    🚀 开始挑战
-                </button>
-                <div class="challenge-leaderboard">
-                    <h4>🏆 排行榜</h4>
-                    <div class="leaderboard-item">
-                        <span class="rank">🥇</span>
-                        <span class="name">小明</span>
-                        <span class="score">98分</span>
-                    </div>
-                    <div class="leaderboard-item">
-                        <span class="rank">🥈</span>
-                        <span class="name">小红</span>
-                        <span class="score">85分</span>
-                    </div>
-                    <div class="leaderboard-item">
-                        <span class="rank">🥉</span>
-                        <span class="name">你</span>
-                        <span class="score">--</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    },
-    
-    // 收集模式
-    renderCollectionMode() {
-        const collected = JSON.parse(localStorage.getItem('pinyinCollection') || '[]');
-        const allPinyin = this.getAllPinyin();
         
-        return `
-            <div class="collection-gallery">
-                <div class="collection-progress">
-                    <div class="progress-ring">
-                        <span class="progress-text">${collected.length}/${allPinyin.length}</span>
-                    </div>
-                    <p>收集进度</p>
-                </div>
-                <div class="collection-grid">
-                    ${allPinyin.map(p => `
-                        <div class="collection-item ${collected.includes(p.char) ? 'collected' : 'locked'}">
-                            <span class="item-emoji">${p.emoji}</span>
-                            <span class="item-char">${p.char}</span>
-                            <span class="item-status">${collected.includes(p.char) ? '✅' : '🔒'}</span>
-                        </div>
+        const item = this.quizItems[this.quizIndex];
+        const container = document.getElementById('learn-content');
+        
+        // 生成选项
+        const data = getPinyinData(this.currentVersion);
+        const allChars = data.levels.flatMap(l => l.items.map(i => i.char));
+        let options = [item.char];
+        let filtered = allChars.filter(c => c !== item.char);
+        while (options.length < 4 && filtered.length > 0) {
+            const idx = Math.floor(Math.random() * filtered.length);
+            options.push(filtered.splice(idx, 1)[0]);
+        }
+        options = options.sort(() => Math.random() - 0.5);
+        
+        container.innerHTML = `
+            <div class="quiz-game">
+                <div class="quiz-progress">题目 ${this.quizIndex + 1}/5</div>
+                <div class="quiz-emoji">${item.emoji}</div>
+                <div class="quiz-word">${item.word}</div>
+                <div class="quiz-question">这个拼音怎么读？</div>
+                <div class="quiz-options">
+                    ${options.map(opt => `
+                        <button class="quiz-option" onclick="app.answerQuiz('${opt}', '${item.char}')">${opt}</button>
                     `).join('')}
                 </div>
+                <button class="btn-hear" onclick="game.speak('${item.char}')">🔊 再听一遍</button>
+            </div>
+        `;
+        
+        game.speak(item.char);
+    },
+    
+    answerQuiz(selected, correct) {
+        if (selected === correct) {
+            this.quizScore++;
+            game.speak('答对了');
+            this.showToast('✅ 正确！+2金币');
+            this.addCoins(2);
+        } else {
+            game.speak('再想想看');
+            this.showToast('❌ 再试一次');
+        }
+        
+        this.quizIndex++;
+        setTimeout(() => this.showQuizQuestion(), 1000);
+    },
+    
+    endQuiz() {
+        const coins = this.quizScore * 3;
+        this.addCoins(coins);
+        
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div class="quiz-result">
+                <div class="result-trophy">${this.quizScore >= 4 ? '🏆' : this.quizScore >= 2 ? '🥈' : '🥉'}</div>
+                <h2>挑战完成!</h2>
+                <p class="result-score">答对 ${this.quizScore}/5 题</p>
+                <p class="result-coins">+${coins} 🪙</p>
+                <button class="btn-primary" onclick="app.renderFunLearn()">返回乐园</button>
             </div>
         `;
     },
     
-    // 获取所有拼音
-    getAllPinyin() {
-        const data = getPinyinData(this.currentVersion);
-        return data.levels.flatMap(l => l.items);
-    },
-    
-    // 探索拼音
-    explorePinyin(char, word, emoji) {
-        game.speak(char);
-        
-        // 添加到收集
-        let collected = JSON.parse(localStorage.getItem('pinyinCollection') || '[]');
-        if (!collected.includes(char)) {
-            collected.push(char);
-            localStorage.setItem('pinyinCollection', JSON.stringify(collected));
-            this.addCoins(5);
-            this.showToast(`🎉 收集到 ${char}！+5🪙`);
-        }
-        
-        this.showModal('explore', `
-            <div class="explore-modal">
-                <div class="explore-emoji">${emoji}</div>
-                <div class="explore-char">${char}</div>
-                <div class="explore-word">${word}</div>
-                <button class="btn btn-speak" onclick="game.speak('${char}')">🔊 再听一遍</button>
-                <button class="btn btn-primary" onclick="app.hideModal()">继续探索</button>
+    // 3. 记忆翻牌
+    showMemory() {
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div class="memory-intro">
+                <button class="btn-back" onclick="app.renderFunLearn()">⬅️</button>
+                <h2>🧠 记忆翻牌</h2>
+                <p>找出相同的拼音配对！</p>
+                <button class="btn-start" onclick="app.startMemory()">开始游戏</button>
             </div>
-        `);
+        `;
     },
     
-    // 添加金币
-    addCoins(amount) {
-        this.coins += amount;
-        localStorage.setItem('pinyinCoins', this.coins);
-        this.updateCoinDisplay();
+    memoryCards: [],
+    flippedCards: [],
+    matchedPairs: 0,
+    memoryMoves: 0,
+    
+    startMemory() {
+        const data = getPinyinData(this.currentVersion);
+        const items = data.levels[0].items.slice(0, 4);
+        
+        let cards = [];
+        items.forEach((item, i) => {
+            cards.push({ id: i, type: 'char', value: item.char, emoji: item.emoji, matched: false });
+            cards.push({ id: i, type: 'word', value: item.word, emoji: item.emoji, matched: false });
+        });
+        cards = cards.sort(() => Math.random() - 0.5);
+        
+        this.memoryCards = cards;
+        this.flippedCards = [];
+        this.matchedPairs = 0;
+        this.memoryMoves = 0;
+        this.renderMemoryGrid();
     },
     
-    // 加载金币
-    loadCoins() {
-        this.coins = parseInt(localStorage.getItem('pinyinCoins') || '0');
+    renderMemoryGrid() {
+        const container = document.getElementById('learn-content');
+        
+        let html = `
+            <div class="memory-game">
+                <div class="memory-header">
+                    <button class="btn-back" onclick="app.renderFunLearn()">⬅️</button>
+                    <span>步数: ${this.memoryMoves}</span>
+                </div>
+                <div class="memory-grid">
+        `;
+        
+        this.memoryCards.forEach((card, idx) => {
+            const isFlipped = this.flippedCards.includes(idx);
+            const isMatched = card.matched;
+            
+            html += `
+                <div class="memory-card ${isFlipped ? 'flipped' : ''} ${isMatched ? 'matched' : ''}" 
+                     onclick="app.flipCard(${idx})">
+                    <div class="card-face card-back">❓</div>
+                    <div class="card-face card-front">
+                        ${card.type === 'char' ? `<div class="mem-char">${card.value}</div>` : `<div class="mem-word">${card.value}</div>`}
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div></div>';
+        container.innerHTML = html;
     },
     
-    // 更新金币显示
-    updateCoinDisplay() {
-        const displays = document.querySelectorAll('.coin-display');
-        displays.forEach(d => d.textContent = `🪙 ${this.coins}`);
+    flipCard(idx) {
+        if (this.flippedCards.includes(idx) || this.memoryCards[idx].matched) return;
+        if (this.flippedCards.length >= 2) return;
+        
+        this.flippedCards.push(idx);
+        this.renderMemoryGrid();
+        
+        if (this.flippedCards.length === 2) {
+            this.memoryMoves++;
+            const [idx1, idx2] = this.flippedCards;
+            const card1 = this.memoryCards[idx1];
+            const card2 = this.memoryCards[idx2];
+            
+            if (card1.id === card2.id) {
+                setTimeout(() => {
+                    card1.matched = true;
+                    card2.matched = true;
+                    this.flippedCards = [];
+                    this.matchedPairs++;
+                    
+                    if (this.matchedPairs === 4) {
+                        this.endMemory();
+                    } else {
+                        this.renderMemoryGrid();
+                    }
+                }, 600);
+            } else {
+                setTimeout(() => {
+                    this.flippedCards = [];
+                    this.renderMemoryGrid();
+                }, 1000);
+            }
+        }
     },
     
-    // 显示Toast
+    endMemory() {
+        const coins = Math.max(12 - this.memoryMoves, 5);
+        this.addCoins(coins);
+        
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div class="memory-result">
+                <div class="result-emoji">🎉</div>
+                <h2>完成!</h2>
+                <p>用了 ${this.memoryMoves} 步</p>
+                <p class="result-coins">+${coins} 🪙</p>
+                <button class="btn-primary" onclick="app.renderFunLearn()">返回乐园</button>
+            </div>
+        `;
+    },
+    
+    // 4. 拼音描红
+    showTrace() {
+        const data = getPinyinData(this.currentVersion);
+        const item = data.levels[0].items[0];
+        
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div class="trace-container">
+                <div class="trace-header">
+                    <button class="btn-back" onclick="app.renderFunLearn()">⬅️</button>
+                    <h2>✍️ 拼音描红</h2>
+                </div>
+                <div class="trace-card">
+                    <div class="trace-emoji">${item.emoji}</div>
+                    <div class="trace-char">${item.char}</div>
+                    <div class="trace-word">${item.word}</div>
+                    <button class="btn-hear" onclick="game.speak('${item.char}')">🔊 听发音</button>
+                </div>
+                <div class="trace-hint">
+                    <p>跟着大声读：${item.char}</p>
+                    <button class="btn-next" onclick="app.nextTrace()">下一个 ➡️</button>
+                </div>
+            </div>
+        `;
+        
+        game.speak(item.char);
+    },
+    
+    traceIndex: 0,
+    nextTrace() {
+        const data = getPinyinData(this.currentVersion);
+        const allItems = data.levels.flatMap(l => l.items);
+        this.traceIndex = (this.traceIndex + 1) % allItems.length;
+        const item = allItems[this.traceIndex];
+        
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div class="trace-container">
+                <div class="trace-header">
+                    <button class="btn-back" onclick="app.renderFunLearn()">⬅️</button>
+                    <h2>✍️ 拼音描红</h2>
+                </div>
+                <div class="trace-card">
+                    <div class="trace-emoji">${item.emoji}</div>
+                    <div class="trace-char">${item.char}</div>
+                    <div class="trace-word">${item.word}</div>
+                    <button class="btn-hear" onclick="game.speak('${item.char}')">🔊 听发音</button>
+                </div>
+                <div class="trace-hint">
+                    <p>跟着大声读：${item.char}</p>
+                    <button class="btn-next" onclick="app.nextTrace()">下一个 ➡️</button>
+                </div>
+            </div>
+        `;
+        
+        game.speak(item.char);
+        this.addCoins(1);
+    },
+    
+    // 工具函数
     showToast(message) {
         const toast = document.createElement('div');
-        toast.className = 'toast';
+        toast.className = 'toast-message';
         toast.textContent = message;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 2000);
     },
     
-    // 发音
-    speakPinyin(char) {
-        game.speak(char);
+    addCoins(amount) {
+        this.coins += amount;
+        localStorage.setItem('pinyinCoins', this.coins);
     },
     
-    // 显示进度
-    showProgress() {
-        const data = getPinyinData(this.currentVersion);
-        const progress = this.progress[this.currentVersion] || {};
-        const completed = Object.keys(progress).length;
-        const totalStars = Object.values(progress).reduce((a, b) => a + b, 0);
-        
-        app.showModal('progress', `
-            <div class="modal-icon">🏆</div>
-            <h3>我的成就</h3>
-            <div class="stats-grid" style="margin: 20px 0;">
-                <div class="stat-card">
-                    <div class="stat-value">${completed}</div>
-                    <div class="stat-label">已完成关卡</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${totalStars}</div>
-                    <div class="stat-label">获得星星</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${this.coins}</div>
-                    <div class="stat-label">金币</div>
-                </div>
-            </div>
-            <button class="btn btn-primary" onclick="app.showShop()">🛒 兑换商店</button>
-            <button class="btn btn-secondary" onclick="app.hideModal()" style="margin-top: 10px;">知道了</button>
+    loadCoins() {
+        this.coins = parseInt(localStorage.getItem('pinyinCoins') || '0');
+    },
+    
+    // 设置相关
+    loadSettings() {
+        const saved = localStorage.getItem('pinyinSettings');
+        if (saved) this.settings = JSON.parse(saved);
+    },
+    
+    saveSettings() {
+        localStorage.setItem('pinyinSettings', JSON.stringify(this.settings));
+    },
+    
+    loadProgress() {
+        const saved = localStorage.getItem('pinyinProgress');
+        if (saved) this.progress = JSON.parse(saved);
+    },
+    
+    saveProgress() {
+        localStorage.setItem('pinyinProgress', JSON.stringify(this.progress));
+    },
+    
+    updateSettingsUI() {
+        const soundToggle = document.getElementById('setting-sound');
+        const speedSlider = document.getElementById('setting-speed');
+        if (soundToggle) soundToggle.checked = this.settings.sound;
+        if (speedSlider) speedSlider.value = this.settings.speed;
+    },
+    
+    toggleSound() {
+        this.settings.sound = !this.settings.sound;
+        game.soundEnabled = this.settings.sound;
+        this.saveSettings();
+    },
+    
+    setSpeed(value) {
+        this.settings.speed = parseFloat(value);
+        game.speechRate = this.settings.speed;
+        this.saveSettings();
+    },
+    
+    // 家长功能
+    showParentLogin() {
+        this.showModal('parent-login', `
+            <h3>家长验证</h3>
+            <p>请输入家长密码查看学习报告</p>
+            <input type="password" id="parent-password" placeholder="输入密码">
+            <button class="btn btn-primary" onclick="app.checkParentPassword()">验证</button>
         `);
     },
     
-    // 显示商店
-    showShop() {
-        this.hideModal();
-        this.showScreen('shop-screen');
-        this.renderShop();
-    },
-    
-    // 渲染商店
-    renderShop() {
-        const container = document.getElementById('shop-content');
-        const items = [
-            { id: 'cat', name: '喵喵皮肤', price: 100, icon: '🐱', desc: '可爱的猫咪主题' },
-            { id: 'mouse', name: '小鼠皮肤', price: 100, icon: '🐭', desc: '机灵的小鼠主题' },
-            { id: 'dragon', name: '神龙皮肤', price: 200, icon: '🐲', desc: '霸气的神龙主题' },
-            { id: 'unicorn', name: '独角兽', price: 300, icon: '🦄', desc: '梦幻的独角兽' },
-            { id: 'hint', name: '提示卡x3', price: 50, icon: '💡', desc: '闯关时获得提示' },
-            { id: 'time', name: '时间卡x3', price: 50, icon: '⏱️', desc: '挑战模式加时' }
-        ];
-        
-        const owned = JSON.parse(localStorage.getItem('pinyinSkins') || '[]');
-        
-        container.innerHTML = `
-            <div class="shop-header">
-                <h2>🛒 兑换商店</h2>
-                <div class="shop-coins">🪙 ${this.coins}</div>
-            </div>
-            <div class="shop-grid">
-                ${items.map(item => `
-                    <div class="shop-item ${owned.includes(item.id) ? 'owned' : ''}">
-                        <div class="item-icon">${item.icon}</div>
-                        <h4>${item.name}</h4>
-                        <p>${item.desc}</p>
-                        <div class="item-price">
-                            ${owned.includes(item.id) 
-                                ? '<span class="owned-badge">✅ 已拥有</span>' 
-                                : `<button class="btn btn-buy" onclick="app.buyItem('${item.id}', ${item.price})" ${this.coins < item.price ? 'disabled' : ''}>${item.price} 🪙</button>`
-                            }
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    },
-    
-    // 购买物品
-    buyItem(id, price) {
-        if (this.coins >= price) {
-            this.coins -= price;
-            localStorage.setItem('pinyinCoins', this.coins);
-            
-            let owned = JSON.parse(localStorage.getItem('pinyinSkins') || '[]');
-            owned.push(id);
-            localStorage.setItem('pinyinSkins', JSON.stringify(owned));
-            
-            this.showToast('🎉 购买成功！');
-            this.renderShop();
-        } else {
-            this.showToast('😅 金币不足，继续闯关赚取吧！');
-        }
-    },
-    
-    // 显示设置
-    showSettings() {
-        this.showScreen('settings-screen');
-    },
-    
-    // 保存设置
-    saveSetting(key, value) {
-        this.settings[key] = value;
-        localStorage.setItem('pinyinSettings', JSON.stringify(this.settings));
-        
-        if (key === 'speed') {
-            game.speechRate = parseFloat(value);
-        }
-        if (key === 'sound') {
-            game.soundEnabled = value;
-        }
-    },
-    
-    // 加载设置
-    loadSettings() {
-        const saved = localStorage.getItem('pinyinSettings');
-        if (saved) {
-            this.settings = JSON.parse(saved);
-            game.soundEnabled = this.settings.sound;
-            game.speechRate = parseFloat(this.settings.speed);
-        }
-    },
-    
-    // 更新设置UI
-    updateSettingsUI() {
-        const soundEl = document.getElementById('sound-setting');
-        const speedEl = document.getElementById('speed-setting');
-        if (soundEl) soundEl.checked = this.settings.sound;
-        if (speedEl) speedEl.value = this.settings.speed;
-    },
-    
-    // 清除进度
-    clearProgress() {
-        if (confirm('确定要清除所有学习进度吗？此操作不可恢复。')) {
-            this.progress = {};
-            this.coins = 0;
-            localStorage.removeItem('pinyinProgress');
-            localStorage.removeItem('pinyinCoins');
-            localStorage.removeItem('pinyinCollection');
-            localStorage.removeItem('pinyinSkins');
-            alert('进度已清除');
-        }
-    },
-    
-    // 保存关卡进度
-    saveLevelProgress(levelId, stars) {
-        if (!this.progress[this.currentVersion]) {
-            this.progress[this.currentVersion] = {};
-        }
-        const current = this.progress[this.currentVersion][levelId] || 0;
-        this.progress[this.currentVersion][levelId] = Math.max(current, stars);
-        localStorage.setItem('pinyinProgress', JSON.stringify(this.progress));
-        
-        // 奖励金币
-        const coinReward = stars * 10;
-        this.addCoins(coinReward);
-    },
-    
-    // 加载进度
-    loadProgress() {
-        const saved = localStorage.getItem('pinyinProgress');
-        if (saved) {
-            this.progress = JSON.parse(saved);
-        }
-    },
-    
-    // 家长登录
-    showParentLogin() {
-        const password = prompt('请输入家长密码（默认：1234）：');
+    checkParentPassword() {
+        const password = document.getElementById('parent-password').value;
         if (password === '1234') {
             this.parentLoggedIn = true;
-            this.showParentScreen();
-        } else if (password !== null) {
+            this.hideModal();
+            this.showParentDashboard();
+        } else {
             alert('密码错误');
         }
     },
     
-    // 退出家长模式
-    logoutParent() {
-        this.parentLoggedIn = false;
-        this.backToSplash();
+    showParentDashboard() {
+        this.showScreen('parent-dashboard');
+        this.renderProgressReport();
     },
     
-    // 显示家长后台 - 全新设计
-    showParentScreen() {
-        this.showScreen('parent-screen');
-        this.renderParentDashboard();
-    },
-    
-    // 渲染家长仪表盘
-    renderParentDashboard() {
-        const content = document.getElementById('parent-content');
-        
-        const shanghaiProgress = this.progress.shanghai || {};
-        const renjiaoProgress = this.progress.renjiao || {};
-        const totalStars = Object.values(shanghaiProgress).reduce((a, b) => a + b, 0) + 
-                          Object.values(renjiaoProgress).reduce((a, b) => a + b, 0);
-        
-        content.innerHTML = `
-            <div class="parent-dashboard">
-                <!-- 概览卡片 -->
-                <div class="dashboard-overview">
-                    <div class="overview-card">
-                        <div class="overview-icon">📚</div>
-                        <div class="overview-data">
-                            <span class="overview-number">${Object.keys(shanghaiProgress).length + Object.keys(renjiaoProgress).length}</span>
-                            <span class="overview-label">已完成关卡</span>
-                        </div>
-                    </div>
-                    <div class="overview-card">
-                        <div class="overview-icon">⭐</div>
-                        <div class="overview-data">
-                            <span class="overview-number">${totalStars}</span>
-                            <span class="overview-label">获得星星</span>
-                        </div>
-                    </div>
-                    <div class="overview-card">
-                        <div class="overview-icon">🪙</div>
-                        <div class="overview-data">
-                            <span class="overview-number">${this.coins}</span>
-                            <span class="overview-label">金币总数</span>
-                        </div>
-                    </div>
-                    <div class="overview-card">
-                        <div class="overview-icon">⏱️</div>
-                        <div class="overview-data">
-                            <span class="overview-number">${Math.floor(Math.random() * 30 + 10)}</span>
-                            <span class="overview-label">学习时长(分)</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 版本进度 -->
-                <div class="version-progress-section">
-                    <h3>📊 版本进度</h3>
-                    <div class="version-cards">
-                        <div class="version-card">
-                            <div class="version-header">
-                                <span class="version-name">🏫 上海版</span>
-                                <span class="version-percent">${this.calcProgressPercent('shanghai')}%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${this.calcProgressPercent('shanghai')}%; background: linear-gradient(90deg, #FF6B9D, #FFB8D0);"></div>
-                            </div>
-                            <p class="version-detail">已完成 ${Object.keys(shanghaiProgress).length}/8 关 · ${Object.values(shanghaiProgress).reduce((a,b)=>a+b,0)} 颗星</p>
-                        </div>
-                        <div class="version-card">
-                            <div class="version-header">
-                                <span class="version-name">📖 人教版</span>
-                                <span class="version-percent">${this.calcProgressPercent('renjiao')}%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${this.calcProgressPercent('renjiao')}%; background: linear-gradient(90deg, #4ECDC4, #A8E6E1);"></div>
-                            </div>
-                            <p class="version-detail">已完成 ${Object.keys(renjiaoProgress).length}/12 关 · ${Object.values(renjiaoProgress).reduce((a,b)=>a+b,0)} 颗星</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 学习统计 -->
-                <div class="learning-stats">
-                    <h3>📈 学习统计</h3>
-                    <div class="stats-chart">
-                        <div class="chart-bars">
-                            ${['一', '二', '三', '四', '五', '六', '日'].map((day, i) => `
-                                <div class="chart-bar">
-                                    <div class="bar-fill" style="height: ${Math.random() * 60 + 20}px;"></div>
-                                    <span class="bar-label">周${day}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <p class="chart-title">本周学习活跃度</p>
-                    </div>
-                </div>
-                
-                <!-- 设置面板 -->
-                <div class="parent-settings">
-                    <h3>⚙️ 学习设置</h3>
-                    <div class="setting-group">
-                        <div class="setting-row">
-                            <span>每日学习目标</span>
-                            <select class="setting-select" onchange="app.saveParentSetting('dailyGoal', this.value)">
-                                <option value="1">1关</option>
-                                <option value="2" selected>2关</option>
-                                <option value="3">3关</option>
-                                <option value="5">5关</option>
-                            </select>
-                        </div>
-                        <div class="setting-row">
-                            <span>休息提醒（每20分钟）</span>
-                            <label class="switch">
-                                <input type="checkbox" checked onchange="app.saveParentSetting('restReminder', this.checked)">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-row">
-                            <span>音效提示</span>
-                            <label class="switch">
-                                <input type="checkbox" checked onchange="app.saveParentSetting('soundEnabled', this.checked)">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-row">
-                            <span>难度自适应</span>
-                            <label class="switch">
-                                <input type="checkbox" onchange="app.saveParentSetting('adaptive', this.checked)">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 导出报告 -->
-                <div class="report-section">
-                    <button class="btn btn-export" onclick="app.exportReport()">📥 导出学习报告</button>
-                </div>
-            </div>
+    renderProgressReport() {
+        const report = document.getElementById('progress-report');
+        report.innerHTML = `
+            <h4>学习统计</h4>
+            <p>总星星数: ${this.getTotalStars()}</p>
+            <p>金币数: ${this.coins}</p>
         `;
     },
     
-    // 计算进度百分比
-    calcProgressPercent(version) {
-        const data = getPinyinData(version);
-        const progress = this.progress[version] || {};
-        return Math.round((Object.keys(progress).length / data.levels.length) * 100);
-    },
-    
-    // 保存家长设置
-    saveParentSetting(key, value) {
-        const parentSettings = JSON.parse(localStorage.getItem('pinyinParentSettings') || '{}');
-        parentSettings[key] = value;
-        localStorage.setItem('pinyinParentSettings', JSON.stringify(parentSettings));
-        this.showToast('✅ 设置已保存');
-    },
-    
-    // 导出报告
-    exportReport() {
-        const report = {
-            date: new Date().toLocaleDateString(),
-            progress: this.progress,
-            coins: this.coins,
-            totalStars: Object.values(this.progress).flatMap(v => Object.values(v)).reduce((a,b)=>a+b,0)
-        };
-        
-        const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `拼音学习报告_${new Date().toLocaleDateString()}.json`;
-        a.click();
-        
-        this.showToast('📥 报告已导出');
-    },
-    
-    // 显示弹窗
+    // 模态框
     showModal(type, content) {
-        const overlay = document.getElementById('modal-overlay');
-        const modal = document.getElementById('modal-content');
-        
-        modal.innerHTML = content;
-        modal.className = 'modal ' + type;
-        overlay.classList.remove('hidden');
+        const modal = document.getElementById('modal-overlay');
+        const body = document.getElementById('modal-body');
+        body.innerHTML = content;
+        modal.classList.add('active');
     },
     
-    // 隐藏弹窗
     hideModal() {
-        document.getElementById('modal-overlay').classList.add('hidden');
+        document.getElementById('modal-overlay').classList.remove('active');
+    },
+    
+    // 学习模式切换
+    switchLearnMode(mode) {
+        // 已整合到游戏化界面
     }
 };
 
-// 初始化
-window.addEventListener('load', () => {
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', () => {
     app.init();
 });
