@@ -86,12 +86,12 @@
     <!-- 游戏界面 -->
     <div id="game-screen" class="screen">
         <div class="game-header">
-            <button class="btn-icon" onclick="app.pauseGame()">⏸️</button>
+            <button class="btn-icon" onclick="app.backToMenu()" title="返回主菜单">🏠</button>
             <div class="level-info">
                 <span id="current-level">第1关</span>
                 <div class="stars" id="level-stars">⭐⭐⭐</div>
             </div>
-            <button class="btn-icon" onclick="app.toggleSound()">🔊</button>
+            <button class="btn-icon" onclick="app.pauseGame()" title="暂停">⏸️</button>
         </div>
         
         <div class="game-content" id="game-content">
