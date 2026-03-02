@@ -1,0 +1,585 @@
+/* ============================================
+   拼音大冒险 - 卡通可爱风格主题
+   ============================================ */
+
+/* 可爱配色方案 */
+:root {
+    /* 主色调 - 糖果色 */
+    --candy-pink: #FF6B9D;
+    --candy-pink-light: #FFB8D0;
+    --candy-blue: #4ECDC4;
+    --candy-blue-light: #A8E6E1;
+    --candy-yellow: #FFE66D;
+    --candy-yellow-light: #FFF5B7;
+    --candy-purple: #C7CEEA;
+    --candy-purple-light: #E8EBF7;
+    --candy-orange: #FFD93D;
+    --candy-green: #6BCB77;
+    
+    /* 功能色 */
+    --primary: #FF6B9D;
+    --primary-dark: #E85A8A;
+    --secondary: #4ECDC4;
+    --secondary-dark: #3DBBB3;
+    --success: #6BCB77;
+    --error: #FF6B6B;
+    --warning: #FFD93D;
+    
+    /* 中性色 */
+    --white: #FFFFFF;
+    --cream: #FFF9F0;
+    --text-dark: #4A4A4A;
+    --text-light: #888888;
+    --shadow: rgba(255, 107, 157, 0.2);
+    
+    /* 可爱字体 */
+    --font-cute: 'Nunito', 'Comic Sans MS', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-cute);
+    background: linear-gradient(135deg, #FFE5F1 0%, #E5F9F6 50%, #FFF9E5 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* 可爱背景装饰 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(255, 107, 157, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(78, 205, 196, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 50% 50%, rgba(255, 230, 109, 0.05) 0%, transparent 30%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* 屏幕容器 */
+.screen {
+    display: none;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.5s ease;
+}
+
+.screen.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   启动画面 - 超可爱风格
+   ============================================ */
+#splash-screen {
+    background: linear-gradient(180deg, #FFE5F1 0%, #FFF0F5 50%, #E5F9F6 100%);
+}
+
+.splash-content {
+    text-align: center;
+    animation: bounceIn 0.8s ease;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.logo-icon {
+    font-size: 80px;
+    animation: float 2s ease-in-out infinite;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+}
+
+.logo-icon:nth-child(1) { animation-delay: 0s; }
+.logo-icon:nth-child(3) { animation-delay: 1s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.logo h1 {
+    font-size: 52px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-purple) 50%, var(--candy-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    filter: drop-shadow(0 4px 6px rgba(255, 107, 157, 0.3));
+}
+
+.subtitle {
+    font-size: 22px;
+    color: var(--text-light);
+    margin-bottom: 50px;
+    font-weight: 600;
+}
+
+/* 可爱按钮 */
+.btn {
+    display: inline-block;
+    padding: 18px 45px;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: var(--font-cute);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    text-transform: none;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-light) 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4), 
+                inset 0 -3px 0 rgba(0,0,0,0.1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 25px rgba(255, 107, 157, 0.5), 
+                inset 0 -3px 0 rgba(0,0,0,0.1);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--candy-blue) 0%, var(--candy-blue-light) 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4), 
+                inset 0 -3px 0 rgba(0,0,0,0.1);
+    margin-top: 15px;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 25px rgba(78, 205, 196, 0.5), 
+                inset 0 -3px 0 rgba(0,0,0,0.1);
+}
+
+.btn-back {
+    background: rgba(255,255,255,0.8);
+    color: var(--text-dark);
+    padding: 12px 30px;
+    font-size: 16px;
+    margin-top: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.btn-back:hover {
+    background: white;
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   主菜单 - 卡片式设计
+   ============================================ */
+#main-menu {
+    background: linear-gradient(135deg, #E5F9F6 0%, #FFF9E5 100%);
+}
+
+.menu-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.menu-header h2 {
+    font-size: 36px;
+    color: var(--text-dark);
+    margin-top: 20px;
+    font-weight: 700;
+}
+
+.character {
+    font-size: 70px;
+    display: inline-block;
+    animation: wiggle 2s ease-in-out infinite;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+}
+
+.character-cat { animation-delay: 0s; }
+.character-mouse { animation-delay: 0.5s; }
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    width: 100%;
+    max-width: 450px;
+}
+
+.menu-card {
+    background: white;
+    border: none;
+    border-radius: 25px;
+    padding: 35px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--candy-pink), var(--candy-blue), var(--candy-yellow));
+}
+
+.menu-card:nth-child(1)::after { background: var(--candy-pink); }
+.menu-card:nth-child(2)::after { background: var(--candy-blue); }
+.menu-card:nth-child(3)::after { background: var(--candy-yellow); }
+.menu-card:nth-child(4)::after { background: var(--candy-purple); }
+
+.menu-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.card-icon {
+    font-size: 50px;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.1));
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+/* ============================================
+   游戏界面 - 可爱卡片
+   ============================================ */
+#game-screen {
+    background: linear-gradient(135deg, #FFF0F5 0%, #F0F9FF 100%);
+    padding: 20px;
+}
+
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 25px;
+}
+
+.btn-icon {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.level-info {
+    text-align: center;
+    background: white;
+    padding: 12px 30px;
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+#current-level {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--candy-pink);
+}
+
+.stars {
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+/* 拼音卡片 - 超可爱 */
+.pinyin-card {
+    background: white;
+    border-radius: 40px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 
+        0 20px 50px rgba(255, 107, 157, 0.15),
+        0 0 0 8px rgba(255, 255, 255, 0.5);
+    width: 100%;
+    max-width: 380px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pinyin-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,107,157,0.03) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.pinyin-img {
+    font-size: 100px;
+    margin: 20px 0;
+    animation: bounce 1s ease infinite;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.pinyin-word {
+    font-size: 32px;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* 选项按钮 - 糖果色 */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 380px;
+    margin-top: 30px;
+}
+
+.option-btn {
+    background: white;
+    border: 3px solid transparent;
+    border-radius: 25px;
+    padding: 25px 15px;
+    font-size: 32px;
+    font-weight: 800;
+    font-family: var(--font-cute);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    color: var(--text-dark);
+}
+
+.option-btn:nth-child(1) { background: linear-gradient(135deg, #FFE5F1 0%, white 100%); }
+.option-btn:nth-child(2) { background: linear-gradient(135deg, #E5F9F6 0%, white 100%); }
+.option-btn:nth-child(3) { background: linear-gradient(135deg, #FFF9E5 0%, white 100%); }
+.option-btn:nth-child(4) { background: linear-gradient(135deg, #F0E5FF 0%, white 100%); }
+
+.option-btn:hover {
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+    border-color: var(--candy-pink);
+}
+
+.option-btn.correct {
+    background: linear-gradient(135deg, var(--success) 0%, #8FE39A 100%) !important;
+    color: white;
+    border-color: var(--success);
+    animation: correctPulse 0.5s ease;
+}
+
+@keyframes correctPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1.08); }
+}
+
+.option-btn.wrong {
+    background: linear-gradient(135deg, var(--error) 0%, #FF8F8F 100%) !important;
+    color: white;
+    border-color: var(--error);
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+/* 游戏控制按钮 */
+.game-controls {
+    display: flex;
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.btn-hint, .btn-speak {
+    background: white;
+    color: var(--text-dark);
+    padding: 15px 25px;
+    font-size: 16px;
+    border-radius: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-hint:hover, .btn-speak:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* ============================================
+   弹窗 - 可爱风格
+   ============================================ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 182, 193, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal {
+    background: white;
+    border-radius: 40px;
+    padding: 50px 40px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    animation: modalPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 
+        0 25px 50px rgba(0,0,0,0.15),
+        0 0 0 10px rgba(255,255,255,0.3);
+}
+
+@keyframes modalPop {
+    0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+    70% { transform: scale(1.05) rotate(2deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.modal-icon {
+    font-size: 100px;
+    margin-bottom: 20px;
+    animation: float 2s ease-in-out infinite;
+}
+
+.modal h3 {
+    font-size: 28px;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.modal.success h3 { 
+    color: var(--success); 
+    background: linear-gradient(135deg, var(--success), #8FE39A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal.fail h3 { 
+    color: var(--error); 
+}
+
+/* ============================================
+   响应式适配
+   ============================================ */
+@media (max-width: 480px) {
+    .logo h1 { font-size: 36px; }
+    .logo-icon { font-size: 50px; }
+    .menu-grid { grid-template-columns: 1fr; gap: 15px; }
+    .pinyin-card { padding: 30px 20px; border-radius: 30px; }
+    .pinyin-img { font-size: 70px; }
+    .option-btn { font-size: 24px; padding: 20px 10px; }
+    .modal { padding: 35px 25px; }
+}
+
+@media (min-width: 768px) {
+    .splash-content { max-width: 500px; }
+    .menu-grid { max-width: 500px; }
+    .pinyin-card { max-width: 420px; }
+}
