@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+</head>
+<body>
+    <h1>拼音大冒险测试</h1>
+    <div id="test">加载中...</div>
+    
+    <script>
+        document.getElementById('test').textContent = '基础JS正常';
+    </script>
+    <script src="js/pinyin-data.js"></script>
+    <script>
+        if (typeof pinyinData !== 'undefined') {
+            document.getElementById('test').textContent += ' | pinyin-data加载成功';
+        }
+    </script>
+    <script src="js/game.js"></script>
+    <script>
+        if (typeof game !== 'undefined') {
+            document.getElementById('test').textContent += ' | game加载成功';
+        } else {
+            document.getElementById('test').textContent += ' | game加载失败';
+        }
+    </script>
+    <script src="js/app.js"></script>
+    <script>
+        if (typeof app !== 'undefined') {
+            document.getElementById('test').textContent += ' | app加载成功';
+        } else {
+            document.getElementById('test').textContent += ' | app加载失败';
+        }
+    </script>
+</body>
+</html>
