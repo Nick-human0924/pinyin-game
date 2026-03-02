@@ -8,7 +8,7 @@ const app = {
     settings: { sound: true, speed: 1 },
     progress: {},
     coins: 0,
-    
+
     // 初始化
     init() {
         this.loadSettings();
@@ -16,24 +16,24 @@ const app = {
         this.loadCoins();
         this.updateSettingsUI();
     },
-    
+
     // 显示指定屏幕
     showScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
     },
-    
+
     // 基础导航
     start() { this.showScreen('main-menu'); },
     backToSplash() { this.showScreen('splash-screen'); },
     backToMenu() { this.showScreen('main-menu'); },
-    
+
     // 显示关卡选择（主菜单入口）
     showLevelSelect() {
         this.showScreen('level-select');
         this.renderLevelMap();
     },
-    
+
     // 版本选择
     showVersionSelect() { this.showScreen('version-select'); },
     selectVersion(version) {
@@ -42,20 +42,20 @@ const app = {
         this.showScreen('level-select');
         this.renderLevelMap();
     },
-    
+
     // 渲染关卡地图
     renderLevelMap() {
         const data = getPinyinData(this.currentVersion);
         const container = document.getElementById('level-map');
         const progress = this.progress[this.currentVersion] || {};
-        
+
         let html = '';
         data.levels.forEach((level, index) => {
             const isLocked = index > 0 && !progress[data.levels[index - 1].id];
             const stars = progress[level.id] || 0;
-            
+
             html += `
-                <div class="level-node ${isLocked ? 'locked' : ''}" 
+                <div class="level-node ${isLocked ? 'locked' : ''}"
                      onclick="${isLocked ? '' : `app.startLevel(${level.id})`}">
                     <div class="level-number">${level.id}</div>
                     <div class="level-info">
@@ -66,17 +66,17 @@ const app = {
                 </div>
             `;
         });
-        
+
         container.innerHTML = html;
-        
+
         const completed = Object.keys(progress).length;
         const total = data.levels.length;
         const percent = Math.round((completed / total) * 100);
-        
+
         document.getElementById('overall-progress').style.width = percent + '%';
         document.getElementById('progress-text').textContent = `已完成 ${completed}/${total} 关`;
     },
-    
+
     // 开始关卡
     startLevel(levelId) {
         this.hideModal();
@@ -146,13 +146,13 @@ const app = {
         container.innerHTML = html;
         document.getElementById('learn-title').textContent = '⚙️ 设置';
     },
-    
+
     // ==================== 游戏化自由学习 ====================
     showFreeMode() {
         this.showScreen('learn-screen');
         this.renderFunLearn();
     },
-    
+
     // 游戏化学习主界面 - 美化版
     renderFunLearn() {
         const container = document.getElementById('learn-content');
@@ -169,12 +169,12 @@ const app = {
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- 游戏模式选择 -->
                 <h3 class="mode-title">🎮 选择游戏模式</h3>
-                
+
                 <!-- 成就入口 -->
-                <div class="achievement-entry" onclick="app.showAchievements()" style="background:linear-gradient(135deg,#FFD93D,#FFE66D);border-radius:15px;padding:15px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 5px 15px rgba(255,217,61,0.3);transition:all 0.3s;"
+                <div class="achievement-entry" onclick="app.showAchievements()" style="background:linear-gradient(135deg,#FFD93D,#FFE66D);border-radius:15px;padding:15px 20px;margin-bottom:15px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 5px 15px rgba(255,217,61,0.3);transition:all 0.3s;"
                      onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform=''">
                     <div style="display:flex;align-items:center;gap:15px;">
                         <span style="font-size:40px;">🏆</span>
@@ -185,7 +185,20 @@ const app = {
                     </div>
                     <span style="font-size:24px;">➡️</span>
                 </div>
-                
+
+                <!-- 宠物小屋入口 -->
+                <div onclick="app.showPetHouse()" style="background:linear-gradient(135deg,#FF6B9D,#FFB8D0);border-radius:15px;padding:15px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 5px 15px rgba(255,107,157,0.3);transition:all 0.3s;"
+                     onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform=''">
+                    <div style="display:flex;align-items:center;gap:15px;">
+                        <span style="font-size:40px;">🏠</span>
+                        <div>
+                            <div style="font-weight:bold;font-size:16px;color:white;">宠物小屋</div>
+                            <div style="font-size:12px;color:rgba(255,255,255,0.8);">喂养宠物、开宝箱、装饰房间</div>
+                        </div>
+                    </div>
+                    <span style="font-size:24px;color:white;">➡️</span>
+                </div>
+
                 <div class="game-modes-grid">
                     <div class="game-mode-btn mode-explore" onclick="app.showExplore()">
                         <div class="mode-icon">🗺️</div>
@@ -193,21 +206,21 @@ const app = {
                         <p>探索所有拼音卡片</p>
                         <span class="reward">+5金币</span>
                     </div>
-                    
+
                     <div class="game-mode-btn mode-quiz" onclick="app.showQuiz()">
                         <div class="mode-icon">⚡</div>
                         <h4>闪电答题</h4>
                         <p>听拼音选答案</p>
                         <span class="reward">+10金币</span>
                     </div>
-                    
+
                     <div class="game-mode-btn mode-memory" onclick="app.showMemory()">
                         <div class="mode-icon">🧠</div>
                         <h4>记忆翻牌</h4>
                         <p>配对挑战</p>
                         <span class="reward">+15金币</span>
                     </div>
-                    
+
                     <div class="game-mode-btn mode-trace" onclick="app.showTrace()">
                         <div class="mode-icon">✍️</div>
                         <h4>拼音描红</h4>
@@ -219,7 +232,7 @@ const app = {
         `;
         document.getElementById('learn-title').textContent = '🎮 拼音乐园';
     },
-    
+
     getTotalStars() {
         let total = 0;
         Object.values(this.progress || {}).forEach(v => {
@@ -227,12 +240,12 @@ const app = {
         });
         return total;
     },
-    
+
     // 1. 拼音探险 - 美化版
     showExplore() {
         const data = getPinyinData(this.currentVersion);
         const container = document.getElementById('learn-content');
-        
+
         let html = `
             <div class="explore-container">
                 <div class="explore-header">
@@ -242,7 +255,7 @@ const app = {
                 </div>
                 <div class="pinyin-grid">
         `;
-        
+
         data.levels.forEach(level => {
             level.items.forEach(item => {
                 html += `
@@ -255,16 +268,16 @@ const app = {
                 `;
             });
         });
-        
+
         html += '</div></div>';
         container.innerHTML = html;
     },
-    
+
     speakAndShow(char, word, emoji) {
         game.speak(char);
         this.showToast(`${emoji} ${char} - ${word}`);
     },
-    
+
     // 2. 闪电答题 - 美化版
     showQuiz() {
         const container = document.getElementById('learn-content');
@@ -279,11 +292,11 @@ const app = {
             </div>
         `;
     },
-    
+
     quizIndex: 0,
     quizScore: 0,
     quizItems: [],
-    
+
     startQuiz() {
         const data = getPinyinData(this.currentVersion);
         const allItems = data.levels.flatMap(l => l.items);
@@ -292,16 +305,16 @@ const app = {
         this.quizScore = 0;
         this.showQuizQuestion();
     },
-    
+
     showQuizQuestion() {
         if (this.quizIndex >= this.quizItems.length) {
             this.endQuiz();
             return;
         }
-        
+
         const item = this.quizItems[this.quizIndex];
         const container = document.getElementById('learn-content');
-        
+
         // 生成选项
         const data = getPinyinData(this.currentVersion);
         const allChars = data.levels.flatMap(l => l.items.map(i => i.char));
@@ -312,7 +325,7 @@ const app = {
             options.push(filtered.splice(idx, 1)[0]);
         }
         options = options.sort(() => Math.random() - 0.5);
-        
+
         container.innerHTML = `
             <div class="quiz-game">
                 <div class="quiz-progress">题目 ${this.quizIndex + 1}/5</div>
@@ -327,10 +340,10 @@ const app = {
                 <button class="btn-hear" onclick="game.speak('${item.char}')">🔊 再听一遍</button>
             </div>
         `;
-        
+
         game.speak(item.char);
     },
-    
+
     answerQuiz(selected, correct) {
         if (selected === correct) {
             this.quizScore++;
@@ -341,15 +354,15 @@ const app = {
             game.speak('再想想看');
             this.showToast('❌ 再试一次');
         }
-        
+
         this.quizIndex++;
         setTimeout(() => this.showQuizQuestion(), 1000);
     },
-    
+
     endQuiz() {
         const coins = this.quizScore * 3;
         this.addCoins(coins);
-        
+
         const container = document.getElementById('learn-content');
         container.innerHTML = `
             <div class="quiz-result">
@@ -361,7 +374,7 @@ const app = {
             </div>
         `;
     },
-    
+
     // 3. 记忆翻牌
     showMemory() {
         const container = document.getElementById('learn-content');
@@ -374,33 +387,33 @@ const app = {
             </div>
         `;
     },
-    
+
     memoryCards: [],
     flippedCards: [],
     matchedPairs: 0,
     memoryMoves: 0,
-    
+
     startMemory() {
         const data = getPinyinData(this.currentVersion);
         const items = data.levels[0].items.slice(0, 4);
-        
+
         let cards = [];
         items.forEach((item, i) => {
             cards.push({ id: i, type: 'char', value: item.char, emoji: item.emoji, matched: false });
             cards.push({ id: i, type: 'word', value: item.word, emoji: item.emoji, matched: false });
         });
         cards = cards.sort(() => Math.random() - 0.5);
-        
+
         this.memoryCards = cards;
         this.flippedCards = [];
         this.matchedPairs = 0;
         this.memoryMoves = 0;
         this.renderMemoryGrid();
     },
-    
+
     renderMemoryGrid() {
         const container = document.getElementById('learn-content');
-        
+
         let html = `
             <div class="memory-game">
                 <div class="memory-header">
@@ -409,13 +422,13 @@ const app = {
                 </div>
                 <div class="memory-grid">
         `;
-        
+
         this.memoryCards.forEach((card, idx) => {
             const isFlipped = this.flippedCards.includes(idx);
             const isMatched = card.matched;
-            
+
             html += `
-                <div class="memory-card ${isFlipped ? 'flipped' : ''} ${isMatched ? 'matched' : ''}" 
+                <div class="memory-card ${isFlipped ? 'flipped' : ''} ${isMatched ? 'matched' : ''}"
                      onclick="app.flipCard(${idx})">
                     <div class="card-face card-back">❓</div>
                     <div class="card-face card-front">
@@ -424,31 +437,31 @@ const app = {
                 </div>
             `;
         });
-        
+
         html += '</div></div>';
         container.innerHTML = html;
     },
-    
+
     flipCard(idx) {
         if (this.flippedCards.includes(idx) || this.memoryCards[idx].matched) return;
         if (this.flippedCards.length >= 2) return;
-        
+
         this.flippedCards.push(idx);
         this.renderMemoryGrid();
-        
+
         if (this.flippedCards.length === 2) {
             this.memoryMoves++;
             const [idx1, idx2] = this.flippedCards;
             const card1 = this.memoryCards[idx1];
             const card2 = this.memoryCards[idx2];
-            
+
             if (card1.id === card2.id) {
                 setTimeout(() => {
                     card1.matched = true;
                     card2.matched = true;
                     this.flippedCards = [];
                     this.matchedPairs++;
-                    
+
                     if (this.matchedPairs === 4) {
                         this.endMemory();
                     } else {
@@ -463,11 +476,11 @@ const app = {
             }
         }
     },
-    
+
     endMemory() {
         const coins = Math.max(12 - this.memoryMoves, 5);
         this.addCoins(coins);
-        
+
         const container = document.getElementById('learn-content');
         container.innerHTML = `
             <div class="memory-result">
@@ -479,7 +492,7 @@ const app = {
             </div>
         `;
     },
-    
+
     // 成就系统
     showAchievements() {
         const achievements = [
@@ -490,7 +503,7 @@ const app = {
             { id: 'rich', name: '小富翁', desc: '获得100金币', icon: '💰', unlocked: this.coins >= 100 },
             { id: 'explorer', name: '探险家', desc: '完成拼音探险', icon: '🗺️', unlocked: false }
         ];
-        
+
         const container = document.getElementById('learn-content');
         let html = `
             <div style="padding:20px;">
@@ -501,7 +514,7 @@ const app = {
                 </div>
                 <div style="display:grid;gap:15px;">
         `;
-        
+
         achievements.forEach(ach => {
             html += `
                 <div style="background:${ach.unlocked ? 'white' : '#f5f5f5'};border-radius:15px;padding:20px;display:flex;align-items:center;gap:15px;box-shadow:0 3px 10px rgba(0,0,0,0.08);opacity:${ach.unlocked ? 1 : 0.6};">
@@ -514,16 +527,16 @@ const app = {
                 </div>
             `;
         });
-        
+
         html += '</div></div>';
         container.innerHTML = html;
     },
-    
+
     // 4. 拼音描红
     showTrace() {
         const data = getPinyinData(this.currentVersion);
         const item = data.levels[0].items[0];
-        
+
         const container = document.getElementById('learn-content');
         container.innerHTML = `
             <div class="trace-container">
@@ -543,17 +556,17 @@ const app = {
                 </div>
             </div>
         `;
-        
+
         game.speak(item.char);
     },
-    
+
     traceIndex: 0,
     nextTrace() {
         const data = getPinyinData(this.currentVersion);
         const allItems = data.levels.flatMap(l => l.items);
         this.traceIndex = (this.traceIndex + 1) % allItems.length;
         const item = allItems[this.traceIndex];
-        
+
         const container = document.getElementById('learn-content');
         container.innerHTML = `
             <div class="trace-container">
@@ -573,11 +586,11 @@ const app = {
                 </div>
             </div>
         `;
-        
+
         game.speak(item.char);
         this.addCoins(1);
     },
-    
+
     // 工具函数
     showToast(message) {
         const toast = document.createElement('div');
@@ -586,60 +599,60 @@ const app = {
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 2000);
     },
-    
+
     addCoins(amount) {
         this.coins += amount;
         localStorage.setItem('pinyinCoins', this.coins);
     },
-    
+
     loadCoins() {
         this.coins = parseInt(localStorage.getItem('pinyinCoins') || '0');
     },
-    
+
     // 设置相关
     loadSettings() {
         const saved = localStorage.getItem('pinyinSettings');
         if (saved) this.settings = JSON.parse(saved);
     },
-    
+
     saveSettings() {
         localStorage.setItem('pinyinSettings', JSON.stringify(this.settings));
     },
-    
+
     loadProgress() {
         const saved = localStorage.getItem('pinyinProgress');
         if (saved) this.progress = JSON.parse(saved);
     },
-    
+
     saveProgress() {
         localStorage.setItem('pinyinProgress', JSON.stringify(this.progress));
     },
-    
+
     updateSettingsUI() {
         const soundToggle = document.getElementById('setting-sound');
         const speedSlider = document.getElementById('setting-speed');
         if (soundToggle) soundToggle.checked = this.settings.sound;
         if (speedSlider) speedSlider.value = this.settings.speed;
     },
-    
+
     toggleSound() {
         this.settings.sound = !this.settings.sound;
         game.soundEnabled = this.settings.sound;
         this.saveSettings();
     },
-    
+
     setSpeed(value) {
         this.settings.speed = parseFloat(value);
         game.speechRate = this.settings.speed;
         this.saveSettings();
     },
-    
+
     // 家长登录
     showParentLogin() {
         // 直接显示密码输入界面
         const splash = document.getElementById('splash-screen');
         const originalContent = splash.innerHTML;
-        
+
         splash.innerHTML = `
             <div class="splash-content">
                 <div class="logo">
@@ -655,11 +668,11 @@ const app = {
                 <p style="margin-top:20px;font-size:12px;color:#999;">默认密码: 1234</p>
             </div>
         `;
-        
+
         // 保存原始内容以便恢复
         this._originalSplash = originalContent;
     },
-    
+
     checkParentPassword() {
         const password = document.getElementById('parent-password').value;
         if (password === '1234') {
@@ -669,19 +682,19 @@ const app = {
             alert('密码错误，请重试');
         }
     },
-    
+
     showParentDashboard() {
         this.showScreen('parent-screen');
         this.renderParentProgress();
     },
-    
+
     renderParentProgress() {
         const container = document.getElementById('parent-content');
         if (!container) return;
-        
+
         const data = getPinyinData(this.currentVersion);
         const progress = this.progress[this.currentVersion] || {};
-        
+
         let html = `
             <div style="padding:20px;">
                 <h3>📊 学习统计</h3>
@@ -699,10 +712,10 @@ const app = {
                         <span style="font-weight:bold;">${Object.keys(progress).length}/${data.levels.length}</span>
                     </div>
                 </div>
-                
+
                 <h3>📈 关卡进度</h3>
         `;
-        
+
         data.levels.forEach(level => {
             const stars = progress[level.id] || 0;
             html += `
@@ -712,16 +725,451 @@ const app = {
                 </div>
             `;
         });
-        
+
         html += '</div>';
         container.innerHTML = html;
     },
-    
+
     logoutParent() {
         this.parentLoggedIn = false;
         this.backToSplash();
     },
-    
+
+    // ==================== 宠物养成系统 ====================
+    pet: {
+        name: '小喵',
+        level: 1,
+        exp: 0,
+        maxExp: 100,
+        mood: 100, // 心情 0-100
+        hunger: 100, // 饱食度 0-100
+        evolution: 1, // 进化阶段 1-3
+        lastFed: Date.now()
+    },
+
+    // 加载宠物数据
+    loadPet() {
+        const saved = localStorage.getItem('pinyinPet');
+        if (saved) {
+            this.pet = JSON.parse(saved);
+            // 计算离线饥饿度下降
+            const hoursOffline = (Date.now() - this.pet.lastFed) / (1000 * 60 * 60);
+            this.pet.hunger = Math.max(0, this.pet.hunger - hoursOffline * 5);
+            this.pet.mood = Math.max(0, this.pet.mood - hoursOffline * 3);
+        }
+    },
+
+    // 保存宠物数据
+    savePet() {
+        this.pet.lastFed = Date.now();
+        localStorage.setItem('pinyinPet', JSON.stringify(this.pet));
+    },
+
+    // 显示宠物小屋
+    showPetHouse() {
+        this.loadPet();
+        const container = document.getElementById('learn-content');
+
+        const petEmojis = ['🐱', '🐯', '🦁'];
+        const petEmoji = petEmojis[this.pet.evolution - 1] || '🐱';
+
+        container.innerHTML = `
+            <div style="padding:15px;max-width:500px;margin:0 auto;">
+                <!-- 顶部状态栏 -->
+                <div style="background:linear-gradient(135deg,#FF6B9D,#FFB8D0);border-radius:20px;padding:20px;margin-bottom:20px;color:white;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                        <button class="btn-back" onclick="app.renderFunLearn()" style="background:rgba(255,255,255,0.3);color:white;">⬅️</button>
+                        <h2 style="margin:0;">🏠 宠物小屋</h2>
+                        <span>🪙 ${this.coins}</span>
+                    </div>
+                    <div style="display:flex;gap:15px;">
+                        <div style="flex:1;background:rgba(255,255,255,0.2);border-radius:10px;padding:10px;text-align:center;">
+                            <div style="font-size:12px;opacity:0.8;">等级</div>
+                            <div style="font-size:24px;font-weight:bold;">Lv.${this.pet.level}</div>
+                        </div>
+                        <div style="flex:1;background:rgba(255,255,255,0.2);border-radius:10px;padding:10px;text-align:center;">
+                            <div style="font-size:12px;opacity:0.8;">心情</div>
+                            <div style="font-size:24px;">${this.getMoodEmoji()}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 宠物展示区 -->
+                <div style="background:linear-gradient(180deg,#E8F4F8 0%,#FFF5F5 100%);border-radius:25px;padding:30px;text-align:center;margin-bottom:20px;position:relative;min-height:250px;">
+                    <!-- 背景装饰 -->
+                    <div style="position:absolute;top:20px;left:20px;font-size:30px;opacity:0.5;">☁️</div>
+                    <div style="position:absolute;top:40px;right:30px;font-size:25px;opacity:0.5;">☁️</div>
+                    <div style="position:absolute;bottom:30px;left:15%;font-size:20px;opacity:0.3;">🌸</div>
+                    <div style="position:absolute;bottom:40px;right:20%;font-size:20px;opacity:0.3;">🌸</div>
+
+                    <!-- 宠物 -->
+                    <div onclick="app.petInteraction()" style="font-size:120px;cursor:pointer;animation:petBounce 2s infinite;display:inline-block;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.1));">
+                        ${petEmoji}
+                    </div>
+
+                    <!-- 宠物信息 -->
+                    <div style="margin-top:20px;">
+                        <div style="font-size:24px;font-weight:bold;color:#333;">${this.pet.name}</div>
+                        <div style="font-size:14px;color:#666;margin-top:5px;">${this.getEvolutionName()}</div>
+                    </div>
+
+                    <!-- 状态条 -->
+                    <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:20px;">😊</span>
+                            <div style="flex:1;height:12px;background:rgba(0,0,0,0.1);border-radius:10px;overflow:hidden;">
+                                <div style="width:${this.pet.mood}%;height:100%;background:linear-gradient(90deg,#FFD93D,#FFE66D);border-radius:10px;transition:width 0.3s;"></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:20px;">🍖</span>
+                            <div style="flex:1;height:12px;background:rgba(0,0,0,0.1);border-radius:10px;overflow:hidden;">
+                                <div style="width:${this.pet.hunger}%;height:100%;background:linear-gradient(90deg,#FF6B6B,#FF8E8E);border-radius:10px;transition:width 0.3s;"></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:20px;">⭐</span>
+                            <div style="flex:1;height:12px;background:rgba(0,0,0,0.1);border-radius:10px;overflow:hidden;">
+                                <div style="width:${(this.pet.exp/this.pet.maxExp)*100}%;height:100%;background:linear-gradient(90deg,#4ECDC4,#7EDDD6);border-radius:10px;transition:width 0.3s;"></div>
+                            </div>
+                            <span style="font-size:12px;color:#666;">${this.pet.exp}/${this.pet.maxExp}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 互动按钮 -->
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:20px;">
+                    <button onclick="app.feedPet()" style="background:linear-gradient(135deg,#FF6B6B,#FF8E8E);color:white;border:none;border-radius:15px;padding:15px;cursor:pointer;box-shadow:0 5px 15px rgba(255,107,107,0.3);">
+                        <div style="font-size:30px;">🍖</div>
+                        <div style="font-size:12px;margin-top:5px;">喂食 (-10🪙)</div>
+                    </button>
+                    <button onclick="app.playWithPet()" style="background:linear-gradient(135deg,#4ECDC4,#7EDDD6);color:white;border:none;border-radius:15px;padding:15px;cursor:pointer;box-shadow:0 5px 15px rgba(78,205,196,0.3);">
+                        <div style="font-size:30px;">🎾</div>
+                        <div style="font-size:12px;margin-top:5px;">玩耍</div>
+                    </button>
+                    <button onclick="app.showTreasureBox()" style="background:linear-gradient(135deg,#FFD93D,#FFE66D);color:#333;border:none;border-radius:15px;padding:15px;cursor:pointer;box-shadow:0 5px 15px rgba(255,217,61,0.3);">
+                        <div style="font-size:30px;">🎁</div>
+                        <div style="font-size:12px;margin-top:5px;">开宝箱</div>
+                    </button>
+                </div>
+
+                <!-- 装饰商店入口 -->
+                <button onclick="app.showDecorationShop()" style="width:100%;background:white;border:2px dashed #FF6B9D;border-radius:15px;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
+                    <span style="font-size:24px;">🛋️</span>
+                    <span style="font-weight:bold;color:#FF6B9D;">装饰小屋</span>
+                    <span style="font-size:20px;">➡️</span>
+                </button>
+            </div>
+
+            <style>
+                @keyframes petBounce {
+                    0%, 100% { transform: translateY(0) scale(1); }
+                    50% { transform: translateY(-10px) scale(1.05); }
+                }
+            </style>
+        `;
+
+        document.getElementById('learn-title').textContent = '🏠 宠物小屋';
+    },
+
+    // 获取心情表情
+    getMoodEmoji() {
+        if (this.pet.mood >= 80) return '😄';
+        if (this.pet.mood >= 60) return '😊';
+        if (this.pet.mood >= 40) return '😐';
+        if (this.pet.mood >= 20) return '😢';
+        return '😭';
+    },
+
+    // 获取进化阶段名称
+    getEvolutionName() {
+        const names = ['幼年期', '成长期', '成熟期'];
+        return names[this.pet.evolution - 1] || '幼年期';
+    },
+
+    // 宠物互动
+    petInteraction() {
+        const reactions = ['喵喵~', '好开心！', '陪我玩嘛', '我饿了~', '最喜欢你了！'];
+        const reaction = reactions[Math.floor(Math.random() * reactions.length)];
+        this.showToast(reaction);
+        this.pet.mood = Math.min(100, this.pet.mood + 5);
+        this.savePet();
+        this.showPetHouse();
+    },
+
+    // 喂食宠物
+    feedPet() {
+        if (this.coins < 10) {
+            this.showToast('❌ 金币不足！');
+            return;
+        }
+        if (this.pet.hunger >= 100) {
+            this.showToast('🍖 已经吃饱啦！');
+            return;
+        }
+
+        this.coins -= 10;
+        this.pet.hunger = Math.min(100, this.pet.hunger + 30);
+        this.pet.exp += 10;
+        this.checkLevelUp();
+        this.savePet();
+        this.saveCoins();
+
+        this.showToast('🍖 喂食成功！+10经验');
+        this.showPetHouse();
+    },
+
+    // 和宠物玩耍
+    playWithPet() {
+        if (this.pet.hunger < 20) {
+            this.showToast('😿 太饿了，先喂食吧！');
+            return;
+        }
+
+        this.pet.mood = Math.min(100, this.pet.mood + 15);
+        this.pet.hunger = Math.max(0, this.pet.hunger - 10);
+        this.pet.exp += 5;
+        this.checkLevelUp();
+        this.savePet();
+
+        this.showToast('🎾 玩得好开心！+5经验');
+        this.showPetHouse();
+    },
+
+    // 检查升级
+    checkLevelUp() {
+        if (this.pet.exp >= this.pet.maxExp) {
+            this.pet.level++;
+            this.pet.exp = 0;
+            this.pet.maxExp = Math.floor(this.pet.maxExp * 1.2);
+
+            // 检查进化
+            if (this.pet.level >= 10 && this.pet.evolution === 1) {
+                this.pet.evolution = 2;
+                this.showToast('🎉 宠物进化了！');
+            } else if (this.pet.level >= 25 && this.pet.evolution === 2) {
+                this.pet.evolution = 3;
+                this.showToast('🎉 宠物最终进化！');
+            } else {
+                this.showToast(`🎉 宠物升到 ${this.pet.level} 级！`);
+            }
+        }
+    },
+
+    // ==================== 宝箱抽奖系统 ====================
+    treasureKeys: 0,
+
+    // 加载钥匙数量
+    loadKeys() {
+        this.treasureKeys = parseInt(localStorage.getItem('pinyinKeys') || '0');
+    },
+
+    // 保存钥匙
+    saveKeys() {
+        localStorage.setItem('pinyinKeys', this.treasureKeys);
+    },
+
+    // 显示宝箱界面
+    showTreasureBox() {
+        this.loadKeys();
+        const container = document.getElementById('learn-content');
+
+        container.innerHTML = `
+            <div style="padding:20px;text-align:center;max-width:400px;margin:0 auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;">
+                    <button class="btn-back" onclick="app.showPetHouse()">⬅️</button>
+                    <h2>🎁 神秘宝箱</h2>
+                    <span>🔑 ${this.treasureKeys}</span>
+                </div>
+
+                <!-- 宝箱展示 -->
+                <div style="background:linear-gradient(180deg,#FFF9E5 0%,#FFF0F5 100%);border-radius:25px;padding:40px 20px;margin-bottom:30px;position:relative;">
+                    <div style="font-size:120px;cursor:pointer;transition:transform 0.3s;" id="treasure-box"
+                         onclick="app.openTreasure()" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        ${this.treasureKeys > 0 ? '🎁' : '🔒'}
+                    </div>
+                    <div style="margin-top:20px;font-size:18px;color:#666;">
+                        ${this.treasureKeys > 0 ? '点击开启宝箱！' : '完成关卡获得钥匙'}
+                    </div>
+                </div>
+
+                <!-- 奖励预览 -->
+                <div style="background:white;border-radius:15px;padding:20px;text-align:left;">
+                    <h3 style="margin-bottom:15px;text-align:center;">🎊 可能获得</h3>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;text-align:center;">
+                        <div>
+                            <div style="font-size:30px;">🪙</div>
+                            <div style="font-size:12px;color:#666;">10-50金币</div>
+                        </div>
+                        <div>
+                            <div style="font-size:30px;">🍖</div>
+                            <div style="font-size:12px;color:#666;">宠物食物</div>
+                        </div>
+                        <div>
+                            <div style="font-size:30px;">✨</div>
+                            <div style="font-size:12px;color:#666;">经验加成</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 获取钥匙方式 -->
+                <div style="margin-top:20px;padding:15px;background:#f9f9f9;border-radius:10px;font-size:13px;color:#666;">
+                    💡 每完成一关获得1把钥匙
+                </div>
+            </div>
+        `;
+
+        document.getElementById('learn-title').textContent = '🎁 神秘宝箱';
+    },
+
+    // 开启宝箱
+    openTreasure() {
+        if (this.treasureKeys <= 0) {
+            this.showToast('❌ 没有钥匙了！');
+            return;
+        }
+
+        this.treasureKeys--;
+        this.saveKeys();
+
+        // 随机奖励
+        const rewards = [
+            { type: 'coins', value: 20, emoji: '🪙', name: '20金币' },
+            { type: 'coins', value: 50, emoji: '🪙', name: '50金币' },
+            { type: 'food', value: 1, emoji: '🍖', name: '宠物食物' },
+            { type: 'exp', value: 30, emoji: '⭐', name: '30经验' },
+            { type: 'coins', value: 10, emoji: '🪙', name: '10金币' }
+        ];
+
+        const reward = rewards[Math.floor(Math.random() * rewards.length)];
+
+        // 发放奖励
+        if (reward.type === 'coins') {
+            this.coins += reward.value;
+            this.saveCoins();
+        } else if (reward.type === 'exp') {
+            this.pet.exp += reward.value;
+            this.checkLevelUp();
+            this.savePet();
+        } else if (reward.type === 'food') {
+            this.pet.hunger = Math.min(100, this.pet.hunger + 50);
+            this.savePet();
+        }
+
+        // 显示奖励动画
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div style="padding:40px;text-align:center;">
+                <div style="font-size:100px;margin-bottom:20px;animation:rewardPop 0.5s ease;">🎉</div>
+                <h2 style="margin-bottom:20px;">恭喜获得！</h2>
+                <div style="background:linear-gradient(135deg,#FFD93D,#FFE66D);border-radius:20px;padding:30px;margin:20px 0;">
+                    <div style="font-size:80px;margin-bottom:10px;">${reward.emoji}</div>
+                    <div style="font-size:24px;font-weight:bold;">${reward.name}</div>
+                </div>
+                <button onclick="app.showTreasureBox()" style="padding:15px 40px;background:linear-gradient(135deg,#FF6B9D,#FFB8D0);color:white;border:none;border-radius:25px;font-size:18px;cursor:pointer;margin-top:20px;">
+                    继续开箱
+                </button>
+            </div>
+            <style>
+                @keyframes rewardPop {
+                    0% { transform: scale(0); }
+                    50% { transform: scale(1.3); }
+                    100% { transform: scale(1); }
+                }
+            </style>
+        `;
+    },
+
+    // ==================== 装饰商店 ====================
+    decorations: [
+        { id: 'bed', name: '小床', emoji: '🛏️', price: 50, owned: false },
+        { id: 'sofa', name: '沙发', emoji: '🛋️', price: 80, owned: false },
+        { id: 'plant', name: '盆栽', emoji: '🪴', price: 30, owned: false },
+        { id: 'lamp', name: '台灯', emoji: '🛋️', price: 40, owned: false },
+        { id: 'carpet', name: '地毯', emoji: '🧶', price: 60, owned: false },
+        { id: 'painting', name: '挂画', emoji: '🖼️', price: 100, owned: false }
+    ],
+
+    // 加载装饰
+    loadDecorations() {
+        const saved = localStorage.getItem('pinyinDecorations');
+        if (saved) {
+            const ownedIds = JSON.parse(saved);
+            this.decorations.forEach(d => {
+                d.owned = ownedIds.includes(d.id);
+            });
+        }
+    },
+
+    // 保存装饰
+    saveDecorations() {
+        const ownedIds = this.decorations.filter(d => d.owned).map(d => d.id);
+        localStorage.setItem('pinyinDecorations', JSON.stringify(ownedIds));
+    },
+
+    // 显示装饰商店
+    showDecorationShop() {
+        this.loadDecorations();
+        const container = document.getElementById('learn-content');
+
+        let html = `
+            <div style="padding:15px;max-width:500px;margin:0 auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <button class="btn-back" onclick="app.showPetHouse()">⬅️</button>
+                    <h2>🛋️ 装饰商店</h2>
+                    <span>🪙 ${this.coins}</span>
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;">
+        `;
+
+        this.decorations.forEach(item => {
+            html += `
+                <div style="background:${item.owned ? '#E8F5E9' : 'white'};border-radius:15px;padding:20px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,0.08);opacity:${item.owned ? 0.7 : 1};">
+                    <div style="font-size:50px;margin-bottom:10px;">${item.emoji}</div>
+                    <div style="font-weight:bold;margin-bottom:5px;">${item.name}</div>
+                    <div style="color:#FF6B9D;font-weight:bold;margin-bottom:10px;">🪙 ${item.price}</div>
+                    ${item.owned ?
+                        '<span style="color:#4CAF50;font-size:14px;">✅ 已拥有</span>' :
+                        `<button onclick="app.buyDecoration('${item.id}')" style="padding:8px 20px;background:linear-gradient(135deg,#FF6B9D,#FFB8D0);color:white;border:none;border-radius:15px;cursor:pointer;font-size:14px;">购买</button>`
+                    }
+                </div>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        document.getElementById('learn-title').textContent = '🛋️ 装饰商店';
+    },
+
+    // 购买装饰
+    buyDecoration(id) {
+        const item = this.decorations.find(d => d.id === id);
+        if (!item || item.owned) return;
+
+        if (this.coins < item.price) {
+            this.showToast('❌ 金币不足！');
+            return;
+        }
+
+        this.coins -= item.price;
+        item.owned = true;
+        this.saveCoins();
+        this.saveDecorations();
+
+        this.showToast(`🎉 购买成功！${item.name}`);
+        this.showDecorationShop();
+    },
+
+    // 保存金币
+    saveCoins() {
+        localStorage.setItem('pinyinCoins', this.coins);
+    },
+
     // 模态框
     showModal(type, content) {
         const modal = document.getElementById('modal-overlay');
@@ -729,11 +1177,11 @@ const app = {
         body.innerHTML = content;
         modal.classList.add('active');
     },
-    
+
     hideModal() {
         document.getElementById('modal-overlay').classList.remove('active');
     },
-    
+
     // 学习模式切换
     switchLearnMode(mode) {
         // 已整合到游戏化界面
