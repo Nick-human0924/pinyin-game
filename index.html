@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>拼音大冒险 - 快乐学拼音</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 启动画面 -->
+    <div id="splash-screen" class="screen active">
+        <div class="splash-content">
+            <div class="logo">
+                <span class="logo-icon">🐱</span>
+                <h1>拼音大冒险</h1>
+                <span class="logo-icon">🐭</span>
+            </div>
+            <p class="subtitle">和喵喵、小鼠一起学拼音</p>
+            <button class="btn btn-primary" onclick="app.start()">开始冒险</button>
+            <button class="btn btn-secondary" onclick="app.showParentLogin()">家长入口</button>
+        </div>
+    </div>
+
+    <!-- 主菜单 -->
+    <div id="main-menu" class="screen">
+        <div class="menu-header">
+            <div class="character character-cat">🐱</div>
+            <h2>选择你的冒险</h2>
+            <div class="character character-mouse">🐭</div>
+        </div>
+        <div class="menu-grid">
+            <button class="menu-card" onclick="app.showLevelSelect()">
+                <span class="card-icon">🎮</span>
+                <span class="card-title">闯关模式</span>
+            </button>
+            <button class="menu-card" onclick="app.showFreeMode()">
+                <span class="card-icon">📚</span>
+                <span class="card-title">自由学习</span>
+            </button>
+            <button class="menu-card" onclick="app.showProgress()">
+                <span class="card-icon">🏆</span>
+                <span class="card-title">我的成就</span>
+            </button>
+            <button class="menu-card" onclick="app.showSettings()">
+                <span class="card-icon">⚙️</span>
+                <span class="card-title">设置</span>
+            </button>
+        </div>
+        <button class="btn btn-back" onclick="app.backToSplash()">返回</button>
+    </div>
+
+    <!-- 版本选择 -->
+    <div id="version-select" class="screen">
+        <h2>选择教材版本</h2>
+        <div class="version-cards">
+            <button class="version-card" onclick="app.selectVersion('shanghai')">
+                <span class="version-icon">🏫</span>
+                <span class="version-title">上海版</span>
+                <span class="version-desc">上海市语文课程标准</span>
+            </button>
+            <button class="version-card" onclick="app.selectVersion('renjiao')">
+                <span class="version-icon">📖</span>
+                <span class="version-title">人教版</span>
+                <span class="version-desc">部编版全国统一教材</span>
+            </button>
+        </div>
+        <button class="btn btn-back" onclick="app.backToMenu()">返回</button>
+    </div>
+
+    <!-- 关卡选择 -->
+    <div id="level-select" class="screen">
+        <div class="level-header">
+            <h2>选择关卡</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="overall-progress"></div>
+            </div>
+            <p class="progress-text" id="progress-text">已完成 0/6 关</p>
+        </div>
+        <div class="level-map" id="level-map">
+            <!-- 动态生成关卡节点 -->
+        </div>
+        <button class="btn btn-back" onclick="app.backToMenu()">返回</button>
+    </div>
+
+    <!-- 游戏界面 -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <button class="btn-icon" onclick="app.pauseGame()">⏸️</button>
+            <div class="level-info">
+                <span id="current-level">第1关</span>
+                <div class="stars" id="level-stars">⭐⭐⭐</div>
+            </div>
+            <button class="btn-icon" onclick="app.toggleSound()">🔊</button>
+        </div>
+        
+        <div class="game-content" id="game-content">
+            <!-- 动态游戏内容 -->
+        </div>
+
+        <div class="game-controls">
+            <button class="btn btn-hint" onclick="game.showHint()">💡 提示</button>
+            <button class="btn btn-speak" onclick="game.speakCurrent()">🔊 再听一遍</button>
+        </div>
+    </div>
+
+    <!-- 学习界面 -->
+    <div id="learn-screen" class="screen">
+        <div class="learn-header">
+            <button class="btn-icon" onclick="app.backToMenu()">⬅️</button>
+            <h2 id="learn-title">拼音学习</h2>
+        </div>
+        <div class="learn-content" id="learn-content">
+            <!-- 动态学习内容 -->
+        </div>
+    </div>
+
+    <!-- 家长后台 -->
+    <div id="parent-screen" class="screen">
+        <div class="parent-header">
+            <h2>👨‍👩‍👧 家长管理中心</h2>
+            <button class="btn btn-small" onclick="app.logoutParent()">退出</button>
+        </div>
+        <div class="parent-tabs">
+            <button class="tab-btn active" onclick="app.switchTab('progress')">学习进度</button>
+            <button class="tab-btn" onclick="app.switchTab('stats')">统计数据</button>
+            <button class="tab-btn" onclick="app.switchTab('settings')">学习设置</button>
+        </div>
+        <div class="parent-content" id="parent-content">
+            <!-- 动态内容 -->
+        </div>
+        <button class="btn btn-back" onclick="app.backToSplash()">返回首页</button>
+    </div>
+
+    <!-- 设置界面 -->
+    <div id="settings-screen" class="screen">
+        <h2>设置</h2>
+        <div class="settings-list">
+            <div class="setting-item">
+                <span>音效</span>
+                <label class="switch">
+                    <input type="checkbox" id="sound-setting" checked onchange="app.saveSetting('sound', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <span>语音速度</span>
+                <input type="range" id="speed-setting" min="0.5" max="1.5" step="0.1" value="1" onchange="app.saveSetting('speed', this.value)">
+            </div>
+            <div class="setting-item">
+                <span>清除进度</span>
+                <button class="btn btn-danger" onclick="app.clearProgress()">清除</button>
+            </div>
+        </div>
+        <button class="btn btn-back" onclick="app.backToMenu()">返回</button>
+    </div>
+
+    <!-- 弹窗遮罩 -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal" id="modal-content">
+            <!-- 动态弹窗内容 -->
+        </div>
+    </div>
+
+    <script src="js/pinyin-data.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
