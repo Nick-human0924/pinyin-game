@@ -853,10 +853,24 @@ const app = {
                     </button>
                 </div>
 
+                <!-- 新功能入口 -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+                    <button onclick="app.showVisualHouse()" style="background:linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);color:#333;border:none;border-radius:15px;padding:20px;cursor:pointer;box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+                        <div style="font-size:35px;margin-bottom:5px;">🏠</div>
+                        <div style="font-weight:bold;">我的房间</div>
+                        <div style="font-size:11px;opacity:0.7;">查看装饰效果</div>
+                    </button>
+                    <button onclick="app.showBattleMenu()" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:15px;padding:20px;cursor:pointer;box-shadow:0 5px 15px rgba(102,126,234,0.3);">
+                        <div style="font-size:35px;margin-bottom:5px;">⚔️</div>
+                        <div style="font-weight:bold;">宠物对战</div>
+                        <div style="font-size:11px;opacity:0.8;">挑战野生怪物</div>
+                    </button>
+                </div>
+
                 <!-- 装饰商店入口 -->
                 <button onclick="app.showDecorationShop()" style="width:100%;background:white;border:2px dashed #FF6B9D;border-radius:15px;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
                     <span style="font-size:24px;">🛋️</span>
-                    <span style="font-weight:bold;color:#FF6B9D;">装饰小屋</span>
+                    <span style="font-weight:bold;color:#FF6B9D;">装饰商店</span>
                     <span style="font-size:20px;">➡️</span>
                 </button>
             </div>
@@ -1168,6 +1182,534 @@ const app = {
     // 保存金币
     saveCoins() {
         localStorage.setItem('pinyinCoins', this.coins);
+    },
+
+    // ==================== 可视化小屋 ====================
+    showVisualHouse() {
+        this.loadDecorations();
+        const container = document.getElementById('learn-content');
+
+        // 获取已购买的装饰
+        const ownedDecorations = this.decorations.filter(d => d.owned);
+
+        let html = `
+            <div style="padding:15px;max-width:500px;margin:0 auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <button class="btn-back" onclick="app.showPetHouse()">⬅️ 返回</button>
+                    <h2>🏠 我的小屋</h2>
+                    <span></span>
+                </div>
+
+                <!-- 房间场景 -->
+                <div style="background:linear-gradient(180deg,#E8F4F8 0%,#FFF5F5 50%,#F5F0E8 100%);border-radius:25px;padding:20px;min-height:400px;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+                    
+                    <!-- 墙壁装饰 -->
+                    <div style="position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:40px;">🪟</div>
+                    
+                    <!-- 地板 -->
+                    <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(180deg,#D4A574 0%,#C49464 100%);border-radius:0 0 25px 25px;"></div>
+                    
+                    <!-- 地毯（如果购买） -->
+                    ${ownedDecorations.find(d => d.id === 'carpet') ? `
+                        <div style="position:absolute;bottom:15%;left:50%;transform:translateX(-50%);font-size:80px;z-index:1;">🧶</div>
+                    ` : ''}
+                    
+                    <!-- 宠物 -->
+                    <div style="position:absolute;bottom:25%;left:50%;transform:translateX(-50%);font-size:100px;z-index:2;animation:housePetBounce 3s infinite;filter:drop-shadow(0 5px 10px rgba(0,0,0,0.2));">
+                        ${['🐱','🐯','🦁'][this.pet.evolution - 1] || '🐱'}
+                    </div>
+                    
+                    <!-- 家具摆放 -->
+                    ${ownedDecorations.find(d => d.id === 'bed') ? `
+                        <div style="position:absolute;bottom:30%;left:10%;font-size:70px;z-index:1;">🛏️</div>
+                    ` : ''}
+                    
+                    ${ownedDecorations.find(d => d.id === 'sofa') ? `
+                        <div style="position:absolute;bottom:30%;right:10%;font-size:70px;z-index:1;">🛋️</div>
+                    ` : ''}
+                    
+                    ${ownedDecorations.find(d => d.id === 'plant') ? `
+                        <div style="position:absolute;bottom:35%;left:5%;font-size:50px;z-index:1;">🪴</div>
+                    ` : ''}
+                    
+                    ${ownedDecorations.find(d => d.id === 'lamp') ? `
+                        <div style="position:absolute;bottom:35%;right:5%;font-size:50px;z-index:1;">🛋️</div>
+                    ` : ''}
+                    
+                    ${ownedDecorations.find(d => d.id === 'painting') ? `
+                        <div style="position:absolute;top:80px;left:20%;font-size:40px;">🖼️</div>
+                    ` : ''}
+                    
+                    <!-- 空房间提示 -->
+                    ${ownedDecorations.length === 0 ? `
+                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#999;">
+                            <div style="font-size:60px;margin-bottom:10px;">🏠</div>
+                            <div>房间空空如也</div>
+                            <div style="font-size:14px;">去装饰商店买点家具吧！</div>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <!-- 已拥有家具列表 -->
+                <div style="margin-top:20px;background:white;border-radius:15px;padding:15px;">
+                    <h3 style="margin-bottom:15px;">🛋️ 已拥有的家具 (${ownedDecorations.length}/${this.decorations.length})</h3>
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                        ${ownedDecorations.length > 0 ? ownedDecorations.map(d => `
+                            <div style="background:#E8F5E9;border-radius:10px;padding:10px 15px;display:flex;align-items:center;gap:8px;">
+                                <span>${d.emoji}</span>
+                                <span style="font-size:14px;">${d.name}</span>
+                            </div>
+                        `).join('') : '<span style="color:#999;">还没有家具，快去购买吧！</span>'}
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                @keyframes housePetBounce {
+                    0%, 100% { transform: translateX(-50%) translateY(0); }
+                    50% { transform: translateX(-50%) translateY(-10px); }
+                }
+            </style>
+        `;
+
+        container.innerHTML = html;
+        document.getElementById('learn-title').textContent = '🏠 我的小屋';
+    },
+
+    // ==================== 宠物对战系统 ====================
+    // 技能数据
+    petSkills: [
+        { id: 'scratch', name: '利爪攻击', emoji: '🐾', damage: 15, price: 50, owned: false },
+        { id: 'bite', name: '撕咬', emoji: '😺', damage: 25, price: 100, owned: false },
+        { id: 'roar', name: '咆哮', emoji: '🦁', damage: 40, price: 200, owned: false },
+        { id: 'fire', name: '火焰喷射', emoji: '🔥', damage: 60, price: 500, owned: false },
+        { id: 'ice', name: '冰冻术', emoji: '❄️', damage: 55, price: 450, owned: false },
+        { id: 'thunder', name: '雷电击', emoji: '⚡', damage: 70, price: 600, owned: false }
+    ],
+
+    // 武器数据
+    petWeapons: [
+        { id: 'claw', name: '钢爪', emoji: '🥊', bonus: 5, price: 80, owned: false },
+        { id: 'collar', name: '力量项圈', emoji: '📿', bonus: 10, price: 150, owned: false },
+        { id: 'armor', name: '宠物铠甲', emoji: '🛡️', bonus: 15, price: 300, owned: false },
+        { id: 'crown', name: '王者之冠', emoji: '👑', bonus: 25, price: 600, owned: false }
+    ],
+
+    // 敌人数据
+    enemies: [
+        { id: 1, name: '小老鼠', emoji: '🐭', hp: 30, damage: 5, reward: 20, exp: 10 },
+        { id: 2, name: '小野狗', emoji: '🐕', hp: 50, damage: 8, reward: 35, exp: 15 },
+        { id: 3, name: '小蛇', emoji: '🐍', hp: 40, damage: 12, reward: 40, exp: 20 },
+        { id: 4, name: '大灰狼', emoji: '🐺', hp: 80, damage: 15, reward: 60, exp: 30 },
+        { id: 5, name: '棕熊', emoji: '🐻', hp: 100, damage: 18, reward: 80, exp: 40 },
+        { id: 6, name: '老虎', emoji: '🐅', hp: 120, damage: 22, reward: 100, exp: 50 },
+        { id: 7, name: '大象', emoji: '🐘', hp: 150, damage: 20, reward: 120, exp: 60 },
+        { id: 8, name: '巨龙', emoji: '🐲', hp: 200, damage: 30, reward: 200, exp: 100 }
+    ],
+
+    // 加载技能
+    loadSkills() {
+        const saved = localStorage.getItem('pinyinSkills');
+        if (saved) {
+            const ownedIds = JSON.parse(saved);
+            this.petSkills.forEach(s => s.owned = ownedIds.includes(s.id));
+        }
+        const savedWeapons = localStorage.getItem('pinyinWeapons');
+        if (savedWeapons) {
+            const ownedWeaponIds = JSON.parse(savedWeapons);
+            this.petWeapons.forEach(w => w.owned = ownedWeaponIds.includes(w.id));
+        }
+    },
+
+    // 保存技能
+    saveSkills() {
+        const ownedIds = this.petSkills.filter(s => s.owned).map(s => s.id);
+        localStorage.setItem('pinyinSkills', JSON.stringify(ownedIds));
+        const ownedWeaponIds = this.petWeapons.filter(w => w.owned).map(w => w.id);
+        localStorage.setItem('pinyinWeapons', JSON.stringify(ownedWeaponIds));
+    },
+
+    // 显示对战主界面
+    showBattleMenu() {
+        this.loadSkills();
+        const container = document.getElementById('learn-content');
+
+        container.innerHTML = `
+            <div style="padding:15px;max-width:500px;margin:0 auto;">
+                <div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:20px;padding:20px;margin-bottom:20px;color:white;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                        <button class="btn-back" onclick="app.showPetHouse()" style="background:rgba(255,255,255,0.2);color:white;">⬅️</button>
+                        <h2 style="margin:0;">⚔️ 宠物对战</h2>
+                        <span>🪙 ${this.coins}</span>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-size:80px;margin:10px 0;">⚔️</div>
+                        <p>训练你的宠物，挑战强大的敌人！</p>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+                    <button onclick="app.showSkillShop()" style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white;border:none;border-radius:15px;padding:25px;cursor:pointer;box-shadow:0 5px 15px rgba(240,147,251,0.3);">
+                        <div style="font-size:40px;margin-bottom:10px;">📚</div>
+                        <div style="font-weight:bold;">技能商店</div>
+                        <div style="font-size:12px;opacity:0.9;">学习新技能</div>
+                    </button>
+                    
+                    <button onclick="app.showWeaponShop()" style="background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:white;border:none;border-radius:15px;padding:25px;cursor:pointer;box-shadow:0 5px 15px rgba(79,172,254,0.3);">
+                        <div style="font-size:40px;margin-bottom:10px;">⚔️</div>
+                        <div style="font-weight:bold;">武器商店</div>
+                        <div style="font-size:12px;opacity:0.9;">购买装备</div>
+                    </button>
+                </div>
+
+                <button onclick="app.showBattleMap()" style="width:100%;background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:white;border:none;border-radius:15px;padding:25px;cursor:pointer;box-shadow:0 5px 15px rgba(250,112,154,0.3);">
+                    <div style="font-size:50px;margin-bottom:10px;">🗺️</div>
+                    <div style="font-weight:bold;font-size:18px;">进入对战地图</div>
+                    <div style="font-size:14px;opacity:0.9;">挑战野生怪物</div>
+                </button>
+            </div>
+        `;
+
+        document.getElementById('learn-title').textContent = '⚔️ 宠物对战';
+    },
+
+    // 技能商店
+    showSkillShop() {
+        const container = document.getElementById('learn-content');
+
+        let html = `
+            <div style="padding:15px;max-width:500px;margin:0 auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <button class="btn-back" onclick="app.showBattleMenu()">⬅️</button>
+                    <h2>📚 技能商店</h2>
+                    <span>🪙 ${this.coins}</span>
+                </div>
+                <div style="display:grid;gap:15px;">
+        `;
+
+        this.petSkills.forEach(skill => {
+            html += `
+                <div style="background:${skill.owned ? '#E8F5E9' : 'white'};border-radius:15px;padding:20px;display:flex;align-items:center;gap:15px;box-shadow:0 3px 10px rgba(0,0,0,0.08);">
+                    <div style="font-size:50px;">${skill.emoji}</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:bold;font-size:16px;">${skill.name}</div>
+                        <div style="font-size:13px;color:#666;">攻击力: ${skill.damage}</div>
+                        <div style="color:#FF6B9D;font-weight:bold;">🪙 ${skill.price}</div>
+                    </div>
+                    ${skill.owned ? 
+                        '<span style="color:#4CAF50;">✅ 已学习</span>' :
+                        `<button onclick="app.buySkill('${skill.id}')" style="padding:8px 20px;background:linear-gradient(135deg,#FF6B9D,#FFB8D0);color:white;border:none;border-radius:15px;cursor:pointer;">学习</button>`
+                    }
+                </div>
+            `;
+        });
+
+        html += '</div></div>';
+        container.innerHTML = html;
+        document.getElementById('learn-title').textContent = '📚 技能商店';
+    },
+
+    // 购买技能
+    buySkill(id) {
+        const skill = this.petSkills.find(s => s.id === id);
+        if (!skill || skill.owned) return;
+
+        if (this.coins < skill.price) {
+            this.showToast('❌ 金币不足！');
+            return;
+        }
+
+        this.coins -= skill.price;
+        skill.owned = true;
+        this.saveCoins();
+        this.saveSkills();
+
+        this.showToast(`🎉 学会技能：${skill.name}！`);
+        this.showSkillShop();
+    },
+
+    // 武器商店
+    showWeaponShop() {
+        const container = document.getElementById('learn-content');
+
+        let html = `
+            <div style="padding:15px;max-width:500px;margin:0 auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <button class="btn-back" onclick="app.showBattleMenu()">⬅️</button>
+                    <h2>⚔️ 武器商店</h2>
+                    <span>🪙 ${this.coins}</span>
+                </div>
+                <div style="display:grid;gap:15px;">
+        `;
+
+        this.petWeapons.forEach(weapon => {
+            html += `
+                <div style="background:${weapon.owned ? '#E8F5E9' : 'white'};border-radius:15px;padding:20px;display:flex;align-items:center;gap:15px;box-shadow:0 3px 10px rgba(0,0,0,0.08);">
+                    <div style="font-size:50px;">${weapon.emoji}</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:bold;font-size:16px;">${weapon.name}</div>
+                        <div style="font-size:13px;color:#666;">攻击加成: +${weapon.bonus}</div>
+                        <div style="color:#FF6B9D;font-weight:bold;">🪙 ${weapon.price}</div>
+                    </div>
+                    ${weapon.owned ? 
+                        '<span style="color:#4CAF50;">✅ 已装备</span>' :
+                        `<button onclick="app.buyWeapon('${weapon.id}')" style="padding:8px 20px;background:linear-gradient(135deg,#4ECDC4,#7EDDD6);color:white;border:none;border-radius:15px;cursor:pointer;">购买</button>`
+                    }
+                </div>
+            `;
+        });
+
+        html += '</div></div>';
+        container.innerHTML = html;
+        document.getElementById('learn-title').textContent = '⚔️ 武器商店';
+    },
+
+    // 购买武器
+    buyWeapon(id) {
+        const weapon = this.petWeapons.find(w => w.id === id);
+        if (!weapon || weapon.owned) return;
+
+        if (this.coins < weapon.price) {
+            this.showToast('❌ 金币不足！');
+            return;
+        }
+
+        this.coins -= weapon.price;
+        weapon.owned = true;
+        this.saveCoins();
+        this.saveSkills();
+
+        this.showToast(`🎉 获得装备：${weapon.name}！`);
+        this.showWeaponShop();
+    },
+
+    // 对战地图
+    showBattleMap() {
+        const container = document.getElementById('learn-content');
+
+        let html = `
+            <div style="padding:15px;max-width:500px;margin:0 auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <button class="btn-back" onclick="app.showBattleMenu()">⬅️</button>
+                    <h2>🗺️ 对战地图</h2>
+                    <span></span>
+                </div>
+                <div style="display:grid;gap:12px;">
+        `;
+
+        this.enemies.forEach((enemy, index) => {
+            const unlocked = index === 0 || this.pet.level >= index * 3;
+            html += `
+                <div style="background:${unlocked ? 'white' : '#f5f5f5'};border-radius:15px;padding:15px;display:flex;align-items:center;gap:15px;box-shadow:0 3px 10px rgba(0,0,0,0.08);opacity:${unlocked ? 1 : 0.6};">
+                    <div style="font-size:50px;">${enemy.emoji}</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:bold;font-size:16px;">${enemy.name}</div>
+                        <div style="font-size:13px;color:#666;">❤️ ${enemy.hp} | ⚔️ ${enemy.damage}</div>
+                        <div style="font-size:12px;color:#FF6B9D;">奖励: 🪙${enemy.reward} ⭐${enemy.exp}经验</div>
+                    </div>
+                    ${unlocked ? 
+                        `<button onclick="app.startBattle(${enemy.id})" style="padding:10px 25px;background:linear-gradient(135deg,#FF6B6B,#FF8E8E);color:white;border:none;border-radius:15px;cursor:pointer;font-weight:bold;">挑战</button>` :
+                        `<span style="color:#999;font-size:14px;">🔒 宠物Lv.${index * 3}解锁</span>`
+                    }
+                </div>
+            `;
+        });
+
+        html += '</div></div>';
+        container.innerHTML = html;
+        document.getElementById('learn-title').textContent = '🗺️ 对战地图';
+    },
+
+    // 当前战斗状态
+    battleState: null,
+
+    // 开始战斗
+    startBattle(enemyId) {
+        const enemy = this.enemies.find(e => e.id === enemyId);
+        if (!enemy) return;
+
+        // 获取已拥有的技能和武器
+        const ownedSkills = this.petSkills.filter(s => s.owned);
+        const ownedWeapons = this.petWeapons.filter(w => w.owned);
+
+        // 计算宠物属性
+        let petAttack = 10 + (this.pet.level * 2);
+        let petDefense = 5 + this.pet.level;
+
+        // 武器加成
+        ownedWeapons.forEach(w => {
+            petAttack += w.bonus;
+        });
+
+        this.battleState = {
+            enemy: { ...enemy, currentHp: enemy.hp },
+            pet: {
+                maxHp: 50 + (this.pet.level * 10),
+                currentHp: 50 + (this.pet.level * 10),
+                attack: petAttack,
+                defense: petDefense,
+                skills: ownedSkills.length > 0 ? ownedSkills : [{ name: '普通攻击', emoji: '👊', damage: petAttack }]
+            },
+            turn: 1
+        };
+
+        this.renderBattle();
+    },
+
+    // 渲染战斗界面
+    renderBattle() {
+        const container = document.getElementById('learn-content');
+        const state = this.battleState;
+
+        const petHpPercent = (state.pet.currentHp / state.pet.maxHp) * 100;
+        const enemyHpPercent = (state.enemy.currentHp / state.enemy.hp) * 100;
+
+        container.innerHTML = `
+            <div style="padding:15px;max-width:500px;margin:0 auto;">
+                <!-- 战斗场景 -->
+                <div style="background:linear-gradient(180deg,#667eea 0%,#764ba2 100%);border-radius:20px;padding:20px;margin-bottom:20px;color:white;position:relative;min-height:250px;">
+                    
+                    <!-- 敌人 -->
+                    <div style="position:absolute;top:20px;right:20px;text-align:center;">
+                        <div style="font-size:60px;filter:drop-shadow(0 5px 10px rgba(0,0,0,0.3));animation:enemyShake 2s infinite;">${state.enemy.emoji}</div>
+                        <div style="font-size:14px;margin-top:5px;">${state.enemy.name}</div>
+                        <div style="width:80px;height:8px;background:rgba(0,0,0,0.3);border-radius:4px;margin-top:5px;overflow:hidden;">
+                            <div style="width:${enemyHpPercent}%;height:100%;background:#FF6B6B;border-radius:4px;transition:width 0.3s;"></div>
+                        </div>
+                        <div style="font-size:12px;margin-top:2px;">${state.enemy.currentHp}/${state.enemy.hp}</div>
+                    </div>
+
+                    <!-- VS -->
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:40px;font-weight:bold;opacity:0.5;">VS</div>
+
+                    <!-- 宠物 -->
+                    <div style="position:absolute;bottom:20px;left:20px;text-align:center;">
+                        <div style="font-size:60px;filter:drop-shadow(0 5px 10px rgba(0,0,0,0.3));">${['🐱','🐯','🦁'][this.pet.evolution - 1]}</div>
+                        <div style="font-size:14px;margin-top:5px;">${this.pet.name}</div>
+                        <div style="width:80px;height:8px;background:rgba(0,0,0,0.3);border-radius:4px;margin-top:5px;overflow:hidden;">
+                            <div style="width:${petHpPercent}%;height:100%;background:#4ECDC4;border-radius:4px;transition:width 0.3s;"></div>
+                        </div>
+                        <div style="font-size:12px;margin-top:2px;">${state.pet.currentHp}/${state.pet.maxHp}</div>
+                    </div>
+                </div>
+
+                <!-- 回合信息 -->
+                <div style="text-align:center;margin-bottom:15px;color:#666;">
+                    第 ${state.turn} 回合
+                </div>
+
+                <!-- 技能按钮 -->
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+                    ${state.pet.skills.map(skill => `
+                        <button onclick="app.useSkill('${skill.id || 'normal'}')" style="background:linear-gradient(135deg,#FF6B9D,#FFB8D0);color:white;border:none;border-radius:12px;padding:15px;cursor:pointer;">
+                            <div style="font-size:30px;">${skill.emoji}</div>
+                            <div style="font-size:14px;font-weight:bold;">${skill.name}</div>
+                            <div style="font-size:12px;opacity:0.9;">⚔️ ${skill.damage || state.pet.attack}</div>
+                        </button>
+                    `).join('')}
+                </div>
+
+                <!-- 逃跑按钮 -->
+                <button onclick="app.fleeBattle()" style="width:100%;margin-top:15px;padding:12px;background:#ccc;color:#666;border:none;border-radius:12px;cursor:pointer;">
+                    🏃 逃跑
+                </button>
+            </div>
+
+            <style>
+                @keyframes enemyShake {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(-5px); }
+                    75% { transform: translateX(5px); }
+                }
+            </style>
+        `;
+
+        document.getElementById('learn-title').textContent = '⚔️ 战斗中';
+    },
+
+    // 使用技能
+    useSkill(skillId) {
+        const state = this.battleState;
+        const skill = state.pet.skills.find(s => (s.id || 'normal') === skillId) || state.pet.skills[0];
+
+        // 宠物攻击
+        const damage = skill.damage || state.pet.attack;
+        state.enemy.currentHp = Math.max(0, state.enemy.currentHp - damage);
+
+        this.showToast(`💥 造成 ${damage} 点伤害！`);
+
+        if (state.enemy.currentHp <= 0) {
+            this.winBattle();
+            return;
+        }
+
+        // 敌人反击
+        setTimeout(() => {
+            const enemyDamage = Math.max(1, state.enemy.damage - Math.floor(state.pet.defense / 5));
+            state.pet.currentHp = Math.max(0, state.pet.currentHp - enemyDamage);
+            this.showToast(`😿 受到 ${enemyDamage} 点伤害！`);
+
+            if (state.pet.currentHp <= 0) {
+                this.loseBattle();
+                return;
+            }
+
+            state.turn++;
+            this.renderBattle();
+        }, 1000);
+    },
+
+    // 逃跑
+    fleeBattle() {
+        this.showToast('🏃 逃跑了...');
+        setTimeout(() => this.showBattleMap(), 1000);
+    },
+
+    // 胜利
+    winBattle() {
+        const state = this.battleState;
+        this.coins += state.enemy.reward;
+        this.pet.exp += state.enemy.exp;
+        this.saveCoins();
+        this.checkLevelUp();
+        this.savePet();
+
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div style="padding:40px;text-align:center;">
+                <div style="font-size:100px;margin-bottom:20px;animation:victoryBounce 0.5s ease;">🏆</div>
+                <h2 style="color:#4CAF50;margin-bottom:20px;">战斗胜利！</h2>
+                <div style="background:linear-gradient(135deg,#FFD93D,#FFE66D);border-radius:20px;padding:30px;margin:20px 0;">
+                    <div style="font-size:24px;margin-bottom:10px;">🪙 +${state.enemy.reward}</div>
+                    <div style="font-size:24px;">⭐ +${state.enemy.exp} 经验</div>
+                </div>
+                <button onclick="app.showBattleMap()" style="padding:15px 40px;background:linear-gradient(135deg,#FF6B9D,#FFB8D0);color:white;border:none;border-radius:25px;font-size:18px;cursor:pointer;">
+                    继续挑战
+                </button>
+            </div>
+            <style>
+                @keyframes victoryBounce {
+                    0% { transform: scale(0); }
+                    50% { transform: scale(1.3); }
+                    100% { transform: scale(1); }
+                }
+            </style>
+        `;
+    },
+
+    // 失败
+    loseBattle() {
+        const container = document.getElementById('learn-content');
+        container.innerHTML = `
+            <div style="padding:40px;text-align:center;">
+                <div style="font-size:100px;margin-bottom:20px;">😿</div>
+                <h2 style="color:#999;margin-bottom:20px;">战斗失败...</h2>
+                <p style="color:#666;margin-bottom:20px;">别灰心，升级后再来挑战！</p>
+                <button onclick="app.showBattleMap()" style="padding:15px 40px;background:linear-gradient(135deg,#FF6B9D,#FFB8D0);color:white;border:none;border-radius:25px;font-size:18px;cursor:pointer;">
+                    返回地图
+                </button>
+            </div>
+        `;
     },
 
     // 模态框
