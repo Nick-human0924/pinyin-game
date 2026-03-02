@@ -260,18 +260,24 @@ const game = {
     showLevelComplete() {
         const accuracy = Math.round((this.score / this.shuffledItems.length) * 100);
         const stars = this.stars;
-        
+
         // 保存进度
         app.saveLevelProgress(this.currentLevel.id, stars);
-        
+
+        // 奖励钥匙
+        let keys = parseInt(localStorage.getItem('pinyinKeys') || '0');
+        keys += 1;
+        localStorage.setItem('pinyinKeys', keys);
+
         this.speak(`关卡完成！你获得了${stars}颗星！`);
-        
+
         app.showModal('complete', `
             <div class="modal-icon">🎉</div>
             <h3>关卡完成！</h3>
             <p>正确率：${accuracy}%</p>
             <p>获得星星：${'⭐'.repeat(stars)}</p>
             <p>奖励金币：${stars * 10} 🪙</p>
+            <p>获得钥匙：🔑 +1</p>
             <div class="complete-buttons">
                 <button class="btn btn-primary" onclick="app.showLevelSelect(); app.hideModal();">继续闯关</button>
                 <button class="btn btn-secondary" onclick="app.backToMenu(); app.hideModal();">返回主菜单</button>
