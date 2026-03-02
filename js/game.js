@@ -19,18 +19,28 @@ const game = {
         }
     },
     
-    // 播放拼音发音 - 修复上海版语音问题
+    // 播放拼音发音 - 修复：正确读拼音而非英文
     speak(text, rate = null) {
         if (!this.soundEnabled) return;
+        
+        // 将拼音转换为中文发音描述
+        const pinyinToChinese = this.getPinyinMapping();
+        let speakText = text;
+        
+        // 如果是单个拼音字符，转换为中文描述
+        if (pinyinToChinese[text]) {
+            speakText = pinyinToChinese[text];
+        }
         
         // 尝试使用Web Speech API
         if ('speechSynthesis' in window) {
             this.synth.cancel();
             
-            const utterance = new SpeechSynthesisUtterance(text);
+            const utterance = new SpeechSynthesisUtterance(speakText);
             utterance.lang = 'zh-CN';
-            utterance.rate = rate || this.speechRate;
-            utterance.pitch = 1.2;
+            // 降低语速，默认0.7倍速
+            utterance.rate = (rate || this.speechRate) * 0.7;
+            utterance.pitch = 1.0;
             
             // 尝试获取中文语音
             const voices = this.synth.getVoices();
@@ -41,9 +51,34 @@ const game = {
             
             this.synth.speak(utterance);
         }
-        
-        // 备用：使用音频文件（如果语音合成失败）
-        this.playAudioBackup(text);
+    },
+    
+    // 拼音到中文发音的映射
+    getPinyinMapping() {
+        return {
+            // 单韵母
+            'a': '啊', 'o': '哦', 'e': '鹅', 'i': '衣', 'u': '乌', 'ü': '迂',
+            // 声母
+            'b': '玻', 'p': '坡', 'm': '摸', 'f': '佛',
+            'd': '得', 't': '特', 'n': '讷', 'l': '勒',
+            'g': '哥', 'k': '科', 'h': '喝',
+            'j': '基', 'q': '欺', 'x': '希',
+            'z': '资', 'c': '雌', 's': '思',
+            'zh': '知', 'ch': '蚩', 'sh': '诗', 'r': '日',
+            'y': '医', 'w': '巫',
+            // 复韵母
+            'ai': '哀', 'ei': '诶', 'ui': '威', 'ao': '熬', 'ou': '欧', 'iu': '优',
+            'ie': '耶', 'üe': '约', 'er': '儿',
+            // 鼻韵母
+            'an': '安', 'en': '恩', 'in': '因', 'un': '温', 'ün': '晕',
+            'ang': '昂', 'eng': '亨', 'ing': '英', 'ong': '雍',
+            // 整体认读
+            'zhi': '知', 'chi': '蚩', 'shi': '诗', 'ri': '日',
+            'zi': '资', 'ci': '雌', 'si': '思',
+            'yi': '衣', 'wu': '乌', 'yu': '迂',
+            'ye': '耶', 'yue': '约', 'yuan': '冤',
+            'yin': '因', 'yun': '晕', 'ying': '英'
+        };
     },
     
     // 备用音频播放
