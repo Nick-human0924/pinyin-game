@@ -583,3 +583,125 @@ body::before {
     .menu-grid { max-width: 500px; }
     .pinyin-card { max-width: 420px; }
 }
+
+/* 游戏化学习样式 */
+.learn-arcade {
+    padding: 20px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.arcade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.player-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    font-size: 40px;
+}
+
+.level-badge {
+    background: linear-gradient(135deg, #FFD93D, #FFE66D);
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.stats-bar {
+    display: flex;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.game-modes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.mode-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.mode-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.mode-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.mode-card h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.mode-card p {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.mode-reward {
+    background: linear-gradient(135deg, #FFD93D, #FFE66D);
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.simple-explore {
+    padding: 20px;
+}
+
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.explore-item {
+    background: white;
+    border-radius: 15px;
+    padding: 20px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.explore-item:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #FFE5F1, #FFF0F5);
+}
