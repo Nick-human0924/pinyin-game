@@ -699,13 +699,16 @@ const app = {
             <div style="padding:20px;">
                 <h3>📊 学习统计</h3>
                 <div style="background:white;border-radius:15px;padding:20px;margin:15px 0;box-shadow:0 3px 10px rgba(0,0,0,0.1);">
-                    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;">
                         <span>总星星数</span>
                         <span style="font-weight:bold;color:#FFD93D;">⭐ ${this.getTotalStars()}</span>
                     </div>
-                    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;">
                         <span>金币总数</span>
-                        <span style="font-weight:bold;">🪙 ${this.coins}</span>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-weight:bold;">🪙 <span id="parent-coins-display">${this.coins}</span></span>
+                            <button onclick="app.showCoinEdit()" style="padding:5px 10px;background:#4ECDC4;color:white;border:none;border-radius:10px;font-size:12px;cursor:pointer;">修改</button>
+                        </div>
                     </div>
                     <div style="display:flex;justify-content:space-between;padding:10px 0;">
                         <span>已完成关卡</span>
@@ -728,6 +731,17 @@ const app = {
 
         html += '</div>';
         container.innerHTML = html;
+    },
+
+    // 显示金币修改界面
+    showCoinEdit() {
+        const newCoins = prompt('请输入新的金币数量（当前: ' + this.coins + '）:', this.coins);
+        if (newCoins !== null && !isNaN(newCoins) && newCoins >= 0) {
+            this.coins = parseInt(newCoins);
+            this.saveCoins();
+            this.showToast('✅ 金币已更新为: ' + this.coins);
+            this.renderParentProgress();
+        }
     },
 
     logoutParent() {
