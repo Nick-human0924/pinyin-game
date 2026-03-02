@@ -28,6 +28,12 @@ const app = {
     backToSplash() { this.showScreen('splash-screen'); },
     backToMenu() { this.showScreen('main-menu'); },
     
+    // 显示关卡选择（主菜单入口）
+    showLevelSelect() {
+        this.showScreen('level-select');
+        this.renderLevelMap();
+    },
+    
     // 版本选择
     showVersionSelect() { this.showScreen('version-select'); },
     selectVersion(version) {
