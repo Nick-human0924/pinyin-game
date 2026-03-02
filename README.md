@@ -109,4 +109,4 @@ if (password === '1234') {  // 修改这里的密码
 
 ---
 
-Made with ❤️ for 申慷尼的6岁小朋友
+Made with ❤️ for SKN的小朋友
