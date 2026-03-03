@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>拼音大冒险 - 快乐学拼音</title>
-    <link rel="stylesheet" href="css/final-style.css">
+    <link rel="stylesheet" href="css/style-cute.css">
+    <link rel="stylesheet" href="css/fun-learn.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- 启动画面 -->
     <div id="splash-screen" class="screen active">
-        <div class="hand-card hand-card-yellow">
-            <div class="float" style="font-size:60px;">🐱</div>
-            <h1 class="hand-title">拼音大冒险</h1>
-            <div class="float" style="font-size:60px;animation-delay:1s;">🐭</div>
-            <p style="font-size:18px;color:#5A6C7D;margin:20px 0;">和喵喵、小鼠一起学拼音</p>
-            <button class="hand-btn hand-btn-red" onclick="app.start()">🎮 开始冒险</button>
-            <br>
-            <button class="hand-btn hand-btn-blue" onclick="app.showParentLogin()">👨‍👩‍👧 家长入口</button>
+        <div class="splash-content">
+            <div class="logo">
+                <span class="logo-icon">🐱</span>
+                <h1>拼音大冒险</h1>
+                <span class="logo-icon">🐭</span>
+            </div>
+            <p class="subtitle">和喵喵、小鼠一起学拼音</p>
+            <button class="btn btn-primary" onclick="app.start()">开始冒险</button>
+            <button class="btn btn-secondary" onclick="app.showParentLogin()">家长入口</button>
         </div>
     </div>
 
