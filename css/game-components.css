@@ -1,0 +1,22 @@
+/* 游戏组件样式 */
+.speak-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ECDC4, #6EDDD6);
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.pinyin-card {
+  background: linear-gradient(135deg, #FFE66D, #FFF0A3);
+  padding: 40px;
+  border-radius: 30px;
+  text-align: center;
+}
+
+.pinyin-text {
+  font-size: 72px;
+  font-weight: bold;
+}

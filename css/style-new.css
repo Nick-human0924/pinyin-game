@@ -1,0 +1,43 @@
+/* 拼音大冒险 - 全新设计系统 */
+:root {
+  --primary: #FF6B6B;
+  --primary-light: #FF8E8E;
+  --secondary: #4ECDC4;
+  --accent: #FFE66D;
+  --bg-start: #FFF5F5;
+  --bg-end: #E8F8F5;
+  --text: #2D3436;
+  --success: #00B894;
+  --error: #FF7675;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+  min-height: 100vh;
+}
+
+.splash-content {
+  background: white;
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+h1 {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 36px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #E85555);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 25px;
+  font-size: 18px;
+  cursor: pointer;
+}
