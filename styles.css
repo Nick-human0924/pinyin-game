@@ -475,3 +475,83 @@ body {
         font-size: 32px;
     }
 }
+
+/* 关卡选择界面 */
+#level-select {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+}
+
+#level-select-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+#level-select-header h2 {
+    color: #5a67d8;
+    font-size: 28px;
+}
+
+#level-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.level-btn {
+    padding: 30px 20px;
+    border: 3px solid #e2e8f0;
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    position: relative;
+}
+
+.level-btn.unlocked {
+    border-color: #667eea;
+}
+
+.level-btn.unlocked:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+}
+
+.level-btn.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.level-num {
+    font-size: 36px;
+    font-weight: bold;
+    color: #5a67d8;
+    margin-bottom: 10px;
+}
+
+.level-name {
+    font-size: 16px;
+    color: #4a5568;
+}
+
+.level-lock {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+}
+
+/* 显示文字（拼读关卡用） */
+#display-text {
+    font-size: 48px;
+    color: #5a67d8;
+    margin: 20px 0;
+    padding: 20px;
+    background: #e0e7ff;
+    border-radius: 15px;
+}

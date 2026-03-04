@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>拼音探险岛 - 升级版</title>
+    <title>拼音探险岛 - 完整版</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -23,31 +23,33 @@
                 <button id="btn-achievements" class="btn-secondary">🏆 我的成就</button>
                 <button id="btn-parent" class="btn-secondary">👨‍👩‍👧 家长中心</button>
             </div>
-            <div class="version">版本 2.0 - 迭代开发中</div>
+            <div class="version">版本 2.1 - 5大关卡完整版</div>
+        </div>
+        
+        <!-- 关卡选择 -->
+        <div id="level-select" class="screen hidden">
+            <div id="level-select-header">
+                <button id="btn-back-menu" class="icon-btn">←</button>
+                <h2>选择关卡</h2>
+                <div style="width: 40px;"></div>
+            </div>
+            <div id="level-buttons"></div>
         </div>
         
         <!-- 游戏场景 -->
         <div id="game-scene" class="screen hidden">
-            <!-- 顶部工具栏 -->
             <div id="top-bar">
                 <button id="btn-exit" class="icon-btn" title="退出">❌</button>
-                <div id="level-info">
-                    <span id="current-level">第 1 关</span>
-                </div>
+                <div id="level-info">第 1 关</div>
                 <button id="btn-sound" class="icon-btn" title="音量">🔊</button>
             </div>
             
-            <!-- 进度条 -->
             <div id="progress-container">
-                <div id="progress-bar">
-                    <div id="progress-fill"></div>
-                </div>
+                <div id="progress-bar"><div id="progress-fill"></div></div>
                 <span id="progress-text">1/10</span>
             </div>
             
-            <!-- 游戏主区域 -->
             <div id="game-area">
-                <!-- 小书童 -->
                 <div id="character-box">
                     <img id="main-character" src="assets/character_main.png" alt="小书童">
                     <div id="character-bubble" class="hidden">
@@ -55,48 +57,39 @@
                     </div>
                 </div>
                 
-                <!-- 题目区域 -->
                 <div id="question-box">
                     <div id="instruction">点击播放，听一听是什么音？</div>
+                    <div id="display-text" class="hidden"></div>
                     
-                    <!-- 播放按钮 -->
                     <button id="btn-play-sound" class="play-btn">
                         <span class="play-icon">🔊</span>
                         <span class="play-text">播放发音</span>
                     </button>
                     
-                    <!-- 口型选项区域 -->
                     <div id="mouth-options" class="hidden">
-                        <div class="option-label">选择正确的口型：</div>
-                        <div id="options-container">
-                            <!-- 动态生成选项 -->
-                        </div>
+                        <div class="option-label">选择正确的答案：</div>
+                        <div id="options-container"></div>
                     </div>
                 </div>
             </div>
             
-            <!-- 底部工具栏 -->
             <div id="bottom-bar">
                 <button id="btn-hint" class="tool-btn">💡 提示</button>
                 <button id="btn-slow" class="tool-btn">🐢 慢放</button>
             </div>
             
-            <!-- 反馈弹窗 -->
             <div id="feedback-modal" class="modal hidden">
                 <div class="modal-content">
                     <div id="feedback-icon"></div>
                     <div id="feedback-title"></div>
                     <div id="feedback-message"></div>
-                    
-                    <div id="feedback-explanation" class="hidden">
+                    <div id="feedback-explanation">
                         <div class="explanation-title">发音小贴士：</div>
                         <div id="explanation-text"></div>
                     </div>
-                    
                     <div class="modal-buttons">
-                        <button id="btn-next-level" class="btn-primary hidden">下一关 →</button>
+                        <button id="btn-next-level" class="btn-primary hidden">下一题 →</button>
                         <button id="btn-retry" class="btn-secondary hidden">再试一次</button>
-                        <button id="btn-continue-game" class="btn-primary">继续</button>
                     </div>
                 </div>
             </div>
