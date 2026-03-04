@@ -1,40 +1,33 @@
 /**
- * 拼音探险岛 - 升级版
- * 基于认知科学的学习路径设计
+ * 拼音探险岛 2.0 - 迭代版
+ * Level 1: 听音辨形
  */
 
 class PinyinGame {
     constructor() {
         this.currentLevel = 1;
-        this.currentScene = 'main-menu';
-        this.playerProgress = {
-            mastered: [],
-            learning: [],
-            totalScore: 0,
-            currentLevel: 1
-        };
+        this.currentQuestion = 1;
+        this.totalQuestions = 10;
+        this.score = 0;
+        this.soundEnabled = true;
         
-        this.scenes = ['main-menu', 'game-scene'];
-        this.currentPinyin = '';
-        this.options = [];
+        // Level 1 数据：声母听音辨形
+        this.levelData = [
+            { sound: 'b', options: ['b', 'd', 'p'], correct: 0, hint: '双唇紧闭，突然放开，不送气' },
+            { sound: 'p', options: ['b', 'p', 'm'], correct: 1, hint: '双唇紧闭，突然放开，送气' },
+            { sound: 'm', options: ['m', 'n', 'l'], correct: 0, hint: '双唇紧闭，气流从鼻腔出' },
+            { sound: 'f', options: ['h', 'f', 's'], correct: 1, hint: '上齿咬下唇，气流从缝隙出' },
+            { sound: 'd', options: 'd', 'b', 't'], correct: 0, hint: '舌尖抵上齿龈，突然放开，不送气' },
+            { sound: 't', options: ['d', 't', 'n'], correct: 1, hint: '舌尖抵上齿龈，突然放开，送气' },
+            { sound: 'n', options: ['m', 'n', 'l'], correct: 1, hint: '舌尖抵上齿龈，气流从鼻腔出' },
+            { sound: 'l', options: ['n', 'l', 'r'], correct: 1, hint: '舌尖抵上齿龈，气流从两边出' },
+            { sound: 'g', options: ['g', 'k', 'h'], correct: 0, hint: '舌根抵软腭，突然放开，不送气' },
+            { sound: 'k', options: ['g', 'k', 'h'], correct: 1, hint: '舌根抵软腭，突然放开，送气' }
+        ];
         
-        // 完整的拼音数据库
-        this.pinyinDatabase = {
-            // Level 1-3: 声母
-            1: { target: 'b', options: ['b', 'd', 'p'], type: 'initial', hint: '双唇音，不送气' },
-            2: { target: 'p', options: ['b', 'p', 'm'], type: 'initial', hint: '双唇音，送气' },
-            3: { target: 'm', options: ['m', 'n', 'l'], type: 'initial', hint: '双唇鼻音' },
-            // Level 4-6: 韵母
-            4: { target: 'a', options: ['a', 'o', 'e'], type: 'final', hint: '开口呼' },
-            5: { target: 'o', options: ['o', 'u', 'ü'], type: 'final', hint: '合口呼' },
-            6: { target: 'e', options: ['e', 'i', 'u'], type: 'final', hint: '开口呼' },
-            // Level 7-9: 拼读
-            7: { target: 'ba', options: ['ba', 'pa', 'ma'], type: 'blend', hint: 'b + a' },
-            8: { target: 'pa', options: ['pa', 'ba', 'fa'], type: 'blend', hint: 'p + a' },
-            9: { target: 'ma', options: ['ma', 'na', 'la'], type: 'blend', hint: 'm + a' },
-            // Level 10+: 复杂拼读
-            10: { target: 'bai', options: ['bai', 'bei', 'bao'], type: 'complex', hint: 'b + ai' },
-        };
+        this.currentData = null;
+        this.hasPlayed = false;
+        this.selectedOption = null;
         
         this.init();
     }
@@ -42,150 +35,310 @@ class PinyinGame {
     init() {
         this.bindEvents();
         this.showScreen('main-menu');
-        console.log('拼音探险岛已加载');
+        
+        // 隐藏加载画面
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('hidden');
+        }, 1500);
+        
+        console.log('拼音探险岛 2.0 已加载');
     }
     
     bindEvents() {
+        // 主菜单
         document.getElementById('btn-start')?.addEventListener('click', () => this.startGame());
         document.getElementById('btn-continue')?.addEventListener('click', () => this.continueGame());
+        document.getElementById('btn-achievements')?.addEventListener('click', () => this.showAchievements());
         document.getElementById('btn-parent')?.addEventListener('click', () => this.showParentCenter());
-        document.getElementById('btn-next')?.addEventListener('click', () => this.nextQuestion());
+        
+        // 游戏界面
+        document.getElementById('btn-exit')?.addEventListener('click', () => this.exitGame());
+        document.getElementById('btn-sound')?.addEventListener('click', () => this.toggleSound());
+        document.getElementById('btn-play-sound')?.addEventListener('click', () => this.playSound());
+        document.getElementById('btn-hint')?.addEventListener('click', () => this.showHint());
+        document.getElementById('btn-slow')?.addEventListener('click', () => this.playSlow());
+        
+        // 弹窗按钮
+        document.getElementById('btn-next-level')?.addEventListener('click', () => this.nextQuestion());
+        document.getElementById('btn-retry')?.addEventListener('click', () => this.retryQuestion());
+        document.getElementById('btn-continue-game')?.addEventListener('click', () => this.closeModal());
     }
     
     showScreen(screenId) {
-        this.scenes.forEach(scene => {
-            const el = document.getElementById(scene);
-            if (el) el.classList.add('hidden');
-        });
-        const target = document.getElementById(screenId);
-        if (target) target.classList.remove('hidden');
-        this.currentScene = screenId;
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(screenId)?.classList.remove('hidden');
     }
     
     startGame() {
+        this.currentLevel = 1;
+        this.currentQuestion = 1;
+        this.score = 0;
         this.showScreen('game-scene');
-        this.loadLevel(1);
+        this.loadQuestion();
     }
     
     continueGame() {
-        const saved = localStorage.getItem('pinyinProgress');
+        const saved = localStorage.getItem('pinyinGameProgress');
         if (saved) {
-            this.playerProgress = JSON.parse(saved);
-            this.currentLevel = this.playerProgress.currentLevel || 1;
+            const progress = JSON.parse(saved);
+            this.currentLevel = progress.level || 1;
+            this.currentQuestion = progress.question || 1;
+            this.score = progress.score || 0;
         }
         this.showScreen('game-scene');
-        this.loadLevel(this.currentLevel);
+        this.loadQuestion();
     }
     
-    showParentCenter() {
-        const report = this.generateReport();
-        alert(report);
-    }
-    
-    generateReport() {
-        const mastered = this.playerProgress.mastered.length;
-        const learning = this.playerProgress.learning.length;
-        const score = this.playerProgress.totalScore;
-        return `学习报告：\n已掌握：${mastered}个\n学习中：${learning}个\n总得分：${score}分`;
-    }
-    
-    loadLevel(level) {
-        this.currentLevel = level;
-        const data = this.pinyinDatabase[level] || this.pinyinDatabase[1];
-        this.currentPinyin = data.target;
-        this.options = data.options;
-        this.currentHint = data.hint;
-        this.currentType = data.type;
-        
-        this.renderQuestion();
-        this.updateProgress();
-        this.updateSceneBackground();
-    }
-    
-    updateSceneBackground() {
-        const bg = document.getElementById('scene-background');
-        if (!bg) return;
-        
-        const scenes = {
-            'initial': 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)',
-            'final': 'linear-gradient(135deg, #fd79a8 0%, #e84393 100%)',
-            'blend': 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)',
-            'complex': 'linear-gradient(135deg, #fdcb6e 0%, #e17055 100%)'
-        };
-        
-        bg.style.background = scenes[this.currentType] || scenes['initial'];
-    }
-    
-    renderQuestion() {
-        const display = document.getElementById('pinyin-display');
-        const optionsContainer = document.getElementById('options-container');
-        const feedbackArea = document.getElementById('feedback-area');
-        const hintText = document.getElementById('hint-text');
-        
-        if (display) display.textContent = this.currentPinyin;
-        if (feedbackArea) feedbackArea.classList.add('hidden');
-        if (hintText) hintText.textContent = this.currentHint || '';
-        
-        if (optionsContainer) {
-            optionsContainer.innerHTML = '';
-            this.options.forEach(option => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.textContent = option;
-                btn.addEventListener('click', () => this.checkAnswer(option, btn));
-                optionsContainer.appendChild(btn);
-            });
+    exitGame() {
+        if (confirm('确定要退出游戏吗？进度会自动保存。')) {
+            this.saveProgress();
+            this.showScreen('main-menu');
         }
     }
     
-    checkAnswer(selected, btnElement) {
-        const isCorrect = selected === this.currentPinyin;
-        const feedbackArea = document.getElementById('feedback-area');
-        const feedbackText = document.getElementById('feedback-text');
+    toggleSound() {
+        this.soundEnabled = !this.soundEnabled;
+        const btn = document.getElementById('btn-sound');
+        btn.textContent = this.soundEnabled ? '🔊' : '🔇';
+    }
+    
+    loadQuestion() {
+        this.currentData = this.levelData[this.currentQuestion - 1];
+        this.hasPlayed = false;
+        this.selectedOption = null;
         
-        document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.disabled = true;
+        // 更新UI
+        document.getElementById('current-level').textContent = `第 ${this.currentQuestion} 关`;
+        document.getElementById('progress-text').textContent = `${this.currentQuestion}/${this.totalQuestions}`;
+        document.getElementById('progress-fill').style.width = `${(this.currentQuestion / this.totalQuestions) * 100}%`;
+        
+        // 重置界面
+        document.getElementById('mouth-options').classList.add('hidden');
+        document.getElementById('btn-play-sound').classList.remove('hidden');
+        document.getElementById('instruction').textContent = '点击播放，听一听是什么音？';
+        
+        // 隐藏气泡
+        document.getElementById('character-bubble').classList.add('hidden');
+        
+        this.renderOptions();
+    }
+    
+    renderOptions() {
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        this.currentData.options.forEach((option, index) => {
+            const btn = document.createElement('div');
+            btn.className = 'mouth-option';
+            btn.innerHTML = `
+                <div class="mouth-shape">👄</div>
+                <div class="mouth-pinyin">${option}</div>
+            `;
+            btn.addEventListener('click', () => this.selectOption(index, btn));
+            container.appendChild(btn);
+        });
+    }
+    
+    playSound() {
+        // 模拟播放发音
+        const sound = this.currentData.sound;
+        console.log(`播放发音: ${sound}`);
+        
+        // 使用Web Speech API
+        if ('speechSynthesis' in window && this.soundEnabled) {
+            const utterance = new SpeechSynthesisUtterance(sound);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 0.8;
+            speechSynthesis.speak(utterance);
+        }
+        
+        this.hasPlayed = true;
+        
+        // 显示选项
+        document.getElementById('mouth-options').classList.remove('hidden');
+        document.getElementById('instruction').textContent = '选择你听到的发音：';
+        
+        // 小书童提示
+        this.showBubble('仔细听，然后选择正确的口型！');
+    }
+    
+    playSlow() {
+        const sound = this.currentData.sound;
+        if ('speechSynthesis' in window && this.soundEnabled) {
+            const utterance = new SpeechSynthesisUtterance(sound);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 0.5; // 慢速
+            speechSynthesis.speak(utterance);
+        }
+    }
+    
+    showHint() {
+        this.showBubble(this.currentData.hint);
+    }
+    
+    showBubble(text) {
+        const bubble = document.getElementById('character-bubble');
+        document.getElementById('bubble-text').textContent = text;
+        bubble.classList.remove('hidden');
+        
+        setTimeout(() => {
+            bubble.classList.add('hidden');
+        }, 3000);
+    }
+    
+    selectOption(index, element) {
+        if (!this.hasPlayed) {
+            this.showBubble('先点击播放按钮听发音哦！');
+            return;
+        }
+        
+        // 清除之前的选择
+        document.querySelectorAll('.mouth-option').forEach(opt => {
+            opt.classList.remove('selected');
         });
         
-        if (isCorrect) {
-            btnElement.classList.add('correct');
-            if (feedbackText) feedbackText.textContent = '太棒了！答对了！🎉';
-            this.playerProgress.mastered.push(this.currentPinyin);
-            this.playerProgress.totalScore += 10;
-        } else {
-            btnElement.classList.add('wrong');
-            if (feedbackText) feedbackText.textContent = `再想想，正确答案是 ${this.currentPinyin}`;
-            this.playerProgress.learning.push(this.currentPinyin);
+        element.classList.add('selected');
+        this.selectedOption = index;
+        
+        // 检查答案
+        setTimeout(() => this.checkAnswer(), 500);
+    }
+    
+    checkAnswer() {
+        const isCorrect = this.selectedOption === this.currentData.correct;
+        const options = document.querySelectorAll('.mouth-option');
+        
+        // 显示正确/错误
+        options[this.selectedOption].classList.remove('selected');
+        options[this.selectedOption].classList.add(isCorrect ? 'correct' : 'wrong');
+        
+        if (!isCorrect) {
+            options[this.currentData.correct].classList.add('correct');
         }
         
-        if (feedbackArea) feedbackArea.classList.remove('hidden');
+        // 显示反馈
+        setTimeout(() => {
+            this.showFeedback(isCorrect);
+        }, 1000);
+    }
+    
+    showFeedback(isCorrect) {
+        const modal = document.getElementById('feedback-modal');
+        const icon = document.getElementById('feedback-icon');
+        const title = document.getElementById('feedback-title');
+        const message = document.getElementById('feedback-message');
+        const explanation = document.getElementById('feedback-explanation');
+        const explanationText = document.getElementById('explanation-text');
+        const btnNext = document.getElementById('btn-next-level');
+        const btnRetry = document.getElementById('btn-retry');
+        const btnContinue = document.getElementById('btn-continue-game');
+        
+        if (isCorrect) {
+            icon.textContent = '🎉';
+            title.textContent = '太棒了！';
+            message.textContent = `正确答案是 "${this.currentData.sound}"，你答对了！`;
+            this.score += 10;
+            
+            btnNext.classList.remove('hidden');
+            btnRetry.classList.add('hidden');
+            btnContinue.classList.add('hidden');
+            
+            this.showBubble('你真棒！继续加油！');
+        } else {
+            icon.textContent = '💪';
+            title.textContent = '再试一次！';
+            message.textContent = `这是 "${this.currentData.sound}"，仔细听一下区别。`;
+            
+            btnNext.classList.add('hidden');
+            btnRetry.classList.remove('hidden');
+            btnContinue.classList.add('hidden');
+            
+            this.showBubble('没关系，再听一遍！');
+        }
+        
+        explanation.classList.remove('hidden');
+        explanationText.textContent = this.currentData.hint;
+        
+        modal.classList.remove('hidden');
         this.saveProgress();
     }
     
     nextQuestion() {
-        if (this.playerProgress.mastered.includes(this.currentPinyin)) {
-            this.currentLevel = Math.min(this.currentLevel + 1, 10);
+        this.closeModal();
+        
+        if (this.currentQuestion < this.totalQuestions) {
+            this.currentQuestion++;
+            this.loadQuestion();
+        } else {
+            // 关卡完成
+            this.showLevelComplete();
         }
-        this.loadLevel(this.currentLevel);
     }
     
-    updateProgress() {
-        const progress = Math.min((this.currentLevel / 10) * 100, 100);
-        const fill = document.getElementById('progress-fill');
-        if (fill) fill.style.width = progress + '%';
+    retryQuestion() {
+        this.closeModal();
+        this.loadQuestion();
+    }
+    
+    closeModal() {
+        document.getElementById('feedback-modal').classList.add('hidden');
+    }
+    
+    showLevelComplete() {
+        const modal = document.getElementById('feedback-modal');
+        document.getElementById('feedback-icon').textContent = '🏆';
+        document.getElementById('feedback-title').textContent = '关卡完成！';
+        document.getElementById('feedback-message').textContent = `恭喜你完成第1关！得分：${this.score}/${this.totalQuestions * 10}`;
+        document.getElementById('feedback-explanation').classList.add('hidden');
+        
+        document.getElementById('btn-next-level').textContent = '下一关 →';
+        document.getElementById('btn-next-level').classList.remove('hidden');
+        document.getElementById('btn-retry').classList.add('hidden');
+        document.getElementById('btn-continue-game').classList.add('hidden');
+        
+        modal.classList.remove('hidden');
+        
+        // 重置到下一关
+        this.currentQuestion = 1;
     }
     
     saveProgress() {
-        this.playerProgress.currentLevel = this.currentLevel;
-        localStorage.setItem('pinyinProgress', JSON.stringify(this.playerProgress));
+        const progress = {
+            level: this.currentLevel,
+            question: this.currentQuestion,
+            score: this.score,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('pinyinGameProgress', JSON.stringify(progress));
+    }
+    
+    showAchievements() {
+        const saved = localStorage.getItem('pinyinGameProgress');
+        if (saved) {
+            const progress = JSON.parse(saved);
+            alert(`当前进度：\n关卡：${progress.level}\n题目：${progress.question}\n得分：${progress.score}`);
+        } else {
+            alert('还没有游戏记录，快开始探险吧！');
+        }
+    }
+    
+    showParentCenter() {
+        const saved = localStorage.getItem('pinyinGameProgress');
+        let report = '学习报告\n\n';
+        if (saved) {
+            const progress = JSON.parse(saved);
+            report += `当前关卡：${progress.level}\n`;
+            report += `完成题目：${progress.question}\n`;
+            report += `总得分：${progress.score}\n`;
+            report += `准确率：${Math.round((progress.score / (progress.question * 10)) * 100)}%`;
+        } else {
+            report += '暂无学习记录';
+        }
+        alert(report);
     }
 }
 
 // 启动游戏
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const loading = document.getElementById('loading-screen');
-        if (loading) loading.classList.add('hidden');
-        new PinyinGame();
-    }, 1500);
+    new PinyinGame();
 });
