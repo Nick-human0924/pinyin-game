@@ -3,27 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>拼音大冒险 4.0 - 完整版</title>
+    <title>拼音大冒险 5.0 - 教学完整版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: #2C3E50; }
         .game-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .header { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .header { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1); margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .player-info { display: flex; align-items: center; gap: 15px; }
         .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; transition: transform 0.3s; }
         .avatar:hover { transform: scale(1.1); }
-        .stats { display: flex; gap: 15px; flex-wrap: wrap; }
-        .stat-item { display: flex; align-items: center; gap: 5px; background: #F7F9FC; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+        .stats { display: flex; gap: 10px; flex-wrap: wrap; }
+        .stat-item { display: flex; align-items: center; gap: 5px; background: #F7F9FC; padding: 8px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
         .stat-item.hp { background: #ffebee; color: #c62828; }
         .stat-item.mp { background: #e3f2fd; color: #1565c0; }
-        .main-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-        .menu-card { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .stat-item.time { background: #e8f5e9; color: #2e7d32; }
+        .main-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .menu-card { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.1); position: relative; }
         .menu-card:hover { transform: translateY(-10px); box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-        .menu-card .icon { font-size: 60px; margin-bottom: 15px; }
-        .menu-card h2 { margin-bottom: 10px; color: #2C3E50; }
-        .menu-card p { color: #7f8c8d; font-size: 14px; }
+        .menu-card.locked { opacity: 0.6; cursor: not-allowed; filter: grayscale(100%); }
+        .menu-card.locked::after { content: '🔒'; position: absolute; top: 15px; right: 15px; font-size: 24px; }
+        .menu-card .icon { font-size: 50px; margin-bottom: 10px; }
+        .menu-card h2 { margin-bottom: 8px; color: #2C3E50; font-size: 20px; }
+        .menu-card p { color: #7f8c8d; font-size: 13px; }
+        .menu-card .badge { position: absolute; top: 10px; right: 10px; background: #f5576c; color: white; padding: 4px 10px; border-radius: 10px; font-size: 11px; }
         .hidden { display: none !important; }
-        .btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s; margin: 5px; }
+        .btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s; margin: 5px; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4); }
         .btn-secondary { background: #F7F9FC; color: #2C3E50; }
         .btn-secondary:hover { background: #e8ecef; }
@@ -31,108 +35,156 @@
         .btn-danger { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
         .btn-warning { background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%); }
         .btn-info { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
-        
-        /* 关卡选择 */
-        .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
         .level-card { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
         .level-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
         .level-card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(100%); }
         .level-card.completed::after { content: '✓'; position: absolute; top: 10px; right: 10px; background: #4CAF50; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
         .level-type { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
         .level-reward { font-size: 11px; color: #f5576c; margin-top: 5px; }
-        
-        /* 答题界面 */
-        .quiz-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; max-width: 800px; margin: 0 auto; }
-        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .progress-bar { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; margin-bottom: 30px; }
+        .quiz-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 30px; max-width: 800px; margin: 0 auto; }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .progress-bar { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; margin-bottom: 20px; }
         .progress-fill { height: 100%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transition: width 0.3s; }
-        .question-display { font-size: 80px; text-align: center; margin: 40px 0; color: #2C3E50; font-weight: bold; }
-        .question-hint { text-align: center; color: #7f8c8d; margin-bottom: 20px; }
-        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 30px; }
-        .option-btn { background: #F7F9FC; border: 2px solid transparent; padding: 20px; border-radius: 15px; font-size: 24px; cursor: pointer; transition: all 0.3s; }
+        .question-display { font-size: 70px; text-align: center; margin: 30px 0; color: #2C3E50; font-weight: bold; }
+        .question-hint { text-align: center; color: #7f8c8d; margin-bottom: 15px; font-size: 14px; }
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .option-btn { background: #F7F9FC; border: 2px solid transparent; padding: 18px; border-radius: 15px; font-size: 22px; cursor: pointer; transition: all 0.3s; }
         .option-btn:hover { border-color: #f5576c; background: #fff5f7; }
         .option-btn.correct { background: #c8e6c9; border-color: #4CAF50; }
         .option-btn.wrong { background: #ffcdd2; border-color: #f44336; }
-        
-        /* 宠物系统 */
-        .pet-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; }
-        .pet-display { text-align: center; margin-bottom: 30px; }
-        .pet-avatar { font-size: 120px; margin-bottom: 20px; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .pet-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
-        .pet-stat { background: #F7F9FC; padding: 15px; border-radius: 15px; text-align: center; }
-        .pet-stat-label { font-size: 12px; color: #7f8c8d; margin-bottom: 5px; }
-        .pet-stat-value { font-size: 20px; font-weight: bold; color: #2C3E50; }
-        .exp-bar { width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .pet-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 30px; }
+        .pet-display { text-align: center; margin-bottom: 25px; }
+        .pet-avatar { font-size: 100px; margin-bottom: 15px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .pet-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px; }
+        .pet-stat { background: #F7F9FC; padding: 12px; border-radius: 12px; text-align: center; }
+        .pet-stat-label { font-size: 11px; color: #7f8c8d; margin-bottom: 3px; }
+        .pet-stat-value { font-size: 18px; font-weight: bold; color: #2C3E50; }
+        .exp-bar { width: 100%; height: 18px; background: #e0e0e0; border-radius: 9px; overflow: hidden; margin-top: 8px; }
         .exp-fill { height: 100%; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); transition: width 0.5s; }
-        
-        /* 探险地图 */
-        .map-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; }
-        .map-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
-        .map-location { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; }
+        .map-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 30px; }
+        .map-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
+        .map-location { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; }
         .map-location:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
-        .map-location .icon { font-size: 50px; margin-bottom: 10px; }
-        .map-location .energy-cost { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 15px; font-size: 12px; }
+        .map-location .icon { font-size: 45px; margin-bottom: 8px; }
+        .map-location .energy-cost { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.3); padding: 4px 10px; border-radius: 12px; font-size: 11px; }
         .location-forest { background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%); }
         .location-desert { background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%); }
         .location-ocean { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
         .location-snow { background: linear-gradient(135deg, #90CAF9 0%, #42A5F5 100%); }
         .location-volcano { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
-        
-        /* 战斗系统 */
-        .battle-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; max-width: 900px; margin: 0 auto; }
-        .battle-arena { display: flex; justify-content: space-between; align-items: center; margin: 40px 0; padding: 30px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 20px; }
+        .battle-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 30px; max-width: 900px; margin: 0 auto; }
+        .battle-arena { display: flex; justify-content: space-between; align-items: center; margin: 30px 0; padding: 25px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 20px; flex-wrap: wrap; gap: 20px; }
         .battle-pet, .battle-monster { text-align: center; color: white; }
-        .battle-pet-avatar, .battle-monster-avatar { font-size: 80px; margin-bottom: 15px; }
-        .battle-hp-bar { width: 150px; height: 20px; background: #333; border-radius: 10px; overflow: hidden; margin: 10px auto; }
+        .battle-pet-avatar, .battle-monster-avatar { font-size: 70px; margin-bottom: 10px; }
+        .battle-hp-bar { width: 130px; height: 18px; background: #333; border-radius: 9px; overflow: hidden; margin: 8px auto; }
         .battle-hp-fill { height: 100%; transition: width 0.5s; }
         .battle-hp-fill.pet { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
         .battle-hp-fill.monster { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
-        .battle-vs { font-size: 40px; color: #FFD700; font-weight: bold; }
-        .battle-log { background: #1a1a2e; color: #00ff00; padding: 20px; border-radius: 15px; height: 150px; overflow-y: auto; font-family: monospace; margin-top: 20px; }
-        .damage-number { position: absolute; font-size: 30px; font-weight: bold; animation: damageFloat 1s ease-out forwards; }
-        @keyframes damageFloat { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
-        
-        /* 商店系统 */
-        .shop-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; }
-        .shop-tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
-        .shop-tab { padding: 12px 24px; border-radius: 20px; cursor: pointer; transition: all 0.3s; background: #F7F9FC; }
+        .battle-vs { font-size: 36px; color: #FFD700; font-weight: bold; }
+        .battle-log { background: #1a1a2e; color: #00ff00; padding: 15px; border-radius: 15px; height: 130px; overflow-y: auto; font-family: monospace; margin-top: 15px; font-size: 13px; }
+        .shop-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 30px; }
+        .shop-tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .shop-tab { padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: all 0.3s; background: #F7F9FC; font-size: 14px; }
         .shop-tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
-        .shop-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .shop-item { background: #F7F9FC; border-radius: 20px; padding: 25px; text-align: center; transition: all 0.3s; }
+        .shop-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .shop-item { background: #F7F9FC; border-radius: 18px; padding: 20px; text-align: center; transition: all 0.3s; }
         .shop-item:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .shop-item-icon { font-size: 50px; margin-bottom: 15px; }
-        .shop-item-name { font-weight: bold; margin-bottom: 10px; }
-        .shop-item-desc { font-size: 12px; color: #7f8c8d; margin-bottom: 15px; }
-        .shop-item-price { color: #f5576c; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
-        .shop-item-owned { color: #4CAF50; font-size: 14px; }
-        
-        /* 弹窗 */
+        .shop-item-icon { font-size: 45px; margin-bottom: 12px; }
+        .shop-item-name { font-weight: bold; margin-bottom: 8px; font-size: 15px; }
+        .shop-item-desc { font-size: 12px; color: #7f8c8d; margin-bottom: 12px; }
+        .shop-item-price { color: #f5576c; font-weight: bold; font-size: 16px; margin-bottom: 8px; }
+        .shop-item-owned { color: #4CAF50; font-size: 13px; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; border-radius: 25px; padding: 40px; max-width: 500px; width: 90%; text-align: center; animation: modalPop 0.3s ease-out; }
+        .modal-content { background: white; border-radius: 25px; padding: 35px; max-width: 500px; width: 90%; text-align: center; animation: modalPop 0.3s ease-out; }
         @keyframes modalPop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .modal-title { font-size: 24px; margin-bottom: 20px; }
-        .modal-text { margin-bottom: 20px; color: #7f8c8d; }
-        
-        /* 动画效果 */
+        .modal-title { font-size: 22px; margin-bottom: 15px; }
+        .modal-text { margin-bottom: 20px; color: #7f8c8d; font-size: 14px; }
+        .stats-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .stats-card { background: #F7F9FC; border-radius: 20px; padding: 25px; }
+        .stats-card h3 { margin-bottom: 15px; color: #2C3E50; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+        .stat-value-big { font-size: 36px; font-weight: bold; color: #f5576c; }
+        .stat-label-small { font-size: 13px; color: #7f8c8d; margin-top: 5px; }
+        .accuracy-bar { display: flex; height: 30px; border-radius: 15px; overflow: hidden; margin-top: 15px; }
+        .accuracy-correct { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; transition: width 0.5s; }
+        .accuracy-wrong { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; transition: width 0.5s; }
+        .chart-container { height: 200px; position: relative; margin-top: 15px; }
+        .mistake-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border-radius: 12px; margin-bottom: 10px; }
+        .mistake-pinyin { font-size: 24px; font-weight: bold; color: #f5576c; }
+        .mistake-count { background: #ffebee; color: #c62828; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; }
+        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 11px; background: #f5f5f5; }
+        .calendar-day.checked { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; }
+        .calendar-day.today { border: 2px solid #f5576c; }
+        .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; font-size: 11px; color: #7f8c8d; margin-bottom: 5px; }
+        .check-in-btn { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 15px 40px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: all 0.3s; }
+        .check-in-btn:hover { transform: scale(1.05); }
+        .check-in-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .check-in-streak { text-align: center; margin-top: 15px; font-size: 18px; }
+        .streak-number { color: #f5576c; font-weight: bold; font-size: 32px; }
+        .learning-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 30px; max-width: 900px; margin: 0 auto; }
+        .learning-tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; }
+        .learning-tab { padding: 12px 24px; border-radius: 20px; cursor: pointer; transition: all 0.3s; background: #F7F9FC; font-size: 14px; font-weight: bold; }
+        .learning-tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .learning-tab.completed { background: #c8e6c9; color: #2e7d32; }
+        .learning-progress { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 15px; background: #F7F9FC; border-radius: 15px; }
+        .progress-circle { width: 60px; height: 60px; border-radius: 50%; background: conic-gradient(#4CAF50 var(--progress), #e0e0e0 var(--progress)); display: flex; align-items: center; justify-content: center; position: relative; }
+        .progress-circle::before { content: ''; position: absolute; width: 50px; height: 50px; background: white; border-radius: 50%; }
+        .progress-text { position: relative; font-weight: bold; font-size: 14px; }
+        .pinyin-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 25px; padding: 40px; text-align: center; margin-bottom: 25px; position: relative; overflow: hidden; }
+        .pinyin-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
+        .pinyin-display { font-size: 100px; font-weight: bold; margin-bottom: 20px; position: relative; }
+        .pinyin-desc { font-size: 18px; opacity: 0.95; position: relative; }
+        .pinyin-tip { font-size: 14px; opacity: 0.8; margin-top: 15px; position: relative; }
+        .mouth-shape { width: 150px; height: 150px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 60px; }
+        .card-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; }
+        .card-indicator { display: flex; gap: 8px; justify-content: center; margin: 20px 0; }
+        .indicator-dot { width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0; cursor: pointer; transition: all 0.3s; }
+        .indicator-dot.active { background: #f5576c; transform: scale(1.3); }
+        .indicator-dot.completed { background: #4CAF50; }
+        .practice-section { background: #F7F9FC; border-radius: 20px; padding: 25px; margin-top: 20px; }
+        .practice-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #2C3E50; }
+        .record-btn { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; color: white; font-size: 32px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; margin: 20px auto; }
+        .record-btn:hover { transform: scale(1.1); }
+        .record-btn.recording { animation: pulse-red 1s infinite; }
+        @keyframes pulse-red { 0%, 100% { box-shadow: 0 0 0 0 rgba(245, 87, 108, 0.7); } 50% { box-shadow: 0 0 0 20px rgba(245, 87, 108, 0); } }
+        .quiz-mini { background: white; border-radius: 15px; padding: 20px; margin-top: 20px; }
+        .quiz-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+        .quiz-option { padding: 15px; background: #F7F9FC; border: 2px solid transparent; border-radius: 12px; cursor: pointer; transition: all 0.3s; text-align: center; font-size: 18px; }
+        .quiz-option:hover { border-color: #f5576c; background: #fff5f7; }
+        .quiz-option.correct { background: #c8e6c9; border-color: #4CAF50; }
+        .quiz-option.wrong { background: #ffcdd2; border-color: #f44336; }
+        .lesson-lock { text-align: center; padding: 40px; }
+        .lesson-lock-icon { font-size: 80px; margin-bottom: 20px; }
+        .lesson-list { display: grid; gap: 15px; }
+        .lesson-item { display: flex; align-items: center; gap: 15px; padding: 18px; background: #F7F9FC; border-radius: 15px; cursor: pointer; transition: all 0.3s; }
+        .lesson-item:hover { background: #e3f2fd; }
+        .lesson-item.locked { opacity: 0.5; cursor: not-allowed; }
+        .lesson-item.completed { background: #c8e6c9; }
+        .lesson-number { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .lesson-item.completed .lesson-number { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
+        .lesson-item.locked .lesson-number { background: #ccc; }
+        .lesson-info { flex: 1; }
+        .lesson-title { font-weight: bold; margin-bottom: 3px; }
+        .lesson-desc { font-size: 12px; color: #7f8c8d; }
+        .lesson-status { font-size: 20px; }
         .shake { animation: shake 0.5s; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
         .pulse { animation: pulse 0.5s; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         .fade-in { animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        /* 技能特效 */
-        .skill-effect { position: fixed; pointer-events: none; font-size: 60px; animation: skillAnimation 1s ease-out forwards; z-index: 999; }
-        @keyframes skillAnimation { 0% { transform: scale(0) rotate(0deg); opacity: 1; } 50% { transform: scale(1.5) rotate(180deg); } 100% { transform: scale(2) rotate(360deg); opacity: 0; } }
-        
-        /* 响应式 */
         @media (max-width: 768px) {
-            .header { flex-direction: column; gap: 15px; }
+            .header { flex-direction: column; gap: 10px; }
             .stats { justify-content: center; }
             .question-display { font-size: 50px; }
             .options-grid { grid-template-columns: 1fr; }
-            .battle-arena { flex-direction: column; gap: 30px; }
+            .battle-arena { flex-direction: column; gap: 20px; }
+            .pinyin-display { font-size: 60px; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -143,7 +195,7 @@
             <div class="player-info">
                 <div class="avatar" onclick="showPet()" title="点击查看宠物">🐼</div>
                 <div>
-                    <div style="font-weight: bold; font-size: 18px;">拼音小勇士</div>
+                    <div style="font-weight: bold; font-size: 16px;">拼音小勇士</div>
                     <div style="font-size: 12px; color: #7f8c8d;">等级 <span id="playerLevel">1</span></div>
                 </div>
             </div>
@@ -152,17 +204,22 @@
                 <div class="stat-item mp">⚡ <span id="petEnergy">50</span>/<span id="petMaxEnergy">50</span></div>
                 <div class="stat-item">💰 <span id="coins">100</span></div>
                 <div class="stat-item">⭐ <span id="exp">0</span></div>
-                <div class="stat-item">⚔️ <span id="attack">10</span></div>
-                <div class="stat-item">🛡️ <span id="defense">5</span></div>
+                <div class="stat-item time">⏱️ <span id="totalStudyTime">0</span>分钟</div>
             </div>
         </div>
 
         <!-- 主菜单 -->
         <div id="mainMenu" class="main-menu">
-            <div class="menu-card" onclick="showLevels()">
-                <div class="icon">📚</div>
-                <h2>关卡挑战</h2>
-                <p>15+关卡，150+拼音题目</p>
+            <div class="menu-card" onclick="showLearning()">
+                <div class="icon">📖</div>
+                <h2>基础教学</h2>
+                <p>声母、韵母、整体认读</p>
+                <div class="badge" id="learningBadge">进行中</div>
+            </div>
+            <div class="menu-card locked" id="challengeCard" onclick="if(!this.classList.contains('locked'))showLevels()">
+                <div class="icon">⚔️</div>
+                <h2>闯关模式</h2>
+                <p>完成基础教学后解锁</p>
             </div>
             <div class="menu-card" onclick="showPet()">
                 <div class="icon">🐾</div>
@@ -172,12 +229,47 @@
             <div class="menu-card" onclick="showMap()">
                 <div class="icon">🗺️</div>
                 <h2>探险地图</h2>
-                <p>森林、沙漠、海洋、雪山、火山</p>
+                <p>森林、沙漠、海洋、雪山</p>
             </div>
             <div class="menu-card" onclick="showShop()">
                 <div class="icon">🏪</div>
                 <h2>商店</h2>
                 <p>武器、防具、道具、技能</p>
+            </div>
+            <div class="menu-card" onclick="showStats()">
+                <div class="icon">📊</div>
+                <h2>统计看板</h2>
+                <p>学习数据、成长曲线</p>
+            </div>
+        </div>
+
+        <!-- 基础教学界面 -->
+        <div id="learningScreen" class="hidden">
+            <div class="learning-container">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+                    <h2 style="margin-top: 15px;">📖 基础教学</h2>
+                </div>
+                
+                <div class="learning-tabs">
+                    <div class="learning-tab active" id="tab-initial" onclick="switchLearningTab('initial')">声母 (23个)</div>
+                    <div class="learning-tab" id="tab-final" onclick="switchLearningTab('final')">韵母 (24个)</div>
+                    <div class="learning-tab" id="tab-whole" onclick="switchLearningTab('whole')">整体认读 (16个)</div>
+                </div>
+                
+                <div class="learning-progress">
+                    <div class="progress-circle" id="learningProgressCircle" style="--progress: 0%;">
+                        <span class="progress-text" id="learningProgressText">0%</span>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold;">学习进度</div>
+                        <div style="font-size: 13px; color: #7f8c8d;">完成教学可解锁闯关模式</div>
+                    </div>
+                </div>
+                
+                <div id="learningContent">
+                    <!-- 动态加载教学内容 -->
+                </div>
             </div>
         </div>
 
@@ -185,8 +277,8 @@
         <div id="levelSelect" class="hidden">
             <div style="text-align: center; margin-bottom: 20px;">
                 <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
-                <h2 style="margin-top: 20px;">📚 关卡挑战</h2>
-                <p style="color: #7f8c8d;">选择关卡开始挑战，解锁更多内容！</p>
+                <h2 style="margin-top: 15px;">📚 关卡挑战</h2>
+                <p style="color: #7f8c8d; font-size: 14px;">选择关卡开始挑战，解锁更多内容！</p>
             </div>
             <div class="level-grid" id="levelGrid"></div>
         </div>
@@ -211,16 +303,17 @@
         <!-- 宠物界面 -->
         <div id="petScreen" class="hidden">
             <div class="pet-container">
-                <div style="text-align: center; margin-bottom: 30px;">
+                <div style="text-align: center; margin-bottom: 20px;">
                     <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
-                    <h2 style="margin-top: 20px;">🐾 我的宠物</h2>
+                    <h2 style="margin-top: 15px;">🐾 我的宠物</h2>
                 </div>
+                
                 <div class="pet-display">
                     <div class="pet-avatar" id="petAvatar">🐼</div>
                     <h3 id="petName">拼音小熊猫</h3>
-                    <p style="color: #7f8c8d;">等级 <span id="petLevel">1</span> | <span id="petTitle">初级学徒</span></p>
-                    <div style="max-width: 400px; margin: 20px auto;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <p style="color: #7f8c8d; font-size: 14px;">等级 <span id="petLevel">1</span> | <span id="petTitle">初级学徒</span></p>
+                    <div style="max-width: 400px; margin: 15px auto;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px;">
                             <span>经验值</span>
                             <span><span id="petExp">0</span>/<span id="petMaxExp">100</span></span>
                         </div>
@@ -229,6 +322,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="pet-stats">
                     <div class="pet-stat">
                         <div class="pet-stat-label">攻击力</div>
@@ -255,10 +349,11 @@
                         <div class="pet-stat-value" id="petLuck">5</div>
                     </div>
                 </div>
-                <div style="text-align: center; margin-top: 30px;">
-                    <h4>已学技能</h4>
-                    <div id="petSkills" style="margin-top: 15px;">
-                        <span style="background: #e3f2fd; padding: 8px 15px; border-radius: 15px; margin: 5px; display: inline-block;">基础攻击</span>
+                
+                <div style="text-align: center; margin-top: 25px;">
+                    <h4 style="margin-bottom: 15px;">已学技能</h4>
+                    <div id="petSkills" style="margin-top: 10px;">
+                        <span style="background: #e3f2fd; padding: 8px 15px; border-radius: 15px; margin: 5px; display: inline-block; font-size: 13px;">基础攻击</span>
                     </div>
                 </div>
             </div>
@@ -267,11 +362,12 @@
         <!-- 探险地图 -->
         <div id="mapScreen" class="hidden">
             <div class="map-container">
-                <div style="text-align: center; margin-bottom: 30px;">
+                <div style="text-align: center; margin-bottom: 20px;">
                     <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
-                    <h2 style="margin-top: 20px;">🗺️ 探险地图</h2>
-                    <p style="color: #7f8c8d;">选择地点开始探险，消耗体力获得奖励！</p>
+                    <h2 style="margin-top: 15px;">🗺️ 探险地图</h2>
+                    <p style="color: #7f8c8d; font-size: 14px;">选择地点开始探险，消耗体力获得奖励！</p>
                 </div>
+                
                 <div class="map-grid">
                     <div class="map-location location-forest" onclick="startAdventure('forest')">
                         <span class="energy-cost">⚡10</span>
@@ -312,8 +408,9 @@
             <div class="battle-container">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <h2>⚔️ 战斗开始！</h2>
-                    <p style="color: #7f8c8d;" id="battleLocation">神秘森林</p>
+                    <p style="color: #7f8c8d; font-size: 14px;" id="battleLocation">神秘森林</p>
                 </div>
+                
                 <div class="battle-arena">
                     <div class="battle-pet">
                         <div class="battle-pet-avatar" id="battlePetAvatar">🐼</div>
@@ -323,7 +420,9 @@
                         </div>
                         <div style="font-size: 12px;"><span id="battlePetHPCurrent">100</span>/<span id="battlePetHPMax">100</span> HP</div>
                     </div>
+                    
                     <div class="battle-vs">VS</div>
+                    
                     <div class="battle-monster">
                         <div class="battle-monster-avatar" id="battleMonsterAvatar">👹</div>
                         <div id="battleMonsterName">拼音怪兽</div>
@@ -333,10 +432,12 @@
                         <div style="font-size: 12px;"><span id="battleMonsterHPCurrent">50</span>/<span id="battleMonsterHPMax">50</span> HP</div>
                     </div>
                 </div>
+                
                 <div id="battleQuizSection">
                     <div class="question-display" id="battleQuestion" style="font-size: 50px;">?</div>
                     <div class="options-grid" id="battleOptions"></div>
                 </div>
+                
                 <div class="battle-log" id="battleLog">
                     <div>战斗开始！遇到了拼音怪兽！</div>
                 </div>
@@ -346,18 +447,132 @@
         <!-- 商店界面 -->
         <div id="shopScreen" class="hidden">
             <div class="shop-container">
-                <div style="text-align: center; margin-bottom: 30px;">
+                <div style="text-align: center; margin-bottom: 20px;">
                     <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
-                    <h2 style="margin-top: 20px;">🏪 商店</h2>
+                    <h2 style="margin-top: 15px;">🏪 商店</h2>
                     <p style="color: #7f8c8d;">当前金币: <span id="shopCoins">100</span> 💰</p>
                 </div>
+                
                 <div class="shop-tabs">
                     <div class="shop-tab active" onclick="switchShopTab('weapons')">⚔️ 武器店</div>
                     <div class="shop-tab" onclick="switchShopTab('armor')">🛡️ 防具店</div>
                     <div class="shop-tab" onclick="switchShopTab('items')">🧪 道具店</div>
                     <div class="shop-tab" onclick="switchShopTab('skills')">📖 技能店</div>
                 </div>
+                
                 <div class="shop-items" id="shopItems"></div>
+            </div>
+        </div>
+
+        <!-- 统计看板界面 -->
+        <div id="statsScreen" class="hidden">
+            <div class="stats-container">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+                    <h2 style="margin-top: 15px;">📊 统计看板</h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <!-- 学习时长 -->
+                    <div class="stats-card">
+                        <h3>⏱️ 学习时长</h3>
+                        <div class="stat-value-big" id="statsTotalTime">0</div>
+                        <div class="stat-label-small">总学习分钟数</div>
+                        <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
+                            <div style="background: white; padding: 10px; border-radius: 10px;">
+                                <div style="font-weight: bold; color: #4CAF50;"><span id="statsTodayTime">0<>/span>分钟</div>
+                                <div style="color: #7f8c8d; font-size: 11px;">今日学习</div>
+                            </div>
+                            <div style="background: white; padding: 10px; border-radius: 10px;">
+                                <div style="font-weight: bold; color: #2196F3;"><span id="statsWeekTime">0<>/span>分钟</div>
+                                <div style="color: #7f8c8d; font-size: 11px;">本周学习</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 答题正确率 -->
+                    <div class="stats-card">
+                        <h3>🎯 答题正确率</h3>
+                        <div style="display: flex; justify-content: space-around; margin-bottom: 15px; font-size: 13px;">
+                            <span class="stats-tab active" onclick="showAccuracy('today')" id="acc-tab-today">今日</span>
+                            <span class="stats-tab" onclick="showAccuracy('week')" id="acc-tab-week">本周</span>
+                            <span class="stats-tab" onclick="showAccuracy('total')" id="acc-tab-total">总计</span>
+                        </div>
+                        
+                        <div class="accuracy-bar">
+                            <div class="accuracy-correct" id="accuracyCorrect" style="width: 0%">✓ <span id="correctCount">0<>/span></div>
+                            <div class="accuracy-wrong" id="accuracyWrong" style="width: 0%">✗ <span id="wrongCount">0<>/span></div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 10px; font-size: 24px; font-weight: bold; color: #f5576c;">
+                            <span id="accuracyPercent">0%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 关卡进度 -->
+                    <div class="stats-card">
+                        <h3>📈 关卡进度</h3>
+                        <div id="levelProgressChart">
+                            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+                                <div style="text-align: center;">
+                                    <div style="width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(#4CAF50 var(--level-progress, 0%), #e0e0e0 var(--level-progress, 0%)); display: flex; align-items: center; justify-content: center; margin: 0 auto; position: relative;">
+                                        <div style="width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">
+                                            <span id="levelProgressPercent">0%</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 10px; font-size: 13px; color: #7f8c8d;">已完成 <span id="completedLevels">0</span>/<span id="totalLevels">15<>/span> 关</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 宠物成长 -->
+                    <div class="stats-card">
+                        <h3>📊 宠物成长曲线</h3>
+                        <div class="chart-container" id="petGrowthChart">
+                            <div style="text-align: center; padding: 50px; color: #7f8c8d;">暂无数据</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-around; margin-top: 10px; font-size: 12px;">
+                            <div><span style="color: #f5576c;">●</span> 等级</div>
+                            <div><span style="color: #4CAF50;">●</span> 攻击力</div>
+                            <div><span style="color: #2196F3;">●</span> 防御力</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 错题集 -->
+                    <div class="stats-card">
+                        <h3>📝 错题集 TOP5</h3>
+                        <div id="mistakeList">
+                            <div style="text-align: center; padding: 30px; color: #7f8c8d; font-size: 13px;">
+                                还没有错题记录，继续加油！
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 每日打卡 -->
+                    <div class="stats-card">
+                        <h3>📅 每日学习打卡</h3>
+                        
+                        <div class="calendar-header">
+                            <div>日</div>
+                            <div>一</div>
+                            <div>二</div>
+                            <div>三</div>
+                            <div>四</div>
+                            <div>五</div>
+                            <div>六</div>
+                        </div>
+                        
+                        <div class="calendar-grid" id="checkInCalendar"></div>
+                        
+                        <div style="text-align: center;">
+                            <button class="check-in-btn" id="checkInBtn" onclick="dailyCheckIn()">今日打卡</button>
+                            <div class="check-in-streak">
+                                连续打卡 <span class="streak-number" id="checkInStreak">0</span> 天
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -381,880 +596,3 @@
     </div>
 
     <script>
-        // ==================== 游戏数据 ====================
-        const gameData = {
-            coins: 100,
-            exp: 0,
-            level: 1,
-            pet: {
-                name: '拼音小熊猫',
-                avatar: '🐼',
-                level: 1,
-                exp: 0,
-                maxExp: 100,
-                hp: 100,
-                maxHP: 100,
-                energy: 50,
-                maxEnergy: 50,
-                attack: 10,
-                defense: 5,
-                speed: 10,
-                luck: 5,
-                skills: ['基础攻击'],
-                equipment: {
-                    weapon: null,
-                    armor: null,
-                    accessory: null
-                }
-            },
-            inventory: [],
-            completedLevels: [],
-            currentShopTab: 'weapons'
-        };
-
-        // ==================== 关卡数据（15关，每关10题）====================
-        const levels = [
-            // 声母关卡 (1-5)
-            {
-                id: 1, name: '声母入门', type: 'initial', icon: '🔤', reward: '50金币',
-                questions: [
-                    { q: 'b', options: ['玻', '坡', '摸', '佛'], answer: 0, hint: '双唇不送气清塞音' },
-                    { q: 'p', options: ['玻', '坡', '摸', '佛'], answer: 1, hint: '双唇送气清塞音' },
-                    { q: 'm', options: ['玻', '坡', '摸', '佛'], answer: 2, hint: '双唇浊鼻音' },
-                    { q: 'f', options: ['玻', '坡', '摸', '佛'], answer: 3, hint: '唇齿清擦音' },
-                    { q: 'd', options: ['得', '特', '讷', '勒'], answer: 0, hint: '舌尖中不送气清塞音' },
-                    { q: 't', options: ['得', '特', '讷', '勒'], answer: 1, hint: '舌尖中送气清塞音' },
-                    { q: 'n', options: ['得', '特', '讷', '勒'], answer: 2, hint: '舌尖中浊鼻音' },
-                    { q: 'l', options: ['得', '特', '讷', '勒'], answer: 3, hint: '舌尖中浊边音' },
-                    { q: 'g', options: ['哥', '科', '喝', '基'], answer: 0, hint: '舌根不送气清塞音' },
-                    { q: 'k', options: ['哥', '科', '喝', '基'], answer: 1, hint: '舌根送气清塞音' }
-                ]
-            },
-            {
-                id: 2, name: '声母进阶', type: 'initial', icon: '📖', reward: '60金币',
-                questions: [
-                    { q: 'h', options: ['哥', '科', '喝', '基'], answer: 2, hint: '舌根清擦音' },
-                    { q: 'j', options: ['哥', '科', '喝', '基'], answer: 3, hint: '舌面不送气清塞擦音' },
-                    { q: 'q', options: ['期', '希', '知', '吃'], answer: 0, hint: '舌面送气清塞擦音' },
-                    { q: 'x', options: ['期', '希', '知', '吃'], answer: 1, hint: '舌面清擦音' },
-                    { q: 'zh', options: ['期', '希', '知', '吃'], answer: 2, hint: '舌尖后不送气清塞擦音' },
-                    { q: 'ch', options: ['期', '希', '知', '吃'], answer: 3, hint: '舌尖后送气清塞擦音' },
-                    { q: 'sh', options: ['诗', '日', '资', '雌'], answer: 0, hint: '舌尖后清擦音' },
-                    { q: 'r', options: ['诗', '日', '资', '雌'], answer: 1, hint: '舌尖后浊擦音' },
-                    { q: 'z', options: ['诗', '日', '资', '雌'], answer: 2, hint: '舌尖前不送气清塞擦音' },
-                    { q: 'c', options: ['诗', '日', '资', '雌'], answer: 3, hint: '舌尖前送气清塞擦音' }
-                ]
-            },
-            {
-                id: 3, name: '声母大师', type: 'initial', icon: '🎓', reward: '70金币',
-                questions: [
-                    { q: 's', options: ['思', '衣', '屋', '迂'], answer: 0, hint: '舌尖前清擦音' },
-                    { q: 'y', options: ['思', '衣', '屋', '迂'], answer: 1, hint: '舌面浊半元音' },
-                    { q: 'w', options: ['思', '衣', '屋', '迂'], answer: 2, hint: '双唇浊半元音' },
-                    { q: 'bā', options: ['爸', '怕', '妈', '发'], answer: 0, hint: 'b + a' },
-                    { q: 'pō', options: ['波', '坡', '摸', '佛'], answer: 1, hint: 'p + o' },
-                    { q: 'mō', options: ['波', '坡', '摸', '佛'], answer: 2, hint: 'm + o' },
-                    { q: 'fō', options: ['波', '坡', '摸', '佛'], answer: 3, hint: 'f + o' },
-                    { q: 'dī', options: ['低', '踢', '泥', '里'], answer: 0, hint: 'd + i' },
-                    { q: 'tī', options: ['低', '踢', '泥', '里'], answer: 1, hint: 't + i' },
-                    { q: 'ní', options: ['低', '踢', '泥', '里'], answer: 2, hint: 'n + i' }
-                ]
-            },
-            {
-                id: 4, name: '声母挑战', type: 'initial', icon: '⚔️', reward: '80金币',
-                questions: [
-                    { q: 'lǐ', options: ['低', '踢', '泥', '里'], answer: 3, hint: 'l + i' },
-                    { q: 'gū', options: ['姑', '哭', '呼', '居'], answer: 0, hint: 'g + u' },
-                    { q: 'kū', options: ['姑', '哭', '呼', '居'], answer: 1, hint: 'k + u' },
-                    { q: 'hū', options: ['姑', '哭', '呼', '居'], answer: 2, hint: 'h + u' },
-                    { q: 'jū', options: ['姑', '哭', '呼', '居'], answer: 3, hint: 'j + ü' },
-                    { q: 'qǔ', options: ['取', '许', '猪', '出'], answer: 0, hint: 'q + ü' },
-                    { q: 'xǔ', options: ['取', '许', '猪', '出'], answer: 1, hint: 'x + ü' },
-                    { q: 'zhū', options: ['取', '许', '猪', '出'], answer: 2, hint: 'zh + u' },
-                    { q: 'chū', options: ['取', '许', '猪', '出'], answer: 3, hint: 'ch + u' },
-                    { q: 'shū', options: ['书', '如', '租', '粗'], answer: 0, hint: 'sh + u' }
-                ]
-            },
-            {
-                id: 5, name: '声母王者', type: 'initial', icon: '👑', reward: '100金币',
-                questions: [
-                    { q: 'rú', options: ['书', '如', '租', '粗'], answer: 1, hint: 'r + u' },
-                    { q: 'zū', options: ['书', '如', '租', '粗'], answer: 2, hint: 'z + u' },
-                    { q: 'cū', options: ['书', '如', '租', '粗'], answer: 3, hint: 'c + u' },
-                    { q: 'sū', options: ['苏', '衣', '屋', '迂'], answer: 0, hint: 's + u' },
-                    { q: 'yī', options: ['苏', '衣', '屋', '迂'], answer: 1, hint: 'y + i' },
-                    { q: 'wū', options: ['苏', '衣', '屋', '迂'], answer: 2, hint: 'w + u' },
-                    { q: 'yú', options: ['苏', '衣', '屋', '迂'], answer: 3, hint: 'y + ü' },
-                    { q: 'biān', options: ['边', '片', '面', '天'], answer: 0, hint: 'b + ian' },
-                    { q: 'piàn', options: ['边', '片', '面', '天'], answer: 1, hint: 'p + ian' },
-                    { q: 'miàn', options: ['边', '片', '面', '天'], answer: 2, hint: 'm + ian' }
-                ]
-            },
-            // 韵母关卡 (6-8)
-            {
-                id: 6, name: '单韵母', type: 'final', icon: '🔤', reward: '60金币',
-                questions: [
-                    { q: 'a', options: ['啊', '哦', '鹅', '衣'], answer: 0, hint: '舌面央低不圆唇元音' },
-                    { q: 'o', options: ['啊', '哦', '鹅', '衣'], answer: 1, hint: '舌面后半高圆唇元音' },
-                    { q: 'e', options: ['啊', '哦', '鹅', '衣'], answer: 2, hint: '舌面后半高不圆唇元音' },
-                    { q: 'i', options: ['啊', '哦', '鹅', '衣'], answer: 3, hint: '舌面前高不圆唇元音' },
-                    { q: 'u', options: ['乌', '迂', '啊', '哦'], answer: 0, hint: '舌面后高圆唇元音' },
-                    { q: 'ü', options: ['乌', '迂', '啊', '哦'], answer: 1, hint: '舌面前高圆唇元音' },
-                    { q: 'bā', options: ['八', '波', '逼', '不'], answer: 0, hint: 'b + a = 八' },
-                    { q: 'bō', options: ['八', '波', '逼', '不'], answer: 1, hint: 'b + o = 波' },
-                    { q: 'bī', options: ['八', '波', '逼', '不'], answer: 2, hint: 'b + i = 逼' },
-                    { q: 'bū', options: ['八', '波', '逼', '不'], answer: 3, hint: 'b + u = 不' }
-                ]
-            },
-            {
-                id: 7, name: '复韵母', type: 'final', icon: '📚', reward: '70金币',
-                questions: [
-                    { q: 'ai', options: ['挨', '诶', '威', '凹'], answer: 0, hint: '前响复韵母' },
-                    { q: 'ei', options: ['挨', '诶', '威', '凹'], answer: 1, hint: '前响复韵母' },
-                    { q: 'ui', options: ['挨', '诶', '威', '凹'], answer: 2, hint: 'uei的缩写' },
-                    { q: 'ao', options: ['挨', '诶', '威', '凹'], answer: 3, hint: '前响复韵母' },
-                    { q: 'ou', options: ['欧', '优', '耶', '约'], answer: 0, hint: '前响复韵母' },
-                    { q: 'iu', options: ['欧', '优', '耶', '约'], answer: 1, hint: 'iou的缩写' },
-                    { q: 'ie', options: ['欧', '优', '耶', '约'], answer: 2, hint: '后响复韵母' },
-                    { q: 'üe', options: ['欧', '优', '耶', '约'], answer: 3, hint: '后响复韵母' },
-                    { q: 'er', options: ['儿', '耳', '二', '而'], answer: 0, hint: '特殊韵母' },
-                    { q: 'bái', options: ['白', '杯', '包', '波'], answer: 0, hint: 'b + ai' }
-                ]
-            },
-            {
-                id: 8, name: '鼻韵母', type: 'final', icon: '🎓', reward: '80金币',
-                questions: [
-                    { q: 'an', options: ['安', '恩', '因', '温'], answer: 0, hint: '前鼻音韵母' },
-                    { q: 'en', options: ['安', '恩', '因', '温'], answer: 1, hint: '前鼻音韵母' },
-                    { q: 'in', options: ['安', '恩', '因', '温'], answer: 2, hint: '前鼻音韵母' },
-                    { q: 'un', options: ['安', '恩', '因', '温'], answer: 3, hint: 'uen的缩写' },
-                    { q: 'ün', options: ['晕', '昂', '鞥', '英'], answer: 0, hint: '前鼻音韵母' },
-                    { q: 'ang', options: ['晕', '昂', '鞥', '英'], answer: 1, hint: '后鼻音韵母' },
-                    { q: 'eng', options: ['晕', '昂', '鞥', '英'], answer: 2, hint: '后鼻音韵母' },
-                    { q: 'ing', options: ['晕', '昂', '鞥', '英'], answer: 3, hint: '后鼻音韵母' },
-                    { q: 'ong', options: ['轰', '东', '通', '龙'], answer: 0, hint: '后鼻音韵母' },
-                    { q: 'dōng', options: ['东', '通', '龙', '空'], answer: 0, hint: 'd + ong' }
-                ]
-            },
-            // 声调关卡 (9-10)
-            {
-                id: 9, name: '声调基础', type: 'tone', icon: '🎵', reward: '60金币',
-                questions: [
-                    { q: 'ā', options: ['第一声', '第二声', '第三声', '第四声'], answer: 0, hint: '高平调' },
-                    { q: 'á', options: ['第一声', '第二声', '第三声', '第四声'], answer: 1, hint: '高升调' },
-                    { q: 'ǎ', options: ['第一声', '第二声', '第三声', '第四声'], answer: 2, hint: '降升调' },
-                    { q: 'à', options: ['第一声', '第二声', '第三声', '第四声'], answer: 3, hint: '全降调' },
-                    { q: 'ō', options: ['第一声', '第二声', '第三声', '第四声'], answer: 0, hint: '高平调' },
-                    { q: 'ó', options: ['第一声', '第二声', '第三声', '第四声'], answer: 1, hint: '高升调' },
-                    { q: 'ǒ', options: ['第一声', '第二声', '第三声', '第四声'], answer: 2, hint: '降升调' },
-                    { q: 'ò', options: ['第一声', '第二声', '第三声', '第四声'], answer: 3, hint: '全降调' },
-                    { q: 'ē', options: ['第一声', '第二声', '第三声', '第四声'], answer: 0, hint: '高平调' },
-                    { q: 'é', options: ['第一声', '第二声', '第三声', '第四声'], answer: 1, hint: '高升调' }
-                ]
-            },
-            {
-                id: 10, name: '声调进阶', type: 'tone', icon: '🎶', reward: '70金币',
-                questions: [
-                    { q: 'ě', options: ['第一声', '第二声', '第三声', '第四声'], answer: 2, hint: '降升调' },
-                    { q: 'è', options: ['第一声', '第二声', '第三声', '第四声'], answer: 3, hint: '全降调' },
-                    { q: 'mā', options: ['妈', '麻', '马', '骂'], answer: 0, hint: '第一声' },
-                    { q: 'má', options: ['妈', '麻', '马', '骂'], answer: 1, hint: '第二声' },
-                    { q: 'mǎ', options: ['妈', '麻', '马', '骂'], answer: 2, hint: '第三声' },
-                    { q: 'mà', options: ['妈', '麻', '马', '骂'], answer: 3, hint: '第四声' },
-                    { q: 'bā', options: ['八', '拔', '把', '爸'], answer: 0, hint: '第一声' },
-                    { q: 'bá', options: ['八', '拔', '把', '爸'], answer: 1, hint: '第二声' },
-                    { q: 'bǎ', options: ['八', '拔', '把', '爸'], answer: 2, hint: '第三声' },
-                    { q: 'bà', options: ['八', '拔', '把', '爸'], answer: 3, hint: '第四声' }
-                ]
-            },
-            // 拼读关卡 (11-13)
-            {
-                id: 11, name: '两拼音节', type: 'syllable', icon: '🔗', reward: '80金币',
-                questions: [
-                    { q: 'ba', options: ['爸', '怕', '妈', '发'], answer: 0, hint: 'b + a' },
-                    { q: 'pa', options: ['爸', '怕', '妈', '发'], answer: 1, hint: 'p + a' },
-                    { q: 'ma', options: ['爸', '怕', '妈', '发'], answer: 2, hint: 'm + a' },
-                    { q: 'fa', options: ['爸', '怕', '妈', '发'], answer: 3, hint: 'f + a' },
-                    { q: 'da', options: '大,他,那,拉'.split(','), answer: 0, hint: 'd + a' },
-                    { q: 'ta', options: '大,他,那,拉'.split(','), answer: 1, hint: 't + a' },
-                    { q: 'na', options: '大,他,那,拉'.split(','), answer: 2, hint: 'n + a' },
-                    { q: 'la', options: '大,他,那,拉'.split(','), answer: 3, hint: 'l + a' },
-                    { q: 'ga', options: '嘎,卡,哈,家'.split(','), answer: 0, hint: 'g + a' },
-                    { q: 'ka', options: '嘎,卡,哈,家'.split(','), answer: 1, hint: 'k + a' }
-                ]
-            },
-            {
-                id: 12, name: '三拼音节', type: 'syllable', icon: '⛓️', reward: '90金币',
-                questions: [
-                    { q: 'jia', options: '家,恰,虾,加'.split(','), answer: 0, hint: 'j + i + a' },
-                    { q: 'qia', options: '家,恰,虾,加'.split(','), answer: 1, hint: 'q + i + a' },
-                    { q: 'xia', options: '家,恰,虾,加'.split(','), answer: 2, hint: 'x + i + a' },
-                    { q: 'gua', options: '瓜,夸,花,抓'.split(','), answer: 0, hint: 'g + u + a' },
-                    { q: 'kua', options: '瓜,夸,花,抓'.split(','), answer: 1, hint: 'k + u + a' },
-                    { q: 'hua', options: '瓜,夸,花,抓'.split(','), answer: 2, hint: 'h + u + a' },
-                    { q: 'zhua', options: '瓜,夸,花,抓'.split(','), answer: 3, hint: 'zh + u + a' },
-                    { q: 'duo', options: '多,托,挪,罗'.split(','), answer: 0, hint: 'd + u + o' },
-                    { q: 'tuo', options: '多,托,挪,罗'.split(','), answer: 1, hint: 't + u + o' },
-                    { q: 'nuo', options: '多,托,挪,罗'.split(','), answer: 2, hint: 'n + u + o' }
-                ]
-            },
-            {
-                id: 13, name: '整体认读', type: 'syllable', icon: '📿', reward: '100金币',
-                questions: [
-                    { q: 'zhi', options: '知,吃,诗,日'.split(','), answer: 0, hint: '整体认读音节' },
-                    { q: 'chi', options: '知,吃,诗,日'.split(','), answer: 1, hint: '整体认读音节' },
-                    { q: 'shi', options: '知,吃,诗,日'.split(','), answer: 2, hint: '整体认读音节' },
-                    { q: 'ri', options: '知,吃,诗,日'.split(','), answer: 3, hint: '整体认读音节' },
-                    { q: 'zi', options: '资,词,丝,衣'.split(','), answer: 0, hint: '整体认读音节' },
-                    { q: 'ci', options: '资,词,丝,衣'.split(','), answer: 1, hint: '整体认读音节' },
-                    { q: 'si', options: '资,词,丝,衣'.split(','), answer: 2, hint: '整体认读音节' },
-                    { q: 'yi', options: '资,词,丝,衣'.split(','), answer: 3, hint: '整体认读音节' },
-                    { q: 'wu', options: '屋,于,月,圆'.split(','), answer: 0, hint: '整体认读音节' },
-                    { q: 'yu', options: '屋,于,月,圆'.split(','), answer: 1, hint: '整体认读音节' }
-                ]
-            },
-            // 词语关卡 (14-15)
-            {
-                id: 14, name: '常用词语', type: 'word', icon: '📝', reward: '100金币',
-                questions: [
-                    { q: 'bàba', options: '爸爸,妈妈,哥哥,姐姐'.split(','), answer: 0, hint: '父亲的称呼' },
-                    { q: 'māma', options: '爸爸,妈妈,哥哥,姐姐'.split(','), answer: 1, hint: '母亲的称呼' },
-                    { q: 'dàdì', options: '大地,天空,海洋,森林'.split(','), answer: 0, hint: '广阔的地面' },
-                    { q: 'tiānkōng', options: '大地,天空,海洋,森林'.split(','), answer: 1, hint: '天上的空间' },
-                    { q: 'xiǎomāo', options: '小狗,小猫,小鸟,小鱼'.split(','), answer: 1, hint: '喵喵叫的动物' },
-                    { q: 'xiǎogǒu', options: '小狗,小猫,小鸟,小鱼'.split(','), answer: 0, hint: '汪汪叫的动物' },
-                    { q: 'shuǐguǒ', options: '蔬菜,水果,米饭,面条'.split(','), answer: 1, hint: '可以生吃的植物果实' },
-                    { q: 'xuéxiào', options: '医院,学校,商店,公园'.split(','), answer: 1, hint: '学习的地方' },
-                    { q: 'yīyuàn', options: '医院,学校,商店,公园'.split(','), answer: 0, hint: '看病的地方' },
-                    { q: 'gōngyuán', options: '医院,学校,商店,公园'.split(','), answer: 3, hint: '游玩休息的地方' }
-                ]
-            },
-            {
-                id: 15, name: '进阶词语', type: 'word', icon: '📖', reward: '150金币',
-                questions: [
-                    { q: 'tàiyáng', options: '月亮,太阳,星星,地球'.split(','), answer: 1, hint: '白天发光的星球' },
-                    { q: 'yuèliang', options: '月亮,太阳,星星,地球'.split(','), answer: 0, hint: '晚上发光的星球' },
-                    { q: 'xīngxing', options: '月亮,太阳,星星,地球'.split(','), answer: 2, hint: '夜空中闪烁的' },
-                    { q: 'dàshù', options: '大树,小草,花朵,叶子'.split(','), answer: 0, hint: '高大的植物' },
-                    { q: 'huāduǒ', options: '大树,小草,花朵,叶子'.split(','), answer: 2, hint: '植物的繁殖器官' },
-                    { q: 'xiǎocǎo', options: '大树,小草,花朵,叶子'.split(','), answer: 1, hint: '矮小的植物' },
-                    { q: 'húdié', options: '蜜蜂,蝴蝶,蜻蜓,蚂蚁'.split(','), answer: 1, hint: '会飞的花间昆虫' },
-                    { q: 'mìfēng', options: '蜜蜂,蝴蝶,蜻蜓,蚂蚁'.split(','), answer: 0, hint: '采蜜的昆虫' },
-                    { q: 'lǎoshī', options: '老师,医生,警察,工人'.split(','), answer: 0, hint: '教书的人' },
-                    { q: 'yīshēng', options: '老师,医生,警察,工人'.split(','), answer: 1, hint: '治病的人' }
-                ]
-            }
-        ];
-
-        // ==================== 怪兽数据 ====================
-        const monsters = {
-            forest: [
-                { name: '小蘑菇怪', avatar: '🍄', hp: 30, attack: 5, exp: 20, coins: 15 },
-                { name: '树精', avatar: '🌳', hp: 50, attack: 8, exp: 35, coins: 25 },
-                { name: '野狼', avatar: '🐺', hp: 40, attack: 10, exp: 30, coins: 20 }
-            ],
-            desert: [
-                { name: '蝎子王', avatar: '🦂', hp: 60, attack: 12, exp: 50, coins: 40 },
-                { name: '沙漠蛇', avatar: '🐍', hp: 45, attack: 15, exp: 45, coins: 35 },
-                { name: '仙人掌怪', avatar: '🌵', hp: 70, attack: 10, exp: 55, coins: 45 }
-            ],
-            ocean: [
-                { name: '小海龟', avatar: '🐢', hp: 80, attack: 12, exp: 70, coins: 60 },
-                { name: '章鱼怪', avatar: '🐙', hp: 65, attack: 18, exp: 65, coins: 55 },
-                { name: '鲨鱼', avatar: '🦈', hp: 100, attack: 20, exp: 90, coins: 80 }
-            ],
-            snow: [
-                { name: '雪怪', avatar: '☃️', hp: 90, attack: 15, exp: 100, coins: 90 },
-                { name: '北极熊', avatar: '🐻‍❄️', hp: 120, attack: 22, exp: 120, coins: 110 },
-                { name: '冰龙', avatar: '🐲', hp: 150, attack: 25, exp: 150, coins: 140 }
-            ],
-            volcano: [
-                { name: '火蜥蜴', avatar: '🦎', hp: 130, attack: 28, exp: 180, coins: 170 },
-                { name: '熔岩怪', avatar: '🔥', hp: 160, attack: 30, exp: 200, coins: 190 },
-                { name: '炎魔', avatar: '👿', hp: 200, attack: 35, exp: 300, coins: 300 }
-            ]
-        };
-
-        const locationNames = {
-            forest: '神秘森林', desert: '炎热沙漠', ocean: '深海秘境',
-            snow: '冰雪山脉', volcano: '烈焰火山'
-        };
-
-        const locationEnergy = {
-            forest: 10, desert: 15, ocean: 20, snow: 25, volcano: 30
-        };
-
-        // ==================== 商店数据 ====================
-        const shopData = {
-            weapons: [
-                { id: 'w1', name: '木剑', icon: '🗡️', price: 50, attack: 5, desc: '新手的基础武器' },
-                { id: 'w2', name: '铁剑', icon: '⚔️', price: 150, attack: 12, desc: '比木剑更锋利' },
-                { id: 'w3', name: '钢刀', icon: '🔪', price: 300, attack: 25, desc: '精钢打造的宝刀' },
-                { id: 'w4', name: '魔法杖', icon: '🪄', price: 500, attack: 40, desc: '蕴含魔法力量' },
-                { id: 'w5', name: '龙牙剑', icon: '🐉', price: 1000, attack: 80, desc: '传说中的神兵' }
-            ],
-            armor: [
-                { id: 'a1', name: '布衣', icon: '👕', price: 40, defense: 3, desc: '普通的布衣' },
-                { id: 'a2', name: '皮甲', icon: '🦺', price: 120, defense: 8, desc: '兽皮制作的护甲' },
-                { id: 'a3', name: '铁甲', icon: '👔', price: 250, defense: 15, desc: '铁制铠甲' },
-                { id: 'a4', name: '钢甲', icon: '🛡️', price: 450, defense: 30, desc: '精钢铠甲' },
-                { id: 'a5', name: '龙鳞甲', icon: '👑', price: 900, defense: 60, desc: '龙鳞制成的传说护甲' }
-            ],
-            items: [
-                { id: 'i1', name: '小药水', icon: '🧪', price: 20, hp: 30, desc: '恢复30点生命' },
-                { id: 'i2', name: '大药水', icon: '🧫', price: 50, hp: 80, desc: '恢复80点生命' },
-                { id: 'i3', name: '能量饮料', icon: '🥤', price: 30, energy: 20, desc: '恢复20点体力' },
-                { id: 'i4', name: '超级药水', icon: '🏺', price: 100, hp: 200, desc: '恢复200点生命' },
-                { id: 'i5', name: '全恢复药', icon: '💊', price: 200, hp: 999, energy: 999, desc: '完全恢复生命和体力' }
-            ],
-            skills: [
-                { id: 's1', name: '重击', icon: '💥', price: 100, desc: '攻击时50%概率造成1.5倍伤害' },
-                { id: 's2', name: '连击', icon: '⚡', price: 200, desc: '攻击时20%概率攻击两次' },
-                { id: 's3', name: '吸血', icon: '🧛', price: 300, desc: '造成伤害的20%转化为生命' },
-                { id: 's4', name: '护盾', icon: '🔰', price: 250, desc: '受到的伤害减少30%' },
-                { id: 's5', name: '暴击', icon: '💢', price: 400, desc: '攻击时30%概率造成2倍伤害' }
-            ]
-        };
-
-        // ==================== 游戏状态 ====================
-        let currentLevel = null;
-        let currentQuestion = 0;
-        let correctAnswers = 0;
-        let battleState = null;
-
-        // ==================== 初始化 ====================
-        function init() {
-            updateDisplay();
-            renderLevels();
-        }
-
-        // ==================== 显示更新 ====================
-        function updateDisplay() {
-            document.getElementById('coins').textContent = gameData.coins;
-            document.getElementById('exp').textContent = gameData.exp;
-            document.getElementById('playerLevel').textContent = gameData.level;
-            document.getElementById('petHP').textContent = gameData.pet.hp;
-            document.getElementById('petMaxHP').textContent = gameData.pet.maxHP;
-            document.getElementById('petEnergy').textContent = gameData.pet.energy;
-            document.getElementById('petMaxEnergy').textContent = gameData.pet.maxEnergy;
-            document.getElementById('attack').textContent = gameData.pet.attack;
-            document.getElementById('defense').textContent = gameData.pet.defense;
-            document.getElementById('shopCoins').textContent = gameData.coins;
-        }
-
-        // ==================== 导航函数 ====================
-        function hideAllScreens() {
-            document.getElementById('mainMenu').classList.add('hidden');
-            document.getElementById('levelSelect').classList.add('hidden');
-            document.getElementById('quizScreen').classList.add('hidden');
-            document.getElementById('petScreen').classList.add('hidden');
-            document.getElementById('mapScreen').classList.add('hidden');
-            document.getElementById('battleScreen').classList.add('hidden');
-            document.getElementById('shopScreen').classList.add('hidden');
-        }
-
-        function showMainMenu() {
-            hideAllScreens();
-            document.getElementById('mainMenu').classList.remove('hidden');
-            updateDisplay();
-        }
-
-        function showLevels() {
-            hideAllScreens();
-            document.getElementById('levelSelect').classList.remove('hidden');
-            renderLevels();
-        }
-
-        function showPet() {
-            hideAllScreens();
-            document.getElementById('petScreen').classList.remove('hidden');
-            updatePetDisplay();
-        }
-
-        function showMap() {
-            hideAllScreens();
-            document.getElementById('mapScreen').classList.remove('hidden');
-        }
-
-        function showShop() {
-            hideAllScreens();
-            document.getElementById('shopScreen').classList.remove('hidden');
-            renderShop();
-        }
-
-        // ==================== 关卡系统 ====================
-        function renderLevels() {
-            const grid = document.getElementById('levelGrid');
-            grid.innerHTML = '';
-            
-            levels.forEach((level, index) => {
-                const isLocked = index > 0 && !gameData.completedLevels.includes(levels[index-1].id);
-                const isCompleted = gameData.completedLevels.includes(level.id);
-                
-                const card = document.createElement('div');
-                card.className = `level-card ${isLocked ? 'locked' : ''} ${isCompleted ? 'completed' : ''}`;
-                card.innerHTML = `
-                    <div style="font-size: 40px; margin-bottom: 10px;">${level.icon}</div>
-                    <h3>第${level.id}关</h3>
-                    <div style="font-weight: bold; margin: 5px 0;">${level.name}</div>
-                    <div class="level-type">${getLevelTypeName(level.type)}</div>
-                    <div class="level-reward">奖励: ${level.reward}</div>
-                `;
-                
-                if (!isLocked) {
-                    card.onclick = () => startLevel(level);
-                }
-                
-                grid.appendChild(card);
-            });
-        }
-
-        function getLevelTypeName(type) {
-            const names = { initial: '声母', final: '韵母', tone: '声调', syllable: '拼读', word: '词语' };
-            return names[type] || type;
-        }
-
-        function startLevel(level) {
-            currentLevel = level;
-            currentQuestion = 0;
-            correctAnswers = 0;
-            
-            hideAllScreens();
-            document.getElementById('quizScreen').classList.remove('hidden');
-            document.getElementById('quizLevelName').textContent = level.name;
-            document.getElementById('totalQ').textContent = level.questions.length;
-            
-            showQuestion();
-        }
-
-        function showQuestion() {
-            const q = currentLevel.questions[currentQuestion];
-            document.getElementById('currentQ').textContent = currentQuestion + 1;
-            document.getElementById('progressBar').style.width = ((currentQuestion / currentLevel.questions.length) * 100) + '%';
-            document.getElementById('questionDisplay').textContent = q.q;
-            document.getElementById('questionHint').textContent = q.hint || '请选出正确的答案';
-            
-            const grid = document.getElementById('optionsGrid');
-            grid.innerHTML = '';
-            
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.textContent = opt;
-                btn.onclick = () => selectAnswer(idx);
-                grid.appendChild(btn);
-            });
-        }
-
-        function selectAnswer(idx) {
-            const q = currentLevel.questions[currentQuestion];
-            const buttons = document.querySelectorAll('#optionsGrid .option-btn');
-            
-            buttons.forEach((btn, i) => {
-                btn.disabled = true;
-                if (i === q.answer) btn.classList.add('correct');
-                else if (i === idx && i !== q.answer) btn.classList.add('wrong');
-            });
-            
-            if (idx === q.answer) {
-                correctAnswers++;
-                gameData.coins += 5;
-                gameData.exp += 10;
-                gameData.pet.exp += 10;
-            }
-            
-            updateDisplay();
-            checkLevelUp();
-            
-            setTimeout(() => {
-                currentQuestion++;
-                if (currentQuestion < currentLevel.questions.length) {
-                    showQuestion();
-                } else {
-                    finishLevel();
-                }
-            }, 1000);
-        }
-
-        function finishLevel() {
-            const total = currentLevel.questions.length;
-            const rate = correctAnswers / total;
-            
-            if (rate >= 0.6 && !gameData.completedLevels.includes(currentLevel.id)) {
-                gameData.completedLevels.push(currentLevel.id);
-                const reward = parseInt(currentLevel.reward);
-                gameData.coins += reward;
-                gameData.exp += reward;
-                gameData.pet.exp += reward;
-            }
-            
-            checkLevelUp();
-            updateDisplay();
-            
-            alert(`关卡完成！\n正确率: ${correctAnswers}/${total}\n获得奖励: ${rate >= 0.6 ? currentLevel.reward : '未达到60%正确率，无奖励'}`);
-            showLevels();
-        }
-
-        function exitQuiz() {
-            if (confirm('确定要退出当前关卡吗？进度将不会保存。')) {
-                showLevels();
-            }
-        }
-
-        // ==================== 宠物系统 ====================
-        function updatePetDisplay() {
-            document.getElementById('petAvatar').textContent = gameData.pet.avatar;
-            document.getElementById('petName').textContent = gameData.pet.name;
-            document.getElementById('petLevel').textContent = gameData.pet.level;
-            document.getElementById('petExp').textContent = gameData.pet.exp;
-            document.getElementById('petMaxExp').textContent = gameData.pet.maxExp;
-            document.getElementById('expBar').style.width = (gameData.pet.exp / gameData.pet.maxExp * 100) + '%';
-            document.getElementById('petAttack').textContent = gameData.pet.attack;
-            document.getElementById('petDefense').textContent = gameData.pet.defense;
-            document.getElementById('petMaxHPStat').textContent = gameData.pet.maxHP;
-            document.getElementById('petMaxEnergyStat').textContent = gameData.pet.maxEnergy;
-            document.getElementById('petSpeed').textContent = gameData.pet.speed;
-            document.getElementById('petLuck').textContent = gameData.pet.luck;
-            
-            const titles = ['初级学徒', '拼音学员', '拼音达人', '拼音大师', '拼音王者', '拼音传说'];
-            const titleIndex = Math.min(Math.floor(gameData.pet.level / 5), titles.length - 1);
-            document.getElementById('petTitle').textContent = titles[titleIndex];
-            
-            const skillsDiv = document.getElementById('petSkills');
-            skillsDiv.innerHTML = gameData.pet.skills.map(s => 
-                `<span style="background: #e3f2fd; padding: 8px 15px; border-radius: 15px; margin: 5px; display: inline-block;">${s}</span>`
-            ).join('');
-        }
-
-        function checkLevelUp() {
-            while (gameData.pet.exp >= gameData.pet.maxExp) {
-                gameData.pet.exp -= gameData.pet.maxExp;
-                gameData.pet.level++;
-                gameData.pet.maxExp = Math.floor(gameData.pet.maxExp * 1.2);
-                gameData.pet.maxHP += 10;
-                gameData.pet.hp = gameData.pet.maxHP;
-                gameData.pet.attack += 2;
-                gameData.pet.defense += 1;
-                gameData.pet.maxEnergy += 5;
-                gameData.pet.energy = gameData.pet.maxEnergy;
-                
-                if (gameData.pet.level % 5 === 0) {
-                    gameData.pet.speed += 1;
-                    gameData.pet.luck += 1;
-                }
-            }
-            
-            while (gameData.exp >= gameData.level * 100) {
-                gameData.exp -= gameData.level * 100;
-                gameData.level++;
-            }
-        }
-
-        // ==================== 探险系统 ====================
-        function startAdventure(location) {
-            const energyCost = locationEnergy[location];
-            
-            if (gameData.pet.energy < energyCost) {
-                alert('体力不足！请休息或购买能量饮料。');
-                return;
-            }
-            
-            gameData.pet.energy -= energyCost;
-            updateDisplay();
-            
-            // 随机事件
-            const events = ['battle', 'treasure', 'rest'];
-            const weights = [0.6, 0.3, 0.1];
-            const rand = Math.random();
-            let eventType = 'battle';
-            let sum = 0;
-            
-            for (let i = 0; i < events.length; i++) {
-                sum += weights[i];
-                if (rand < sum) {
-                    eventType = events[i];
-                    break;
-                }
-            }
-            
-            if (eventType === 'battle') {
-                startBattle(location);
-            } else if (eventType === 'treasure') {
-                const coins = Math.floor(Math.random() * 50) + 20;
-                const exp = Math.floor(Math.random() * 30) + 10;
-                gameData.coins += coins;
-                gameData.exp += exp;
-                gameData.pet.exp += exp;
-                checkLevelUp();
-                updateDisplay();
-                showAdventureModal('发现宝藏！', `你在${locationNames[location]}发现了一处宝藏！\n获得 ${coins} 金币\n获得 ${exp} 经验`);
-            } else {
-                const energy = Math.floor(Math.random() * 20) + 10;
-                gameData.pet.energy = Math.min(gameData.pet.energy + energy, gameData.pet.maxEnergy);
-                updateDisplay();
-                showAdventureModal('发现休息点', `你在${locationNames[location]}找到了一个安全的休息点。\n恢复 ${energy} 点体力`);
-            }
-        }
-
-        function showAdventureModal(title, text) {
-            document.getElementById('adventureTitle').textContent = title;
-            document.getElementById('adventureText').textContent = text;
-            document.getElementById('adventureModal').classList.remove('hidden');
-        }
-
-        function closeAdventureModal() {
-            document.getElementById('adventureModal').classList.add('hidden');
-        }
-
-        // ==================== 战斗系统 ====================
-        function startBattle(location) {
-            const monsterList = monsters[location];
-            const monster = monsterList[Math.floor(Math.random() * monsterList.length)];
-            
-            battleState = {
-                location: location,
-                monster: { ...monster, currentHP: monster.hp },
-                petHP: gameData.pet.hp,
-                questionsAnswered: 0,
-                correctAnswers: 0
-            };
-            
-            hideAllScreens();
-            document.getElementById('battleScreen').classList.remove('hidden');
-            document.getElementById('battleLocation').textContent = locationNames[location];
-            document.getElementById('battlePetAvatar').textContent = gameData.pet.avatar;
-            document.getElementById('battlePetName').textContent = gameData.pet.name;
-            document.getElementById('battleMonsterAvatar').textContent = monster.avatar;
-            document.getElementById('battleMonsterName').textContent = monster.name;
-            
-            updateBattleDisplay();
-            showBattleQuestion();
-            addBattleLog(`遇到了 ${monster.name}！战斗开始！`);
-        }
-
-        function updateBattleDisplay() {
-            const petHPPercent = (battleState.petHP / gameData.pet.maxHP) * 100;
-            const monsterHPPercent = (battleState.monster.currentHP / battleState.monster.hp) * 100;
-            
-            document.getElementById('battlePetHP').style.width = petHPPercent + '%';
-            document.getElementById('battlePetHPCurrent').textContent = battleState.petHP;
-            document.getElementById('battlePetHPMax').textContent = gameData.pet.maxHP;
-            document.getElementById('battleMonsterHP').style.width = monsterHPPercent + '%';
-            document.getElementById('battleMonsterHPCurrent').textContent = battleState.monster.currentHP;
-            document.getElementById('battleMonsterHPMax').textContent = battleState.monster.hp;
-        }
-
-        function showBattleQuestion() {
-            // 从关卡中随机选一道题
-            const allQuestions = levels.flatMap(l => l.questions);
-            const q = allQuestions[Math.floor(Math.random() * allQuestions.length)];
-            
-            document.getElementById('battleQuestion').textContent = q.q;
-            
-            const grid = document.getElementById('battleOptions');
-            grid.innerHTML = '';
-            
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.textContent = opt;
-                btn.onclick = () => selectBattleAnswer(idx, q.answer);
-                grid.appendChild(btn);
-            });
-        }
-
-        function selectBattleAnswer(selected, correct) {
-            const buttons = document.querySelectorAll('#battleOptions .option-btn');
-            buttons.forEach((btn, i) => {
-                btn.disabled = true;
-                if (i === correct) btn.classList.add('correct');
-                else if (i === selected && i !== correct) btn.classList.add('wrong');
-            });
-            
-            if (selected === correct) {
-                // 答对，攻击怪兽
-                let damage = gameData.pet.attack + Math.floor(Math.random() * 5);
-                
-                // 技能效果
-                if (gameData.pet.skills.includes('重击') && Math.random() < 0.5) {
-                    damage = Math.floor(damage * 1.5);
-                    addBattleLog('触发重击！');
-                }
-                if (gameData.pet.skills.includes('连击') && Math.random() < 0.2) {
-                    damage *= 2;
-                    addBattleLog('触发连击！');
-                }
-                if (gameData.pet.skills.includes('暴击') && Math.random() < 0.3) {
-                    damage *= 2;
-                    addBattleLog('触发暴击！');
-                }
-                
-                battleState.monster.currentHP -= damage;
-                addBattleLog(`你答对了！对${battleState.monster.name}造成 ${damage} 点伤害！`);
-                
-                // 吸血效果
-                if (gameData.pet.skills.includes('吸血')) {
-                    const heal = Math.floor(damage * 0.2);
-                    battleState.petHP = Math.min(battleState.petHP + heal, gameData.pet.maxHP);
-                    addBattleLog(`吸血效果恢复 ${heal} 点生命！`);
-                }
-                
-                if (battleState.monster.currentHP <= 0) {
-                    setTimeout(() => winBattle(), 1000);
-                    return;
-                }
-            } else {
-                // 答错，怪兽攻击
-                let damage = Math.max(1, battleState.monster.attack - gameData.pet.defense + Math.floor(Math.random() * 3));
-                
-                // 护盾效果
-                if (gameData.pet.skills.includes('护盾')) {
-                    damage = Math.floor(damage * 0.7);
-                }
-                
-                battleState.petHP -= damage;
-                addBattleLog(`答错了！${battleState.monster.name}对你造成 ${damage} 点伤害！`);
-                
-                if (battleState.petHP <= 0) {
-                    battleState.petHP = 0;
-                    setTimeout(() => loseBattle(), 1000);
-                    return;
-                }
-            }
-            
-            updateBattleDisplay();
-            
-            setTimeout(() => {
-                showBattleQuestion();
-            }, 1500);
-        }
-
-        function addBattleLog(text) {
-            const log = document.getElementById('battleLog');
-            const entry = document.createElement('div');
-            entry.textContent = `> ${text}`;
-            log.appendChild(entry);
-            log.scrollTop = log.scrollHeight;
-        }
-
-        function winBattle() {
-            const exp = battleState.monster.exp;
-            const coins = battleState.monster.coins;
-            
-            gameData.exp += exp;
-            gameData.coins += coins;
-            gameData.pet.exp += exp;
-            
-            // 随机掉落装备
-            let equipDrop = '';
-            if (Math.random() < 0.3) {
-                const drops = ['神秘武器碎片', '古老护甲残片', '能量水晶', '幸运符'];
-                equipDrop = drops[Math.floor(Math.random() * drops.length)];
-                gameData.inventory.push(equipDrop);
-            }
-            
-            checkLevelUp();
-            updateDisplay();
-            
-            document.getElementById('battleResultTitle').textContent = '战斗胜利！';
-            document.getElementById('battleResultText').innerHTML = 
-                `你击败了 ${battleState.monster.name}！<br>` +
-                `获得 ${exp} 经验<br>` +
-                `获得 ${coins} 金币` +
-                (equipDrop ? `<br>掉落: ${equipDrop}` : '');
-            document.getElementById('battleResultModal').classList.remove('hidden');
-        }
-
-        function loseBattle() {
-            gameData.pet.hp = 1; // 保留1点生命
-            updateDisplay();
-            
-            document.getElementById('battleResultTitle').textContent = '战斗失败';
-            document.getElementById('battleResultText').textContent = 
-                `你被 ${battleState.monster.name} 击败了...\n下次再接再厉！`;
-            document.getElementById('battleResultModal').classList.remove('hidden');
-        }
-
-        function closeBattleResultModal() {
-            document.getElementById('battleResultModal').classList.add('hidden');
-            gameData.pet.hp = battleState.petHP;
-            updateDisplay();
-            showMap();
-        }
-
-        // ==================== 商店系统 ====================
-        function switchShopTab(tab) {
-            gameData.currentShopTab = tab;
-            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            renderShop();
-        }
-
-        function renderShop() {
-            const container = document.getElementById('shopItems');
-            container.innerHTML = '';
-            
-            const items = shopData[gameData.currentShopTab];
-            
-            items.forEach(item => {
-                const isOwned = gameData.inventory.includes(item.id) || 
-                               (item.id && gameData.pet.equipment[gameData.currentShopTab === 'weapons' ? 'weapon' : 
-                                gameData.currentShopTab === 'armor' ? 'armor' : ''] === item.id);
-                
-                const card = document.createElement('div');
-                card.className = 'shop-item';
-                card.innerHTML = `
-                    <div class="shop-item-icon">${item.icon}</div>
-                    <div class="shop-item-name">${item.name}</div>
-                    <div class="shop-item-desc">${item.desc}</div>
-                    ${item.attack ? `<div style="color: #f5576c; font-size: 12px;">+${item.attack} 攻击</div>` : ''}
-                    ${item.defense ? `<div style="color: #2196F3; font-size: 12px;">+${item.defense} 防御</div>` : ''}
-                    ${isOwned ? '<div class="shop-item-owned">已拥有</div>' : `<div class="shop-item-price">${item.price} 💰</div>`}
-                `;
-                
-                if (!isOwned) {
-                    card.onclick = () => buyItem(item);
-                }
-                
-                container.appendChild(card);
-            });
-        }
-
-        function buyItem(item) {
-            if (gameData.coins < item.price) {
-                alert('金币不足！');
-                return;
-            }
-            
-            gameData.coins -= item.price;
-            
-            if (gameData.currentShopTab === 'weapons') {
-                gameData.pet.attack += item.attack;
-                gameData.pet.equipment.weapon = item.id;
-            } else if (gameData.currentShopTab === 'armor') {
-                gameData.pet.defense += item.defense;
-                gameData.pet.equipment.armor = item.id;
-            } else if (gameData.currentShopTab === 'items') {
-                if (item.hp) {
-                    gameData.pet.hp = Math.min(gameData.pet.hp + item.hp, gameData.pet.maxHP);
-                }
-                if (item.energy) {
-                    gameData.pet.energy = Math.min(gameData.pet.energy + item.energy, gameData.pet.maxEnergy);
-                }
-            } else if (gameData.currentShopTab === 'skills') {
-                if (!gameData.pet.skills.includes(item.name)) {
-                    gameData.pet.skills.push(item.name);
-                }
-            }
-            
-            gameData.inventory.push(item.id);
-            updateDisplay();
-            renderShop();
-            alert(`购买成功！获得 ${item.name}`);
-        }
-
-        // ==================== 启动游戏 ====================
-        init();
-    </script>
-</body>
-</html>
