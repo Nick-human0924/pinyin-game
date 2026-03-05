@@ -3,72 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音游戏 - 步骤2</title>
+    <title>拼音游戏 - 步骤2修复版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            min-height: 100vh; padding: 10px;
-            -webkit-tap-highlight-color: transparent;
-        }
+        body { font-family: sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 10px; }
         .game-container { max-width: 800px; margin: 0 auto; padding: 10px; }
-        .header { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 15px; margin-bottom: 15px; }
+        .header { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
         .player-info { display: flex; align-items: center; gap: 15px; }
         .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; font-size: 30px; }
         .stats { display: flex; gap: 10px; flex-wrap: wrap; }
         .stat-item { background: #F7F9FC; padding: 8px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
-        
         .main-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .menu-card { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 25px 15px; text-align: center; cursor: pointer; }
+        .menu-card { background: white; border-radius: 20px; padding: 25px 15px; text-align: center; cursor: pointer; }
         .menu-card .icon { font-size: 40px; margin-bottom: 10px; }
-        .menu-card h2 { font-size: 16px; color: #2C3E50; }
-        
-        .page { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 20px; min-height: 500px; }
+        .page { background: white; border-radius: 20px; padding: 20px; min-height: 500px; }
         .hidden { display: none !important; }
         .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; }
         .btn-secondary { background: #F7F9FC; color: #2C3E50; }
-        
-        /* 基础教学 */
         .learning-tabs { display: flex; gap: 10px; margin: 20px 0; overflow-x: auto; }
-        .learning-tab { padding: 10px 15px; background: #F7F9FC; border-radius: 20px; cursor: pointer; white-space: nowrap; }
+        .learning-tab { padding: 10px 15px; background: #F7F9FC; border-radius: 20px; cursor: pointer; }
         .learning-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .pinyin-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
-        .pinyin-card { padding: 15px 5px; background: #f8f9fa; border-radius: 10px; text-align: center; font-size: 20px; font-weight: bold; color: #667eea; cursor: pointer; }
-        .pinyin-card:active { background: #667eea; color: white; }
+        .pinyin-card { padding: 20px; background: #f8f9fa; border-radius: 10px; text-align: center; font-size: 20px; font-weight: bold; color: #667eea; }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <!-- 头部 -->
         <div class="header">
             <div class="player-info">
                 <div class="avatar">🐼</div>
                 <div>
                     <div style="font-weight: bold;">拼音小勇士</div>
                     <div class="stats">
-                        <div class="stat-item">💰 <span id="coins">100</span></div>
-                        <div class="stat-item">❤️ <span id="hp">100</span></div>
+                        <div class="stat-item">💰 100</div>
+                        <div class="stat-item">❤️ 100</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 主菜单 -->
         <div id="mainMenu" class="main-menu">
-            <div class="menu-card" id="card1">
+            <div class="menu-card" onclick="goToLearning()">
                 <div class="icon">📖</div>
                 <h2>基础教学</h2>
             </div>
-            <div class="menu-card" id="card2">
+            <div class="menu-card" onclick="showPage('game')">
                 <div class="icon">⚔️</div>
                 <h2>闯关模式</h2>
             </div>
-            <div class="menu-card" id="card3">
+            <div class="menu-card" onclick="showPage('map')">
                 <div class="icon">🗺️</div>
                 <h2>探险地图</h2>
             </div>
-            <div class="menu-card" id="card4">
+            <div class="menu-card" onclick="showPage('shop')">
                 <div class="icon">🏪</div>
                 <h2>商店</h2>
             </div>
@@ -76,30 +63,44 @@
 
         <!-- 基础教学 -->
         <div id="learning" class="page hidden">
-            <button class="btn btn-secondary" id="back1">← 返回</button>
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 20px 0;">📖 基础教学</h2>
             
             <div class="learning-tabs">
-                <div class="learning-tab active" id="tab1">声母 (23个)</div>
-                <div class="learning-tab" id="tab2">韵母 (24个)</div>
-                <div class="learning-tab" id="tab3">整体认读 (16个)</div>
+                <div class="learning-tab active" id="tab1" onclick="showInitial()">声母</div>
+                <div class="learning-tab" id="tab2" onclick="showFinal()">韵母</div>
+                <div class="learning-tab" id="tab3" onclick="showWhole()">整体认读</div>
             </div>
             
-            <div id="learningContent"></div>
+            <div id="learningContent">
+                <!-- 默认显示声母 -->
+                <div class="pinyin-grid">
+                    <div class="pinyin-card">b</div>
+                    <div class="pinyin-card">p</div>
+                    <div class="pinyin-card">m</div>
+                    <div class="pinyin-card">f</div>
+                    <div class="pinyin-card">d</div>
+                    <div class="pinyin-card">t</div>
+                    <div class="pinyin-card">n</div>
+                    <div class="pinyin-card">l</div>
+                    <div class="pinyin-card">g</div>
+                    <div class="pinyin-card">k</div>
+                </div>
+            </div>
             
-            <button class="btn" id="completeBtn">完成学习</button>
+            <button class="btn" onclick="alert('完成学习！')">完成学习</button>
         </div>
 
         <!-- 闯关模式 -->
         <div id="game" class="page hidden">
-            <button class="btn btn-secondary" id="back2">← 返回</button>
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 20px 0;">⚔️ 闯关模式</h2>
             <p>答题闯关</p>
         </div>
 
         <!-- 探险地图 -->
         <div id="map" class="page hidden">
-            <button class="btn btn-secondary" id="back3">← 返回</button>
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 20px 0;">🗺️ 探险地图</h2>
             <button class="btn">🌲 神秘森林</button>
             <button class="btn">🏜️ 炎热沙漠</button>
@@ -107,7 +108,7 @@
 
         <!-- 商店 -->
         <div id="shop" class="page hidden">
-            <button class="btn btn-secondary" id="back4">← 返回</button>
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 20px 0;">🏪 商店</h2>
             <button class="btn">⚔️ 木剑 - 50金币</button>
             <button class="btn">🧪 药水 - 20金币</button>
@@ -115,59 +116,50 @@
     </div>
 
     <script>
-        // 拼音数据
-        var pinyinData = {
-            initial: ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'],
-            final: ['a','o','e','i','u','ü','ai','ei','ui','ao','ou','iu','ie','üe','er','an','en','in','un','ün','ang','eng','ing','ong'],
-            whole: ['zhi','chi','shi','ri','zi','ci','si','yi','wu','yu','ye','yue','yuan','yin','yun','ying']
-        };
-        
-        // 页面切换
         function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(function(el) { el.classList.add('hidden'); });
             document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('learning').classList.add('hidden');
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('map').classList.add('hidden');
+            document.getElementById('shop').classList.add('hidden');
             document.getElementById(pageId).classList.remove('hidden');
         }
         
         function showMainMenu() {
-            document.querySelectorAll('.page').forEach(function(el) { el.classList.add('hidden'); });
+            document.getElementById('learning').classList.add('hidden');
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('map').classList.add('hidden');
+            document.getElementById('shop').classList.add('hidden');
             document.getElementById('mainMenu').classList.remove('hidden');
         }
         
-        // 切换教学标签
-        function switchTab(type) {
-            document.querySelectorAll('.learning-tab').forEach(function(t) { t.classList.remove('active'); });
-            document.getElementById('tab1').classList.toggle('active', type === 'initial');
-            document.getElementById('tab2').classList.toggle('active', type === 'final');
-            document.getElementById('tab3').classList.toggle('active', type === 'whole');
-            
-            var data = pinyinData[type];
-            var html = '<div class="pinyin-grid">';
-            data.forEach(function(py) {
-                html += '<div class="pinyin-card">' + py + '</div>';
-            });
-            html += '</div>';
-            document.getElementById('learningContent').innerHTML = html;
+        function goToLearning() {
+            showPage('learning');
         }
         
-        // 绑定事件
-        document.getElementById('card1').onclick = function() { showPage('learning'); switchTab('initial'); };
-        document.getElementById('card2').onclick = function() { showPage('game'); };
-        document.getElementById('card3').onclick = function() { showPage('map'); };
-        document.getElementById('card4').onclick = function() { showPage('shop'); };
+        function showInitial() {
+            document.getElementById('tab1').className = 'learning-tab active';
+            document.getElementById('tab2').className = 'learning-tab';
+            document.getElementById('tab3').className = 'learning-tab';
+            document.getElementById('learningContent').innerHTML = 
+                '<div class="pinyin-grid"><div class="pinyin-card">b</div><div class="pinyin-card">p</div><div class="pinyin-card">m</div><div class="pinyin-card">f</div><div class="pinyin-card">d</div><div class="pinyin-card">t</div><div class="pinyin-card">n</div><div class="pinyin-card">l</div><div class="pinyin-card">g</div><div class="pinyin-card">k</div></div>';
+        }
         
-        document.getElementById('back1').onclick = showMainMenu;
-        document.getElementById('back2').onclick = showMainMenu;
-        document.getElementById('back3').onclick = showMainMenu;
-        document.getElementById('back4').onclick = showMainMenu;
+        function showFinal() {
+            document.getElementById('tab1').className = 'learning-tab';
+            document.getElementById('tab2').className = 'learning-tab active';
+            document.getElementById('tab3').className = 'learning-tab';
+            document.getElementById('learningContent').innerHTML = 
+                '<div class="pinyin-grid"><div class="pinyin-card">a</div><div class="pinyin-card">o</div><div class="pinyin-card">e</div><div class="pinyin-card">i</div><div class="pinyin-card">u</div><div class="pinyin-card">ü</div><div class="pinyin-card">ai</div><div class="pinyin-card">ei</div><div class="pinyin-card">ui</div><div class="pinyin-card">ao</div></div>';
+        }
         
-        document.getElementById('tab1').onclick = function() { switchTab('initial'); };
-        document.getElementById('tab2').onclick = function() { switchTab('final'); };
-        document.getElementById('tab3').onclick = function() { switchTab('whole'); };
-        
-        document.getElementById('completeBtn').onclick = function() { alert('完成学习！'); };
-        
-        console.log('步骤2：基础教学内容已加载');
+        function showWhole() {
+            document.getElementById('tab1').className = 'learning-tab';
+            document.getElementById('tab2').className = 'learning-tab';
+            document.getElementById('tab3').className = 'learning-tab active';
+            document.getElementById('learningContent').innerHTML = 
+                '<div class="pinyin-grid"><div class="pinyin-card">zhi</div><div class="pinyin-card">chi</div><div class="pinyin-card">shi</div><div class="pinyin-card">ri</div><div class="pinyin-card">zi</div><div class="pinyin-card">ci</div><div class="pinyin-card">si</div><div class="pinyin-card">yi</div><div class="pinyin-card">wu</div><div class="pinyin-card">yu</div></div>';
+        }
     </script>
 </body>
 </html>
