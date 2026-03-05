@@ -587,12 +587,1047 @@
 
         <!-- 战斗结果弹窗 -->
         <div id="battleResultModal" class="modal-overlay hidden">
-            <div class="modal-content">
-                <div class="modal-title" id="battleResultTitle">战斗胜利！</div>
-                <div class="modal-text" id="battleResultText"></div>
-                <button class="btn" onclick="closeBattleResultModal()">确定</button>
-            </div>
-        </div>
-    </div>
+<script>
+        // ==================== 游戏数据 ====================
+        const gameData = {
+            coins: 100,
+            exp: 0,
+            level: 1,
+            pet: {
+                name: '拼音小熊猫',
+                avatar: '🐼',
+                level: 1,
+                exp: 0,
+                maxExp: 100,
+                hp: 100,
+                maxHP: 100,
+                energy: 50,
+                maxEnergy: 50,
+                attack: 10,
+                defense: 5,
+                speed: 10,
+                luck: 5,
+                skills: ['基础攻击'],
+                equipment: {
+                    weapon: null,
+                    armor: null,
+                    accessory: null
+                }
+            },
+            inventory: [],
+            completedLevels: [],
+            currentShopTab: 'weapons'
+        };
 
-    <script>
+        // ==================== 关卡数据（15关，每关10题）====================
+        const levels = [
+            // 声母关卡 (1-5)
+            {
+                id: 1, name: '声母入门', type: 'initial', icon: '🔤', reward: '50金币',
+                questions: [
+                    { q: 'b', options: ['玻', '坡', '摸', '佛'], answer: 0, hint: '双唇不送气清塞音' },
+                    { q: 'p', options: ['玻', '坡', '摸', '佛'], answer: 1, hint: '双唇送气清塞音' },
+                    { q: 'm', options: ['玻', '坡', '摸', '佛'], answer: 2, hint: '双唇浊鼻音' },
+                    { q: 'f', options: ['玻', '坡', '摸', '佛'], answer: 3, hint: '唇齿清擦音' },
+                    { q: 'd', options: ['得', '特', '讷', '勒'], answer: 0, hint: '舌尖中不送气清塞音' },
+                    { q: 't', options: ['得', '特', '讷', '勒'], answer: 1, hint: '舌尖中送气清塞音' },
+                    { q: 'n', options: ['得', '特', '讷', '勒'], answer: 2, hint: '舌尖中浊鼻音' },
+                    { q: 'l', options: ['得', '特', '讷', '勒'], answer: 3, hint: '舌尖中浊边音' },
+                    { q: 'g', options: ['哥', '科', '喝', '基'], answer: 0, hint: '舌根不送气清塞音' },
+                    { q: 'k', options: ['哥', '科', '喝', '基'], answer: 1, hint: '舌根送气清塞音' }
+                ]
+            },
+            {
+                id: 2, name: '声母进阶', type: 'initial', icon: '📖', reward: '60金币',
+                questions: [
+                    { q: 'h', options: ['哥', '科', '喝', '基'], answer: 2, hint: '舌根清擦音' },
+                    { q: 'j', options: ['哥', '科', '喝', '基'], answer: 3, hint: '舌面不送气清塞擦音' },
+                    { q: 'q', options: ['期', '希', '知', '吃'], answer: 0, hint: '舌面送气清塞擦音' },
+                    { q: 'x', options: ['期', '希', '知', '吃'], answer: 1, hint: '舌面清擦音' },
+                    { q: 'zh', options: ['期', '希', '知', '吃'], answer: 2, hint: '舌尖后不送气清塞擦音' },
+                    { q: 'ch', options: ['期', '希', '知', '吃'], answer: 3, hint: '舌尖后送气清塞擦音' },
+                    { q: 'sh', options: ['诗', '日', '资', '雌'], answer: 0, hint: '舌尖后清擦音' },
+                    { q: 'r', options: ['诗', '日', '资', '雌'], answer: 1, hint: '舌尖后浊擦音' },
+                    { q: 'z', options: ['诗', '日', '资', '雌'], answer: 2, hint: '舌尖前不送气清塞擦音' },
+                    { q: 'c', options: ['诗', '日', '资', '雌'], answer: 3, hint: '舌尖前送气清塞擦音' }
+                ]
+            },
+            {
+                id: 3, name: '声母大师', type: 'initial', icon: '🎓', reward: '70金币',
+                questions: [
+                    { q: 's', options: ['思', '衣', '屋', '迂'], answer: 0, hint: '舌尖前清擦音' },
+                    { q: 'y', options: ['思', '衣', '屋', '迂'], answer: 1, hint: '舌面浊半元音' },
+                    { q: 'w', options: ['思', '衣', '屋', '迂'], answer: 2, hint: '双唇浊半元音' },
+                    { q: 'bā', options: ['爸', '怕', '妈', '发'], answer: 0, hint: 'b + a' },
+                    { q: 'pō', options: ['波', '坡', '摸', '佛'], answer: 1, hint: 'p + o' },
+                    { q: 'mō', options: ['波', '坡', '摸', '佛'], answer: 2, hint: 'm + o' },
+                    { q: 'fō', options: ['波', '坡', '摸', '佛'], answer: 3, hint: 'f + o' },
+                    { q: 'dī', options: ['低', '踢', '泥', '里'], answer: 0, hint: 'd + i' },
+                    { q: 'tī', options: ['低', '踢', '泥', '里'], answer: 1, hint: 't + i' },
+                    { q: 'ní', options: ['低', '踢', '泥', '里'], answer: 2, hint: 'n + i' }
+                ]
+            },
+            {
+                id: 4, name: '声母挑战', type: 'initial', icon: '⚔️', reward: '80金币',
+                questions: [
+                    { q: 'lǐ', options: ['低', '踢', '泥', '里'], answer: 3, hint: 'l + i' },
+                    { q: 'gū', options: ['姑', '哭', '呼', '居'], answer: 0, hint: 'g + u' },
+                    { q: 'kū', options: ['姑', '哭', '呼', '居'], answer: 1, hint: 'k + u' },
+                    { q: 'hū', options: ['姑', '哭', '呼', '居'], answer: 2, hint: 'h + u' },
+                    { q: 'jū', options: ['姑', '哭', '呼', '居'], answer: 3, hint: 'j + ü' },
+                    { q: 'qǔ', options: ['取', '许', '猪', '出'], answer: 0, hint: 'q + ü' },
+                    { q: 'xǔ', options: ['取', '许', '猪', '出'], answer: 1, hint: 'x + ü' },
+                    { q: 'zhū', options: ['取', '许', '猪', '出'], answer: 2, hint: 'zh + u' },
+                    { q: 'chū', options: ['取', '许', '猪', '出'], answer: 3, hint: 'ch + u' },
+                    { q: 'shū', options: ['书', '如', '租', '粗'], answer: 0, hint: 'sh + u' }
+                ]
+            },
+            {
+                id: 5, name: '声母王者', type: 'initial', icon: '👑', reward: '100金币',
+                questions: [
+                    { q: 'rú', options: ['书', '如', '租', '粗'], answer: 1, hint: 'r + u' },
+                    { q: 'zū', options: ['书', '如', '租', '粗'], answer: 2, hint: 'z + u' },
+                    { q: 'cū', options: ['书', '如', '租', '粗'], answer: 3, hint: 'c + u' },
+                    { q: 'sū', options: ['苏', '衣', '屋', '迂'], answer: 0, hint: 's + u' },
+                    { q: 'yī', options: ['苏', '衣', '屋', '迂'], answer: 1, hint: 'y + i' },
+                    { q: 'wū', options: ['苏', '衣', '屋', '迂'], answer: 2, hint: 'w + u' },
+                    { q: 'yú', options: ['苏', '衣', '屋', '迂'], answer: 3, hint: 'y + ü' },
+                    { q: 'biān', options: ['边', '片', '面', '天'], answer: 0, hint: 'b + ian' },
+                    { q: 'piàn', options: ['边', '片', '面', '天'], answer: 1, hint: 'p + ian' },
+                    { q: 'miàn', options: ['边', '片', '面', '天'], answer: 2, hint: 'm + ian' }
+                ]
+            },
+            // 韵母关卡 (6-8)
+            {
+                id: 6, name: '单韵母', type: 'final', icon: '🔤', reward: '60金币',
+                questions: [
+                    { q: 'a', options: ['啊', '哦', '鹅', '衣'], answer: 0, hint: '舌面央低不圆唇元音' },
+                    { q: 'o', options: ['啊', '哦', '鹅', '衣'], answer: 1, hint: '舌面后半高圆唇元音' },
+                    { q: 'e', options: ['啊', '哦', '鹅', '衣'], answer: 2, hint: '舌面后半高不圆唇元音' },
+                    { q: 'i', options: ['啊', '哦', '鹅', '衣'], answer: 3, hint: '舌面前高不圆唇元音' },
+                    { q: 'u', options: ['乌', '迂', '啊', '哦'], answer: 0, hint: '舌面后高圆唇元音' },
+                    { q: 'ü', options: ['乌', '迂', '啊', '哦'], answer: 1, hint: '舌面前高圆唇元音' },
+                    { q: 'bā', options: ['八', '波', '逼', '不'], answer: 0, hint: 'b + a = 八' },
+                    { q: 'bō', options: ['八', '波', '逼', '不'], answer: 1, hint: 'b + o = 波' },
+                    { q: 'bī', options: ['八', '波', '逼', '不'], answer: 2, hint: 'b + i = 逼' },
+                    { q: 'bū', options: ['八', '波', '逼', '不'], answer: 3, hint: 'b + u = 不' }
+                ]
+            },
+            {
+                id: 7, name: '复韵母', type: 'final', icon: '📚', reward: '70金币',
+                questions: [
+                    { q: 'ai', options: ['挨', '诶', '威', '凹'], answer: 0, hint: '前响复韵母' },
+                    { q: 'ei', options: ['挨', '诶', '威', '凹'], answer: 1, hint: '前响复韵母' },
+                    { q: 'ui', options: ['挨', '诶', '威', '凹'], answer: 2, hint: 'uei的缩写' },
+                    { q: 'ao', options: ['挨', '诶', '威', '凹'], answer: 3, hint: '前响复韵母' },
+                    { q: 'ou', options: ['欧', '优', '耶', '约'], answer: 0, hint: '前响复韵母' },
+                    { q: 'iu', options: ['欧', '优', '耶', '约'], answer: 1, hint: 'iou的缩写' },
+                    { q: 'ie', options: ['欧', '优', '耶', '约'], answer: 2, hint: '后响复韵母' },
+                    { q: 'üe', options: ['欧', '优', '耶', '约'], answer: 3, hint: '后响复韵母' },
+                    { q: 'er', options: ['儿', '耳', '二', '而'], answer: 0, hint: '特殊韵母' },
+                    { q: 'bái', options: ['白', '杯', '包', '波'], answer: 0, hint: 'b + ai' }
+                ]
+            },
+            {
+                id: 8, name: '鼻韵母', type: 'final', icon: '🎓', reward: '80金币',
+                questions: [
+                    { q: 'an', options: ['安', '恩', '因', '温'], answer: 0, hint: '前鼻音韵母' },
+                    { q: 'en', options: ['安', '恩', '因', '温'], answer: 1, hint: '前鼻音韵母' },
+                    { q: 'in', options: ['安', '恩', '因', '温'], answer: 2, hint: '前鼻音韵母' },
+                    { q: 'un', options: ['安', '恩', '因', '温'], answer: 3, hint: 'uen的缩写' },
+                    { q: 'ün', options: ['晕', '昂', '鞥', '英'], answer: 0, hint: '前鼻音韵母' },
+                    { q: 'ang', options: ['晕', '昂', '鞥', '英'], answer: 1, hint: '后鼻音韵母' },
+                    { q: 'eng', options: ['晕', '昂', '鞥', '英'], answer: 2, hint: '后鼻音韵母' },
+                    { q: 'ing', options: ['晕', '昂', '鞥', '英'], answer: 3, hint: '后鼻音韵母' },
+                    { q: 'ong', options: ['轰', '东', '通', '龙'], answer: 0, hint: '后鼻音韵母' },
+                    { q: 'dōng', options: ['东', '通', '龙', '空'], answer: 0, hint: 'd + ong' }
+                ]
+            },
+            // 声调关卡 (9-10)
+            {
+                id: 9, name: '声调基础', type: 'tone', icon: '🎵', reward: '60金币',
+                questions: [
+                    { q: 'ā', options: ['第一声', '第二声', '第三声', '第四声'], answer: 0, hint: '高平调' },
+                    { q: 'á', options: ['第一声', '第二声', '第三声', '第四声'], answer: 1, hint: '高升调' },
+                    { q: 'ǎ', options: ['第一声', '第二声', '第三声', '第四声'], answer: 2, hint: '降升调' },
+                    { q: 'à', options: ['第一声', '第二声', '第三声', '第四声'], answer: 3, hint: '全降调' },
+                    { q: 'ō', options: ['第一声', '第二声', '第三声', '第四声'], answer: 0, hint: '高平调' },
+                    { q: 'ó', options: ['第一声', '第二声', '第三声', '第四声'], answer: 1, hint: '高升调' },
+                    { q: 'ǒ', options: ['第一声', '第二声', '第三声', '第四声'], answer: 2, hint: '降升调' },
+                    { q: 'ò', options: ['第一声', '第二声', '第三声', '第四声'], answer: 3, hint: '全降调' },
+                    { q: 'ē', options: ['第一声', '第二声', '第三声', '第四声'], answer: 0, hint: '高平调' },
+                    { q: 'é', options: ['第一声', '第二声', '第三声', '第四声'], answer: 1, hint: '高升调' }
+                ]
+            },
+            {
+                id: 10, name: '声调进阶', type: 'tone', icon: '🎶', reward: '70金币',
+                questions: [
+                    { q: 'ě', options: ['第一声', '第二声', '第三声', '第四声'], answer: 2, hint: '降升调' },
+                    { q: 'è', options: ['第一声', '第二声', '第三声', '第四声'], answer: 3, hint: '全降调' },
+                    { q: 'mā', options: ['妈', '麻', '马', '骂'], answer: 0, hint: '第一声' },
+                    { q: 'má', options: ['妈', '麻', '马', '骂'], answer: 1, hint: '第二声' },
+                    { q: 'mǎ', options: ['妈', '麻', '马', '骂'], answer: 2, hint: '第三声' },
+                    { q: 'mà', options: ['妈', '麻', '马', '骂'], answer: 3, hint: '第四声' },
+                    { q: 'bā', options: ['八', '拔', '把', '爸'], answer: 0, hint: '第一声' },
+                    { q: 'bá', options: ['八', '拔', '把', '爸'], answer: 1, hint: '第二声' },
+                    { q: 'bǎ', options: ['八', '拔', '把', '爸'], answer: 2, hint: '第三声' },
+                    { q: 'bà', options: ['八', '拔', '把', '爸'], answer: 3, hint: '第四声' }
+                ]
+            },
+            // 拼读关卡 (11-13)
+            {
+                id: 11, name: '两拼音节', type: 'syllable', icon: '🔗', reward: '80金币',
+                questions: [
+                    { q: 'ba', options: ['爸', '怕', '妈', '发'], answer: 0, hint: 'b + a' },
+                    { q: 'pa', options: ['爸', '怕', '妈', '发'], answer: 1, hint: 'p + a' },
+                    { q: 'ma', options: ['爸', '怕', '妈', '发'], answer: 2, hint: 'm + a' },
+                    { q: 'fa', options: ['爸', '怕', '妈', '发'], answer: 3, hint: 'f + a' },
+                    { q: 'da', options: '大,他,那,拉'.split(','), answer: 0, hint: 'd + a' },
+                    { q: 'ta', options: '大,他,那,拉'.split(','), answer: 1, hint: 't + a' },
+                    { q: 'na', options: '大,他,那,拉'.split(','), answer: 2, hint: 'n + a' },
+                    { q: 'la', options: '大,他,那,拉'.split(','), answer: 3, hint: 'l + a' },
+                    { q: 'ga', options: '嘎,卡,哈,家'.split(','), answer: 0, hint: 'g + a' },
+                    { q: 'ka', options: '嘎,卡,哈,家'.split(','), answer: 1, hint: 'k + a' }
+                ]
+            },
+            {
+                id: 12, name: '三拼音节', type: 'syllable', icon: '⛓️', reward: '90金币',
+                questions: [
+                    { q: 'jia', options: '家,恰,虾,加'.split(','), answer: 0, hint: 'j + i + a' },
+                    { q: 'qia', options: '家,恰,虾,加'.split(','), answer: 1, hint: 'q + i + a' },
+                    { q: 'xia', options: '家,恰,虾,加'.split(','), answer: 2, hint: 'x + i + a' },
+                    { q: 'gua', options: '瓜,夸,花,抓'.split(','), answer: 0, hint: 'g + u + a' },
+                    { q: 'kua', options: '瓜,夸,花,抓'.split(','), answer: 1, hint: 'k + u + a' },
+                    { q: 'hua', options: '瓜,夸,花,抓'.split(','), answer: 2, hint: 'h + u + a' },
+                    { q: 'zhua', options: '瓜,夸,花,抓'.split(','), answer: 3, hint: 'zh + u + a' },
+                    { q: 'duo', options: '多,托,挪,罗'.split(','), answer: 0, hint: 'd + u + o' },
+                    { q: 'tuo', options: '多,托,挪,罗'.split(','), answer: 1, hint: 't + u + o' },
+                    { q: 'nuo', options: '多,托,挪,罗'.split(','), answer: 2, hint: 'n + u + o' }
+                ]
+            },
+            {
+                id: 13, name: '整体认读', type: 'syllable', icon: '📿', reward: '100金币',
+                questions: [
+                    { q: 'zhi', options: '知,吃,诗,日'.split(','), answer: 0, hint: '整体认读音节' },
+                    { q: 'chi', options: '知,吃,诗,日'.split(','), answer: 1, hint: '整体认读音节' },
+                    { q: 'shi', options: '知,吃,诗,日'.split(','), answer: 2, hint: '整体认读音节' },
+                    { q: 'ri', options: '知,吃,诗,日'.split(','), answer: 3, hint: '整体认读音节' },
+                    { q: 'zi', options: '资,词,丝,衣'.split(','), answer: 0, hint: '整体认读音节' },
+                    { q: 'ci', options: '资,词,丝,衣'.split(','), answer: 1, hint: '整体认读音节' },
+                    { q: 'si', options: '资,词,丝,衣'.split(','), answer: 2, hint: '整体认读音节' },
+                    { q: 'yi', options: '资,词,丝,衣'.split(','), answer: 3, hint: '整体认读音节' },
+                    { q: 'wu', options: '屋,于,月,圆'.split(','), answer: 0, hint: '整体认读音节' },
+                    { q: 'yu', options: '屋,于,月,圆'.split(','), answer: 1, hint: '整体认读音节' }
+                ]
+            },
+            // 词语关卡 (14-15)
+            {
+                id: 14, name: '常用词语', type: 'word', icon: '📝', reward: '100金币',
+                questions: [
+                    { q: 'bàba', options: '爸爸,妈妈,哥哥,姐姐'.split(','), answer: 0, hint: '父亲的称呼' },
+                    { q: 'māma', options: '爸爸,妈妈,哥哥,姐姐'.split(','), answer: 1, hint: '母亲的称呼' },
+                    { q: 'dàdì', options: '大地,天空,海洋,森林'.split(','), answer: 0, hint: '广阔的地面' },
+                    { q: 'tiānkōng', options: '大地,天空,海洋,森林'.split(','), answer: 1, hint: '天上的空间' },
+                    { q: 'xiǎomāo', options: '小狗,小猫,小鸟,小鱼'.split(','), answer: 1, hint: '喵喵叫的动物' },
+                    { q: 'xiǎogǒu', options: '小狗,小猫,小鸟,小鱼'.split(','), answer: 0, hint: '汪汪叫的动物' },
+                    { q: 'shuǐguǒ', options: '蔬菜,水果,米饭,面条'.split(','), answer: 1, hint: '可以生吃的植物果实' },
+                    { q: 'xuéxiào', options: '医院,学校,商店,公园'.split(','), answer: 1, hint: '学习的地方' },
+                    { q: 'yīyuàn', options: '医院,学校,商店,公园'.split(','), answer: 0, hint: '看病的地方' },
+                    { q: 'gōngyuán', options: '医院,学校,商店,公园'.split(','), answer: 3, hint: '游玩休息的地方' }
+                ]
+            },
+            {
+                id: 15, name: '进阶词语', type: 'word', icon: '📖', reward: '150金币',
+                questions: [
+                    { q: 'tàiyáng', options: '月亮,太阳,星星,地球'.split(','), answer: 1, hint: '白天发光的星球' },
+                    { q: 'yuèliang', options: '月亮,太阳,星星,地球'.split(','), answer: 0, hint: '晚上发光的星球' },
+                    { q: 'xīngxing', options: '月亮,太阳,星星,地球'.split(','), answer: 2, hint: '夜空中闪烁的' },
+                    { q: 'dàshù', options: '大树,小草,花朵,叶子'.split(','), answer: 0, hint: '高大的植物' },
+                    { q: 'huāduǒ', options: '大树,小草,花朵,叶子'.split(','), answer: 2, hint: '植物的繁殖器官' },
+                    { q: 'xiǎocǎo', options: '大树,小草,花朵,叶子'.split(','), answer: 1, hint: '矮小的植物' },
+                    { q: 'húdié', options: '蜜蜂,蝴蝶,蜻蜓,蚂蚁'.split(','), answer: 1, hint: '会飞的花间昆虫' },
+                    { q: 'mìfēng', options: '蜜蜂,蝴蝶,蜻蜓,蚂蚁'.split(','), answer: 0, hint: '采蜜的昆虫' },
+                    { q: 'lǎoshī', options: '老师,医生,警察,工人'.split(','), answer: 0, hint: '教书的人' },
+                    { q: 'yīshēng', options: '老师,医生,警察,工人'.split(','), answer: 1, hint: '治病的人' }
+                ]
+            }
+        ];
+
+        // ==================== 怪兽数据 ====================
+        const monsters = {
+            forest: [
+                { name: '小蘑菇怪', avatar: '🍄', hp: 30, attack: 5, exp: 20, coins: 15 },
+                { name: '树精', avatar: '🌳', hp: 50, attack: 8, exp: 35, coins: 25 },
+                { name: '野狼', avatar: '🐺', hp: 40, attack: 10, exp: 30, coins: 20 }
+            ],
+            desert: [
+                { name: '蝎子王', avatar: '🦂', hp: 60, attack: 12, exp: 50, coins: 40 },
+                { name: '沙漠蛇', avatar: '🐍', hp: 45, attack: 15, exp: 45, coins: 35 },
+                { name: '仙人掌怪', avatar: '🌵', hp: 70, attack: 10, exp: 55, coins: 45 }
+            ],
+            ocean: [
+                { name: '小海龟', avatar: '🐢', hp: 80, attack: 12, exp: 70, coins: 60 },
+                { name: '章鱼怪', avatar: '🐙', hp: 65, attack: 18, exp: 65, coins: 55 },
+                { name: '鲨鱼', avatar: '🦈', hp: 100, attack: 20, exp: 90, coins: 80 }
+            ],
+            snow: [
+                { name: '雪怪', avatar: '☃️', hp: 90, attack: 15, exp: 100, coins: 90 },
+                { name: '北极熊', avatar: '🐻‍❄️', hp: 120, attack: 22, exp: 120, coins: 110 },
+                { name: '冰龙', avatar: '🐲', hp: 150, attack: 25, exp: 150, coins: 140 }
+            ],
+            volcano: [
+                { name: '火蜥蜴', avatar: '🦎', hp: 130, attack: 28, exp: 180, coins: 170 },
+                { name: '熔岩怪', avatar: '🔥', hp: 160, attack: 30, exp: 200, coins: 190 },
+                { name: '炎魔', avatar: '👿', hp: 200, attack: 35, exp: 300, coins: 300 }
+            ]
+        };
+
+        const locationNames = {
+            forest: '神秘森林', desert: '炎热沙漠', ocean: '深海秘境',
+            snow: '冰雪山脉', volcano: '烈焰火山'
+        };
+
+        const locationEnergy = {
+            forest: 10, desert: 15, ocean: 20, snow: 25, volcano: 30
+        };
+
+        // ==================== 商店数据 ====================
+        const shopData = {
+            weapons: [
+                { id: 'w1', name: '木剑', icon: '🗡️', price: 50, attack: 5, desc: '新手的基础武器' },
+                { id: 'w2', name: '铁剑', icon: '⚔️', price: 150, attack: 12, desc: '比木剑更锋利' },
+                { id: 'w3', name: '钢刀', icon: '🔪', price: 300, attack: 25, desc: '精钢打造的宝刀' },
+                { id: 'w4', name: '魔法杖', icon: '🪄', price: 500, attack: 40, desc: '蕴含魔法力量' },
+                { id: 'w5', name: '龙牙剑', icon: '🐉', price: 1000, attack: 80, desc: '传说中的神兵' }
+            ],
+            armor: [
+                { id: 'a1', name: '布衣', icon: '👕', price: 40, defense: 3, desc: '普通的布衣' },
+                { id: 'a2', name: '皮甲', icon: '🦺', price: 120, defense: 8, desc: '兽皮制作的护甲' },
+                { id: 'a3', name: '铁甲', icon: '👔', price: 250, defense: 15, desc: '铁制铠甲' },
+                { id: 'a4', name: '钢甲', icon: '🛡️', price: 450, defense: 30, desc: '精钢铠甲' },
+                { id: 'a5', name: '龙鳞甲', icon: '👑', price: 900, defense: 60, desc: '龙鳞制成的传说护甲' }
+            ],
+            items: [
+                { id: 'i1', name: '小药水', icon: '🧪', price: 20, hp: 30, desc: '恢复30点生命' },
+                { id: 'i2', name: '大药水', icon: '🧫', price: 50, hp: 80, desc: '恢复80点生命' },
+                { id: 'i3', name: '能量饮料', icon: '🥤', price: 30, energy: 20, desc: '恢复20点体力' },
+                { id: 'i4', name: '超级药水', icon: '🏺', price: 100, hp: 200, desc: '恢复200点生命' },
+                { id: 'i5', name: '全恢复药', icon: '💊', price: 200, hp: 999, energy: 999, desc: '完全恢复生命和体力' }
+            ],
+            skills: [
+                { id: 's1', name: '重击', icon: '💥', price: 100, desc: '攻击时50%概率造成1.5倍伤害' },
+                { id: 's2', name: '连击', icon: '⚡', price: 200, desc: '攻击时20%概率攻击两次' },
+                { id: 's3', name: '吸血', icon: '🧛', price: 300, desc: '造成伤害的20%转化为生命' },
+                { id: 's4', name: '护盾', icon: '🔰', price: 250, desc: '受到的伤害减少30%' },
+                { id: 's5', name: '暴击', icon: '💢', price: 400, desc: '攻击时30%概率造成2倍伤害' }
+            ]
+        };
+
+        // ==================== 游戏状态 ====================
+        let currentLevel = null;
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let battleState = null;
+
+        // ==================== 初始化 ====================
+        function init() {
+            updateDisplay();
+            renderLevels();
+        }
+
+        // ==================== 显示更新 ====================
+        function updateDisplay() {
+            document.getElementById('coins').textContent = gameData.coins;
+            document.getElementById('exp').textContent = gameData.exp;
+            document.getElementById('playerLevel').textContent = gameData.level;
+            document.getElementById('petHP').textContent = gameData.pet.hp;
+            document.getElementById('petMaxHP').textContent = gameData.pet.maxHP;
+            document.getElementById('petEnergy').textContent = gameData.pet.energy;
+            document.getElementById('petMaxEnergy').textContent = gameData.pet.maxEnergy;
+            document.getElementById('attack').textContent = gameData.pet.attack;
+            document.getElementById('defense').textContent = gameData.pet.defense;
+            document.getElementById('shopCoins').textContent = gameData.coins;
+        }
+
+        // ==================== 导航函数 ====================
+        function hideAllScreens() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('levelSelect').classList.add('hidden');
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('petScreen').classList.add('hidden');
+            document.getElementById('mapScreen').classList.add('hidden');
+            document.getElementById('battleScreen').classList.add('hidden');
+            document.getElementById('shopScreen').classList.add('hidden');
+        }
+
+        function showMainMenu() {
+            hideAllScreens();
+            document.getElementById('mainMenu').classList.remove('hidden');
+            updateDisplay();
+        }
+
+        function showLevels() {
+            hideAllScreens();
+            document.getElementById('levelSelect').classList.remove('hidden');
+            renderLevels();
+        }
+
+        function showPet() {
+            hideAllScreens();
+            document.getElementById('petScreen').classList.remove('hidden');
+            updatePetDisplay();
+        }
+
+        function showMap() {
+            hideAllScreens();
+            document.getElementById('mapScreen').classList.remove('hidden');
+        }
+
+        function showShop() {
+            hideAllScreens();
+            document.getElementById('shopScreen').classList.remove('hidden');
+            renderShop();
+        }
+
+        // ==================== 关卡系统 ====================
+        function renderLevels() {
+            const grid = document.getElementById('levelGrid');
+            grid.innerHTML = '';
+            
+            levels.forEach((level, index) => {
+                const isLocked = index > 0 && !gameData.completedLevels.includes(levels[index-1].id);
+                const isCompleted = gameData.completedLevels.includes(level.id);
+                
+                const card = document.createElement('div');
+                card.className = `level-card ${isLocked ? 'locked' : ''} ${isCompleted ? 'completed' : ''}`;
+                card.innerHTML = `
+                    <div style="font-size: 40px; margin-bottom: 10px;">${level.icon}</div>
+                    <h3>第${level.id}关</h3>
+                    <div style="font-weight: bold; margin: 5px 0;">${level.name}</div>
+                    <div class="level-type">${getLevelTypeName(level.type)}</div>
+                    <div class="level-reward">奖励: ${level.reward}</div>
+                `;
+                
+                if (!isLocked) {
+                    card.onclick = () => startLevel(level);
+                }
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function getLevelTypeName(type) {
+            const names = { initial: '声母', final: '韵母', tone: '声调', syllable: '拼读', word: '词语' };
+            return names[type] || type;
+        }
+
+        function startLevel(level) {
+            currentLevel = level;
+            currentQuestion = 0;
+            correctAnswers = 0;
+            
+            hideAllScreens();
+            document.getElementById('quizScreen').classList.remove('hidden');
+            document.getElementById('quizLevelName').textContent = level.name;
+            document.getElementById('totalQ').textContent = level.questions.length;
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = currentLevel.questions[currentQuestion];
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('progressBar').style.width = ((currentQuestion / currentLevel.questions.length) * 100) + '%';
+            document.getElementById('questionDisplay').textContent = q.q;
+            document.getElementById('questionHint').textContent = q.hint || '请选出正确的答案';
+            
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => selectAnswer(idx);
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(idx) {
+            const q = currentLevel.questions[currentQuestion];
+            const buttons = document.querySelectorAll('#optionsGrid .option-btn');
+            
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.answer) btn.classList.add('correct');
+                else if (i === idx && i !== q.answer) btn.classList.add('wrong');
+            });
+            
+            if (idx === q.answer) {
+                correctAnswers++;
+                gameData.coins += 5;
+                gameData.exp += 10;
+                gameData.pet.exp += 10;
+            }
+            
+            updateDisplay();
+            checkLevelUp();
+            
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < currentLevel.questions.length) {
+                    showQuestion();
+                } else {
+                    finishLevel();
+                }
+            }, 1000);
+        }
+
+        function finishLevel() {
+            const total = currentLevel.questions.length;
+            const rate = correctAnswers / total;
+            
+            if (rate >= 0.6 && !gameData.completedLevels.includes(currentLevel.id)) {
+                gameData.completedLevels.push(currentLevel.id);
+                const reward = parseInt(currentLevel.reward);
+                gameData.coins += reward;
+                gameData.exp += reward;
+                gameData.pet.exp += reward;
+            }
+            
+            checkLevelUp();
+            updateDisplay();
+            
+            alert(`关卡完成！\n正确率: ${correctAnswers}/${total}\n获得奖励: ${rate >= 0.6 ? currentLevel.reward : '未达到60%正确率，无奖励'}`);
+            showLevels();
+        }
+
+        function exitQuiz() {
+            if (confirm('确定要退出当前关卡吗？进度将不会保存。')) {
+                showLevels();
+            }
+        }
+
+        // ==================== 宠物系统 ====================
+        function updatePetDisplay() {
+            document.getElementById('petAvatar').textContent = gameData.pet.avatar;
+            document.getElementById('petName').textContent = gameData.pet.name;
+            document.getElementById('petLevel').textContent = gameData.pet.level;
+            document.getElementById('petExp').textContent = gameData.pet.exp;
+            document.getElementById('petMaxExp').textContent = gameData.pet.maxExp;
+            document.getElementById('expBar').style.width = (gameData.pet.exp / gameData.pet.maxExp * 100) + '%';
+            document.getElementById('petAttack').textContent = gameData.pet.attack;
+            document.getElementById('petDefense').textContent = gameData.pet.defense;
+            document.getElementById('petMaxHPStat').textContent = gameData.pet.maxHP;
+            document.getElementById('petMaxEnergyStat').textContent = gameData.pet.maxEnergy;
+            document.getElementById('petSpeed').textContent = gameData.pet.speed;
+            document.getElementById('petLuck').textContent = gameData.pet.luck;
+            
+            const titles = ['初级学徒', '拼音学员', '拼音达人', '拼音大师', '拼音王者', '拼音传说'];
+            const titleIndex = Math.min(Math.floor(gameData.pet.level / 5), titles.length - 1);
+            document.getElementById('petTitle').textContent = titles[titleIndex];
+            
+            const skillsDiv = document.getElementById('petSkills');
+            skillsDiv.innerHTML = gameData.pet.skills.map(s => 
+                `<span style="background: #e3f2fd; padding: 8px 15px; border-radius: 15px; margin: 5px; display: inline-block;">${s}</span>`
+            ).join('');
+        }
+
+        function checkLevelUp() {
+            while (gameData.pet.exp >= gameData.pet.maxExp) {
+                gameData.pet.exp -= gameData.pet.maxExp;
+                gameData.pet.level++;
+                gameData.pet.maxExp = Math.floor(gameData.pet.maxExp * 1.2);
+                gameData.pet.maxHP += 10;
+                gameData.pet.hp = gameData.pet.maxHP;
+                gameData.pet.attack += 2;
+                gameData.pet.defense += 1;
+                gameData.pet.maxEnergy += 5;
+                gameData.pet.energy = gameData.pet.maxEnergy;
+                
+                if (gameData.pet.level % 5 === 0) {
+                    gameData.pet.speed += 1;
+                    gameData.pet.luck += 1;
+                }
+            }
+            
+            while (gameData.exp >= gameData.level * 100) {
+                gameData.exp -= gameData.level * 100;
+                gameData.level++;
+            }
+        }
+
+        // ==================== 探险系统 ====================
+        function startAdventure(location) {
+            const energyCost = locationEnergy[location];
+            
+            if (gameData.pet.energy < energyCost) {
+                alert('体力不足！请休息或购买能量饮料。');
+                return;
+            }
+            
+            gameData.pet.energy -= energyCost;
+            updateDisplay();
+            
+            // 随机事件
+            const events = ['battle', 'treasure', 'rest'];
+            const weights = [0.6, 0.3, 0.1];
+            const rand = Math.random();
+            let eventType = 'battle';
+            let sum = 0;
+            
+            for (let i = 0; i < events.length; i++) {
+                sum += weights[i];
+                if (rand < sum) {
+                    eventType = events[i];
+                    break;
+                }
+            }
+            
+            if (eventType === 'battle') {
+                startBattle(location);
+            } else if (eventType === 'treasure') {
+                const coins = Math.floor(Math.random() * 50) + 20;
+                const exp = Math.floor(Math.random() * 30) + 10;
+                gameData.coins += coins;
+                gameData.exp += exp;
+                gameData.pet.exp += exp;
+                checkLevelUp();
+                updateDisplay();
+                showAdventureModal('发现宝藏！', `你在${locationNames[location]}发现了一处宝藏！\n获得 ${coins} 金币\n获得 ${exp} 经验`);
+            } else {
+                const energy = Math.floor(Math.random() * 20) + 10;
+                gameData.pet.energy = Math.min(gameData.pet.energy + energy, gameData.pet.maxEnergy);
+                updateDisplay();
+                showAdventureModal('发现休息点', `你在${locationNames[location]}找到了一个安全的休息点。\n恢复 ${energy} 点体力`);
+            }
+        }
+
+        function showAdventureModal(title, text) {
+            document.getElementById('adventureTitle').textContent = title;
+            document.getElementById('adventureText').textContent = text;
+            document.getElementById('adventureModal').classList.remove('hidden');
+        }
+
+        function closeAdventureModal() {
+            document.getElementById('adventureModal').classList.add('hidden');
+        }
+
+        // ==================== 战斗系统 ====================
+        function startBattle(location) {
+            const monsterList = monsters[location];
+            const monster = monsterList[Math.floor(Math.random() * monsterList.length)];
+            
+            battleState = {
+                location: location,
+                monster: { ...monster, currentHP: monster.hp },
+                petHP: gameData.pet.hp,
+                questionsAnswered: 0,
+                correctAnswers: 0
+            };
+            
+            hideAllScreens();
+            document.getElementById('battleScreen').classList.remove('hidden');
+            document.getElementById('battleLocation').textContent = locationNames[location];
+            document.getElementById('battlePetAvatar').textContent = gameData.pet.avatar;
+            document.getElementById('battlePetName').textContent = gameData.pet.name;
+            document.getElementById('battleMonsterAvatar').textContent = monster.avatar;
+            document.getElementById('battleMonsterName').textContent = monster.name;
+            
+            updateBattleDisplay();
+            showBattleQuestion();
+            addBattleLog(`遇到了 ${monster.name}！战斗开始！`);
+        }
+
+        function updateBattleDisplay() {
+            const petHPPercent = (battleState.petHP / gameData.pet.maxHP) * 100;
+            const monsterHPPercent = (battleState.monster.currentHP / battleState.monster.hp) * 100;
+            
+            document.getElementById('battlePetHP').style.width = petHPPercent + '%';
+            document.getElementById('battlePetHPCurrent').textContent = battleState.petHP;
+            document.getElementById('battlePetHPMax').textContent = gameData.pet.maxHP;
+            document.getElementById('battleMonsterHP').style.width = monsterHPPercent + '%';
+            document.getElementById('battleMonsterHPCurrent').textContent = battleState.monster.currentHP;
+            document.getElementById('battleMonsterHPMax').textContent = battleState.monster.hp;
+        }
+
+        function showBattleQuestion() {
+            // 从关卡中随机选一道题
+            const allQuestions = levels.flatMap(l => l.questions);
+            const q = allQuestions[Math.floor(Math.random() * allQuestions.length)];
+            
+            document.getElementById('battleQuestion').textContent = q.q;
+            
+            const grid = document.getElementById('battleOptions');
+            grid.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => selectBattleAnswer(idx, q.answer);
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectBattleAnswer(selected, correct) {
+            const buttons = document.querySelectorAll('#battleOptions .option-btn');
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === correct) btn.classList.add('correct');
+                else if (i === selected && i !== correct) btn.classList.add('wrong');
+            });
+            
+            if (selected === correct) {
+                // 答对，攻击怪兽
+                let damage = gameData.pet.attack + Math.floor(Math.random() * 5);
+                
+                // 技能效果
+                if (gameData.pet.skills.includes('重击') && Math.random() < 0.5) {
+                    damage = Math.floor(damage * 1.5);
+                    addBattleLog('触发重击！');
+                }
+                if (gameData.pet.skills.includes('连击') && Math.random() < 0.2) {
+                    damage *= 2;
+                    addBattleLog('触发连击！');
+                }
+                if (gameData.pet.skills.includes('暴击') && Math.random() < 0.3) {
+                    damage *= 2;
+                    addBattleLog('触发暴击！');
+                }
+                
+                battleState.monster.currentHP -= damage;
+                addBattleLog(`你答对了！对${battleState.monster.name}造成 ${damage} 点伤害！`);
+                
+                // 吸血效果
+                if (gameData.pet.skills.includes('吸血')) {
+                    const heal = Math.floor(damage * 0.2);
+                    battleState.petHP = Math.min(battleState.petHP + heal, gameData.pet.maxHP);
+                    addBattleLog(`吸血效果恢复 ${heal} 点生命！`);
+                }
+                
+                if (battleState.monster.currentHP <= 0) {
+                    setTimeout(() => winBattle(), 1000);
+                    return;
+                }
+            } else {
+                // 答错，怪兽攻击
+                let damage = Math.max(1, battleState.monster.attack - gameData.pet.defense + Math.floor(Math.random() * 3));
+                
+                // 护盾效果
+                if (gameData.pet.skills.includes('护盾')) {
+                    damage = Math.floor(damage * 0.7);
+                }
+                
+                battleState.petHP -= damage;
+                addBattleLog(`答错了！${battleState.monster.name}对你造成 ${damage} 点伤害！`);
+                
+                if (battleState.petHP <= 0) {
+                    battleState.petHP = 0;
+                    setTimeout(() => loseBattle(), 1000);
+                    return;
+                }
+            }
+            
+            updateBattleDisplay();
+            
+            setTimeout(() => {
+                showBattleQuestion();
+            }, 1500);
+        }
+
+        function addBattleLog(text) {
+            const log = document.getElementById('battleLog');
+            const entry = document.createElement('div');
+            entry.textContent = `> ${text}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function winBattle() {
+            const exp = battleState.monster.exp;
+            const coins = battleState.monster.coins;
+            
+            gameData.exp += exp;
+            gameData.coins += coins;
+            gameData.pet.exp += exp;
+            
+            // 随机掉落装备
+            let equipDrop = '';
+            if (Math.random() < 0.3) {
+                const drops = ['神秘武器碎片', '古老护甲残片', '能量水晶', '幸运符'];
+                equipDrop = drops[Math.floor(Math.random() * drops.length)];
+                gameData.inventory.push(equipDrop);
+            }
+            
+            checkLevelUp();
+            updateDisplay();
+            
+            document.getElementById('battleResultTitle').textContent = '战斗胜利！';
+            document.getElementById('battleResultText').innerHTML = 
+                `你击败了 ${battleState.monster.name}！<br>` +
+                `获得 ${exp} 经验<br>` +
+                `获得 ${coins} 金币` +
+                (equipDrop ? `<br>掉落: ${equipDrop}` : '');
+            document.getElementById('battleResultModal').classList.remove('hidden');
+        }
+
+        function loseBattle() {
+            gameData.pet.hp = 1; // 保留1点生命
+            updateDisplay();
+            
+            document.getElementById('battleResultTitle').textContent = '战斗失败';
+            document.getElementById('battleResultText').textContent = 
+                `你被 ${battleState.monster.name} 击败了...\n下次再接再厉！`;
+            document.getElementById('battleResultModal').classList.remove('hidden');
+        }
+
+        function closeBattleResultModal() {
+            document.getElementById('battleResultModal').classList.add('hidden');
+            gameData.pet.hp = battleState.petHP;
+            updateDisplay();
+            showMap();
+        }
+
+        // ==================== 商店系统 ====================
+        function switchShopTab(tab) {
+            gameData.currentShopTab = tab;
+            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderShop();
+        }
+
+        function renderShop() {
+            const container = document.getElementById('shopItems');
+            container.innerHTML = '';
+            
+            const items = shopData[gameData.currentShopTab];
+            
+            items.forEach(item => {
+                const isOwned = gameData.inventory.includes(item.id) || 
+                               (item.id && gameData.pet.equipment[gameData.currentShopTab === 'weapons' ? 'weapon' : 
+                                gameData.currentShopTab === 'armor' ? 'armor' : ''] === item.id);
+                
+                const card = document.createElement('div');
+                card.className = 'shop-item';
+                card.innerHTML = `
+                    <div class="shop-item-icon">${item.icon}</div>
+                    <div class="shop-item-name">${item.name}</div>
+                    <div class="shop-item-desc">${item.desc}</div>
+                    ${item.attack ? `<div style="color: #f5576c; font-size: 12px;">+${item.attack} 攻击</div>` : ''}
+                    ${item.defense ? `<div style="color: #2196F3; font-size: 12px;">+${item.defense} 防御</div>` : ''}
+                    ${isOwned ? '<div class="shop-item-owned">已拥有</div>' : `<div class="shop-item-price">${item.price} 💰</div>`}
+                `;
+                
+                if (!isOwned) {
+                    card.onclick = () => buyItem(item);
+                }
+                
+                container.appendChild(card);
+            });
+        }
+
+        function buyItem(item) {
+            if (gameData.coins < item.price) {
+                alert('金币不足！');
+                return;
+            }
+            
+            gameData.coins -= item.price;
+            
+            if (gameData.currentShopTab === 'weapons') {
+                gameData.pet.attack += item.attack;
+                gameData.pet.equipment.weapon = item.id;
+            } else if (gameData.currentShopTab === 'armor') {
+                gameData.pet.defense += item.defense;
+                gameData.pet.equipment.armor = item.id;
+            } else if (gameData.currentShopTab === 'items') {
+                if (item.hp) {
+                    gameData.pet.hp = Math.min(gameData.pet.hp + item.hp, gameData.pet.maxHP);
+                }
+                if (item.energy) {
+                    gameData.pet.energy = Math.min(gameData.pet.energy + item.energy, gameData.pet.maxEnergy);
+                }
+            } else if (gameData.currentShopTab === 'skills') {
+                if (!gameData.pet.skills.includes(item.name)) {
+                    gameData.pet.skills.push(item.name);
+                }
+            }
+            
+            gameData.inventory.push(item.id);
+            updateDisplay();
+            renderShop();
+            alert(`购买成功！获得 ${item.name}`);
+        }
+
+        // ==================== 启动游戏 ====================
+        init();
+
+const pinyinData = {
+    initial: ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'],
+    final: ['a','o','e','i','u','ü','ai','ei','ui','ao','ou','iu','ie','üe','er','an','en','in','un','ün','ang','eng','ing','ong'],
+    whole: ['zhi','chi','shi','ri','zi','ci','si','yi','wu','yu','ye','yue','yuan','yin','yun','ying']
+};
+
+let learningProgress = { initial: false, final: false, whole: false };
+
+function showStats() {
+    hideAllScreens();
+    document.getElementById('statsScreen').classList.remove('hidden');
+    updateStatsDisplay();
+    renderCheckInCalendar();
+}
+
+function updateStatsDisplay() {
+    const totalMinutes = Math.floor((gameData.totalPlayTime || 0) / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const mins = totalMinutes % 60;
+    const timeText = hours > 0 ? `${hours}小时${mins}分钟` : `${mins}分钟`;
+    const timeEl = document.getElementById('totalStudyTime');
+    if (timeEl) timeEl.textContent = timeText;
+    
+    const total = (gameData.totalCorrect || 0) + (gameData.totalWrong || 0);
+    const accuracy = total > 0 ? Math.round(((gameData.totalCorrect || 0) / total) * 100) : 0;
+    
+    const accPercent = document.getElementById('accuracyPercent');
+    if (accPercent) accPercent.textContent = accuracy + '%';
+    
+    const accCorrect = document.getElementById('accuracyCorrect');
+    if (accCorrect) accCorrect.style.width = accuracy + '%';
+    
+    const accWrong = document.getElementById('accuracyWrong');
+    if (accWrong) accWrong.style.width = (100 - accuracy) + '%';
+    
+    const correctCount = document.getElementById('correctCount');
+    if (correctCount) correctCount.textContent = gameData.totalCorrect || 0;
+    
+    const wrongCount = document.getElementById('wrongCount');
+    if (wrongCount) wrongCount.textContent = gameData.totalWrong || 0;
+    
+    const completed = (gameData.completedLevels || []).length;
+    const totalLevels = 15;
+    const progress = Math.round((completed / totalLevels) * 100);
+    
+    const levelProgress = document.getElementById('levelProgressPercent');
+    if (levelProgress) levelProgress.textContent = progress + '%';
+    
+    const completedEl = document.getElementById('completedLevels');
+    if (completedEl) completedEl.textContent = completed;
+    
+    const checkInStreak = document.getElementById('checkInStreak');
+    if (checkInStreak) checkInStreak.textContent = gameData.checkInStreak || 0;
+}
+
+function renderCheckInCalendar() {
+    const calendar = document.getElementById('checkInCalendar');
+    if (!calendar) return;
+    
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    let html = '';
+    for (let i = 0; i < firstDay; i++) html += '<div></div>';
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+        const isChecked = (gameData.checkInDays || []).includes(dateKey);
+        const isToday = day === today.getDate();
+        const className = isChecked ? 'checked' : (isToday ? 'today' : '');
+        html += '<div class="' + className + '">' + day + '</div>';
+    }
+    
+    calendar.innerHTML = html;
+}
+
+function dailyCheckIn() {
+    const today = new Date().toISOString().split('T')[0];
+    if (!gameData.checkInDays) gameData.checkInDays = [];
+    
+    if (gameData.checkInDays.includes(today)) {
+        alert('今天已经打卡过了！');
+        return;
+    }
+    
+    gameData.checkInDays.push(today);
+    gameData.checkInStreak = (gameData.checkInStreak || 0) + 1;
+    gameData.coins = (gameData.coins || 0) + 50;
+    gameData.exp = (gameData.exp || 0) + 20;
+    
+    alert('打卡成功！连续打卡 ' + gameData.checkInStreak + ' 天\n获得 50金币 + 20经验');
+    
+    updateDisplay();
+    updateStatsDisplay();
+    renderCheckInCalendar();
+    
+    const btn = document.getElementById('checkInBtn');
+    if (btn) {
+        btn.textContent = '已打卡';
+        btn.disabled = true;
+    }
+}
+
+function showLearning() {
+    hideAllScreens();
+    document.getElementById('learningScreen').classList.remove('hidden');
+    renderLearningContent('initial');
+}
+
+function switchLearningTab(type) {
+    document.querySelectorAll('.learning-tab').forEach(t => t.classList.remove('active'));
+    const tab = document.getElementById('tab-' + type);
+    if (tab) tab.classList.add('active');
+    renderLearningContent(type);
+}
+
+function renderLearningContent(type) {
+    const content = document.getElementById('learningContent');
+    if (!content) return;
+    
+    const titles = { initial: '声母 (23个)', final: '韵母 (24个)', whole: '整体认读音节 (16个)' };
+    
+    let html = '<h3>' + titles[type] + '</h3><div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 20px;">';
+    
+    pinyinData[type].forEach(py => {
+        html += '<div class="pinyin-card" style="padding: 15px; background: #f8f9fa; border-radius: 10px; text-align: center; font-size: 24px; font-weight: bold; color: #667eea; cursor: pointer;" onclick="alert(\'拼音: ' + py + '\')">' + py + '</div>';
+    });
+    
+    html += '</div>';
+    html += '<button class="btn" style="margin-top: 20px;" onclick="completeLearning(\'' + type + '\')">完成学习</button>';
+    
+    content.innerHTML = html;
+}
+
+function completeLearning(type) {
+    learningProgress[type] = true;
+    
+    const allComplete = learningProgress.initial && learningProgress.final && learningProgress.whole;
+    
+    if (allComplete) {
+        gameData.learningComplete = true;
+        const challengeCard = document.getElementById('challengeCard');
+        if (challengeCard) challengeCard.classList.remove('locked');
+        alert('恭喜完成基础教学！现在可以进入闯关模式了！');
+    } else {
+        const remaining = [];
+        if (!learningProgress.initial) remaining.push('声母');
+        if (!learningProgress.final) remaining.push('韵母');
+        if (!learningProgress.whole) remaining.push('整体认读');
+        alert('已完成学习！还需学习: ' + remaining.join(', '));
+    }
+    
+    gameData.exp = (gameData.exp || 0) + 50;
+    gameData.coins = (gameData.coins || 0) + 30;
+    updateDisplay();
+}
+
+function checkLearningUnlock() {
+    if (gameData.learningComplete) {
+        const challengeCard = document.getElementById('challengeCard');
+        if (challengeCard) challengeCard.classList.remove('locked');
+    }
+}
+</script>
+</body></html>
