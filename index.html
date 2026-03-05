@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音游戏 - 步骤3闯关模式</title>
+    <title>拼音游戏 - 步骤4宠物</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 10px; }
         .game-container { max-width: 800px; margin: 0 auto; padding: 10px; }
         .header { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
         .player-info { display: flex; align-items: center; gap: 15px; }
-        .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; }
         .stats { display: flex; gap: 10px; flex-wrap: wrap; }
         .stat-item { background: #F7F9FC; padding: 8px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
         .main-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -25,8 +25,6 @@
         .learning-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .pinyin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
         .pinyin-card { padding: 15px 5px; background: #f8f9fa; border-radius: 10px; text-align: center; font-size: 18px; font-weight: bold; color: #667eea; word-break: break-all; }
-        
-        /* 闯关模式 */
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .progress-bar { height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; margin: 15px 0; }
         .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 5px; transition: width 0.3s; }
@@ -35,18 +33,30 @@
         .option-btn { padding: 20px; background: #F7F9FC; border: 3px solid transparent; border-radius: 15px; font-size: 20px; cursor: pointer; }
         .option-btn.correct { background: #4CAF50; color: white; border-color: #388E3C; }
         .option-btn.wrong { background: #f44336; color: white; border-color: #d32f2f; }
+        
+        /* 宠物系统 */
+        .pet-avatar { text-align: center; font-size: 100px; margin: 20px 0; }
+        .pet-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .pet-stat { background: #F7F9FC; padding: 20px; border-radius: 15px; text-align: center; }
+        .pet-stat-value { font-size: 28px; font-weight: bold; color: #667eea; margin-top: 10px; }
+        
+        /* 地图 */
+        .map-location { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .map-location div:first-child { font-size: 24px; }
+        .map-energy { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; }
     </style>
 </head>
 <body>
     <div class="game-container">
         <div class="header">
             <div class="player-info">
-                <div class="avatar">🐼</div>
+                <div class="avatar" onclick="showPage('pet')">🐼</div>
                 <div>
                     <div style="font-weight: bold;">拼音小勇士</div>
                     <div class="stats">
                         <div class="stat-item">💰 <span id="coins">100</span></div>
                         <div class="stat-item">❤️ <span id="hp">100</span></div>
+                        <div class="stat-item">⚡ <span id="energy">50</span></div>
                     </div>
                 </div>
             </div>
@@ -61,13 +71,13 @@
                 <div class="icon">⚔️</div>
                 <h2>闯关模式</h2>
             </div>
-            <div class="menu-card" onclick="showPage('map')">
+            <div class="menu-card" onclick="goToMap()">
                 <div class="icon">🗺️</div>
                 <h2>探险地图</h2>
             </div>
-            <div class="menu-card" onclick="showPage('shop')">
-                <div class="icon">🏪</div>
-                <h2>商店</h2>
+            <div class="menu-card" onclick="showPage('pet')">
+                <div class="icon">🐼</div>
+                <h2>我的宠物</h2>
             </div>
         </div>
 
@@ -75,23 +85,19 @@
         <div id="learning" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 20px 0;">📖 基础教学</h2>
-            
             <div class="learning-tabs">
                 <div class="learning-tab active" id="tab1" onclick="showInitial()">声母</div>
                 <div class="learning-tab" id="tab2" onclick="showFinal()">韵母</div>
                 <div class="learning-tab" id="tab3" onclick="showWhole()">整体认读</div>
             </div>
-            
             <div id="learningContent">
                 <div class="pinyin-grid">
                     <div class="pinyin-card">b</div><div class="pinyin-card">p</div>
                     <div class="pinyin-card">m</div><div class="pinyin-card">f</div>
                     <div class="pinyin-card">d</div><div class="pinyin-card">t</div>
                     <div class="pinyin-card">n</div><div class="pinyin-card">l</div>
-                    <div class="pinyin-card">g</div><div class="pinyin-card">k</div>
                 </div>
             </div>
-            
             <button class="btn" onclick="alert('完成学习！')">完成学习</button>
         </div>
 
@@ -101,15 +107,11 @@
                 <button class="btn btn-secondary" onclick="showMainMenu()" style="width: auto; padding: 10px 20px;">← 返回</button>
                 <span style="font-size: 18px; font-weight: bold;">第 <span id="currentQ">1</span> / 10 题</span>
             </div>
-            
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill" style="width: 10%"></div>
             </div>
-            
             <div class="question-display" id="questionDisplay">b</div>
-            
             <p style="text-align: center; color: #666; margin-bottom: 20px;">请选择这个拼音的发音：</p>
-            
             <div class="options-grid" id="optionsGrid">
                 <button class="option-btn" onclick="checkAnswer(this, true)">玻</button>
                 <button class="option-btn" onclick="checkAnswer(this, false)">坡</button>
@@ -122,26 +124,79 @@
         <div id="map" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 20px 0;">🗺️ 探险地图</h2>
-            <button class="btn">🌲 神秘森林</button>
-            <button class="btn">🏜️ 炎热沙漠</button>
+            
+            <div class="map-location" onclick="explore('forest')">
+                <div>🌲 神秘森林</div>
+                <div class="map-energy">消耗10⚡</div>
+            </div>
+            
+            <div class="map-location" onclick="explore('desert')">
+                <div>🏜️ 炎热沙漠</div>
+                <div class="map-energy">消耗15⚡</div>
+            </div>
+            
+            <div class="map-location" onclick="explore('ocean')">
+                <div>🌊 深海秘境</div>
+                <div class="map-energy">消耗20⚡</div>
+            </div>
+            
+            <div class="map-location" onclick="explore('snow')">
+                <div>🏔️ 冰雪山脉</div>
+                <div class="map-energy">消耗25⚡</div>
+            </div>
+            
+            <div class="map-location" onclick="explore('volcano')">
+                <div>🌋 烈焰火山</div>
+                <div class="map-energy">消耗30⚡</div>
+            </div>
         </div>
 
-        <!-- 商店 -->
-        <div id="shop" class="page hidden">
+        <!-- 我的宠物 -->
+        <div id="pet" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
-            <h2 style="text-align: center; margin: 20px 0;">🏪 商店</h2>
-            <button class="btn">⚔️ 木剑 - 50金币</button>
-            <button class="btn">🧪 药水 - 20金币</button>
+            <h2 style="text-align: center; margin: 20px 0;">🐼 我的宠物</h2>
+            
+            <div class="pet-avatar">🐼</div>
+            
+            <div style="text-align: center;">
+                <h3>拼音小熊猫</h3>
+                <p>等级: <span id="petLevel">1</span> | 经验: <span id="petExp">0</span>/100</p>
+            </div>
+            
+            <div class="pet-stats">
+                <div class="pet-stat">
+                    <div>⚔️ 攻击力</div>
+                    <div class="pet-stat-value" id="petAttack">10</div>
+                </div>
+                <div class="pet-stat">
+                    <div>🛡️ 防御力</div>
+                    <div class="pet-stat-value" id="petDefense">5</div>
+                </div>
+                <div class="pet-stat">
+                    <div>❤️ 生命值</div>
+                    <div class="pet-stat-value" id="petHP">100</div>
+                </div>
+                <div class="pet-stat">
+                    <div>⚡ 体力值</div>
+                    <div class="pet-stat-value" id="petEnergy">50</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <h4>已学技能</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                    <span style="background: #e3f2fd; padding: 8px 15px; border-radius: 15px;">基础攻击</span>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // 游戏数据
-        var currentQuestion = 1;
-        var correctCount = 0;
-        var coins = 100;
+        var currentQuestion = 1, correctCount = 0;
+        var coins = 100, hp = 100, energy = 50;
+        var petAttack = 10, petDefense = 5, petHP = 100, petEnergy = 50;
+        var petLevel = 1, petExp = 0;
         
-        // 题库
         var questions = [
             { q: 'b', a: '玻', options: ['玻', '坡', '摸', '佛'] },
             { q: 'p', a: '坡', options: ['玻', '坡', '摸', '佛'] },
@@ -160,7 +215,7 @@
             document.getElementById('learning').classList.add('hidden');
             document.getElementById('game').classList.add('hidden');
             document.getElementById('map').classList.add('hidden');
-            document.getElementById('shop').classList.add('hidden');
+            document.getElementById('pet').classList.add('hidden');
             document.getElementById(pageId).classList.remove('hidden');
         }
         
@@ -168,27 +223,23 @@
             document.getElementById('learning').classList.add('hidden');
             document.getElementById('game').classList.add('hidden');
             document.getElementById('map').classList.add('hidden');
-            document.getElementById('shop').classList.add('hidden');
+            document.getElementById('pet').classList.add('hidden');
             document.getElementById('mainMenu').classList.remove('hidden');
         }
         
-        function goToLearning() {
-            showPage('learning');
-        }
-        
+        function goToLearning() { showPage('learning'); }
         function goToGame() {
             showPage('game');
-            currentQuestion = 1;
-            correctCount = 0;
+            currentQuestion = 1; correctCount = 0;
             loadQuestion();
         }
+        function goToMap() { showPage('map'); }
         
         function loadQuestion() {
             var q = questions[currentQuestion - 1];
             document.getElementById('currentQ').textContent = currentQuestion;
             document.getElementById('progressFill').style.width = (currentQuestion * 10) + '%';
             document.getElementById('questionDisplay').textContent = q.q;
-            
             var html = '';
             for (var i = 0; i < 4; i++) {
                 var isCorrect = q.options[i] === q.a;
@@ -203,10 +254,11 @@
                 correctCount++;
                 coins += 5;
                 document.getElementById('coins').textContent = coins;
+                petExp += 10;
+                document.getElementById('petExp').textContent = petExp;
             } else {
                 btn.classList.add('wrong');
             }
-            
             setTimeout(function() {
                 currentQuestion++;
                 if (currentQuestion <= 10) {
@@ -218,30 +270,46 @@
         }
         
         function finishGame() {
-            var msg = '答题完成！\\n答对 ' + correctCount + '/10 题\\n获得 ' + (correctCount * 5) + ' 金币';
-            alert(msg);
+            alert('答题完成！\\n答对 ' + correctCount + '/10 题\\n获得 ' + (correctCount * 5) + ' 金币');
             showMainMenu();
+        }
+        
+        function explore(location) {
+            var cost = {forest:10, desert:15, ocean:20, snow:25, volcano:30}[location];
+            if (energy < cost) {
+                alert('体力不足！当前体力: ' + energy);
+                return;
+            }
+            energy -= cost;
+            document.getElementById('energy').textContent = energy;
+            document.getElementById('petEnergy').textContent = energy;
+            
+            var rewards = {forest: '获得10金币', desert: '获得20金币', ocean: '获得30金币', snow: '获得40金币', volcano: '获得50金币'};
+            var reward = {forest:10, desert:20, ocean:30, snow:40, volcano:50}[location];
+            coins += reward;
+            document.getElementById('coins').textContent = coins;
+            alert('探险成功！' + rewards[location] + ' ⚡-' + cost);
         }
         
         function showInitial() {
             document.getElementById('tab1').className = 'learning-tab active';
             document.getElementById('tab2').className = 'learning-tab';
             document.getElementById('tab3').className = 'learning-tab';
-            document.getElementById('learningContent').innerHTML = '<div class="pinyin-grid"><div class="pinyin-card">b</div><div class="pinyin-card">p</div><div class="pinyin-card">m</div><div class="pinyin-card">f</div><div class="pinyin-card">d</div><div class="pinyin-card">t</div><div class="pinyin-card">n</div><div class="pinyin-card">l</div><div class="pinyin-card">g</div><div class="pinyin-card">k</div></div>';
+            document.getElementById('learningContent').innerHTML = '<div class="pinyin-grid"><div class="pinyin-card">b</div><div class="pinyin-card">p</div><div class="pinyin-card">m</div><div class="pinyin-card">f</div><div class="pinyin-card">d</div><div class="pinyin-card">t</div><div class="pinyin-card">n</div><div class="pinyin-card">l</div></div>';
         }
         
         function showFinal() {
             document.getElementById('tab1').className = 'learning-tab';
             document.getElementById('tab2').className = 'learning-tab active';
             document.getElementById('tab3').className = 'learning-tab';
-            document.getElementById('learningContent').innerHTML = '<div class="pinyin-grid"><div class="pinyin-card">a</div><div class="pinyin-card">o</div><div class="pinyin-card">e</div><div class="pinyin-card">i</div><div class="pinyin-card">u</div><div class="pinyin-card">ü</div><div class="pinyin-card">ai</div><div class="pinyin-card">ei</div><div class="pinyin-card">ui</div><div class="pinyin-card">ao</div></div>';
+            document.getElementById('learningContent').innerHTML = '<div class="pinyin-grid"><div class="pinyin-card">a</div><div class="pinyin-card">o</div><div class="pinyin-card">e</div><div class="pinyin-card">i</div><div class="pinyin-card">u</div><div class="pinyin-card">ü</div><div class="pinyin-card">ai</div><div class="pinyin-card">ei</div></div>';
         }
         
         function showWhole() {
             document.getElementById('tab1').className = 'learning-tab';
             document.getElementById('tab2').className = 'learning-tab';
             document.getElementById('tab3').className = 'learning-tab active';
-            document.getElementById('learningContent').innerHTML = '<div class="pinyin-grid"><div class="pinyin-card">zhi</div><div class="pinyin-card">chi</div><div class="pinyin-card">shi</div><div class="pinyin-card">ri</div><div class="pinyin-card">zi</div><div class="pinyin-card">ci</div><div class="pinyin-card">si</div><div class="pinyin-card">yi</div><div class="pinyin-card">wu</div><div class="pinyin-card">yu</div></div>';
+            document.getElementById('learningContent').innerHTML = '<div class="pinyin-grid"><div class="pinyin-card">zhi</div><div class="pinyin-card">chi</div><div class="pinyin-card">shi</div><div class="pinyin-card">ri</div><div class="pinyin-card">zi</div><div class="pinyin-card">ci</div><div class="pinyin-card">si</div><div class="pinyin-card">yi</div></div>';
         }
     </script>
 </body>
