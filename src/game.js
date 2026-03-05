@@ -243,19 +243,26 @@ class PinyinGame {
         // 主菜单按钮
         document.getElementById('btn-start')?.addEventListener('click', () => {
             this.showScreen('level-select');
+            this.renderLevelButtons();
         });
         
         document.getElementById('btn-continue')?.addEventListener('click', () => {
             this.loadProgress();
-            this.showScreen('game-scene');
+            this.startLevel(this.currentLevel);
         });
         
         document.getElementById('btn-achievements')?.addEventListener('click', () => {
-            alert('成就系统开发中...');
+            alert('🏆 成就系统\n\n当前进度：\n• 已完成关卡：' + (this.unlockedLevels - 1) + '/5\n• 总得分：' + this.score + '\n• 宠物等级：Lv.' + this.petData.level);
         });
         
         document.getElementById('btn-parent')?.addEventListener('click', () => {
-            alert('家长中心开发中...');
+            const stats = `📊 学习统计
+
+总答题数：${this.petData.totalQuestions}
+正确率：${this.petData.totalQuestions > 0 ? Math.round(this.petData.totalCorrect / this.petData.totalQuestions * 100) : 0}%
+连续登录：${this.petData.streakDays}天
+金币总数：${this.petData.coins}`;
+            alert(stats);
         });
         
         // 返回按钮
@@ -264,8 +271,255 @@ class PinyinGame {
         });
         
         document.getElementById('btn-exit')?.addEventListener('click', () => {
+            this.saveProgress();
             this.showScreen('main-menu');
         });
+        
+        // 播放声音按钮
+        document.getElementById('btn-play-sound')?.addEventListener('click', () => {
+            this.playCurrentSound();
+        });
+        
+        // 提示按钮
+        document.getElementById('btn-hint')?.addEventListener('click', () => {
+            this.showHint();
+        });
+        
+        // 慢放按钮
+        document.getElementById('btn-slow')?.addEventListener('click', () => {
+            this.playSlowSound();
+        });
+        
+        // 音量按钮
+        document.getElementById('btn-sound')?.addEventListener('click', () => {
+            this.toggleSound();
+        });
+        
+        // 反馈弹窗按钮
+        document.getElementById('btn-next-level')?.addEventListener('click', () => {
+            this.nextQuestion();
+        });
+        
+        document.getElementById('btn-retry')?.addEventListener('click', () => {
+            this.retryQuestion();
+        });
+        
+        document.getElementById('btn-continue-game')?.addEventListener('click', () => {
+            document.getElementById('feedback-modal')?.classList.add('hidden');
+        });
+    }
+    
+    // 渲染关卡按钮
+    renderLevelButtons() {
+        const container = document.getElementById('level-buttons');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        for (let i = 1; i <= 5; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'level-btn' + (i > this.unlockedLevels ? ' locked' : '');
+            btn.innerHTML = `
+                <div class="level-number">${i}</div>
+                <div class="level-name">${LEVEL_NAMES[i]}</div>
+                ${i > this.unlockedLevels ? '<div class="lock-icon">🔒</div>' : ''}
+            `;
+            
+            if (i <= this.unlockedLevels) {
+                btn.addEventListener('click', () => this.startLevel(i));
+            }
+            
+            container.appendChild(btn);
+        }
+    }
+    
+    // 开始关卡
+    startLevel(level) {
+        this.currentLevel = level;
+        this.currentQuestion = 1;
+        this.showScreen('game-scene');
+        this.loadQuestion();
+    }
+    
+    // 加载题目
+    loadQuestion() {
+        const levelData = LEVEL_DATA[this.currentLevel];
+        if (!levelData || this.currentQuestion > levelData.length) {
+            this.levelComplete();
+            return;
+        }
+        
+        this.currentData = levelData[this.currentQuestion - 1];
+        this.hasPlayed = false;
+        this.selectedOption = null;
+        
+        // 更新UI
+        document.getElementById('level-info').textContent = `第 ${this.currentLevel} 关 - ${this.currentQuestion}/${levelData.length}`;
+        document.getElementById('progress-text').textContent = `${this.currentQuestion}/${levelData.length}`;
+        document.getElementById('progress-fill').style.width = `${(this.currentQuestion / levelData.length) * 100}%`;
+        
+        // 显示题目
+        const displayText = document.getElementById('display-text');
+        if (this.currentData.display) {
+            displayText.textContent = this.currentData.display;
+            displayText.classList.remove('hidden');
+        } else {
+            displayText.classList.add('hidden');
+        }
+        
+        // 重置选项区域
+        document.getElementById('mouth-options').classList.add('hidden');
+        document.getElementById('instruction').textContent = '点击播放，听一听是什么音？';
+        
+        // 自动播放
+        setTimeout(() => this.playCurrentSound(), 500);
+    }
+    
+    // 播放当前声音
+    playCurrentSound() {
+        if (!this.currentData) return;
+        
+        this.hasPlayed = true;
+        document.getElementById('instruction').textContent = '请选择正确的答案：';
+        document.getElementById('mouth-options').classList.remove('hidden');
+        
+        // 渲染选项
+        this.renderOptions();
+        
+        // 播放音频
+        if (window.voiceManager) {
+            window.voiceManager.speak(this.currentData.sound);
+        }
+    }
+    
+    // 慢放声音
+    playSlowSound() {
+        if (!this.currentData || !window.voiceManager) return;
+        window.voiceManager.speak(this.currentData.sound, 0.7);
+    }
+    
+    // 渲染选项
+    renderOptions() {
+        const container = document.getElementById('options-container');
+        if (!container || !this.currentData) return;
+        
+        container.innerHTML = '';
+        
+        this.currentData.options.forEach((option, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = option;
+            btn.addEventListener('click', () => this.selectOption(index));
+            container.appendChild(btn);
+        });
+    }
+    
+    // 选择选项
+    selectOption(index) {
+        if (!this.currentData) return;
+        
+        this.selectedOption = index;
+        const isCorrect = index === this.currentData.correct;
+        
+        // 更新按钮样式
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach((btn, i) => {
+            btn.disabled = true;
+            if (i === this.currentData.correct) {
+                btn.classList.add('correct');
+            } else if (i === index && !isCorrect) {
+                btn.classList.add('wrong');
+            }
+        });
+        
+        // 记录答案
+        this.recordAnswer(isCorrect);
+        
+        // 显示反馈
+        setTimeout(() => this.showFeedback(isCorrect), 500);
+    }
+    
+    // 显示反馈
+    showFeedback(isCorrect) {
+        const modal = document.getElementById('feedback-modal');
+        const icon = document.getElementById('feedback-icon');
+        const title = document.getElementById('feedback-title');
+        const message = document.getElementById('feedback-message');
+        const explanation = document.getElementById('feedback-explanation');
+        const explanationText = document.getElementById('explanation-text');
+        
+        if (isCorrect) {
+            icon.textContent = '🎉';
+            title.textContent = '回答正确！';
+            message.textContent = '太棒了！继续加油！';
+            this.score += 10;
+        } else {
+            icon.textContent = '😅';
+            title.textContent = '再想想看';
+            message.textContent = `正确答案是：${this.currentData.options[this.currentData.correct]}`;
+        }
+        
+        explanationText.textContent = this.currentData.hint;
+        explanation.classList.remove('hidden');
+        
+        document.getElementById('btn-next-level').classList.remove('hidden');
+        document.getElementById('btn-retry').classList.add('hidden');
+        document.getElementById('btn-continue-game').classList.add('hidden');
+        
+        modal.classList.remove('hidden');
+    }
+    
+    // 显示提示
+    showHint() {
+        if (!this.currentData) return;
+        alert('💡 提示：' + this.currentData.hint);
+        this.petData.coins = Math.max(0, this.petData.coins - 5);
+        this.savePetData();
+        this.updatePetDisplay();
+    }
+    
+    // 下一题
+    nextQuestion() {
+        document.getElementById('feedback-modal').classList.add('hidden');
+        this.currentQuestion++;
+        this.loadQuestion();
+    }
+    
+    // 重试
+    retryQuestion() {
+        document.getElementById('feedback-modal').classList.add('hidden');
+        this.loadQuestion();
+    }
+    
+    // 关卡完成
+    levelComplete() {
+        if (this.currentLevel < 5) {
+            this.unlockedLevels = Math.max(this.unlockedLevels, this.currentLevel + 1);
+        }
+        
+        alert(`🎉 恭喜完成第 ${this.currentLevel} 关！\n\n得分：${this.score}\n解锁下一关！`);
+        this.saveProgress();
+        this.showScreen('level-select');
+        this.renderLevelButtons();
+    }
+    
+    // 保存进度
+    saveProgress() {
+        localStorage.setItem('pinyinGameProgress', JSON.stringify({
+            currentLevel: this.currentLevel,
+            currentQuestion: this.currentQuestion,
+            score: this.score,
+            unlockedLevels: this.unlockedLevels
+        }));
+    }
+    
+    // 切换声音
+    toggleSound() {
+        this.soundEnabled = !this.soundEnabled;
+        const btn = document.getElementById('btn-sound');
+        if (btn) {
+            btn.textContent = this.soundEnabled ? '🔊' : '🔇';
+        }
     }
     
     // 显示指定屏幕
