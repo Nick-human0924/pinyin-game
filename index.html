@@ -1171,9 +1171,9 @@
             gameData.pet.energy -= energyCost;
             updateDisplay();
             
-            // 随机事件
-            const events = ['battle', 'treasure', 'rest'];
-            const weights = [0.6, 0.3, 0.1];
+            // 随机事件（只保留战斗和宝藏）
+            const events = ['battle', 'treasure'];
+            const weights = [0.7, 0.3];
             const rand = Math.random();
             let eventType = 'battle';
             let sum = 0;
@@ -1197,11 +1197,6 @@
                 checkLevelUp();
                 updateDisplay();
                 showAdventureModal('发现宝藏！', `你在${locationNames[location]}发现了一处宝藏！\n获得 ${coins} 金币\n获得 ${exp} 经验`);
-            } else {
-                const energy = Math.floor(Math.random() * 20) + 10;
-                gameData.pet.energy = Math.min(gameData.pet.energy + energy, gameData.pet.maxEnergy);
-                updateDisplay();
-                showAdventureModal('发现休息点', `你在${locationNames[location]}找到了一个安全的休息点。\n恢复 ${energy} 点体力`);
             }
         }
 
