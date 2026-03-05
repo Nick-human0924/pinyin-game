@@ -613,6 +613,45 @@
                     armor: null,
                     accessory: null
                 }
+        const monsters = {
+            forest: [
+                { name: '小蘑菇怪', avatar: '🍄', hp: 30, attack: 5, exp: 20, coins: 15 },
+                { name: '树精', avatar: '🌳', hp: 50, attack: 8, exp: 35, coins: 25 },
+                { name: '野狼', avatar: '🐺', hp: 40, attack: 10, exp: 30, coins: 20 }
+            ],
+            desert: [
+                { name: '蝎子王', avatar: '🦂', hp: 60, attack: 12, exp: 50, coins: 40 },
+                { name: '沙漠蛇', avatar: '🐍', hp: 45, attack: 15, exp: 45, coins: 35 },
+                { name: '仙人掌怪', avatar: '🌵', hp: 70, attack: 10, exp: 55, coins: 45 }
+            ],
+            ocean: [
+                { name: '小海龟', avatar: '🐢', hp: 80, attack: 12, exp: 70, coins: 60 },
+                { name: '章鱼怪', avatar: '🐙', hp: 65, attack: 18, exp: 65, coins: 55 },
+                { name: '鲨鱼', avatar: '🦈', hp: 100, attack: 20, exp: 90, coins: 80 }
+            ],
+            snow: [
+                { name: '雪怪', avatar: '☃️', hp: 90, attack: 15, exp: 100, coins: 90 },
+                { name: '北极熊', avatar: '🐻‍❄️', hp: 120, attack: 22, exp: 120, coins: 110 },
+                { name: '冰龙', avatar: '🐲', hp: 150, attack: 25, exp: 150, coins: 140 }
+            ],
+            volcano: [
+                { name: '火蜥蜴', avatar: '🦎', hp: 130, attack: 28, exp: 180, coins: 170 },
+                { name: '熔岩怪', avatar: '🔥', hp: 160, attack: 30, exp: 200, coins: 190 },
+                { name: '炎魔', avatar: '👿', hp: 200, attack: 35, exp: 300, coins: 300 }
+            ]
+        };
+
+        const locationNames = {
+            forest: '神秘森林', desert: '炎热沙漠', ocean: '深海秘境',
+            snow: '冰雪山脉', volcano: '烈焰火山'
+        };
+
+        const locationEnergy = {
+            forest: 10, desert: 15, ocean: 20, snow: 25, volcano: 30
+        };
+
+        // ==================== 商店数据 ====================
+        const shopData = {
             },
             inventory: [],
             completedLevels: [],
@@ -854,45 +893,6 @@
         ];
 
         // ==================== 怪兽数据 ====================
-        const monsters = {
-            forest: [
-                { name: '小蘑菇怪', avatar: '🍄', hp: 30, attack: 5, exp: 20, coins: 15 },
-                { name: '树精', avatar: '🌳', hp: 50, attack: 8, exp: 35, coins: 25 },
-                { name: '野狼', avatar: '🐺', hp: 40, attack: 10, exp: 30, coins: 20 }
-            ],
-            desert: [
-                { name: '蝎子王', avatar: '🦂', hp: 60, attack: 12, exp: 50, coins: 40 },
-                { name: '沙漠蛇', avatar: '🐍', hp: 45, attack: 15, exp: 45, coins: 35 },
-                { name: '仙人掌怪', avatar: '🌵', hp: 70, attack: 10, exp: 55, coins: 45 }
-            ],
-            ocean: [
-                { name: '小海龟', avatar: '🐢', hp: 80, attack: 12, exp: 70, coins: 60 },
-                { name: '章鱼怪', avatar: '🐙', hp: 65, attack: 18, exp: 65, coins: 55 },
-                { name: '鲨鱼', avatar: '🦈', hp: 100, attack: 20, exp: 90, coins: 80 }
-            ],
-            snow: [
-                { name: '雪怪', avatar: '☃️', hp: 90, attack: 15, exp: 100, coins: 90 },
-                { name: '北极熊', avatar: '🐻‍❄️', hp: 120, attack: 22, exp: 120, coins: 110 },
-                { name: '冰龙', avatar: '🐲', hp: 150, attack: 25, exp: 150, coins: 140 }
-            ],
-            volcano: [
-                { name: '火蜥蜴', avatar: '🦎', hp: 130, attack: 28, exp: 180, coins: 170 },
-                { name: '熔岩怪', avatar: '🔥', hp: 160, attack: 30, exp: 200, coins: 190 },
-                { name: '炎魔', avatar: '👿', hp: 200, attack: 35, exp: 300, coins: 300 }
-            ]
-        };
-
-        const locationNames = {
-            forest: '神秘森林', desert: '炎热沙漠', ocean: '深海秘境',
-            snow: '冰雪山脉', volcano: '烈焰火山'
-        };
-
-        const locationEnergy = {
-            forest: 10, desert: 15, ocean: 20, snow: 25, volcano: 30
-        };
-
-        // ==================== 商店数据 ====================
-        const shopData = {
             weapons: [
                 { id: 'w1', name: '木剑', icon: '🗡️', price: 50, attack: 5, desc: '新手的基础武器' },
                 { id: 'w2', name: '铁剑', icon: '⚔️', price: 150, attack: 12, desc: '比木剑更锋利' },
