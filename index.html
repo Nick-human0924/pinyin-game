@@ -159,6 +159,9 @@
         <div id="learning" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">📖 基础教学</h2>
+            <div style="background: #FFF3E0; border-radius: 10px; padding: 10px; margin-bottom: 10px; font-size: 13px; color: #E65100; text-align: center;">
+                🔊 首次使用请点击任意拼音激活语音功能
+            </div>
             <div class="learning-tabs">
                 <div class="learning-tab active" id="tab1" onclick="showInitial()">声母(23)</div>
                 <div class="learning-tab" id="tab2" onclick="showFinal()">韵母(24)</div>
@@ -172,7 +175,9 @@
         <div id="levelMap" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🗺️ 闯关地图</h2>
-            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 15px;">每关3道题，通关解锁下一关，BOSS关有奖励！</p>
+                        <div style="background: #E3F2FD; border-radius: 10px; padding: 10px; margin-bottom: 15px; font-size: 13px; color: #1565C0; text-align: center;">
+                🔊 点击 🔊 按钮或使用自动语音朗读
+            </div>每关3道题，通关解锁下一关，BOSS关有奖励！</p>
             <div class="level-map" id="levelMapContainer"></div>
         </div>
 
@@ -398,13 +403,61 @@
         var ownedItems = [];
         
         // 语音功能
+        // 语音功能 - 修复中文版
+        var synth = window.speechSynthesis;
+        var chineseVoice = null;
+        
+        // 加载中文语音
+        function loadChineseVoice() {
+            if (!synth) return;
+            var voices = synth.getVoices();
+            // 优先选择中文语音
+            chineseVoice = voices.find(function(v) { 
+                return v.lang.indexOf('zh') === 0 || v.lang.indexOf('cmn') === 0;
+            });
+            // 如果没有找到，使用默认语音
+            if (!chineseVoice && voices.length > 0) {
+                chineseVoice = voices[0];
+            }
+        }
+        
+        // 监听语音加载
+        if (synth && synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = loadChineseVoice;
+        }
+        // 立即尝试加载
+        loadChineseVoice();
+        
         function speak(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                var u = new SpeechSynthesisUtterance(text);
-                u.lang = 'zh-CN';
-                u.rate = 0.75;
-                window.speechSynthesis.speak(u);
+            if (!synth) {
+                // 手机端可能不支持，显示提示
+                console.log('语音不支持，文本：' + text);
+                return;
+            }
+            
+            // 确保中文语音已加载
+            if (!chineseVoice) {
+                loadChineseVoice();
+            }
+            
+            synth.cancel();
+            var u = new SpeechSynthesisUtterance(text);
+            
+            // 强制使用中文
+            u.lang = 'zh-CN';
+            u.rate = 0.8;
+            u.pitch = 1;
+            
+            // 如果找到中文语音，使用它
+            if (chineseVoice) {
+                u.voice = chineseVoice;
+            }
+            
+            // 手机端需要用户交互，尝试播放
+            try {
+                synth.speak(u);
+            } catch(e) {
+                console.log('语音播放失败：' + e);
             }
         }
         
