@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v6.4.2 - 视觉反馈版</title>
+    <title>拼音大冒险 v6.4.1 - 中文语音修复版</title>
     <style>
         /* ===== 基础样式（v6.3完整样式） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -403,51 +403,110 @@
         var ownedItems = [];
         
         // 语音功能
-                // ========== v6.4.2 视觉反馈系统（替代TTS） ==========
+        // ========== 语音功能 - v6.4终极修复版 ==========
+        var synth = window.speechSynthesis;
+        var chineseVoice = null;
+        var voiceLoaded = false;
         
-        // 震动反馈
-        function vibrate(pattern) {
-            if (navigator.vibrate) navigator.vibrate(pattern);
+        // 加载中文语音 - 多尝试几次
+        function loadChineseVoice() {
+            if (!synth) return false;
+            var voices = synth.getVoices();
+            console.log('可用语音数量：' + voices.length);
+            
+            // 详细列出所有语音
+            voices.forEach(function(v, i) {
+                console.log(i + ': ' + v.name + ' (' + v.lang + ')');
+            });
+            
+            // 优先选择中文语音 - 多种匹配方式
+            chineseVoice = voices.find(function(v) { 
+                return v.lang.indexOf('zh') === 0 || 
+                       v.lang.indexOf('cmn') === 0 || 
+                       v.lang.indexOf('Chinese') >= 0 ||
+                       v.name.indexOf('中文') >= 0 ||
+                       v.name.indexOf('Chinese') >= 0;
+            });
+            
+            if (chineseVoice) {
+                console.log('找到中文语音：' + chineseVoice.name);
+                voiceLoaded = true;
+                return true;
+            }
+            
+            console.log('未找到中文语音，将使用默认设置');
+            return false;
         }
         
-        // 显示拼音提示
-        function showPinyinToast(py, pronunciation) {
-            var old = document.querySelector('.pinyin-toast');
-            if (old) old.remove();
-            
-            var div = document.createElement('div');
-            div.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:white;padding:15px 40px;border-radius:30px;font-size:28px;z-index:10000;text-align:center;';
-            div.innerHTML = '<span style="font-size:36px;font-weight:bold;color:#FFD700;">' + py + '</span><br><span style="font-size:20px;color:#fff;">' + pronunciation + '</span>';
-            document.body.appendChild(div);
-            
-            vibrate(50);
-            
-            setTimeout(function() {
-                div.style.opacity = '0';
-                div.style.transition = 'opacity 0.5s';
-                setTimeout(function() { div.remove(); }, 500);
-            }, 2000);
+        // 多次尝试加载语音
+        function initVoices() {
+            loadChineseVoice();
+            // 如果第一次没找到，1秒后再试
+            if (!voiceLoaded) {
+                setTimeout(loadChineseVoice, 1000);
+                setTimeout(loadChineseVoice, 2000);
+            }
         }
         
-        // 获取拼音发音
-        function getPronunciation(py) {
-            var map = {};
-            pinyinData.initial.forEach(function(p, i) { map[p] = pinyinData.initialNames[i]; });
-            pinyinData.final.forEach(function(p, i) { map[p] = pinyinData.finalNames[i]; });
-            pinyinData.whole.forEach(function(p, i) { map[p] = pinyinData.wholeNames[i]; });
-            return map[py] || '';
+        // 监听语音加载
+        if (synth && synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = initVoices;
         }
+        // 立即尝试加载
+        initVoices();
         
-        // 主speak函数（视觉版）
         function speak(text) {
-            var pronunciation = getPronunciation(text);
-            showPinyinToast(text, pronunciation);
+            if (!synth) {
+                console.log('语音API不支持');
+                return;
+            }
+            
+            // 每次说话前都重新加载语音
+            if (!voiceLoaded) {
+                loadChineseVoice();
+            }
+            
+            synth.cancel();
+            var u = new SpeechSynthesisUtterance(text);
+            
+            // ========== 强制中文设置 ==========
+            u.lang = 'zh-CN';  // 强制语言
+            u.rate = 0.9;      // 稍慢一点
+            u.pitch = 1.0;     // 正常音调
+            u.volume = 1.0;    // 最大音量
+            
+            // 使用找到的中文语音
+            if (chineseVoice) {
+                console.log('使用语音：' + chineseVoice.name);
+                u.voice = chineseVoice;
+            } else {
+                console.log('使用默认语音，lang=zh-CN');
+            }
+            
+            // 播放
+            try {
+                synth.speak(u);
+            } catch(e) {
+                console.log('播放失败：' + e);
+            }
         }
+        
+        // 页面加载完成后再次尝试加载语音
+        window.addEventListener('load', function() {
+            setTimeout(initVoices, 500);
+            setTimeout(initVoices, 1500);
+        });
         
         function speakCurrent() {
             var q = inBattle ? currentBattleQuestion : questionsInLevel[currentQuestionInLevel - 1];
             if (q) speak(q.q);
-        });
+        }
+        
+        // 页面切换
+        function showPage(pageId) {
+            ['mainMenu','learning','levelMap','game','battle','map','pet','achievements','tasks','shop','stats'].forEach(function(id) {
+                document.getElementById(id).classList.add('hidden');
+            });
             document.getElementById(pageId).classList.remove('hidden');
             if (pageId === 'shop') { renderShop('weapons'); updateShopCoins(); }
             if (pageId === 'stats') renderCalendar();
