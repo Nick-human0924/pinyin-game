@@ -3,689 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 5.0 - 完整版</title>
+    <title>拼音游戏 - 测试版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            min-height: 100vh; 
-            padding: 10px;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .game-container { max-width: 800px; margin: 0 auto; padding: 10px; }
-        
-        /* 头部 */
-        .header { 
-            background: rgba(255,255,255,0.95); 
-            border-radius: 15px; 
-            padding: 15px; 
-            margin-bottom: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        .player-info { display: flex; align-items: center; gap: 15px; }
-        .avatar { 
-            width: 60px; height: 60px; border-radius: 50%; 
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
-            display: flex; align-items: center; justify-content: center; font-size: 30px;
-        }
-        .stats { display: flex; gap: 10px; flex-wrap: wrap; }
-        .stat-item { 
-            display: flex; align-items: center; gap: 5px; 
-            background: #F7F9FC; padding: 8px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; 
-        }
-        
-        /* 主菜单 */
-        .main-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .menu-card { 
-            background: rgba(255,255,255,0.95); border-radius: 20px; padding: 25px 15px; 
-            text-align: center; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            touch-action: manipulation; user-select: none; transition: transform 0.2s;
-        }
-        .menu-card:active { transform: scale(0.98); }
-        .menu-card .icon { font-size: 40px; margin-bottom: 10px; }
-        .menu-card h2 { font-size: 16px; color: #2C3E50; margin-bottom: 5px; }
-        .menu-card p { font-size: 12px; color: #7f8c8d; }
-        .menu-card.locked { opacity: 0.6; background: #e0e0e0; }
-        .badge { background: #4CAF50; color: white; padding: 2px 10px; border-radius: 10px; font-size: 11px; margin-top: 8px; display: inline-block; }
-        
-        /* 页面通用 */
-        .page { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 20px; min-height: 500px; }
+        body { font-family: sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .btn { background: white; color: #667eea; border: none; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: bold; width: 100%; margin: 10px 0; cursor: pointer; }
+        .page { background: white; border-radius: 20px; padding: 30px; margin-top: 20px; }
         .hidden { display: none !important; }
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;
-            border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: bold;
-            cursor: pointer; width: 100%; margin: 10px 0; touch-action: manipulation;
-        }
-        .btn:active { transform: scale(0.98); opacity: 0.9; }
-        .btn-secondary { background: #F7F9FC; color: #2C3E50; }
-        
-        /* 基础教学 */
-        .learning-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
-        .learning-tab { padding: 10px 15px; background: #F7F9FC; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 14px; }
-        .learning-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .pinyin-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
-        .pinyin-card { padding: 15px 5px; background: #f8f9fa; border-radius: 10px; text-align: center; font-size: 20px; font-weight: bold; color: #667eea; cursor: pointer; }
-        .pinyin-card:active { background: #667eea; color: white; }
-        
-        /* 答题界面 */
-        .quiz-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .progress-bar { height: 8px; background: #e0e0e0; border-radius: 4px; margin: 15px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 4px; transition: width 0.3s; }
-        .question-display { font-size: 48px; text-align: center; margin: 30px 0; color: #667eea; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .option-btn { padding: 20px; background: #F7F9FC; border: 2px solid transparent; border-radius: 15px; font-size: 18px; cursor: pointer; touch-action: manipulation; }
-        .option-btn:active { border-color: #667eea; background: #e8eaf6; }
-        .option-btn.correct { background: #4CAF50; color: white; }
-        .option-btn.wrong { background: #f44336; color: white; }
-        
-        /* 宠物 */
-        .pet-avatar { text-align: center; font-size: 100px; margin: 20px 0; }
-        .pet-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .pet-stat { background: #F7F9FC; padding: 15px; border-radius: 15px; text-align: center; }
-        .pet-stat-value { font-size: 24px; font-weight: bold; color: #667eea; }
-        
-        /* 地图 */
-        .map-location { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; padding: 20px; border-radius: 15px; margin: 10px 0;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .map-location div:first-child { font-size: 24px; }
-        .map-energy { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 14px; }
-        
-        /* 商店 */
-        .shop-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
-        .shop-tab { padding: 10px 20px; background: #F7F9FC; border-radius: 20px; cursor: pointer; white-space: nowrap; }
-        .shop-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .shop-item { background: #F7F9FC; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .shop-item-icon { font-size: 30px; }
-        .shop-item-info { flex: 1; margin-left: 15px; }
-        .shop-item-name { font-weight: bold; }
-        .shop-item-desc { font-size: 12px; color: #666; }
-        .shop-item-stat { font-size: 12px; color: #667eea; font-weight: bold; }
-        
-        /* 统计看板 */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .stats-card { background: #F7F9FC; border-radius: 15px; padding: 20px; text-align: center; }
-        .stats-value { font-size: 32px; font-weight: bold; color: #667eea; margin: 10px 0; }
-        
-        /* 日历 */
-        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 20px; }
-        .calendar-day { aspect-ratio: 1; background: #F7F9FC; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-        .calendar-day.checked { background: #4CAF50; color: white; }
-        .calendar-day.today { border: 2px solid #667eea; }
-        
-        /* 弹窗 */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-        .modal-content { background: white; border-radius: 20px; padding: 30px; max-width: 350px; width: 100%; text-align: center; }
-        .modal-title { font-size: 24px; font-weight: bold; margin-bottom: 15px; color: #667eea; }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <!-- 头部 -->
-        <div class="header">
-            <div class="player-info">
-                <div class="avatar" onclick="showPet()">🐼</div>
-                <div>
-                    <div style="font-weight: bold;">拼音小勇士</div>
-                    <div class="stats">
-                        <div class="stat-item">💰 <span id="coins">100</span></div>
-                        <div class="stat-item">⭐ <span id="exp">0</span></div>
-                        <div class="stat-item">❤️ <span id="hp">100</span></div>
-                        <div class="stat-item">⚡ <span id="energy">50</span></div>
-                    </div>
-                </div>
-            </div>
+    <div class="container">
+        <!-- 主页面 -->
+        <div id="main" class="page">
+            <h1 style="text-align: center; color: #667eea; margin-bottom: 30px;">🎮 拼音大冒险</h1>
+            <button class="btn" id="btn1">📖 基础教学</button>
+            <button class="btn" id="btn2">⚔️ 闯关模式</button>
+            <button class="btn" id="btn3">🐼 我的宠物</button>
+            <button class="btn" id="btn4">📊 统计看板</button>
         </div>
-
-        <!-- 主菜单 -->
-        <div id="mainMenu" class="main-menu">
-            <div class="menu-card" onclick="showLearning()">
-                <div class="icon">📖</div>
-                <h2>基础教学</h2>
-                <p>声母、韵母、整体认读</p>
-                <div class="badge" id="learningBadge">进行中</div>
-            </div>
-            <div class="menu-card locked" id="challengeCard" onclick="if(!this.classList.contains('locked'))showGame()">
-                <div class="icon">⚔️</div>
-                <h2>闯关模式</h2>
-                <p>完成基础教学后解锁</p>
-            </div>
-            <div class="menu-card" onclick="showPet()">
-                <div class="icon">🐾</div>
-                <h2>我的宠物</h2>
-                <p>培养你的拼音小助手</p>
-            </div>
-            <div class="menu-card" onclick="showMap()">
-                <div class="icon">🗺️</div>
-                <h2>探险地图</h2>
-                <p>5大地图等你探索</p>
-            </div>
-            <div class="menu-card" onclick="showShop()">
-                <div class="icon">🏪</div>
-                <h2>商店</h2>
-                <p>20+商品任你选</p>
-            </div>
-            <div class="menu-card" onclick="showStats()">
-                <div class="icon">📊</div>
-                <h2>统计看板</h2>
-                <p>学习数据全掌握</p>
-            </div>
-        </div>
-
-        <!-- 基础教学 -->
+        
+        <!-- 教学页面 -->
         <div id="learning" class="page hidden">
-            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
-            <h2 style="text-align: center; margin: 20px 0;">📖 基础教学</h2>
-            <div class="learning-tabs">
-                <div class="learning-tab active" onclick="switchTab('initial')">声母 (23个)</div>
-                <div class="learning-tab" onclick="switchTab('final')">韵母 (24个)</div>
-                <div class="learning-tab" onclick="switchTab('whole')">整体认读 (16个)</div>
-            </div>
-            <div id="learningContent"></div>
-            <button class="btn" onclick="completeLearning()">完成学习</button>
+            <h2 style="text-align: center;">📖 基础教学</h2>
+            <p style="margin: 20px 0;">这里是教学内容...</p>
+            <button class="btn" id="back1">← 返回</button>
         </div>
-
-        <!-- 闯关模式 -->
+        
+        <!-- 游戏页面 -->
         <div id="game" class="page hidden">
-            <div class="quiz-header">
-                <button class="btn btn-secondary" onclick="showMainMenu()" style="width: auto;">← 返回</button>
-                <span>题目 <span id="currentQ">1</span>/10</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill" style="width: 10%"></div>
-            </div>
-            <div class="question-display" id="questionDisplay">b</div>
-            <div class="options-grid" id="optionsGrid"></div>
+            <h2 style="text-align: center;">⚔️ 闯关模式</h2>
+            <p style="margin: 20px 0;">这里是游戏内容...</p>
+            <button class="btn" id="back2">← 返回</button>
         </div>
-
-        <!-- 我的宠物 -->
+        
+        <!-- 宠物页面 -->
         <div id="pet" class="page hidden">
-            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
-            <h2 style="text-align: center; margin: 20px 0;">🐼 我的宠物</h2>
-            <div class="pet-avatar">🐼</div>
-            <div style="text-align: center;">
-                <h3>拼音小熊猫</h3>
-                <p>等级: <span id="petLevel">1</span> | 经验: <span id="petExp">0</span>/100</p>
-            </div>
-            <div class="pet-stats">
-                <div class="pet-stat">
-                    <div>⚔️ 攻击力</div>
-                    <div class="pet-stat-value" id="petAttack">10</div>
-                </div>
-                <div class="pet-stat">
-                    <div>🛡️ 防御力</div>
-                    <div class="pet-stat-value" id="petDefense">5</div>
-                </div>
-                <div class="pet-stat">
-                    <div>❤️ 生命值</div>
-                    <div class="pet-stat-value" id="petHP">100</div>
-                </div>
-                <div class="pet-stat">
-                    <div>⚡ 体力值</div>
-                    <div class="pet-stat-value" id="petEnergy">50</div>
-                </div>
-            </div>
-            <div style="margin-top: 20px;">
-                <h4>已学技能</h4>
-                <div id="petSkills" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                    <span style="background: #e3f2fd; padding: 8px 15px; border-radius: 15px;">基础攻击</span>
-                </div>
-            </div>
+            <h2 style="text-align: center;">🐼 我的宠物</h2>
+            <p style="margin: 20px 0;">这里是宠物内容...</p>
+            <button class="btn" id="back3">← 返回</button>
         </div>
-
-        <!-- 探险地图 -->
-        <div id="map" class="page hidden">
-            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
-            <h2 style="text-align: center; margin: 20px 0;">🗺️ 探险地图</h2>
-            <div style="margin-top: 20px;">
-                <div class="map-location" onclick="explore('forest')">
-                    <div>🌲 神秘森林</div>
-                    <div class="map-energy">消耗10⚡</div>
-                </div>
-                <div class="map-location" onclick="explore('desert')">
-                    <div>🏜️ 炎热沙漠</div>
-                    <div class="map-energy">消耗15⚡</div>
-                </div>
-                <div class="map-location" onclick="explore('ocean')">
-                    <div>🌊 深海秘境</div>
-                    <div class="map-energy">消耗20⚡</div>
-                </div>
-                <div class="map-location" onclick="explore('snow')">
-                    <div>🏔️ 冰雪山脉</div>
-                    <div class="map-energy">消耗25⚡</div>
-                </div>
-                <div class="map-location" onclick="explore('volcano')">
-                    <div>🌋 烈焰火山</div>
-                    <div class="map-energy">消耗30⚡</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 商店 -->
-        <div id="shop" class="page hidden">
-            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
-            <h2 style="text-align: center; margin: 20px 0;">🏪 商店</h2>
-            <div style="text-align: center; margin-bottom: 20px; background: #F7F9FC; padding: 15px; border-radius: 15px;">
-                <div style="font-size: 24px; font-weight: bold; color: #667eea;">💰 <span id="shopCoins">100</span> 金币</div>
-            </div>
-            <div class="shop-tabs">
-                <div class="shop-tab active" onclick="switchShopTab('weapons')">⚔️ 武器</div>
-                <div class="shop-tab" onclick="switchShopTab('armor')">🛡️ 防具</div>
-                <div class="shop-tab" onclick="switchShopTab('items')">🧪 道具</div>
-                <div class="shop-tab" onclick="switchShopTab('skills')">📖 技能</div>
-            </div>
-            <div id="shopItems"></div>
-        </div>
-
-        <!-- 统计看板 -->
+        
+        <!-- 统计页面 -->
         <div id="stats" class="page hidden">
-            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
-            <h2 style="text-align: center; margin: 20px 0;">📊 统计看板</h2>
-            <div class="stats-grid">
-                <div class="stats-card">
-                    <div>⏱️ 学习时长</div>
-                    <div class="stats-value" id="studyTime">0</div>
-                    <div>分钟</div>
-                </div>
-                <div class="stats-card">
-                    <div>🎯 答题正确率</div>
-                    <div class="stats-value" id="accuracy">0%</div>
-                    <div><span id="correctCount">0</span> / <span id="totalCount">0</span></div>
-                </div>
-                <div class="stats-card">
-                    <div>📈 完成关卡</div>
-                    <div class="stats-value" id="completedLevels">0</div>
-                    <div>共15关</div>
-                </div>
-                <div class="stats-card">
-                    <div>🔥 连续打卡</div>
-                    <div class="stats-value" id="checkInStreak">0</div>
-                    <div>天</div>
-                </div>
-            </div>
-            <div style="margin-top: 30px;">
-                <h3 style="margin-bottom: 15px;">📅 每日打卡</h3>
-                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 10px; text-align: center; font-size: 12px;">
-                    <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
-                </div>
-                <div class="calendar" id="checkInCalendar"></div>
-                <button class="btn" onclick="dailyCheckIn()" style="margin-top: 20px;">今日打卡</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 弹窗 -->
-    <div id="modal" class="modal-overlay hidden" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-title" id="modalTitle">提示</div>
-            <div id="modalText">内容</div>
-            <button class="btn" onclick="closeModal()" style="margin-top: 20px;">确定</button>
+            <h2 style="text-align: center;">📊 统计看板</h2>
+            <p style="margin: 20px 0;">这里是统计内容...</p>
+            <button class="btn" id="back4">← 返回</button>
         </div>
     </div>
 
     <script>
-        // 游戏数据
-        var gameData = {
-            coins: 100, exp: 0, hp: 100, maxHP: 100, energy: 50, maxEnergy: 50,
-            attack: 10, defense: 5, speed: 10, luck: 5,
-            learningComplete: false, completedLevels: [], checkInDays: [], checkInStreak: 0,
-            totalPlayTime: 0, totalCorrect: 0, totalWrong: 0, skills: ['基础攻击']
-        };
-
-        var learningProgress = { initial: false, final: false, whole: false };
-        var currentQuestion = 0, correctCount = 0, currentLevel = 1;
-        var currentShopTab = 'weapons', ownedItems = [];
-        var playTimeInterval;
-
-        // 拼音数据
-        var pinyinData = {
-            initial: ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'],
-            final: ['a','o','e','i','u','ü','ai','ei','ui','ao','ou','iu','ie','üe','er','an','en','in','un','ün','ang','eng','ing','ong'],
-            whole: ['zhi','chi','shi','ri','zi','ci','si','yi','wu','yu','ye','yue','yuan','yin','yun','ying']
-        };
-
-        // 商店数据
-        var shopData = {
-            weapons: [
-                { id: "w1", name: "木剑", icon: "🗡️", price: 50, attack: 5, desc: "新手的基础武器" },
-                { id: "w2", name: "铁剑", icon: "⚔️", price: 150, attack: 12, desc: "比木剑更锋利" },
-                { id: "w3", name: "钢刀", icon: "🔪", price: 300, attack: 25, desc: "精钢打造的宝刀" },
-                { id: "w4", name: "魔法杖", icon: "🪄", price: 500, attack: 40, desc: "蕴含魔法力量" },
-                { id: "w5", name: "龙牙剑", icon: "🐉", price: 1000, attack: 80, desc: "传说中的神兵" }
-            ],
-            armor: [
-                { id: "a1", name: "布衣", icon: "👕", price: 40, defense: 3, desc: "普通的布衣" },
-                { id: "a2", name: "皮甲", icon: "🦺", price: 120, defense: 8, desc: "兽皮制作的护甲" },
-                { id: "a3", name: "铁甲", icon: "👔", price: 250, defense: 15, desc: "铁制铠甲" },
-                { id: "a4", name: "钢甲", icon: "🛡️", price: 450, defense: 30, desc: "精钢铠甲" },
-                { id: "a5", name: "龙鳞甲", icon: "👑", price: 900, defense: 60, desc: "龙鳞制成的传说护甲" }
-            ],
-            items: [
-                { id: "i1", name: "小药水", icon: "🧪", price: 20, hp: 30, desc: "恢复30点生命" },
-                { id: "i2", name: "大药水", icon: "🧫", price: 50, hp: 80, desc: "恢复80点生命" },
-                { id: "i3", name: "能量饮料", icon: "🥤", price: 30, energy: 20, desc: "恢复20点体力" },
-                { id: "i4", name: "超级药水", icon: "🏺", price: 100, hp: 200, desc: "恢复200点生命" },
-                { id: "i5", name: "全恢复药", icon: "💊", price: 200, hp: 999, energy: 999, desc: "完全恢复" }
-            ],
-            skills: [
-                { id: "s1", name: "重击", icon: "💥", price: 100, desc: "50%概率1.5倍伤害" },
-                { id: "s2", name: "连击", icon: "⚡", price: 200, desc: "20%概率攻击两次" },
-                { id: "s3", name: "吸血", icon: "🧛", price: 300, desc: "伤害20%转为生命" },
-                { id: "s4", name: "护盾", icon: "🔰", price: 250, desc: "伤害减少30%" },
-                { id: "s5", name: "暴击", icon: "💢", price: 400, desc: "30%概率2倍伤害" }
-            ]
-        };
-
-        // 初始化
-        function init() {
-            updateUI();
-            switchTab('initial');
-            startPlayTimeTracking();
+        // 页面切换函数
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.getElementById('main').classList.add('hidden');
+            document.getElementById('learning').classList.add('hidden');
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('pet').classList.add('hidden');
+            document.getElementById('stats').classList.add('hidden');
+            
+            // 显示指定页面
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            console.log('切换到页面:', pageId);
         }
-
-        // 页面切换
-        function hideAll() {
-            document.querySelectorAll('.page, .main-menu').forEach(function(el) { el.classList.add('hidden'); });
-        }
-
-        function showMainMenu() {
-            hideAll();
-            document.getElementById('mainMenu').classList.remove('hidden');
-            updateUI();
-        }
-
-        function showLearning() {
-            hideAll();
-            document.getElementById('learning').classList.remove('hidden');
-            switchTab('initial');
-        }
-
-        function showGame() {
-            hideAll();
-            document.getElementById('game').classList.remove('hidden');
-            startLevel(1);
-        }
-
-        function showPet() {
-            hideAll();
-            document.getElementById('pet').classList.remove('hidden');
-            updatePetUI();
-        }
-
-        function showMap() {
-            hideAll();
-            document.getElementById('map').classList.remove('hidden');
-        }
-
-        function showShop() {
-            hideAll();
-            document.getElementById('shop').classList.remove('hidden');
-            renderShop();
-        }
-
-        function showStats() {
-            hideAll();
-            document.getElementById('stats').classList.remove('hidden');
-            updateStatsUI();
-            renderCalendar();
-        }
-
-        // 基础教学
-        function switchTab(type) {
-            document.querySelectorAll('.learning-tab').forEach(function(t) { t.classList.remove('active'); });
-            event.target.classList.add('active');
-            var content = document.getElementById('learningContent');
-            var data = pinyinData[type];
-            var html = '<div class="pinyin-grid">';
-            data.forEach(function(py) {
-                html += '<div class="pinyin-card" onclick="learnPinyin(' + "'" + type + "', '" + py + "'" + ')">' + py + '</div>';
-            });
-            html += '</div>';
-            content.innerHTML = html;
-        }
-
-        function learnPinyin(type, py) {
-            learningProgress[type] = true;
-            showModal('📖 学习', '你学习了拼音: ' + py);
-        }
-
-        function completeLearning() {
-            if (learningProgress.initial && learningProgress.final && learningProgress.whole) {
-                gameData.learningComplete = true;
-                document.getElementById('challengeCard').classList.remove('locked');
-                document.getElementById('learningBadge').textContent = '已完成';
-                showModal('🎉 恭喜！', '完成基础教学，解锁闯关模式！');
-            } else {
-                showModal('提示', '请先学习完声母、韵母和整体认读');
-            }
-        }
-
-        // 闯关游戏
-        var levelQuestions = [
-            { q: 'b', options: [{t:'玻',c:1},{t:'坡',c:0},{t:'摸',c:0},{t:'佛',c:0}], hint: '双唇不送气清塞音' },
-            { q: 'p', options: [{t:'玻',c:0},{t:'坡',c:1},{t:'摸',c:0},{t:'佛',c:0}], hint: '双唇送气清塞音' },
-            { q: 'm', options: [{t:'玻',c:0},{t:'坡',c:0},{t:'摸',c:1},{t:'佛',c:0}], hint: '双唇浊鼻音' },
-            { q: 'f', options: [{t:'玻',c:0},{t:'坡',c:0},{t:'摸',c:0},{t:'佛',c:1}], hint: '唇齿清擦音' },
-            { q: 'd', options: [{t:'得',c:1},{t:'特',c:0},{t:'讷',c:0},{t:'勒',c:0}], hint: '舌尖中不送气清塞音' }
-        ];
-
-        function startLevel(level) {
-            currentQuestion = 0;
-            correctCount = 0;
-            showQuestion();
-        }
-
-        function showQuestion() {
-            var q = levelQuestions[currentQuestion % levelQuestions.length];
-            document.getElementById('currentQ').textContent = currentQuestion + 1;
-            document.getElementById('progressFill').style.width = ((currentQuestion + 1) * 10) + '%';
-            document.getElementById('questionDisplay').textContent = q.q;
-            var html = '';
-            q.options.forEach(function(opt, idx) {
-                html += '<button class="option-btn" onclick="answer(' + opt.c + ', this)">' + opt.t + '</button>';
-            });
-            document.getElementById('optionsGrid').innerHTML = html;
-        }
-
-        function answer(isCorrect, btn) {
-            if (isCorrect) {
-                btn.classList.add('correct');
-                correctCount++;
-                gameData.totalCorrect++;
-                gameData.coins += 5;
-                gameData.exp += 10;
-            } else {
-                btn.classList.add('wrong');
-                gameData.totalWrong++;
-            }
-            setTimeout(function() {
-                currentQuestion++;
-                if (currentQuestion < 10) {
-                    showQuestion();
-                } else {
-                    finishLevel();
-                }
-            }, 500);
-        }
-
-        function finishLevel() {
-            if (correctCount >= 6) {
-                gameData.completedLevels.push(1);
-                showModal('🎉 关卡完成！', '答对 ' + correctCount + '/10 题
-获得 ' + (correctCount * 5) + ' 金币');
-            } else {
-                showModal('继续加油', '答对 ' + correctCount + '/10 题
-未达到60%，无奖励');
-            }
-            updateUI();
-            showMainMenu();
-        }
-
-        // 探险
-        var monsters = {
-            forest: [{n:'小蘑菇怪',h:30,a:5,exp:20,c:15},{n:'树精',h:50,a:8,exp:35,c:25}],
-            desert: [{n:'蝎子王',h:60,a:12,exp:50,c:40},{n:'沙漠蛇',h:45,a:15,exp:45,c:35}],
-            ocean: [{n:'小海龟',h:80,a:12,exp:70,c:60},{n:'章鱼怪',h:65,a:18,exp:65,c:55}],
-            snow: [{n:'雪怪',h:90,a:15,exp:100,c:90},{n:'北极熊',h:120,a:22,exp:120,c:110}],
-            volcano: [{n:'火蜥蜴',h:130,a:28,exp:180,c:170},{n:'炎魔',h:200,a:35,exp:300,c:300}]
-        };
-
-        function explore(location) {
-            var cost = {forest:10,desert:15,ocean:20,snow:25,volcano:30}[location];
-            if (gameData.energy < cost) {
-                showModal('体力不足', '请休息或购买药水恢复体力');
-                return;
-            }
-            gameData.energy -= cost;
-            if (Math.random() < 0.7) {
-                var m = monsters[location][Math.floor(Math.random() * monsters[location].length)];
-                showModal('⚔️ 遭遇战斗！', '遇到 ' + m.n + '！
-快回答拼音问题击败它！');
-            } else {
-                var coins = Math.floor(Math.random() * 50) + 20;
-                gameData.coins += coins;
-                showModal('💎 发现宝藏！', '获得 ' + coins + ' 金币！');
-            }
-            updateUI();
-        }
-
-        // 商店
-        function switchShopTab(tab) {
-            currentShopTab = tab;
-            document.querySelectorAll('.shop-tab').forEach(function(t) { t.classList.remove('active'); });
-            event.target.classList.add('active');
-            renderShop();
-        }
-
-        function renderShop() {
-            var items = shopData[currentShopTab];
-            var html = '';
-            items.forEach(function(item) {
-                var isOwned = ownedItems.includes(item.id);
-                var stat = item.attack ? '+' + item.attack + ' 攻击' : item.defense ? '+' + item.defense + ' 防御' : '';
-                html += '<div class="shop-item">' +
-                    '<div class="shop-item-icon">' + item.icon + '</div>' +
-                    '<div class="shop-item-info">' +
-                        '<div class="shop-item-name">' + item.name + '</div>' +
-                        '<div class="shop-item-desc">' + item.desc + '</div>' +
-                        (stat ? '<div class="shop-item-stat">' + stat + '</div>' : '') +
-                    '</div>' +
-                    '<button class="btn" style="width: auto; padding: 10px 20px;' + (isOwned ? 'background:#ccc;' : '') + '" onclick="buyItem(' + "'" + item.id + "'" + ')" ' + (isOwned ? 'disabled' : '') + '>' + (isOwned ? '已拥有' : item.price + ' 金币') + '</button>' +
-                '</div>';
-            });
-            document.getElementById('shopItems').innerHTML = html;
-            document.getElementById('shopCoins').textContent = gameData.coins;
-        }
-
-        function buyItem(itemId) {
-            var item = shopData[currentShopTab].find(function(i) { return i.id === itemId; });
-            if (!item) return;
-            if (gameData.coins < item.price) {
-                showModal('金币不足', '你的金币不够购买这个物品');
-                return;
-            }
-            gameData.coins -= item.price;
-            ownedItems.push(itemId);
-            if (item.attack) gameData.attack += item.attack;
-            if (item.defense) gameData.defense += item.defense;
-            if (item.hp) gameData.hp = Math.min(gameData.hp + item.hp, gameData.maxHP);
-            if (item.energy) gameData.energy = Math.min(gameData.energy + item.energy, gameData.maxEnergy);
-            if (currentShopTab === 'skills') {
-                gameData.skills.push(item.name);
-                document.getElementById('petSkills').innerHTML += '<span style="background: #e3f2fd; padding: 8px 15px; border-radius: 15px;">' + item.name + '</span>';
-            }
-            showModal('购买成功', '获得 ' + item.icon + ' ' + item.name + '！');
-            updateUI();
-            renderShop();
-        }
-
-        // 统计看板
-        function startPlayTimeTracking() {
-            playTimeInterval = setInterval(function() {
-                gameData.totalPlayTime++;
-            }, 60000);
-        }
-
-        function updateStatsUI() {
-            document.getElementById('studyTime').textContent = gameData.totalPlayTime;
-            var total = gameData.totalCorrect + gameData.totalWrong;
-            var acc = total > 0 ? Math.round((gameData.totalCorrect / total) * 100) : 0;
-            document.getElementById('accuracy').textContent = acc + '%';
-            document.getElementById('correctCount').textContent = gameData.totalCorrect;
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('completedLevels').textContent = gameData.completedLevels.length;
-            document.getElementById('checkInStreak').textContent = gameData.checkInStreak;
-        }
-
-        function renderCalendar() {
-            var calendar = document.getElementById('checkInCalendar');
-            var today = new Date();
-            var html = '';
-            for (var i = 0; i < 28; i++) {
-                var d = new Date(today);
-                d.setDate(d.getDate() - i);
-                var dateStr = d.toISOString().split('T')[0];
-                var isChecked = gameData.checkInDays.includes(dateStr);
-                var isToday = i === 0;
-                html += '<div class="calendar-day ' + (isChecked ? 'checked' : '') + ' ' + (isToday ? 'today' : '') + '">' + d.getDate() + '</div>';
-            }
-            calendar.innerHTML = html;
-        }
-
-        function dailyCheckIn() {
-            var today = new Date().toISOString().split('T')[0];
-            if (gameData.checkInDays.includes(today)) {
-                showModal('已打卡', '今天已经打卡过了！');
-                return;
-            }
-            gameData.checkInDays.push(today);
-            gameData.checkInStreak++;
-            gameData.coins += 50;
-            gameData.exp += 20;
-            showModal('打卡成功！', '连续打卡 ' + gameData.checkInStreak + ' 天
-获得 50 金币 + 20 经验');
-            updateUI();
-            renderCalendar();
-        }
-
-        // 宠物
-        function updatePetUI() {
-            document.getElementById('petAttack').textContent = gameData.attack;
-            document.getElementById('petDefense').textContent = gameData.defense;
-            document.getElementById('petHP').textContent = gameData.hp;
-            document.getElementById('petEnergy').textContent = gameData.energy;
-        }
-
-        // 弹窗
-        function showModal(title, text) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalText').textContent = text;
-            document.getElementById('modal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.add('hidden');
-        }
-
-        // 更新UI
-        function updateUI() {
-            document.getElementById('coins').textContent = gameData.coins;
-            document.getElementById('exp').textContent = gameData.exp;
-            document.getElementById('hp').textContent = gameData.hp;
-            document.getElementById('energy').textContent = gameData.energy;
-            if (!document.getElementById('shop').classList.contains('hidden')) {
-                document.getElementById('shopCoins').textContent = gameData.coins;
-            }
-        }
-
-        // 初始化
-        document.addEventListener('DOMContentLoaded', init);
-        document.addEventListener('dblclick', function(e) { e.preventDefault(); }, { passive: false });
-        document.addEventListener('touchstart', function(){}, {passive: true});
-        document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+        
+        // 绑定按钮事件
+        document.getElementById('btn1').onclick = function() { showPage('learning'); };
+        document.getElementById('btn2').onclick = function() { showPage('game'); };
+        document.getElementById('btn3').onclick = function() { showPage('pet'); };
+        document.getElementById('btn4').onclick = function() { showPage('stats'); };
+        
+        document.getElementById('back1').onclick = function() { showPage('main'); };
+        document.getElementById('back2').onclick = function() { showPage('main'); };
+        document.getElementById('back3').onclick = function() { showPage('main'); };
+        document.getElementById('back4').onclick = function() { showPage('main'); };
+        
+        console.log('页面加载完成，事件已绑定');
     </script>
 </body>
 </html>
