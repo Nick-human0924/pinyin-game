@@ -238,7 +238,65 @@ class PinyinGame {
         this.updatePetDisplay();
     }
     
-    // ... 其他原有方法
+    // 绑定事件
+    bindEvents() {
+        // 主菜单按钮
+        document.getElementById('btn-start')?.addEventListener('click', () => {
+            this.showScreen('level-select');
+        });
+        
+        document.getElementById('btn-continue')?.addEventListener('click', () => {
+            this.loadProgress();
+            this.showScreen('game-scene');
+        });
+        
+        document.getElementById('btn-achievements')?.addEventListener('click', () => {
+            alert('成就系统开发中...');
+        });
+        
+        document.getElementById('btn-parent')?.addEventListener('click', () => {
+            alert('家长中心开发中...');
+        });
+        
+        // 返回按钮
+        document.getElementById('btn-back-menu')?.addEventListener('click', () => {
+            this.showScreen('main-menu');
+        });
+        
+        document.getElementById('btn-exit')?.addEventListener('click', () => {
+            this.showScreen('main-menu');
+        });
+    }
+    
+    // 显示指定屏幕
+    showScreen(screenName) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.add('hidden');
+        });
+        
+        const screenMap = {
+            'main-menu': 'main-menu',
+            'level-select': 'level-select',
+            'game-scene': 'game-scene'
+        };
+        
+        const screenId = screenMap[screenName];
+        if (screenId) {
+            document.getElementById(screenId)?.classList.remove('hidden');
+        }
+    }
+    
+    // 加载进度
+    loadProgress() {
+        // 从本地存储加载游戏进度
+        const saved = localStorage.getItem('pinyinGameProgress');
+        if (saved) {
+            const progress = JSON.parse(saved);
+            this.currentLevel = progress.currentLevel || 1;
+            this.currentQuestion = progress.currentQuestion || 1;
+            this.score = progress.score || 0;
+        }
+    }
 }
 
 // 启动
