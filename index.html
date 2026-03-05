@@ -3,192 +3,651 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音游戏诊断版</title>
+    <title>拼音大冒险 5.0</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
             min-height: 100vh; 
-            margin: 0; 
-            padding: 20px; 
+            padding: 10px;
             -webkit-tap-highlight-color: transparent;
         }
-        .container { 
+        .game-container { 
             max-width: 800px; 
             margin: 0 auto; 
-            background: white; 
-            padding: 20px; 
+            padding: 10px; 
+        }
+        /* 头部 */
+        .header { 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 15px; 
+            padding: 15px; 
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .player-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+        .avatar { 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 30px;
+        }
+        .stats { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+        }
+        .stat-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+            background: #F7F9FC; 
+            padding: 8px 12px; 
             border-radius: 20px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            font-size: 13px; 
+            font-weight: bold; 
         }
-        h1 { text-align: center; color: #667eea; margin-bottom: 20px; }
-        .btn { 
-            display: block; 
-            width: 100%; 
-            padding: 20px; 
-            margin: 10px 0; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; 
-            border: none; 
-            border-radius: 10px; 
-            font-size: 18px; 
+        /* 主菜单 */
+        .main-menu { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+        }
+        .menu-card { 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 20px; 
+            padding: 25px 15px; 
+            text-align: center; 
             cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             touch-action: manipulation;
-            -webkit-touch-callout: none;
             user-select: none;
+            transition: transform 0.2s;
         }
-        .btn:active { 
+        .menu-card:active { 
             transform: scale(0.98); 
-            opacity: 0.9;
+        }
+        .menu-card .icon { 
+            font-size: 40px; 
+            margin-bottom: 10px; 
+        }
+        .menu-card h2 { 
+            font-size: 16px; 
+            color: #2C3E50; 
+            margin-bottom: 5px;
+        }
+        .menu-card p { 
+            font-size: 12px; 
+            color: #7f8c8d; 
+        }
+        .menu-card.locked {
+            opacity: 0.6;
+            background: #e0e0e0;
+        }
+        .badge {
+            background: #4CAF50;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-top: 8px;
+            display: inline-block;
+        }
+        /* 页面通用 */
+        .page { 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 20px; 
+            padding: 20px; 
+            min-height: 500px;
         }
         .hidden { display: none !important; }
-        .page { padding: 20px; }
-        .debug-info {
-            background: #f0f0f0;
-            padding: 10px;
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
             margin: 10px 0;
-            border-radius: 5px;
-            font-size: 12px;
-            font-family: monospace;
+            touch-action: manipulation;
+        }
+        .btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        .btn-secondary {
+            background: #F7F9FC;
+            color: #2C3E50;
+        }
+        /* 基础教学 */
+        .learning-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        .learning-tab {
+            padding: 10px 15px;
+            background: #F7F9FC;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        .learning-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .pinyin-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .pinyin-card {
+            padding: 15px 5px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+            cursor: pointer;
+        }
+        .pinyin-card:active {
+            background: #667eea;
+            color: white;
+        }
+        /* 答题界面 */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .question-display {
+            font-size: 48px;
+            text-align: center;
+            margin: 30px 0;
+            color: #667eea;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .option-btn {
+            padding: 20px;
+            background: #F7F9FC;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .option-btn:active {
+            border-color: #667eea;
+            background: #e8eaf6;
+        }
+        .option-btn.correct {
+            background: #4CAF50;
+            color: white;
+        }
+        .option-btn.wrong {
+            background: #f44336;
+            color: white;
+        }
+        /* 统计看板 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stats-card {
+            background: #F7F9FC;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stats-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 350px;
+            width: 100%;
+            text-align: center;
+        }
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #667eea;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎮 拼音大冒险</h1>
-        <div id="debug" class="debug-info">页面加载中...</div>
-        
+    <div class="game-container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="player-info">
+                <div class="avatar" onclick="showPet()">🐼</div>
+                <div>
+                    <div style="font-weight: bold;">拼音小勇士</div>
+                    <div class="stats">
+                        <div class="stat-item">💰 <span id="coins">100</span></div>
+                        <div class="stat-item">⭐ <span id="exp">0</span></div>
+                        <div class="stat-item">❤️ <span id="hp">100</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 主菜单 -->
-        <div id="mainMenu" class="page">
-            <button class="btn" id="btn1">📖 基础教学</button>
-            <button class="btn" id="btn2">🎮 开始游戏</button>
-            <button class="btn" id="btn3">🐼 我的宠物</button>
-            <button class="btn" id="btn4">📊 统计看板</button>
+        <div id="mainMenu" class="main-menu">
+            <div class="menu-card" onclick="showLearning()">
+                <div class="icon">📖</div>
+                <h2>基础教学</h2>
+                <p>声母、韵母、整体认读</p>
+                <div class="badge" id="learningBadge">进行中</div>
+            </div>
+            <div class="menu-card locked" id="challengeCard" onclick="if(!this.classList.contains('locked'))showGame()">
+                <div class="icon">⚔️</div>
+                <h2>闯关模式</h2>
+                <p>完成基础教学后解锁</p>
+            </div>
+            <div class="menu-card" onclick="showPet()">
+                <div class="icon">🐾</div>
+                <h2>我的宠物</h2>
+                <p>培养你的拼音小助手</p>
+            </div>
+            <div class="menu-card" onclick="showMap()">
+                <div class="icon">🗺️</div>
+                <h2>探险地图</h2>
+                <p>森林、沙漠、海洋、雪山</p>
+            </div>
+            <div class="menu-card" onclick="showShop()">
+                <div class="icon">🏪</div>
+                <h2>商店</h2>
+                <p>武器、防具、道具、技能</p>
+            </div>
+            <div class="menu-card" onclick="showStats()">
+                <div class="icon">📊</div>
+                <h2>统计看板</h2>
+                <p>学习数据、成长曲线</p>
+            </div>
         </div>
 
         <!-- 基础教学 -->
         <div id="learning" class="page hidden">
-            <h2>📖 基础教学</h2>
-            <p>点击拼音查看读音：</p>
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0;">
-                <button onclick="say('b')">b</button>
-                <button onclick="say('p')">p</button>
-                <button onclick="say('m')">m</button>
-                <button onclick="say('f')">f</button>
-                <button onclick="say('d')">d</button>
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <h2 style="text-align: center; margin: 20px 0;">📖 基础教学</h2>
+            
+            <div class="learning-tabs">
+                <div class="learning-tab active" onclick="switchTab('initial')">声母</div>
+                <div class="learning-tab" onclick="switchTab('final')">韵母</div>
+                <div class="learning-tab" onclick="switchTab('whole')">整体认读</div>
             </div>
-            <button class="btn" onclick="goHome()">← 返回主菜单</button>
+            
+            <div id="learningContent">
+                <!-- 动态加载 -->
+            </div>
+            
+            <button class="btn" onclick="completeLearning()">完成学习</button>
         </div>
 
-        <!-- 游戏 -->
+        <!-- 游戏界面 -->
         <div id="game" class="page hidden">
-            <h2>🎮 游戏关卡</h2>
-            <div id="quiz">
-                <p style="font-size: 24px; text-align: center; margin: 20px;">b</p>
-                <button class="btn" onclick="checkAnswer(0)">玻</button>
-                <button class="btn" onclick="checkAnswer(1)">坡</button>
-                <button class="btn" onclick="checkAnswer(0)">摸</button>
-                <button class="btn" onclick="checkAnswer(0)">佛</button>
+            <div class="quiz-header">
+                <button class="btn btn-secondary" onclick="showMainMenu()" style="width: auto;">← 返回</button>
+                <span>题目 <span id="currentQ">1</span>/10</span>
             </div>
-            <button class="btn" onclick="goHome()">← 返回主菜单</button>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+            </div>
+            <div class="question-display" id="questionDisplay">b</div>
+            <div class="options-grid" id="optionsGrid">
+                <!-- 动态加载 -->
+            </div>
         </div>
 
         <!-- 宠物 -->
         <div id="pet" class="page hidden">
-            <h2>🐼 我的宠物</h2>
-            <div style="text-align: center; font-size: 100px;">🐼</div>
-            <p style="text-align: center;">拼音小熊猫 | 等级 1</p>
-            <button class="btn" onclick="goHome()">← 返回主菜单</button>
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+            <h2 style="text-align: center; margin: 20px 0;">🐼 我的宠物</h2>
+            <div style="text-align: center; font-size: 100px; margin: 30px 0;">🐼</div>
+            <div style="text-align: center;">
+                <h3>拼音小熊猫</h3>
+                <p>等级: <span id="petLevel">1</span> | 经验: <span id="petExp">0</span>/100</p>
+            </div>
         </div>
 
-        <!-- 统计 -->
+        <!-- 探险地图 -->
+        <div id="map" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+            <h2 style="text-align: center; margin: 20px 0;">🗺️ 探险地图</h2>
+            <div style="display: grid; gap: 15px; margin-top: 20px;">
+                <button class="btn" onclick="explore('forest')">🌲 神秘森林 (消耗10体力)</button>
+                <button class="btn" onclick="explore('desert')">🏜️ 炎热沙漠 (消耗15体力)</button>
+                <button class="btn" onclick="explore('ocean')">🌊 深海秘境 (消耗20体力)</button>
+            </div>
+        </div>
+
+        <!-- 商店 -->
+        <div id="shop" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+            <h2 style="text-align: center; margin: 20px 0;">🏪 商店</h2>
+            <div style="text-align: center; margin-bottom: 20px;">金币: <span id="shopCoins">100</span></div>
+            <div style="display: grid; gap: 10px;">
+                <button class="btn" onclick="buy('weapon')">⚔️ 木剑 - 50金币</button>
+                <button class="btn" onclick="buy('potion')">🧪 小药水 - 20金币</button>
+            </div>
+        </div>
+
+        <!-- 统计看板 -->
         <div id="stats" class="page hidden">
-            <h2>📊 统计看板</h2>
-            <p>学习时长: 0分钟</p>
-            <p>正确率: 0%</p>
-            <button class="btn" onclick="goHome()">← 返回主菜单</button>
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+            <h2 style="text-align: center; margin: 20px 0;">📊 统计看板</h2>
+            <div class="stats-grid">
+                <div class="stats-card">
+                    <div>⏱️ 学习时长</div>
+                    <div class="stats-value">0</div>
+                    <div>分钟</div>
+                </div>
+                <div class="stats-card">
+                    <div>🎯 正确率</div>
+                    <div class="stats-value">0%</div>
+                    <div>答题统计</div>
+                </div>
+                <div class="stats-card">
+                    <div>📈 完成关卡</div>
+                    <div class="stats-value">0</div>
+                    <div>共15关</div>
+                </div>
+                <div class="stats-card">
+                    <div>🔥 连续打卡</div>
+                    <div class="stats-value">0</div>
+                    <div>天</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div id="modal" class="modal-overlay hidden" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-title" id="modalTitle">提示</div>
+            <div id="modalText">内容</div>
+            <button class="btn" onclick="closeModal()" style="margin-top: 20px;">确定</button>
         </div>
     </div>
 
     <script>
-        // 调试信息
-        var debugEl = document.getElementById('debug');
-        function log(msg) {
-            debugEl.innerHTML += '<br>' + msg;
-            console.log(msg);
-        }
-        
-        log('✅ JavaScript已加载');
-        
-        // 页面切换函数
-        function showPage(pageId) {
-            log('切换到: ' + pageId);
-            document.querySelectorAll('.page').forEach(function(p) {
-                p.classList.add('hidden');
+        // 游戏数据
+        var gameData = {
+            coins: 100,
+            exp: 0,
+            hp: 100,
+            energy: 50,
+            learningComplete: false,
+            completedLevels: []
+        };
+
+        var learningProgress = { initial: false, final: false, whole: false };
+        var currentQuestion = 0;
+        var correctCount = 0;
+
+        // 拼音数据
+        var pinyinData = {
+            initial: ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'],
+            final: ['a','o','e','i','u','ü','ai','ei','ui','ao','ou','iu','ie','üe','er','an','en','in','un','ün','ang','eng','ing','ong'],
+            whole: ['zhi','chi','shi','ri','zi','ci','si','yi','wu','yu','ye','yue','yuan','yin','yun','ying']
+        };
+
+        // 页面切换
+        function hideAll() {
+            document.querySelectorAll('.page, .main-menu').forEach(function(el) {
+                el.classList.add('hidden');
             });
-            var el = document.getElementById(pageId);
-            if (el) {
-                el.classList.remove('hidden');
-                log('✅ 页面显示成功');
-            } else {
-                log('❌ 页面不存在: ' + pageId);
+        }
+
+        function showMainMenu() {
+            hideAll();
+            document.querySelector('.main-menu').classList.remove('hidden');
+            updateUI();
+        }
+
+        function showLearning() {
+            hideAll();
+            document.getElementById('learning').classList.remove('hidden');
+            switchTab('initial');
+        }
+
+        function showGame() {
+            hideAll();
+            document.getElementById('game').classList.remove('hidden');
+            startQuiz();
+        }
+
+        function showPet() {
+            hideAll();
+            document.getElementById('pet').classList.remove('hidden');
+        }
+
+        function showMap() {
+            hideAll();
+            document.getElementById('map').classList.remove('hidden');
+        }
+
+        function showShop() {
+            hideAll();
+            document.getElementById('shop').classList.remove('hidden');
+            document.getElementById('shopCoins').textContent = gameData.coins;
+        }
+
+        function showStats() {
+            hideAll();
+            document.getElementById('stats').classList.remove('hidden');
+        }
+
+        // 基础教学
+        function switchTab(type) {
+            document.querySelectorAll('.learning-tab').forEach(function(t) {
+                t.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            var content = document.getElementById('learningContent');
+            var data = pinyinData[type];
+            var html = '<div class="pinyin-grid">';
+            data.forEach(function(py) {
+                html += '<div class="pinyin-card" onclick="sayPinyin(\'' + py + '\')">' + py + '</div>';
+            });
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        function sayPinyin(py) {
+            alert('拼音: ' + py);
+            // 标记为已学习
+            var activeTab = document.querySelector('.learning-tab.active');
+            if (activeTab) {
+                var type = activeTab.textContent.includes('声母') ? 'initial' : 
+                          activeTab.textContent.includes('韵母') ? 'final' : 'whole';
+                learningProgress[type] = true;
             }
         }
-        
-        function goHome() {
-            log('返回首页');
-            showPage('mainMenu');
+
+        function completeLearning() {
+            if (learningProgress.initial && learningProgress.final && learningProgress.whole) {
+                gameData.learningComplete = true;
+                document.getElementById('challengeCard').classList.remove('locked');
+                showModal('🎉 恭喜！', '你已完成基础教学，现在可以进入闯关模式了！');
+                document.getElementById('learningBadge').textContent = '已完成';
+            } else {
+                showModal('提示', '请先学习完声母、韵母和整体认读');
+            }
         }
-        
-        function say(pinyin) {
-            alert('拼音: ' + pinyin);
+
+        // 游戏答题
+        function startQuiz() {
+            currentQuestion = 1;
+            correctCount = 0;
+            showQuestion();
         }
-        
-        function checkAnswer(isCorrect) {
+
+        function showQuestion() {
+            document.getElementById('currentQ').textContent = currentQuestion;
+            document.getElementById('progressFill').style.width = (currentQuestion * 10) + '%';
+            document.getElementById('questionDisplay').textContent = 'b';
+            
+            var options = [
+                { text: '玻', correct: true },
+                { text: '坡', correct: false },
+                { text: '摸', correct: false },
+                { text: '佛', correct: false }
+            ];
+            
+            var html = '';
+            options.forEach(function(opt, idx) {
+                html += '<button class="option-btn" onclick="answer(' + opt.correct + ', this)">' + opt.text + '</button>';
+            });
+            document.getElementById('optionsGrid').innerHTML = html;
+        }
+
+        function answer(isCorrect, btn) {
             if (isCorrect) {
-                alert('✅ 回答正确！');
+                btn.classList.add('correct');
+                correctCount++;
+                gameData.coins += 5;
             } else {
-                alert('❌ 再想想~');
+                btn.classList.add('wrong');
             }
+            
+            setTimeout(function() {
+                currentQuestion++;
+                if (currentQuestion <= 10) {
+                    showQuestion();
+                } else {
+                    showModal('关卡完成！', '你答对了 ' + correctCount + '/10 题\n获得 ' + (correctCount * 5) + ' 金币');
+                    showMainMenu();
+                }
+            }, 500);
         }
-        
-        // 绑定按钮事件
-        document.getElementById('btn1').addEventListener('click', function() {
-            log('点击: 基础教学');
-            showPage('learning');
+
+        // 探险
+        function explore(location) {
+            var cost = location === 'forest' ? 10 : location === 'desert' ? 15 : 20;
+            if (gameData.energy < cost) {
+                showModal('体力不足', '你的体力不足，请休息或购买药水');
+                return;
+            }
+            
+            gameData.energy -= cost;
+            
+            // 70%战斗，30%宝藏
+            var rand = Math.random();
+            if (rand < 0.7) {
+                showModal('⚔️ 遭遇战斗！', '你遇到了拼音怪兽！\n快回答拼音问题来击败它！');
+            } else {
+                var coins = Math.floor(Math.random() * 50) + 20;
+                gameData.coins += coins;
+                showModal('💎 发现宝藏！', '你发现了一处宝藏！\n获得 ' + coins + ' 金币');
+            }
+            updateUI();
+        }
+
+        // 商店
+        function buy(item) {
+            if (item === 'weapon' && gameData.coins >= 50) {
+                gameData.coins -= 50;
+                showModal('购买成功', '你获得了木剑！攻击力+5');
+            } else if (item === 'potion' && gameData.coins >= 20) {
+                gameData.coins -= 20;
+                gameData.hp = Math.min(gameData.hp + 30, 100);
+                showModal('购买成功', '你获得了小药水！生命值+30');
+            } else {
+                showModal('金币不足', '你的金币不够购买这个物品');
+            }
+            updateUI();
+        }
+
+        // 弹窗
+        function showModal(title, text) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalText').textContent = text;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        // 更新UI
+        function updateUI() {
+            document.getElementById('coins').textContent = gameData.coins;
+            document.getElementById('hp').textContent = gameData.hp;
+            document.getElementById('exp').textContent = gameData.exp;
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化学习进度
+            switchTab('initial');
         });
-        
-        document.getElementById('btn2').addEventListener('click', function() {
-            log('点击: 开始游戏');
-            showPage('game');
-        });
-        
-        document.getElementById('btn3').addEventListener('click', function() {
-            log('点击: 我的宠物');
-            showPage('pet');
-        });
-        
-        document.getElementById('btn4').addEventListener('click', function() {
-            log('点击: 统计看板');
-            showPage('stats');
-        });
-        
-        log('✅ 所有按钮事件已绑定');
-        
-        // 移动端优化
-        document.addEventListener('touchstart', function(){}, {passive: true});
+
+        // 防止双击缩放
         document.addEventListener('dblclick', function(e) {
             e.preventDefault();
         }, { passive: false });
-        
-        // 防止缩放
-        document.addEventListener('gesturestart', function(e) {
-            e.preventDefault();
-        });
-        
-        log('✅ 移动端优化已启用');
-        log('🎮 游戏准备就绪！');
+
+        // 触摸优化
+        document.addEventListener('touchstart', function(){}, {passive: true});
     </script>
 </body>
 </html>
