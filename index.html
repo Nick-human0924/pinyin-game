@@ -3,1170 +3,1258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>拼音探险岛 3.0 - 完整版</title>
+    <title>拼音大冒险 4.0 - 完整版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: #2C3E50; }
+        .game-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .player-info { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; transition: transform 0.3s; }
+        .avatar:hover { transform: scale(1.1); }
+        .stats { display: flex; gap: 15px; flex-wrap: wrap; }
+        .stat-item { display: flex; align-items: center; gap: 5px; background: #F7F9FC; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+        .stat-item.hp { background: #ffebee; color: #c62828; }
+        .stat-item.mp { background: #e3f2fd; color: #1565c0; }
+        .main-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .menu-card { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .menu-card:hover { transform: translateY(-10px); box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .menu-card .icon { font-size: 60px; margin-bottom: 15px; }
+        .menu-card h2 { margin-bottom: 10px; color: #2C3E50; }
+        .menu-card p { color: #7f8c8d; font-size: 14px; }
+        .hidden { display: none !important; }
+        .btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s; margin: 5px; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4); }
+        .btn-secondary { background: #F7F9FC; color: #2C3E50; }
+        .btn-secondary:hover { background: #e8ecef; }
+        .btn-success { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
+        .btn-danger { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
+        .btn-warning { background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%); }
+        .btn-info { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        /* 关卡选择 */
+        .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .level-card { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+        .level-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
+        .level-card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(100%); }
+        .level-card.completed::after { content: '✓'; position: absolute; top: 10px; right: 10px; background: #4CAF50; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .level-type { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
+        .level-reward { font-size: 11px; color: #f5576c; margin-top: 5px; }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+        /* 答题界面 */
+        .quiz-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; max-width: 800px; margin: 0 auto; }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .progress-bar { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; margin-bottom: 30px; }
+        .progress-fill { height: 100%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transition: width 0.3s; }
+        .question-display { font-size: 80px; text-align: center; margin: 40px 0; color: #2C3E50; font-weight: bold; }
+        .question-hint { text-align: center; color: #7f8c8d; margin-bottom: 20px; }
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 30px; }
+        .option-btn { background: #F7F9FC; border: 2px solid transparent; padding: 20px; border-radius: 15px; font-size: 24px; cursor: pointer; transition: all 0.3s; }
+        .option-btn:hover { border-color: #f5576c; background: #fff5f7; }
+        .option-btn.correct { background: #c8e6c9; border-color: #4CAF50; }
+        .option-btn.wrong { background: #ffcdd2; border-color: #f44336; }
         
-        @keyframes shine {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
+        /* 宠物系统 */
+        .pet-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; }
+        .pet-display { text-align: center; margin-bottom: 30px; }
+        .pet-avatar { font-size: 120px; margin-bottom: 20px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .pet-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .pet-stat { background: #F7F9FC; padding: 15px; border-radius: 15px; text-align: center; }
+        .pet-stat-label { font-size: 12px; color: #7f8c8d; margin-bottom: 5px; }
+        .pet-stat-value { font-size: 20px; font-weight: bold; color: #2C3E50; }
+        .exp-bar { width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .exp-fill { height: 100%; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); transition: width 0.5s; }
         
-        body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+        /* 探险地图 */
+        .map-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; }
+        .map-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .map-location { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; }
+        .map-location:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .map-location .icon { font-size: 50px; margin-bottom: 10px; }
+        .map-location .energy-cost { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 15px; font-size: 12px; }
+        .location-forest { background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%); }
+        .location-desert { background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%); }
+        .location-ocean { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
+        .location-snow { background: linear-gradient(135deg, #90CAF9 0%, #42A5F5 100%); }
+        .location-volcano { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
         
-        /* 背景装饰 */
-        .bg-stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                radial-gradient(2px 2px at 40px 70px, #fff, transparent),
-                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                radial-gradient(2px 2px at 130px 80px, #fff, transparent),
-                radial-gradient(1px 1px at 160px 20px, #fff, transparent);
-            animation: twinkle 3s ease-in-out infinite;
-        }
+        /* 战斗系统 */
+        .battle-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; max-width: 900px; margin: 0 auto; }
+        .battle-arena { display: flex; justify-content: space-between; align-items: center; margin: 40px 0; padding: 30px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 20px; }
+        .battle-pet, .battle-monster { text-align: center; color: white; }
+        .battle-pet-avatar, .battle-monster-avatar { font-size: 80px; margin-bottom: 15px; }
+        .battle-hp-bar { width: 150px; height: 20px; background: #333; border-radius: 10px; overflow: hidden; margin: 10px auto; }
+        .battle-hp-fill { height: 100%; transition: width 0.5s; }
+        .battle-hp-fill.pet { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
+        .battle-hp-fill.monster { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
+        .battle-vs { font-size: 40px; color: #FFD700; font-weight: bold; }
+        .battle-log { background: #1a1a2e; color: #00ff00; padding: 20px; border-radius: 15px; height: 150px; overflow-y: auto; font-family: monospace; margin-top: 20px; }
+        .damage-number { position: absolute; font-size: 30px; font-weight: bold; animation: damageFloat 1s ease-out forwards; }
+        @keyframes damageFloat { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
         
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        
-        #game-container {
-            width: 100%;
-            max-width: 480px;
-            height: 100vh;
-            max-height: 900px;
-            background: linear-gradient(180deg, #2d3561 0%, #1a1f3a 100%);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(102, 126, 234, 0.3);
-        }
-        
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            overflow-y: auto;
-            display: none;
-        }
-        
-        .screen.active { display: flex; flex-direction: column; }
-        
-        /* 主菜单 */
-        #main-menu {
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        
-        .game-title {
-            font-size: 2.8rem;
-            font-weight: bold;
-            background: linear-gradient(90deg, #f093fb 0%, #f5576c 50%, #ffd93d 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 3s linear infinite;
-            margin-bottom: 10px;
-            text-shadow: 0 0 30px rgba(240, 147, 251, 0.5);
-        }
-        
-        .game-subtitle {
-            color: #a0aec0;
-            font-size: 1rem;
-            margin-bottom: 40px;
-            letter-spacing: 2px;
-        }
-        
-        .pet-showcase {
-            width: 150px;
-            height: 150px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            animation: float 3s ease-in-out infinite;
-            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
-            border: 4px solid rgba(255,255,255,0.1);
-        }
-        
-        .menu-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 280px;
-        }
-        
-        .btn {
-            padding: 18px 30px;
-            border: none;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
-        }
-        
-        .btn-secondary {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            border: 2px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.4);
-        }
-        
-        /* 宠物状态栏 */
-        .pet-status {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .pet-avatar {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            border: 3px solid rgba(255,255,255,0.3);
-        }
-        
-        .pet-info {
-            flex: 1;
-        }
-        
-        .pet-name {
-            color: #fff;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        
-        .pet-level {
-            color: #ffd93d;
-            font-size: 0.9rem;
-        }
-        
-        .pet-stats {
-            display: flex;
-            gap: 15px;
-            margin-top: 5px;
-        }
-        
-        .stat {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #a0aec0;
-            font-size: 0.85rem;
-        }
-        
-        .stat-value {
-            color: #ffd93d;
-            font-weight: bold;
-        }
-        
-        /* 游戏场景 */
-        #game-scene {
-            padding-top: 100px;
-        }
-        
-        .level-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .level-name {
-            color: #ffd93d;
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #f093fb 100%);
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-        
-        /* 题目卡片 */
-        .question-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 25px;
-            padding: 30px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            margin-bottom: 20px;
-        }
-        
-        .chinese-char {
-            font-size: 5rem;
-            color: #fff;
-            margin-bottom: 10px;
-            text-shadow: 0 0 30px rgba(255,255,255,0.3);
-        }
-        
-        .pinyin-display {
-            font-size: 2rem;
-            color: #ffd93d;
-            margin-bottom: 15px;
-        }
-        
-        .word-example {
-            color: #a0aec0;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-        }
-        
-        .play-btn {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            color: white;
-            font-size: 3rem;
-            cursor: pointer;
-            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        .play-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
-        }
-        
-        /* 选项区域 */
-        .options-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .option-btn {
-            padding: 25px 15px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 20px;
-            color: #fff;
-            font-size: 1.8rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        
-        .option-btn:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: #667eea;
-            transform: translateY(-3px);
-        }
-        
-        .option-btn.correct {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            border-color: #48bb78;
-            animation: pulse 0.5s ease;
-        }
-        
-        .option-btn.wrong {
-            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-            border-color: #f56565;
-        }
-        
-        /* 连击特效 */
-        .combo-display {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 4rem;
-            font-weight: bold;
-            color: #ffd93d;
-            text-shadow: 0 0 30px rgba(255, 217, 61, 0.8);
-            pointer-events: none;
-            opacity: 0;
-            transition: all 0.5s ease;
-            z-index: 1000;
-        }
-        
-        .combo-display.show {
-            opacity: 1;
-            animation: comboPop 1s ease forwards;
-        }
-        
-        @keyframes comboPop {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1) translateY(-100px); opacity: 0; }
-        }
-        
-        /* 金币动画 */
-        .coin-float {
-            position: fixed;
-            color: #ffd93d;
-            font-size: 1.5rem;
-            font-weight: bold;
-            pointer-events: none;
-            animation: coinUp 1s ease forwards;
-            z-index: 1000;
-        }
-        
-        @keyframes coinUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-50px); }
-        }
-        
-        /* 底部工具栏 */
-        .toolbar {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        
-        .tool-btn {
-            padding: 12px 25px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 25px;
-            color: #fff;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        
-        .tool-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
+        /* 商店系统 */
+        .shop-container { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; }
+        .shop-tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .shop-tab { padding: 12px 24px; border-radius: 20px; cursor: pointer; transition: all 0.3s; background: #F7F9FC; }
+        .shop-tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .shop-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .shop-item { background: #F7F9FC; border-radius: 20px; padding: 25px; text-align: center; transition: all 0.3s; }
+        .shop-item:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .shop-item-icon { font-size: 50px; margin-bottom: 15px; }
+        .shop-item-name { font-weight: bold; margin-bottom: 10px; }
+        .shop-item-desc { font-size: 12px; color: #7f8c8d; margin-bottom: 15px; }
+        .shop-item-price { color: #f5576c; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
+        .shop-item-owned { color: #4CAF50; font-size: 14px; }
         
         /* 弹窗 */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 25px; padding: 40px; max-width: 500px; width: 90%; text-align: center; animation: modalPop 0.3s ease-out; }
+        @keyframes modalPop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .modal-title { font-size: 24px; margin-bottom: 20px; }
+        .modal-text { margin-bottom: 20px; color: #7f8c8d; }
         
-        .modal.show { display: flex; }
+        /* 动画效果 */
+        .shake { animation: shake 0.5s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .pulse { animation: pulse 0.5s; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .fade-in { animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .modal-content {
-            background: linear-gradient(135deg, #2d3561 0%, #1a1f3a 100%);
-            border-radius: 30px;
-            padding: 40px;
-            text-align: center;
-            max-width: 350px;
-            border: 1px solid rgba(255,255,255,0.2);
-            animation: modalIn 0.3s ease;
-        }
+        /* 技能特效 */
+        .skill-effect { position: fixed; pointer-events: none; font-size: 60px; animation: skillAnimation 1s ease-out forwards; z-index: 999; }
+        @keyframes skillAnimation { 0% { transform: scale(0) rotate(0deg); opacity: 1; } 50% { transform: scale(1.5) rotate(180deg); } 100% { transform: scale(2) rotate(360deg); opacity: 0; } }
         
-        @keyframes modalIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        .modal-icon {
-            font-size: 5rem;
-            margin-bottom: 20px;
-        }
-        
-        .modal-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        
-        .modal-message {
-            color: #a0aec0;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-        
-        .modal-hint {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 25px;
-            color: #ffd93d;
-            font-size: 0.95rem;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        /* 关卡地图 */
-        .map-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px 0;
-        }
-        
-        .level-node {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 20px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        
-        .level-node:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: #667eea;
-        }
-        
-        .level-node.locked {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .level-node.completed {
-            border-color: #48bb78;
-        }
-        
-        .level-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #fff;
-        }
-        
-        .level-info-text {
-            flex: 1;
-        }
-        
-        .level-title {
-            color: #fff;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        .level-desc {
-            color: #a0aec0;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-        
-        .level-status {
-            color: #ffd93d;
-            font-size: 1.5rem;
-        }
-        
-        /* 返回按钮 */
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 45px;
-            height: 45px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
-            color: #fff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-        }
-        
-        .back-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        /* 宠物互动区 */
-        .pet-interaction {
-            position: absolute;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-        }
-        
-        .pet-character {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            margin: 0 auto 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: float 3s ease-in-out infinite;
-            border: 4px solid rgba(255,255,255,0.3);
-            box-shadow: 0 10px 40px rgba(240, 147, 251, 0.4);
-        }
-        
-        .pet-character:hover {
-            transform: scale(1.1);
-        }
-        
-        .pet-character.happy {
-            animation: happyJump 0.5s ease;
-        }
-        
-        @keyframes happyJump {
-            0%, 100% { transform: scale(1) translateY(0); }
-            50% { transform: scale(1.2) translateY(-20px); }
-        }
-        
-        .pet-speech {
-            background: rgba(255,255,255,0.95);
-            color: #333;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            max-width: 200px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .pet-speech.show {
-            opacity: 1;
-        }
-        
-        /* 喂养按钮 */
-        .feed-btn {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border: none;
-            border-radius: 30px;
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(240, 147, 251, 0.4);
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .header { flex-direction: column; gap: 15px; }
+            .stats { justify-content: center; }
+            .question-display { font-size: 50px; }
+            .options-grid { grid-template-columns: 1fr; }
+            .battle-arena { flex-direction: column; gap: 30px; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-stars"></div>
-    <div id="game-container">
+    <div class="game-container">
+        <!-- 头部信息 -->
+        <div class="header">
+            <div class="player-info">
+                <div class="avatar" onclick="showPet()" title="点击查看宠物">🐼</div>
+                <div>
+                    <div style="font-weight: bold; font-size: 18px;">拼音小勇士</div>
+                    <div style="font-size: 12px; color: #7f8c8d;">等级 <span id="playerLevel">1</span></div>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item hp">❤️ <span id="petHP">100</span>/<span id="petMaxHP">100</span></div>
+                <div class="stat-item mp">⚡ <span id="petEnergy">50</span>/<span id="petMaxEnergy">50</span></div>
+                <div class="stat-item">💰 <span id="coins">100</span></div>
+                <div class="stat-item">⭐ <span id="exp">0</span></div>
+                <div class="stat-item">⚔️ <span id="attack">10</span></div>
+                <div class="stat-item">🛡️ <span id="defense">5</span></div>
+            </div>
+        </div>
+
         <!-- 主菜单 -->
-        <div id="main-menu" class="screen active">
-            <div class="pet-showcase">🦕</div>
-            <h1 class="game-title">拼音探险岛</h1>
-            <p class="game-subtitle">听音辨形 · 快乐学拼音</p>
-            
-            <div class="menu-buttons">
-                <button class="btn btn-primary" onclick="game.startAdventure()">开始探险</button>
-                <button class="btn btn-secondary" onclick="game.continueGame()">继续游戏</button>
-                <button class="btn btn-secondary" onclick="game.showPet()">我的宠物</button>
-                <button class="btn btn-secondary" onclick="game.showAchievements()">成就徽章</button>
+        <div id="mainMenu" class="main-menu">
+            <div class="menu-card" onclick="showLevels()">
+                <div class="icon">📚</div>
+                <h2>关卡挑战</h2>
+                <p>15+关卡，150+拼音题目</p>
+            </div>
+            <div class="menu-card" onclick="showPet()">
+                <div class="icon">🐾</div>
+                <h2>我的宠物</h2>
+                <p>培养你的拼音小助手</p>
+            </div>
+            <div class="menu-card" onclick="showMap()">
+                <div class="icon">🗺️</div>
+                <h2>探险地图</h2>
+                <p>森林、沙漠、海洋、雪山、火山</p>
+            </div>
+            <div class="menu-card" onclick="showShop()">
+                <div class="icon">🏪</div>
+                <h2>商店</h2>
+                <p>武器、防具、道具、技能</p>
             </div>
         </div>
-        
-        <!-- 关卡地图 -->
-        <div id="level-map" class="screen">
-            <button class="back-btn" onclick="game.showScreen('main-menu')">←</button>
-            <div style="text-align: center; margin-top: 60px; margin-bottom: 20px;">
-                <div style="color: #ffd93d; font-size: 1.5rem; font-weight: bold;">选择关卡</div>
+
+        <!-- 关卡选择 -->
+        <div id="levelSelect" class="hidden">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+                <h2 style="margin-top: 20px;">📚 关卡挑战</h2>
+                <p style="color: #7f8c8d;">选择关卡开始挑战，解锁更多内容！</p>
             </div>
-            
-            <div class="map-container" id="level-list">
-                <!-- 动态生成 -->
+            <div class="level-grid" id="levelGrid"></div>
+        </div>
+
+        <!-- 答题界面 -->
+        <div id="quizScreen" class="hidden">
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <button class="btn btn-secondary" onclick="exitQuiz()">退出</button>
+                    <span id="quizLevelName">关卡名称</span>
+                    <span>题目 <span id="currentQ">1</span>/<span id="totalQ">10</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="question-hint" id="questionHint">请选出正确的读音</div>
+                <div class="question-display" id="questionDisplay">?</div>
+                <div class="options-grid" id="optionsGrid"></div>
             </div>
         </div>
-        
-        <!-- 游戏场景 -->
-        <div id="game-scene" class="screen">
-            <!-- 宠物状态栏 -->
-            <div class="pet-status">
-                <div class="pet-avatar">🦕</div>
-                <div class="pet-info">
-                    <div class="pet-name">小龙</div>
-                    <div class="pet-level">Lv.1 幼龙</div>
-                    <div class="pet-stats">
-                        <div class="stat">
-                            <span>经验:</span>
-                            <span class="stat-value" id="exp-value">0/100</span>
+
+        <!-- 宠物界面 -->
+        <div id="petScreen" class="hidden">
+            <div class="pet-container">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+                    <h2 style="margin-top: 20px;">🐾 我的宠物</h2>
+                </div>
+                <div class="pet-display">
+                    <div class="pet-avatar" id="petAvatar">🐼</div>
+                    <h3 id="petName">拼音小熊猫</h3>
+                    <p style="color: #7f8c8d;">等级 <span id="petLevel">1</span> | <span id="petTitle">初级学徒</span></p>
+                    <div style="max-width: 400px; margin: 20px auto;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>经验值</span>
+                            <span><span id="petExp">0</span>/<span id="petMaxExp">100</span></span>
                         </div>
-                        <div class="stat">
-                            <span>金币:</span>
-                            <span class="stat-value" id="coin-value">0</span>
+                        <div class="exp-bar">
+                            <div class="exp-fill" id="expBar" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- 关卡信息 -->
-            <div class="level-info">
-                <div class="level-name" id="current-level-name">声母岛</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                <div class="pet-stats">
+                    <div class="pet-stat">
+                        <div class="pet-stat-label">攻击力</div>
+                        <div class="pet-stat-value" id="petAttack">10</div>
+                    </div>
+                    <div class="pet-stat">
+                        <div class="pet-stat-label">防御力</div>
+                        <div class="pet-stat-value" id="petDefense">5</div>
+                    </div>
+                    <div class="pet-stat">
+                        <div class="pet-stat-label">生命值</div>
+                        <div class="pet-stat-value" id="petMaxHPStat">100</div>
+                    </div>
+                    <div class="pet-stat">
+                        <div class="pet-stat-label">体力值</div>
+                        <div class="pet-stat-value" id="petMaxEnergyStat">50</div>
+                    </div>
+                    <div class="pet-stat">
+                        <div class="pet-stat-label">速度</div>
+                        <div class="pet-stat-value" id="petSpeed">10</div>
+                    </div>
+                    <div class="pet-stat">
+                        <div class="pet-stat-label">幸运值</div>
+                        <div class="pet-stat-value" id="petLuck">5</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <h4>已学技能</h4>
+                    <div id="petSkills" style="margin-top: 15px;">
+                        <span style="background: #e3f2fd; padding: 8px 15px; border-radius: 15px; margin: 5px; display: inline-block;">基础攻击</span>
+                    </div>
                 </div>
             </div>
-            
-            <!-- 题目卡片 -->
-            <div class="question-card">
-                <div class="chinese-char" id="chinese-char">八</div>
-                <div class="pinyin-display" id="pinyin-display">bā</div>
-                <div class="word-example" id="word-example">八个苹果</div>
-                
-                <button class="play-btn" onclick="game.playSound()">▶</button>
-            </div>
-            
-            <!-- 选项 -->
-            <div class="options-container" id="options-container">
-                <!-- 动态生成 -->
-            </div>
-            
-            <!-- 底部工具 -->
-            <div class="toolbar">
-                <button class="tool-btn" onclick="game.showHint()">提示</button>
-                <button class="tool-btn" onclick="game.slowPlay()">慢放</button>
-                <button class="tool-btn" onclick="game.backToMap()">退出</button>
+        </div>
+
+        <!-- 探险地图 -->
+        <div id="mapScreen" class="hidden">
+            <div class="map-container">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+                    <h2 style="margin-top: 20px;">🗺️ 探险地图</h2>
+                    <p style="color: #7f8c8d;">选择地点开始探险，消耗体力获得奖励！</p>
+                </div>
+                <div class="map-grid">
+                    <div class="map-location location-forest" onclick="startAdventure('forest')">
+                        <span class="energy-cost">⚡10</span>
+                        <div class="icon">🌲</div>
+                        <h3>神秘森林</h3>
+                        <p style="font-size: 12px; opacity: 0.9;">适合新手，容易遇到小怪兽</p>
+                    </div>
+                    <div class="map-location location-desert" onclick="startAdventure('desert')">
+                        <span class="energy-cost">⚡15</span>
+                        <div class="icon">🏜️</div>
+                        <h3>炎热沙漠</h3>
+                        <p style="font-size: 12px; opacity: 0.9;">中等难度，有稀有装备</p>
+                    </div>
+                    <div class="map-location location-ocean" onclick="startAdventure('ocean')">
+                        <span class="energy-cost">⚡20</span>
+                        <div class="icon">🌊</div>
+                        <h3>深海秘境</h3>
+                        <p style="font-size: 12px; opacity: 0.9;">较高难度，大量金币</p>
+                    </div>
+                    <div class="map-location location-snow" onclick="startAdventure('snow')">
+                        <span class="energy-cost">⚡25</span>
+                        <div class="icon">🏔️</div>
+                        <h3>冰雪山脉</h3>
+                        <p style="font-size: 12px; opacity: 0.9;">困难模式，经验丰厚</p>
+                    </div>
+                    <div class="map-location location-volcano" onclick="startAdventure('volcano')">
+                        <span class="energy-cost">⚡30</span>
+                        <div class="icon">🌋</div>
+                        <h3>烈焰火山</h3>
+                        <p style="font-size: 12px; opacity: 0.9;">地狱难度，传说装备</p>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <!-- 宠物互动 -->
-        <div id="pet-screen" class="screen">
-            <button class="back-btn" onclick="game.showScreen('main-menu')">←</button>
-            
-            <div style="text-align: center; margin-top: 60px; margin-bottom: 20px;">
-                <div style="color: #ffd93d; font-size: 1.5rem; font-weight: bold;">我的宠物</div>
+
+        <!-- 战斗界面 -->
+        <div id="battleScreen" class="hidden">
+            <div class="battle-container">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2>⚔️ 战斗开始！</h2>
+                    <p style="color: #7f8c8d;" id="battleLocation">神秘森林</p>
+                </div>
+                <div class="battle-arena">
+                    <div class="battle-pet">
+                        <div class="battle-pet-avatar" id="battlePetAvatar">🐼</div>
+                        <div id="battlePetName">拼音小熊猫</div>
+                        <div class="battle-hp-bar">
+                            <div class="battle-hp-fill pet" id="battlePetHP" style="width: 100%"></div>
+                        </div>
+                        <div style="font-size: 12px;"><span id="battlePetHPCurrent">100</span>/<span id="battlePetHPMax">100</span> HP</div>
+                    </div>
+                    <div class="battle-vs">VS</div>
+                    <div class="battle-monster">
+                        <div class="battle-monster-avatar" id="battleMonsterAvatar">👹</div>
+                        <div id="battleMonsterName">拼音怪兽</div>
+                        <div class="battle-hp-bar">
+                            <div class="battle-hp-fill monster" id="battleMonsterHP" style="width: 100%"></div>
+                        </div>
+                        <div style="font-size: 12px;"><span id="battleMonsterHPCurrent">50</span>/<span id="battleMonsterHPMax">50</span> HP</div>
+                    </div>
+                </div>
+                <div id="battleQuizSection">
+                    <div class="question-display" id="battleQuestion" style="font-size: 50px;">?</div>
+                    <div class="options-grid" id="battleOptions"></div>
+                </div>
+                <div class="battle-log" id="battleLog">
+                    <div>战斗开始！遇到了拼音怪兽！</div>
+                </div>
             </div>
-            
-            <div class="pet-interaction">
-                <div class="pet-character" id="pet-character" onclick="game.petInteract()">🦕</div>
-                <div class="pet-speech" id="pet-speech">点击我互动哦~</div>
-            </div>
-            
-            <button class="feed-btn" onclick="game.feedPet()">喂养 (10金币)</button>
         </div>
-        
-        <!-- 反馈弹窗 -->
-        <div class="modal" id="feedback-modal">
+
+        <!-- 商店界面 -->
+        <div id="shopScreen" class="hidden">
+            <div class="shop-container">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <button class="btn btn-secondary" onclick="showMainMenu()">← 返回主菜单</button>
+                    <h2 style="margin-top: 20px;">🏪 商店</h2>
+                    <p style="color: #7f8c8d;">当前金币: <span id="shopCoins">100</span> 💰</p>
+                </div>
+                <div class="shop-tabs">
+                    <div class="shop-tab active" onclick="switchShopTab('weapons')">⚔️ 武器店</div>
+                    <div class="shop-tab" onclick="switchShopTab('armor')">🛡️ 防具店</div>
+                    <div class="shop-tab" onclick="switchShopTab('items')">🧪 道具店</div>
+                    <div class="shop-tab" onclick="switchShopTab('skills')">📖 技能店</div>
+                </div>
+                <div class="shop-items" id="shopItems"></div>
+            </div>
+        </div>
+
+        <!-- 探险结果弹窗 -->
+        <div id="adventureModal" class="modal-overlay hidden">
             <div class="modal-content">
-                <div class="modal-icon" id="modal-icon">🎉</div>
-                <div class="modal-title" id="modal-title">回答正确!</div>
-                <div class="modal-message" id="modal-message">太棒了!继续加油!</div>
-                <div class="modal-hint" id="modal-hint">发音小贴士</div>
-                <div class="modal-buttons">
-                    <button class="btn btn-primary" id="modal-btn-primary" onclick="game.nextQuestion()">下一题</button>
-                    <button class="btn btn-secondary" id="modal-btn-secondary" onclick="game.retryQuestion()">再试一次</button>
-                </div>
+                <div class="modal-title" id="adventureTitle">探险完成！</div>
+                <div class="modal-text" id="adventureText"></div>
+                <button class="btn" onclick="closeAdventureModal()">确定</button>
             </div>
         </div>
-        
-        <!-- 连击显示 -->
-        <div class="combo-display" id="combo-display">🔥 x3</div>
+
+        <!-- 战斗结果弹窗 -->
+        <div id="battleResultModal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <div class="modal-title" id="battleResultTitle">战斗胜利！</div>
+                <div class="modal-text" id="battleResultText"></div>
+                <button class="btn" onclick="closeBattleResultModal()">确定</button>
+            </div>
+        </div>
     </div>
 
-<script>
-// 游戏数据 - 汉字联想
-const GAME_DATA = {
-    1: {
-        name: '声母岛',
-        icon: '🏔️',
-        desc: '学习声母发音',
-        questions: [
-            { sound: 'b', chinese: '八', pinyin: 'bā', word: '八个苹果', options: ['b', 'p', 'm'], correct: 0, hint: '双唇紧闭，突然放开，不送气' },
-            { sound: 'p', chinese: '怕', pinyin: 'pà', word: '害怕', options: ['b', 'p', 'm'], correct: 1, hint: '双唇紧闭，突然放开，送气' },
-            { sound: 'm', chinese: '马', pinyin: 'mǎ', word: '小马', options: ['m', 'n', 'l'], correct: 0, hint: '双唇紧闭，气流从鼻腔出' },
-            { sound: 'f', chinese: '发', pinyin: 'fā', word: '发现', options: ['h', 'f', 's'], correct: 1, hint: '上齿咬下唇，气流从缝隙出' },
-            { sound: 'd', chinese: '大', pinyin: 'dà', word: '大象', options: ['d', 'b', 't'], correct: 0, hint: '舌尖抵上齿龈，突然放开，不送气' },
-            { sound: 't', chinese: '他', pinyin: 'tā', word: '他们', options: ['d', 't', 'n'], correct: 1, hint: '舌尖抵上齿龈，突然放开，送气' },
-            { sound: 'n', chinese: '牛', pinyin: 'niú', word: '小牛', options: ['m', 'n', 'l'], correct: 1, hint: '舌尖抵上齿龈，气流从鼻腔出' },
-            { sound: 'l', chinese: '乐', pinyin: 'lè', word: '快乐', options: ['n', 'l', 'r'], correct: 1, hint: '舌尖抵上齿龈，气流从两边出' },
-            { sound: 'g', chinese: '哥', pinyin: 'gē', word: '哥哥', options: ['g', 'k', 'h'], correct: 0, hint: '舌根抵软腭，突然放开，不送气' },
-            { sound: 'k', chinese: '开', pinyin: 'kāi', word: '开门', options: ['g', 'k', 'h'], correct: 1, hint: '舌根抵软腭，突然放开，送气' }
-        ]
-    },
-    2: {
-        name: '韵母岛',
-        icon: '🌊',
-        desc: '学习韵母发音',
-        questions: [
-            { sound: 'a', chinese: '啊', pinyin: 'ā', word: '啊呀', options: ['a', 'o', 'e'], correct: 0, hint: '张大嘴巴，声音响亮' },
-            { sound: 'o', chinese: '哦', pinyin: 'ō', word: '哦哦', options: ['o', 'u', 'e'], correct: 0, hint: '圆圆嘴巴，像吹口哨' },
-            { sound: 'e', chinese: '鹅', pinyin: 'é', word: '白鹅', options: ['e', 'a', 'o'], correct: 0, hint: '扁扁嘴巴，像微笑' },
-            { sound: 'i', chinese: '衣', pinyin: 'yī', word: '衣服', options: ['i', 'u', 'ü'], correct: 0, hint: '牙齿对齐，嘴角向两边' },
-            { sound: 'u', chinese: '乌', pinyin: 'wū', word: '乌鸦', options: ['u', 'o', 'ü'], correct: 0, hint: '圆圆嘴巴，嘴唇向前突' },
-            { sound: 'ü', chinese: '鱼', pinyin: 'yú', word: '小鱼', options: ['ü', 'u', 'i'], correct: 0, hint: '嘴唇向前突，像小鱼嘴' },
-            { sound: 'ai', chinese: '爱', pinyin: 'ài', word: '爱心', options: ['ai', 'ei', 'ui'], correct: 0, hint: '从a滑到i，嘴巴由大变小' },
-            { sound: 'ei', chinese: '诶', pinyin: 'ēi', word: '诶嘿', options: ['ai', 'ei', 'ui'], correct: 1, hint: '从e滑到i，像说"诶"' },
-            { sound: 'ui', chinese: '威', pinyin: 'wēi', word: '威风', options: ['ai', 'ei', 'ui'], correct: 2, hint: '从u滑到i，像说"威"' },
-            { sound: 'ao', chinese: '奥', pinyin: 'ào', word: '奥运', options: ['ao', 'ou', 'iu'], correct: 0, hint: '从a滑到o，像说"袄"' }
-        ]
-    },
-    3: {
-        name: '声调谷',
-        icon: '🏔️',
-        desc: '学习四声调',
-        questions: [
-            { sound: 'ā', chinese: '阿', pinyin: 'ā', word: '阿姨', options: ['ā', 'á', 'ǎ', 'à'], correct: 0, hint: '一声平，高平调，像平地' },
-            { sound: 'á', chinese: '啊', pinyin: 'á', word: '啊？', options: ['ā', 'á', 'ǎ', 'à'], correct: 1, hint: '二声扬，升调，像上坡' },
-            { sound: 'ǎ', chinese: '啊', pinyin: 'ǎ', word: '啊...', options: ['ā', 'á', 'ǎ', 'à'], correct: 2, hint: '三声拐弯，先降后升，像山谷' },
-            { sound: 'à', chinese: '啊', pinyin: 'à', word: '啊！', options: ['ā', 'á', 'ǎ', 'à'], correct: 3, hint: '四声降，降调，像下坡' },
-            { sound: 'ō', chinese: '哦', pinyin: 'ō', word: '哦~', options: ['ō', 'ó', 'ǒ', 'ò'], correct: 0, hint: '一声平，高而平' },
-            { sound: 'ó', chinese: '哦', pinyin: 'ó', word: '哦？', options: ['ō', 'ó', 'ǒ', 'ò'], correct: 1, hint: '二声扬，由低到高' },
-            { sound: 'ě', chinese: '恶', pinyin: 'ě', word: '恶心', options: ['ē', 'é', 'ě', 'è'], correct: 2, hint: '三声拐弯，先降后升' },
-            { sound: 'è', chinese: '饿', pinyin: 'è', word: '饿了', options: ['ē', 'é', 'ě', 'è'], correct: 3, hint: '四声降，急降调' }
-        ]
-    },
-    4: {
-        name: '拼读森林',
-        icon: '🌲',
-        desc: '学习拼音拼读',
-        questions: [
-            { sound: 'ba', chinese: '爸', pinyin: 'bà', word: '爸爸', options: ['ba', 'pa', 'ma'], correct: 0, hint: 'b和a快速连读' },
-            { sound: 'pa', chinese: '怕', pinyin: 'pà', word: '害怕', options: ['ba', 'pa', 'fa'], correct: 1, hint: 'p和a快速连读' },
-            { sound: 'ma', chinese: '妈', pinyin: 'mā', word: '妈妈', options: ['ma', 'na', 'la'], correct: 0, hint: 'm和a快速连读' },
-            { sound: 'fa', chinese: '发', pinyin: 'fā', word: '发现', options: ['ha', 'fa', 'sa'], correct: 1, hint: 'f和a快速连读' },
-            { sound: 'da', chinese: '大', pinyin: 'dà', word: '大象', options: ['da', 'ba', 'ta'], correct: 0, hint: 'd和a快速连读' },
-            { sound: 'ta', chinese: '他', pinyin: 'tā', word: '他们', options: ['da', 'ta', 'na'], correct: 1, hint: 't和a快速连读' },
-            { sound: 'na', chinese: '拿', pinyin: 'ná', word: '拿来', options: ['ma', 'na', 'la'], correct: 1, hint: 'n和a快速连读' },
-            { sound: 'la', chinese: '拉', pinyin: 'lā', word: '拉手', options: ['na', 'la', 'ra'], correct: 1, hint: 'l和a快速连读' }
-        ]
-    },
-    5: {
-        name: '词语城堡',
-        icon: '🏰',
-        desc: '学习常用词语',
-        questions: [
-            { sound: 'baba', chinese: '爸爸', pinyin: 'bàba', word: '我爸爸', options: ['baba', 'papa', 'mama'], correct: 0, hint: '爸爸 - 声母b，韵母a，轻声' },
-            { sound: 'mama', chinese: '妈妈', pinyin: 'māma', word: '我妈妈', options: ['baba', 'papa', 'mama'], correct: 2, hint: '妈妈 - 声母m，韵母a，轻声' },
-            { sound: 'dadi', chinese: '大地', pinyin: 'dàdì', word: '大地母亲', options: ['dadi', 'tadi', 'nadi'], correct: 0, hint: '大地 - d+a，d+i' },
-            { sound: 'taitai', chinese: '太太', pinyin: 'tàitai', word: '老太太', options: ['daitai', 'taitai', 'naitai'], correct: 1, hint: '太太 - t+a，t+ai' },
-            { sound: 'nainai', chinese: '奶奶', pinyin: 'nǎinai', word: '老奶奶', options: ['nainai', 'lailai', 'maimai'], correct: 0, hint: '奶奶 - n+ai，n+ai，轻声' },
-            { sound: 'lala', chinese: '拉拉', pinyin: 'lāla', word: '拉拉队', options: ['nana', 'lala', 'rara'], correct: 1, hint: '拉拉 - l+a，l+a，轻声' }
-        ]
-    }
-};
+    <script>
+        // ==================== 游戏数据 ====================
+        const gameData = {
+            coins: 100,
+            exp: 0,
+            level: 1,
+            pet: {
+                name: '拼音小熊猫',
+                avatar: '🐼',
+                level: 1,
+                exp: 0,
+                maxExp: 100,
+                hp: 100,
+                maxHP: 100,
+                energy: 50,
+                maxEnergy: 50,
+                attack: 10,
+                defense: 5,
+                speed: 10,
+                luck: 5,
+                skills: ['基础攻击'],
+                equipment: {
+                    weapon: null,
+                    armor: null,
+                    accessory: null
+                }
+            },
+            inventory: [],
+            completedLevels: [],
+            currentShopTab: 'weapons'
+        };
 
-// 拼音转中文发音
-const PINYIN_MAP = {
-    'b': '波', 'p': '坡', 'm': '摸', 'f': '佛',
-    'd': '得', 't': '特', 'n': '讷', 'l': '勒',
-    'g': '哥', 'k': '科', 'h': '喝',
-    'a': '啊', 'o': '哦', 'e': '鹅', 'i': '衣',
-    'u': '乌', 'ü': '迂',
-    'ba': '八', 'pa': '怕', 'ma': '妈', 'fa': '发',
-    'da': '大', 'ta': '他', 'na': '拿', 'la': '拉',
-    'baba': '爸爸', 'mama': '妈妈', 'dadi': '大地',
-    'taitai': '太太', 'nainai': '奶奶', 'lala': '拉拉'
-};
+        // ==================== 关卡数据（15关，每关10题）====================
+        const levels = [
+            // 声母关卡 (1-5)
+            {
+                id: 1, name: '声母入门', type: 'initial', icon: '🔤', reward: '50金币',
+                questions: [
+                    { q: 'b', options: ['玻', '坡', '摸', '佛'], answer: 0, hint: '双唇不送气清塞音' },
+                    { q: 'p', options: ['玻', '坡', '摸', '佛'], answer: 1, hint: '双唇送气清塞音' },
+                    { q: 'm', options: ['玻', '坡', '摸', '佛'], answer: 2, hint: '双唇浊鼻音' },
+                    { q: 'f', options: ['玻', '坡', '摸', '佛'], answer: 3, hint: '唇齿清擦音' },
+                    { q: 'd', options: ['得', '特', '讷', '勒'], answer: 0, hint: '舌尖中不送气清塞音' },
+                    { q: 't', options: ['得', '特', '讷', '勒'], answer: 1, hint: '舌尖中送气清塞音' },
+                    { q: 'n', options: ['得', '特', '讷', '勒'], answer: 2, hint: '舌尖中浊鼻音' },
+                    { q: 'l', options: ['得', '特', '讷', '勒'], answer: 3, hint: '舌尖中浊边音' },
+                    { q: 'g', options: ['哥', '科', '喝', '基'], answer: 0, hint: '舌根不送气清塞音' },
+                    { q: 'k', options: ['哥', '科', '喝', '基'], answer: 1, hint: '舌根送气清塞音' }
+                ]
+            },
+            {
+                id: 2, name: '声母进阶', type: 'initial', icon: '📖', reward: '60金币',
+                questions: [
+                    { q: 'h', options: ['哥', '科', '喝', '基'], answer: 2, hint: '舌根清擦音' },
+                    { q: 'j', options: ['哥', '科', '喝', '基'], answer: 3, hint: '舌面不送气清塞擦音' },
+                    { q: 'q', options: ['期', '希', '知', '吃'], answer: 0, hint: '舌面送气清塞擦音' },
+                    { q: 'x', options: ['期', '希', '知', '吃'], answer: 1, hint: '舌面清擦音' },
+                    { q: 'zh', options: ['期', '希', '知', '吃'], answer: 2, hint: '舌尖后不送气清塞擦音' },
+                    { q: 'ch', options: ['期', '希', '知', '吃'], answer: 3, hint: '舌尖后送气清塞擦音' },
+                    { q: 'sh', options: ['诗', '日', '资', '雌'], answer: 0, hint: '舌尖后清擦音' },
+                    { q: 'r', options: ['诗', '日', '资', '雌'], answer: 1, hint: '舌尖后浊擦音' },
+                    { q: 'z', options: ['诗', '日', '资', '雌'], answer: 2, hint: '舌尖前不送气清塞擦音' },
+                    { q: 'c', options: ['诗', '日', '资', '雌'], answer: 3, hint: '舌尖前送气清塞擦音' }
+                ]
+            },
+            {
+                id: 3, name: '声母大师', type: 'initial', icon: '🎓', reward: '70金币',
+                questions: [
+                    { q: 's', options: ['思', '衣', '屋', '迂'], answer: 0, hint: '舌尖前清擦音' },
+                    { q: 'y', options: ['思', '衣', '屋', '迂'], answer: 1, hint: '舌面浊半元音' },
+                    { q: 'w', options: ['思', '衣', '屋', '迂'], answer: 2, hint: '双唇浊半元音' },
+                    { q: 'bā', options: ['爸', '怕', '妈', '发'], answer: 0, hint: 'b + a' },
+                    { q: 'pō', options: ['波', '坡', '摸', '佛'], answer: 1, hint: 'p + o' },
+                    { q: 'mō', options: ['波', '坡', '摸', '佛'], answer: 2, hint: 'm + o' },
+                    { q: 'fō', options: ['波', '坡', '摸', '佛'], answer: 3, hint: 'f + o' },
+                    { q: 'dī', options: ['低', '踢', '泥', '里'], answer: 0, hint: 'd + i' },
+                    { q: 'tī', options: ['低', '踢', '泥', '里'], answer: 1, hint: 't + i' },
+                    { q: 'ní', options: ['低', '踢', '泥', '里'], answer: 2, hint: 'n + i' }
+                ]
+            },
+            {
+                id: 4, name: '声母挑战', type: 'initial', icon: '⚔️', reward: '80金币',
+                questions: [
+                    { q: 'lǐ', options: ['低', '踢', '泥', '里'], answer: 3, hint: 'l + i' },
+                    { q: 'gū', options: ['姑', '哭', '呼', '居'], answer: 0, hint: 'g + u' },
+                    { q: 'kū', options: ['姑', '哭', '呼', '居'], answer: 1, hint: 'k + u' },
+                    { q: 'hū', options: ['姑', '哭', '呼', '居'], answer: 2, hint: 'h + u' },
+                    { q: 'jū', options: ['姑', '哭', '呼', '居'], answer: 3, hint: 'j + ü' },
+                    { q: 'qǔ', options: ['取', '许', '猪', '出'], answer: 0, hint: 'q + ü' },
+                    { q: 'xǔ', options: ['取', '许', '猪', '出'], answer: 1, hint: 'x + ü' },
+                    { q: 'zhū', options: ['取', '许', '猪', '出'], answer: 2, hint: 'zh + u' },
+                    { q: 'chū', options: ['取', '许', '猪', '出'], answer: 3, hint: 'ch + u' },
+                    { q: 'shū', options: ['书', '如', '租', '粗'], answer: 0, hint: 'sh + u' }
+                ]
+            },
+            {
+                id: 5, name: '声母王者', type: 'initial', icon: '👑', reward: '100金币',
+                questions: [
+                    { q: 'rú', options: ['书', '如', '租', '粗'], answer: 1, hint: 'r + u' },
+                    { q: 'zū', options: ['书', '如', '租', '粗'], answer: 2, hint: 'z + u' },
+                    { q: 'cū', options: ['书', '如', '租', '粗'], answer: 3, hint: 'c + u' },
+                    { q: 'sū', options: ['苏', '衣', '屋', '迂'], answer: 0, hint: 's + u' },
+                    { q: 'yī', options: ['苏', '衣', '屋', '迂'], answer: 1, hint: 'y + i' },
+                    { q: 'wū', options: ['苏', '衣', '屋', '迂'], answer: 2, hint: 'w + u' },
+                    { q: 'yú', options: ['苏', '衣', '屋', '迂'], answer: 3, hint: 'y + ü' },
+                    { q: 'biān', options: ['边', '片', '面', '天'], answer: 0, hint: 'b + ian' },
+                    { q: 'piàn', options: ['边', '片', '面', '天'], answer: 1, hint: 'p + ian' },
+                    { q: 'miàn', options: ['边', '片', '面', '天'], answer: 2, hint: 'm + ian' }
+                ]
+            },
+            // 韵母关卡 (6-8)
+            {
+                id: 6, name: '单韵母', type: 'final', icon: '🔤', reward: '60金币',
+                questions: [
+                    { q: 'a', options: ['啊', '哦', '鹅', '衣'], answer: 0, hint: '舌面央低不圆唇元音' },
+                    { q: 'o', options: ['啊', '哦', '鹅', '衣'], answer: 1, hint: '舌面后半高圆唇元音' },
+                    { q: 'e', options: ['啊', '哦', '鹅', '衣'], answer: 2, hint: '舌面后半高不圆唇元音' },
+                    { q: 'i', options: ['啊', '哦', '鹅', '衣'], answer: 3, hint: '舌面前高不圆唇元音' },
+                    { q: 'u', options: ['乌', '迂', '啊', '哦'], answer: 0, hint: '舌面后高圆唇元音' },
+                    { q: 'ü', options: ['乌', '迂', '啊', '哦'], answer: 1, hint: '舌面前高圆唇元音' },
+                    { q: 'bā', options: ['八', '波', '逼', '不'], answer: 0, hint: 'b + a = 八' },
+                    { q: 'bō', options: ['八', '波', '逼', '不'], answer: 1, hint: 'b + o = 波' },
+                    { q: 'bī', options: ['八', '波', '逼', '不'], answer: 2, hint: 'b + i = 逼' },
+                    { q: 'bū', options: ['八', '波', '逼', '不'], answer: 3, hint: 'b + u = 不' }
+                ]
+            },
+            {
+                id: 7, name: '复韵母', type: 'final', icon: '📚', reward: '70金币',
+                questions: [
+                    { q: 'ai', options: ['挨', '诶', '威', '凹'], answer: 0, hint: '前响复韵母' },
+                    { q: 'ei', options: ['挨', '诶', '威', '凹'], answer: 1, hint: '前响复韵母' },
+                    { q: 'ui', options: ['挨', '诶', '威', '凹'], answer: 2, hint: 'uei的缩写' },
+                    { q: 'ao', options: ['挨', '诶', '威', '凹'], answer: 3, hint: '前响复韵母' },
+                    { q: 'ou', options: ['欧', '优', '耶', '约'], answer: 0, hint: '前响复韵母' },
+                    { q: 'iu', options: ['欧', '优', '耶', '约'], answer: 1, hint: 'iou的缩写' },
+                    { q: 'ie', options: ['欧', '优', '耶', '约'], answer: 2, hint: '后响复韵母' },
+                    { q: 'üe', options: ['欧', '优', '耶', '约'], answer: 3, hint: '后响复韵母' },
+                    { q: 'er', options: ['儿', '耳', '二', '而'], answer: 0, hint: '特殊韵母' },
+                    { q: 'bái', options: ['白', '杯', '包', '波'], answer: 0, hint: 'b + ai' }
+                ]
+            },
+            {
+                id: 8, name: '鼻韵母', type: 'final', icon: '🎓', reward: '80金币',
+                questions: [
+                    { q: 'an', options: ['安', '恩', '因', '温'], answer: 0, hint: '前鼻音韵母' },
+                    { q: 'en', options: ['安', '恩', '因', '温'], answer: 1, hint: '前鼻音韵母' },
+                    { q: 'in', options: ['安', '恩', '因', '温'], answer: 2, hint: '前鼻音韵母' },
+                    { q: 'un', options: ['安', '恩', '因', '温'], answer: 3, hint: 'uen的缩写' },
+                    { q: 'ün', options: ['晕', '昂', '鞥', '英'], answer: 0, hint: '前鼻音韵母' },
+                    { q: 'ang', options: ['晕', '昂', '鞥', '英'], answer: 1, hint: '后鼻音韵母' },
+                    { q: 'eng', options: ['晕', '昂', '鞥', '英'], answer: 2, hint: '后鼻音韵母' },
+                    { q: 'ing', options: ['晕', '昂', '鞥', '英'], answer: 3, hint: '后鼻音韵母' },
+                    { q: 'ong', options: ['轰', '东', '通', '龙'], answer: 0, hint: '后鼻音韵母' },
+                    { q: 'dōng', options: ['东', '通', '龙', '空'], answer: 0, hint: 'd + ong' }
+                ]
+            },
+            // 声调关卡 (9-10)
+            {
+                id: 9, name: '声调基础', type: 'tone', icon: '🎵', reward: '60金币',
+                questions: [
+                    { q: 'ā', options: ['第一声', '第二声', '第三声', '第四声'], answer: 0, hint: '高平调' },
+                    { q: 'á', options: ['第一声', '第二声', '第三声', '第四声'], answer: 1, hint: '高升调' },
+                    { q: 'ǎ', options: ['第一声', '第二声', '第三声', '第四声'], answer: 2, hint: '降升调' },
+                    { q: 'à', options: ['第一声', '第二声', '第三声', '第四声'], answer: 3, hint: '全降调' },
+                    { q: 'ō', options: ['第一声', '第二声', '第三声', '第四声'], answer: 0, hint: '高平调' },
+                    { q: 'ó', options: ['第一声', '第二声', '第三声', '第四声'], answer: 1, hint: '高升调' },
+                    { q: 'ǒ', options: ['第一声', '第二声', '第三声', '第四声'], answer: 2, hint: '降升调' },
+                    { q: 'ò', options: ['第一声', '第二声', '第三声', '第四声'], answer: 3, hint: '全降调' },
+                    { q: 'ē', options: ['第一声', '第二声', '第三声', '第四声'], answer: 0, hint: '高平调' },
+                    { q: 'é', options: ['第一声', '第二声', '第三声', '第四声'], answer: 1, hint: '高升调' }
+                ]
+            },
+            {
+                id: 10, name: '声调进阶', type: 'tone', icon: '🎶', reward: '70金币',
+                questions: [
+                    { q: 'ě', options: ['第一声', '第二声', '第三声', '第四声'], answer: 2, hint: '降升调' },
+                    { q: 'è', options: ['第一声', '第二声', '第三声', '第四声'], answer: 3, hint: '全降调' },
+                    { q: 'mā', options: ['妈', '麻', '马', '骂'], answer: 0, hint: '第一声' },
+                    { q: 'má', options: ['妈', '麻', '马', '骂'], answer: 1, hint: '第二声' },
+                    { q: 'mǎ', options: ['妈', '麻', '马', '骂'], answer: 2, hint: '第三声' },
+                    { q: 'mà', options: ['妈', '麻', '马', '骂'], answer: 3, hint: '第四声' },
+                    { q: 'bā', options: ['八', '拔', '把', '爸'], answer: 0, hint: '第一声' },
+                    { q: 'bá', options: ['八', '拔', '把', '爸'], answer: 1, hint: '第二声' },
+                    { q: 'bǎ', options: ['八', '拔', '把', '爸'], answer: 2, hint: '第三声' },
+                    { q: 'bà', options: ['八', '拔', '把', '爸'], answer: 3, hint: '第四声' }
+                ]
+            },
+            // 拼读关卡 (11-13)
+            {
+                id: 11, name: '两拼音节', type: 'syllable', icon: '🔗', reward: '80金币',
+                questions: [
+                    { q: 'ba', options: ['爸', '怕', '妈', '发'], answer: 0, hint: 'b + a' },
+                    { q: 'pa', options: ['爸', '怕', '妈', '发'], answer: 1, hint: 'p + a' },
+                    { q: 'ma', options: ['爸', '怕', '妈', '发'], answer: 2, hint: 'm + a' },
+                    { q: 'fa', options: ['爸', '怕', '妈', '发'], answer: 3, hint: 'f + a' },
+                    { q: 'da', options: '大,他,那,拉'.split(','), answer: 0, hint: 'd + a' },
+                    { q: 'ta', options: '大,他,那,拉'.split(','), answer: 1, hint: 't + a' },
+                    { q: 'na', options: '大,他,那,拉'.split(','), answer: 2, hint: 'n + a' },
+                    { q: 'la', options: '大,他,那,拉'.split(','), answer: 3, hint: 'l + a' },
+                    { q: 'ga', options: '嘎,卡,哈,家'.split(','), answer: 0, hint: 'g + a' },
+                    { q: 'ka', options: '嘎,卡,哈,家'.split(','), answer: 1, hint: 'k + a' }
+                ]
+            },
+            {
+                id: 12, name: '三拼音节', type: 'syllable', icon: '⛓️', reward: '90金币',
+                questions: [
+                    { q: 'jia', options: '家,恰,虾,加'.split(','), answer: 0, hint: 'j + i + a' },
+                    { q: 'qia', options: '家,恰,虾,加'.split(','), answer: 1, hint: 'q + i + a' },
+                    { q: 'xia', options: '家,恰,虾,加'.split(','), answer: 2, hint: 'x + i + a' },
+                    { q: 'gua', options: '瓜,夸,花,抓'.split(','), answer: 0, hint: 'g + u + a' },
+                    { q: 'kua', options: '瓜,夸,花,抓'.split(','), answer: 1, hint: 'k + u + a' },
+                    { q: 'hua', options: '瓜,夸,花,抓'.split(','), answer: 2, hint: 'h + u + a' },
+                    { q: 'zhua', options: '瓜,夸,花,抓'.split(','), answer: 3, hint: 'zh + u + a' },
+                    { q: 'duo', options: '多,托,挪,罗'.split(','), answer: 0, hint: 'd + u + o' },
+                    { q: 'tuo', options: '多,托,挪,罗'.split(','), answer: 1, hint: 't + u + o' },
+                    { q: 'nuo', options: '多,托,挪,罗'.split(','), answer: 2, hint: 'n + u + o' }
+                ]
+            },
+            {
+                id: 13, name: '整体认读', type: 'syllable', icon: '📿', reward: '100金币',
+                questions: [
+                    { q: 'zhi', options: '知,吃,诗,日'.split(','), answer: 0, hint: '整体认读音节' },
+                    { q: 'chi', options: '知,吃,诗,日'.split(','), answer: 1, hint: '整体认读音节' },
+                    { q: 'shi', options: '知,吃,诗,日'.split(','), answer: 2, hint: '整体认读音节' },
+                    { q: 'ri', options: '知,吃,诗,日'.split(','), answer: 3, hint: '整体认读音节' },
+                    { q: 'zi', options: '资,词,丝,衣'.split(','), answer: 0, hint: '整体认读音节' },
+                    { q: 'ci', options: '资,词,丝,衣'.split(','), answer: 1, hint: '整体认读音节' },
+                    { q: 'si', options: '资,词,丝,衣'.split(','), answer: 2, hint: '整体认读音节' },
+                    { q: 'yi', options: '资,词,丝,衣'.split(','), answer: 3, hint: '整体认读音节' },
+                    { q: 'wu', options: '屋,于,月,圆'.split(','), answer: 0, hint: '整体认读音节' },
+                    { q: 'yu', options: '屋,于,月,圆'.split(','), answer: 1, hint: '整体认读音节' }
+                ]
+            },
+            // 词语关卡 (14-15)
+            {
+                id: 14, name: '常用词语', type: 'word', icon: '📝', reward: '100金币',
+                questions: [
+                    { q: 'bàba', options: '爸爸,妈妈,哥哥,姐姐'.split(','), answer: 0, hint: '父亲的称呼' },
+                    { q: 'māma', options: '爸爸,妈妈,哥哥,姐姐'.split(','), answer: 1, hint: '母亲的称呼' },
+                    { q: 'dàdì', options: '大地,天空,海洋,森林'.split(','), answer: 0, hint: '广阔的地面' },
+                    { q: 'tiānkōng', options: '大地,天空,海洋,森林'.split(','), answer: 1, hint: '天上的空间' },
+                    { q: 'xiǎomāo', options: '小狗,小猫,小鸟,小鱼'.split(','), answer: 1, hint: '喵喵叫的动物' },
+                    { q: 'xiǎogǒu', options: '小狗,小猫,小鸟,小鱼'.split(','), answer: 0, hint: '汪汪叫的动物' },
+                    { q: 'shuǐguǒ', options: '蔬菜,水果,米饭,面条'.split(','), answer: 1, hint: '可以生吃的植物果实' },
+                    { q: 'xuéxiào', options: '医院,学校,商店,公园'.split(','), answer: 1, hint: '学习的地方' },
+                    { q: 'yīyuàn', options: '医院,学校,商店,公园'.split(','), answer: 0, hint: '看病的地方' },
+                    { q: 'gōngyuán', options: '医院,学校,商店,公园'.split(','), answer: 3, hint: '游玩休息的地方' }
+                ]
+            },
+            {
+                id: 15, name: '进阶词语', type: 'word', icon: '📖', reward: '150金币',
+                questions: [
+                    { q: 'tàiyáng', options: '月亮,太阳,星星,地球'.split(','), answer: 1, hint: '白天发光的星球' },
+                    { q: 'yuèliang', options: '月亮,太阳,星星,地球'.split(','), answer: 0, hint: '晚上发光的星球' },
+                    { q: 'xīngxing', options: '月亮,太阳,星星,地球'.split(','), answer: 2, hint: '夜空中闪烁的' },
+                    { q: 'dàshù', options: '大树,小草,花朵,叶子'.split(','), answer: 0, hint: '高大的植物' },
+                    { q: 'huāduǒ', options: '大树,小草,花朵,叶子'.split(','), answer: 2, hint: '植物的繁殖器官' },
+                    { q: 'xiǎocǎo', options: '大树,小草,花朵,叶子'.split(','), answer: 1, hint: '矮小的植物' },
+                    { q: 'húdié', options: '蜜蜂,蝴蝶,蜻蜓,蚂蚁'.split(','), answer: 1, hint: '会飞的花间昆虫' },
+                    { q: 'mìfēng', options: '蜜蜂,蝴蝶,蜻蜓,蚂蚁'.split(','), answer: 0, hint: '采蜜的昆虫' },
+                    { q: 'lǎoshī', options: '老师,医生,警察,工人'.split(','), answer: 0, hint: '教书的人' },
+                    { q: 'yīshēng', options: '老师,医生,警察,工人'.split(','), answer: 1, hint: '治病的人' }
+                ]
+            }
+        ];
 
-// 游戏主类
-class PinyinGame {
-    constructor() {
-        this.currentLevel = 1;
-        this.currentQuestion = 0;
-        this.score = 0;
-        this.coins = 0;
-        this.exp = 0;
-        this.combo = 0;
-        this.maxCombo = 0;
-        this.unlockedLevels = 1;
-        this.petLevel = 1;
-        this.petExp = 0;
-        
-        this.init();
-    }
-    
-    init() {
-        this.renderLevelMap();
-        this.updatePetStatus();
-    }
-    
-    showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-    }
-    
-    // 渲染关卡地图
-    renderLevelMap() {
-        const container = document.getElementById('level-list');
-        container.innerHTML = '';
-        
-        Object.keys(GAME_DATA).forEach(levelId => {
-            const level = GAME_DATA[levelId];
-            const isLocked = parseInt(levelId) > this.unlockedLevels;
-            const isCompleted = parseInt(levelId) < this.unlockedLevels;
-            
-            const node = document.createElement('div');
-            node.className = `level-node ${isLocked ? 'locked' : ''} ${isCompleted ? 'completed' : ''}`;
-            node.innerHTML = `
-                <div class="level-icon">${level.icon}</div>
-                <div class="level-info-text">
-                    <div class="level-title">${levelId}. ${level.name}</div>
-                    <div class="level-desc">${level.desc}</div>
-                </div>
-                <div class="level-status">${isCompleted ? '✓' : isLocked ? '🔒' : '▶'}</div>
-            `;
-            
-            if (!isLocked) {
-                node.onclick = () => this.startLevel(parseInt(levelId));
-            }
-            
-            container.appendChild(node);
-        });
-    }
-    
-    // 开始关卡
-    startLevel(levelId) {
-        this.currentLevel = levelId;
-        this.currentQuestion = 0;
-        this.showScreen('game-scene');
-        document.getElementById('current-level-name').textContent = GAME_DATA[levelId].name;
-        this.loadQuestion();
-    }
-    
-    // 加载题目
-    loadQuestion() {
-        const level = GAME_DATA[this.currentLevel];
-        const q = level.questions[this.currentQuestion];
-        
-        document.getElementById('chinese-char').textContent = q.chinese;
-        document.getElementById('pinyin-display').textContent = q.pinyin;
-        document.getElementById('word-example').textContent = q.word;
-        
-        // 更新进度
-        const progress = ((this.currentQuestion + 1) / level.questions.length) * 100;
-        document.getElementById('progress-fill').style.width = progress + '%';
-        
-        // 渲染选项
-        const container = document.getElementById('options-container');
-        container.innerHTML = '';
-        
-        q.options.forEach((opt, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.textContent = opt;
-            btn.onclick = () => this.selectOption(index);
-            container.appendChild(btn);
-        });
-    }
-    
-    // 播放声音
-    playSound() {
-        const level = GAME_DATA[this.currentLevel];
-        const q = level.questions[this.currentQuestion];
-        
-        const synth = window.speechSynthesis;
-        synth.cancel();
-        
-        const text = PINYIN_MAP[q.sound] || q.chinese;
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'zh-CN';
-        utterance.rate = 0.8;
-        synth.speak(utterance);
-    }
-    
-    // 慢放
-    slowPlay() {
-        const level = GAME_DATA[this.currentLevel];
-        const q = level.questions[this.currentQuestion];
-        
-        const synth = window.speechSynthesis;
-        synth.cancel();
-        
-        const text = PINYIN_MAP[q.sound] || q.chinese;
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'zh-CN';
-        utterance.rate = 0.5;
-        synth.speak(utterance);
-    }
-    
-    // 选择答案
-    selectOption(index) {
-        const level = GAME_DATA[this.currentLevel];
-        const q = level.questions[this.currentQuestion];
-        const isCorrect = index === q.correct;
-        
-        // 禁用所有按钮
-        document.querySelectorAll('.option-btn').forEach((btn, i) => {
-            btn.disabled = true;
-            if (i === q.correct) {
-                btn.classList.add('correct');
-            } else if (i === index && !isCorrect) {
-                btn.classList.add('wrong');
-            }
-        });
-        
-        if (isCorrect) {
-            this.combo++;
-            this.maxCombo = Math.max(this.maxCombo, this.combo);
-            this.score += 10 + (this.combo > 2 ? this.combo * 2 : 0);
-            this.coins += 5;
-            this.exp += 10;
-            
-            // 显示连击
-            if (this.combo >= 2) {
-                this.showCombo();
-            }
-            
-            // 显示金币
-            this.showCoinFloat();
-            
-            setTimeout(() => this.showFeedback(true, q), 500);
-        } else {
-            this.combo = 0;
-            setTimeout(() => this.showFeedback(false, q), 500);
-        }
-        
-        this.updatePetStatus();
-    }
-    
-    // 显示连击
-    showCombo() {
-        const comboEl = document.getElementById('combo-display');
-        comboEl.textContent = '🔥 x' + this.combo;
-        comboEl.classList.add('show');
-        setTimeout(() => comboEl.classList.remove('show'), 1000);
-    }
-    
-    // 显示金币浮动
-    showCoinFloat() {
-        const coin = document.createElement('div');
-        coin.className = 'coin-float';
-        coin.textContent = '+5金币';
-        coin.style.left = Math.random() * 200 + 100 + 'px';
-        coin.style.top = '300px';
-        document.body.appendChild(coin);
-        setTimeout(() => coin.remove(), 1000);
-    }
-    
-    // 显示反馈
-    showFeedback(isCorrect, q) {
-        const modal = document.getElementById('feedback-modal');
-        const icon = document.getElementById('modal-icon');
-        const title = document.getElementById('modal-title');
-        const message = document.getElementById('modal-message');
-        const hint = document.getElementById('modal-hint');
-        const primaryBtn = document.getElementById('modal-btn-primary');
-        const secondaryBtn = document.getElementById('modal-btn-secondary');
-        
-        if (isCorrect) {
-            icon.textContent = '🎉';
-            title.textContent = '回答正确!';
-            message.textContent = this.combo >= 3 ? `太棒了!连击x${this.combo}!` : '太棒了!继续加油!';
-            primaryBtn.style.display = 'block';
-            secondaryBtn.style.display = 'none';
-        } else {
-            icon.textContent = '😅';
-            title.textContent = '再想想看';
-            message.textContent = `正确答案是: ${q.options[q.correct]}`;
-            primaryBtn.style.display = 'none';
-            secondaryBtn.style.display = 'block';
-        }
-        
-        hint.textContent = '💡 ' + q.hint;
-        modal.classList.add('show');
-    }
-    
-    // 下一题
-    nextQuestion() {
-        document.getElementById('feedback-modal').classList.remove('show');
-        this.currentQuestion++;
-        
-        const level = GAME_DATA[this.currentLevel];
-        if (this.currentQuestion >= level.questions.length) {
-            this.levelComplete();
-        } else {
-            this.loadQuestion();
-        }
-    }
-    
-    // 重试
-    retryQuestion() {
-        document.getElementById('feedback-modal').classList.remove('show');
-        this.loadQuestion();
-    }
-    
-    // 关卡完成
-    levelComplete() {
-        alert(`🎉 恭喜完成${GAME_DATA[this.currentLevel].name}!\n\n得分: ${this.score}\n金币: ${this.coins}`);
-        
-        if (this.currentLevel < 5) {
-            this.unlockedLevels = Math.max(this.unlockedLevels, this.currentLevel + 1);
-        }
-        
-        this.showScreen('level-map');
-        this.renderLevelMap();
-    }
-    
-    // 更新宠物状态
-    updatePetStatus() {
-        document.getElementById('coin-value').textContent = this.coins;
-        document.getElementById('exp-value').textContent = `${this.exp % 100}/100`;
-    }
-    
-    // 显示提示
-    showHint() {
-        const level = GAME_DATA[this.currentLevel];
-        const q = level.questions[this.currentQuestion];
-        alert('💡 提示: ' + q.hint);
-        this.coins = Math.max(0, this.coins - 3);
-        this.updatePetStatus();
-    }
-    
-    // 返回地图
-    backToMap() {
-        this.showScreen('level-map');
-    }
-    
-    // 开始冒险
-    startAdventure() {
-        this.showScreen('level-map');
-    }
-    
-    // 继续游戏
-    continueGame() {
-        this.showScreen('level-map');
-    }
-    
-    // 显示宠物
-    showPet() {
-        this.showScreen('pet-screen');
-    }
-    
-    // 宠物互动
-    petInteract() {
-        const pet = document.getElementById('pet-character');
-        const speech = document.getElementById('pet-speech');
-        
-        pet.classList.add('happy');
-        setTimeout(() => pet.classList.remove('happy'), 500);
-        
-        const messages = ['我好开心~', '继续加油哦!', '你是最棒的!', '陪我玩嘛~', '饿饿...'];
-        speech.textContent = messages[Math.floor(Math.random() * messages.length)];
-        speech.classList.add('show');
-        setTimeout(() => speech.classList.remove('show'), 2000);
-    }
-    
-    // 喂养宠物
-    feedPet() {
-        if (this.coins >= 10) {
-            this.coins -= 10;
-            this.petExp += 20;
-            this.updatePetStatus();
-            
-            const speech = document.getElementById('pet-speech');
-            speech.textContent = '好好吃!谢谢主人!';
-            speech.classList.add('show');
-            setTimeout(() => speech.classList.remove('show'), 2000);
-            
-            // 升级检查
-            if (this.petExp >= 100) {
-                this.petLevel++;
-                this.petExp = 0;
-                alert(`🎉 宠物升级到Lv.${this.petLevel}!`);
-            }
-        } else {
-            alert('金币不足!答题可以获得金币哦~');
-        }
-    }
-    
-    // 显示成就
-    showAchievements() {
-        alert(`🏆 成就徽章\n\n最高连击: ${this.maxCombo}\n总得分: ${this.score}\n金币: ${this.coins}\n宠物等级: Lv.${this.petLevel}`);
-    }
-}
+        // ==================== 怪兽数据 ====================
+        const monsters = {
+            forest: [
+                { name: '小蘑菇怪', avatar: '🍄', hp: 30, attack: 5, exp: 20, coins: 15 },
+                { name: '树精', avatar: '🌳', hp: 50, attack: 8, exp: 35, coins: 25 },
+                { name: '野狼', avatar: '🐺', hp: 40, attack: 10, exp: 30, coins: 20 }
+            ],
+            desert: [
+                { name: '蝎子王', avatar: '🦂', hp: 60, attack: 12, exp: 50, coins: 40 },
+                { name: '沙漠蛇', avatar: '🐍', hp: 45, attack: 15, exp: 45, coins: 35 },
+                { name: '仙人掌怪', avatar: '🌵', hp: 70, attack: 10, exp: 55, coins: 45 }
+            ],
+            ocean: [
+                { name: '小海龟', avatar: '🐢', hp: 80, attack: 12, exp: 70, coins: 60 },
+                { name: '章鱼怪', avatar: '🐙', hp: 65, attack: 18, exp: 65, coins: 55 },
+                { name: '鲨鱼', avatar: '🦈', hp: 100, attack: 20, exp: 90, coins: 80 }
+            ],
+            snow: [
+                { name: '雪怪', avatar: '☃️', hp: 90, attack: 15, exp: 100, coins: 90 },
+                { name: '北极熊', avatar: '🐻‍❄️', hp: 120, attack: 22, exp: 120, coins: 110 },
+                { name: '冰龙', avatar: '🐲', hp: 150, attack: 25, exp: 150, coins: 140 }
+            ],
+            volcano: [
+                { name: '火蜥蜴', avatar: '🦎', hp: 130, attack: 28, exp: 180, coins: 170 },
+                { name: '熔岩怪', avatar: '🔥', hp: 160, attack: 30, exp: 200, coins: 190 },
+                { name: '炎魔', avatar: '👿', hp: 200, attack: 35, exp: 300, coins: 300 }
+            ]
+        };
 
-// 启动游戏
-const game = new PinyinGame();
-</script>
+        const locationNames = {
+            forest: '神秘森林', desert: '炎热沙漠', ocean: '深海秘境',
+            snow: '冰雪山脉', volcano: '烈焰火山'
+        };
+
+        const locationEnergy = {
+            forest: 10, desert: 15, ocean: 20, snow: 25, volcano: 30
+        };
+
+        // ==================== 商店数据 ====================
+        const shopData = {
+            weapons: [
+                { id: 'w1', name: '木剑', icon: '🗡️', price: 50, attack: 5, desc: '新手的基础武器' },
+                { id: 'w2', name: '铁剑', icon: '⚔️', price: 150, attack: 12, desc: '比木剑更锋利' },
+                { id: 'w3', name: '钢刀', icon: '🔪', price: 300, attack: 25, desc: '精钢打造的宝刀' },
+                { id: 'w4', name: '魔法杖', icon: '🪄', price: 500, attack: 40, desc: '蕴含魔法力量' },
+                { id: 'w5', name: '龙牙剑', icon: '🐉', price: 1000, attack: 80, desc: '传说中的神兵' }
+            ],
+            armor: [
+                { id: 'a1', name: '布衣', icon: '👕', price: 40, defense: 3, desc: '普通的布衣' },
+                { id: 'a2', name: '皮甲', icon: '🦺', price: 120, defense: 8, desc: '兽皮制作的护甲' },
+                { id: 'a3', name: '铁甲', icon: '👔', price: 250, defense: 15, desc: '铁制铠甲' },
+                { id: 'a4', name: '钢甲', icon: '🛡️', price: 450, defense: 30, desc: '精钢铠甲' },
+                { id: 'a5', name: '龙鳞甲', icon: '👑', price: 900, defense: 60, desc: '龙鳞制成的传说护甲' }
+            ],
+            items: [
+                { id: 'i1', name: '小药水', icon: '🧪', price: 20, hp: 30, desc: '恢复30点生命' },
+                { id: 'i2', name: '大药水', icon: '🧫', price: 50, hp: 80, desc: '恢复80点生命' },
+                { id: 'i3', name: '能量饮料', icon: '🥤', price: 30, energy: 20, desc: '恢复20点体力' },
+                { id: 'i4', name: '超级药水', icon: '🏺', price: 100, hp: 200, desc: '恢复200点生命' },
+                { id: 'i5', name: '全恢复药', icon: '💊', price: 200, hp: 999, energy: 999, desc: '完全恢复生命和体力' }
+            ],
+            skills: [
+                { id: 's1', name: '重击', icon: '💥', price: 100, desc: '攻击时50%概率造成1.5倍伤害' },
+                { id: 's2', name: '连击', icon: '⚡', price: 200, desc: '攻击时20%概率攻击两次' },
+                { id: 's3', name: '吸血', icon: '🧛', price: 300, desc: '造成伤害的20%转化为生命' },
+                { id: 's4', name: '护盾', icon: '🔰', price: 250, desc: '受到的伤害减少30%' },
+                { id: 's5', name: '暴击', icon: '💢', price: 400, desc: '攻击时30%概率造成2倍伤害' }
+            ]
+        };
+
+        // ==================== 游戏状态 ====================
+        let currentLevel = null;
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let battleState = null;
+
+        // ==================== 初始化 ====================
+        function init() {
+            updateDisplay();
+            renderLevels();
+        }
+
+        // ==================== 显示更新 ====================
+        function updateDisplay() {
+            document.getElementById('coins').textContent = gameData.coins;
+            document.getElementById('exp').textContent = gameData.exp;
+            document.getElementById('playerLevel').textContent = gameData.level;
+            document.getElementById('petHP').textContent = gameData.pet.hp;
+            document.getElementById('petMaxHP').textContent = gameData.pet.maxHP;
+            document.getElementById('petEnergy').textContent = gameData.pet.energy;
+            document.getElementById('petMaxEnergy').textContent = gameData.pet.maxEnergy;
+            document.getElementById('attack').textContent = gameData.pet.attack;
+            document.getElementById('defense').textContent = gameData.pet.defense;
+            document.getElementById('shopCoins').textContent = gameData.coins;
+        }
+
+        // ==================== 导航函数 ====================
+        function hideAllScreens() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('levelSelect').classList.add('hidden');
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('petScreen').classList.add('hidden');
+            document.getElementById('mapScreen').classList.add('hidden');
+            document.getElementById('battleScreen').classList.add('hidden');
+            document.getElementById('shopScreen').classList.add('hidden');
+        }
+
+        function showMainMenu() {
+            hideAllScreens();
+            document.getElementById('mainMenu').classList.remove('hidden');
+            updateDisplay();
+        }
+
+        function showLevels() {
+            hideAllScreens();
+            document.getElementById('levelSelect').classList.remove('hidden');
+            renderLevels();
+        }
+
+        function showPet() {
+            hideAllScreens();
+            document.getElementById('petScreen').classList.remove('hidden');
+            updatePetDisplay();
+        }
+
+        function showMap() {
+            hideAllScreens();
+            document.getElementById('mapScreen').classList.remove('hidden');
+        }
+
+        function showShop() {
+            hideAllScreens();
+            document.getElementById('shopScreen').classList.remove('hidden');
+            renderShop();
+        }
+
+        // ==================== 关卡系统 ====================
+        function renderLevels() {
+            const grid = document.getElementById('levelGrid');
+            grid.innerHTML = '';
+            
+            levels.forEach((level, index) => {
+                const isLocked = index > 0 && !gameData.completedLevels.includes(levels[index-1].id);
+                const isCompleted = gameData.completedLevels.includes(level.id);
+                
+                const card = document.createElement('div');
+                card.className = `level-card ${isLocked ? 'locked' : ''} ${isCompleted ? 'completed' : ''}`;
+                card.innerHTML = `
+                    <div style="font-size: 40px; margin-bottom: 10px;">${level.icon}</div>
+                    <h3>第${level.id}关</h3>
+                    <div style="font-weight: bold; margin: 5px 0;">${level.name}</div>
+                    <div class="level-type">${getLevelTypeName(level.type)}</div>
+                    <div class="level-reward">奖励: ${level.reward}</div>
+                `;
+                
+                if (!isLocked) {
+                    card.onclick = () => startLevel(level);
+                }
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function getLevelTypeName(type) {
+            const names = { initial: '声母', final: '韵母', tone: '声调', syllable: '拼读', word: '词语' };
+            return names[type] || type;
+        }
+
+        function startLevel(level) {
+            currentLevel = level;
+            currentQuestion = 0;
+            correctAnswers = 0;
+            
+            hideAllScreens();
+            document.getElementById('quizScreen').classList.remove('hidden');
+            document.getElementById('quizLevelName').textContent = level.name;
+            document.getElementById('totalQ').textContent = level.questions.length;
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = currentLevel.questions[currentQuestion];
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('progressBar').style.width = ((currentQuestion / currentLevel.questions.length) * 100) + '%';
+            document.getElementById('questionDisplay').textContent = q.q;
+            document.getElementById('questionHint').textContent = q.hint || '请选出正确的答案';
+            
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => selectAnswer(idx);
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(idx) {
+            const q = currentLevel.questions[currentQuestion];
+            const buttons = document.querySelectorAll('#optionsGrid .option-btn');
+            
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.answer) btn.classList.add('correct');
+                else if (i === idx && i !== q.answer) btn.classList.add('wrong');
+            });
+            
+            if (idx === q.answer) {
+                correctAnswers++;
+                gameData.coins += 5;
+                gameData.exp += 10;
+                gameData.pet.exp += 10;
+            }
+            
+            updateDisplay();
+            checkLevelUp();
+            
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < currentLevel.questions.length) {
+                    showQuestion();
+                } else {
+                    finishLevel();
+                }
+            }, 1000);
+        }
+
+        function finishLevel() {
+            const total = currentLevel.questions.length;
+            const rate = correctAnswers / total;
+            
+            if (rate >= 0.6 && !gameData.completedLevels.includes(currentLevel.id)) {
+                gameData.completedLevels.push(currentLevel.id);
+                const reward = parseInt(currentLevel.reward);
+                gameData.coins += reward;
+                gameData.exp += reward;
+                gameData.pet.exp += reward;
+            }
+            
+            checkLevelUp();
+            updateDisplay();
+            
+            alert(`关卡完成！\n正确率: ${correctAnswers}/${total}\n获得奖励: ${rate >= 0.6 ? currentLevel.reward : '未达到60%正确率，无奖励'}`);
+            showLevels();
+        }
+
+        function exitQuiz() {
+            if (confirm('确定要退出当前关卡吗？进度将不会保存。')) {
+                showLevels();
+            }
+        }
+
+        // ==================== 宠物系统 ====================
+        function updatePetDisplay() {
+            document.getElementById('petAvatar').textContent = gameData.pet.avatar;
+            document.getElementById('petName').textContent = gameData.pet.name;
+            document.getElementById('petLevel').textContent = gameData.pet.level;
+            document.getElementById('petExp').textContent = gameData.pet.exp;
+            document.getElementById('petMaxExp').textContent = gameData.pet.maxExp;
+            document.getElementById('expBar').style.width = (gameData.pet.exp / gameData.pet.maxExp * 100) + '%';
+            document.getElementById('petAttack').textContent = gameData.pet.attack;
+            document.getElementById('petDefense').textContent = gameData.pet.defense;
+            document.getElementById('petMaxHPStat').textContent = gameData.pet.maxHP;
+            document.getElementById('petMaxEnergyStat').textContent = gameData.pet.maxEnergy;
+            document.getElementById('petSpeed').textContent = gameData.pet.speed;
+            document.getElementById('petLuck').textContent = gameData.pet.luck;
+            
+            const titles = ['初级学徒', '拼音学员', '拼音达人', '拼音大师', '拼音王者', '拼音传说'];
+            const titleIndex = Math.min(Math.floor(gameData.pet.level / 5), titles.length - 1);
+            document.getElementById('petTitle').textContent = titles[titleIndex];
+            
+            const skillsDiv = document.getElementById('petSkills');
+            skillsDiv.innerHTML = gameData.pet.skills.map(s => 
+                `<span style="background: #e3f2fd; padding: 8px 15px; border-radius: 15px; margin: 5px; display: inline-block;">${s}</span>`
+            ).join('');
+        }
+
+        function checkLevelUp() {
+            while (gameData.pet.exp >= gameData.pet.maxExp) {
+                gameData.pet.exp -= gameData.pet.maxExp;
+                gameData.pet.level++;
+                gameData.pet.maxExp = Math.floor(gameData.pet.maxExp * 1.2);
+                gameData.pet.maxHP += 10;
+                gameData.pet.hp = gameData.pet.maxHP;
+                gameData.pet.attack += 2;
+                gameData.pet.defense += 1;
+                gameData.pet.maxEnergy += 5;
+                gameData.pet.energy = gameData.pet.maxEnergy;
+                
+                if (gameData.pet.level % 5 === 0) {
+                    gameData.pet.speed += 1;
+                    gameData.pet.luck += 1;
+                }
+            }
+            
+            while (gameData.exp >= gameData.level * 100) {
+                gameData.exp -= gameData.level * 100;
+                gameData.level++;
+            }
+        }
+
+        // ==================== 探险系统 ====================
+        function startAdventure(location) {
+            const energyCost = locationEnergy[location];
+            
+            if (gameData.pet.energy < energyCost) {
+                alert('体力不足！请休息或购买能量饮料。');
+                return;
+            }
+            
+            gameData.pet.energy -= energyCost;
+            updateDisplay();
+            
+            // 随机事件
+            const events = ['battle', 'treasure', 'rest'];
+            const weights = [0.6, 0.3, 0.1];
+            const rand = Math.random();
+            let eventType = 'battle';
+            let sum = 0;
+            
+            for (let i = 0; i < events.length; i++) {
+                sum += weights[i];
+                if (rand < sum) {
+                    eventType = events[i];
+                    break;
+                }
+            }
+            
+            if (eventType === 'battle') {
+                startBattle(location);
+            } else if (eventType === 'treasure') {
+                const coins = Math.floor(Math.random() * 50) + 20;
+                const exp = Math.floor(Math.random() * 30) + 10;
+                gameData.coins += coins;
+                gameData.exp += exp;
+                gameData.pet.exp += exp;
+                checkLevelUp();
+                updateDisplay();
+                showAdventureModal('发现宝藏！', `你在${locationNames[location]}发现了一处宝藏！\n获得 ${coins} 金币\n获得 ${exp} 经验`);
+            } else {
+                const energy = Math.floor(Math.random() * 20) + 10;
+                gameData.pet.energy = Math.min(gameData.pet.energy + energy, gameData.pet.maxEnergy);
+                updateDisplay();
+                showAdventureModal('发现休息点', `你在${locationNames[location]}找到了一个安全的休息点。\n恢复 ${energy} 点体力`);
+            }
+        }
+
+        function showAdventureModal(title, text) {
+            document.getElementById('adventureTitle').textContent = title;
+            document.getElementById('adventureText').textContent = text;
+            document.getElementById('adventureModal').classList.remove('hidden');
+        }
+
+        function closeAdventureModal() {
+            document.getElementById('adventureModal').classList.add('hidden');
+        }
+
+        // ==================== 战斗系统 ====================
+        function startBattle(location) {
+            const monsterList = monsters[location];
+            const monster = monsterList[Math.floor(Math.random() * monsterList.length)];
+            
+            battleState = {
+                location: location,
+                monster: { ...monster, currentHP: monster.hp },
+                petHP: gameData.pet.hp,
+                questionsAnswered: 0,
+                correctAnswers: 0
+            };
+            
+            hideAllScreens();
+            document.getElementById('battleScreen').classList.remove('hidden');
+            document.getElementById('battleLocation').textContent = locationNames[location];
+            document.getElementById('battlePetAvatar').textContent = gameData.pet.avatar;
+            document.getElementById('battlePetName').textContent = gameData.pet.name;
+            document.getElementById('battleMonsterAvatar').textContent = monster.avatar;
+            document.getElementById('battleMonsterName').textContent = monster.name;
+            
+            updateBattleDisplay();
+            showBattleQuestion();
+            addBattleLog(`遇到了 ${monster.name}！战斗开始！`);
+        }
+
+        function updateBattleDisplay() {
+            const petHPPercent = (battleState.petHP / gameData.pet.maxHP) * 100;
+            const monsterHPPercent = (battleState.monster.currentHP / battleState.monster.hp) * 100;
+            
+            document.getElementById('battlePetHP').style.width = petHPPercent + '%';
+            document.getElementById('battlePetHPCurrent').textContent = battleState.petHP;
+            document.getElementById('battlePetHPMax').textContent = gameData.pet.maxHP;
+            document.getElementById('battleMonsterHP').style.width = monsterHPPercent + '%';
+            document.getElementById('battleMonsterHPCurrent').textContent = battleState.monster.currentHP;
+            document.getElementById('battleMonsterHPMax').textContent = battleState.monster.hp;
+        }
+
+        function showBattleQuestion() {
+            // 从关卡中随机选一道题
+            const allQuestions = levels.flatMap(l => l.questions);
+            const q = allQuestions[Math.floor(Math.random() * allQuestions.length)];
+            
+            document.getElementById('battleQuestion').textContent = q.q;
+            
+            const grid = document.getElementById('battleOptions');
+            grid.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => selectBattleAnswer(idx, q.answer);
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectBattleAnswer(selected, correct) {
+            const buttons = document.querySelectorAll('#battleOptions .option-btn');
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === correct) btn.classList.add('correct');
+                else if (i === selected && i !== correct) btn.classList.add('wrong');
+            });
+            
+            if (selected === correct) {
+                // 答对，攻击怪兽
+                let damage = gameData.pet.attack + Math.floor(Math.random() * 5);
+                
+                // 技能效果
+                if (gameData.pet.skills.includes('重击') && Math.random() < 0.5) {
+                    damage = Math.floor(damage * 1.5);
+                    addBattleLog('触发重击！');
+                }
+                if (gameData.pet.skills.includes('连击') && Math.random() < 0.2) {
+                    damage *= 2;
+                    addBattleLog('触发连击！');
+                }
+                if (gameData.pet.skills.includes('暴击') && Math.random() < 0.3) {
+                    damage *= 2;
+                    addBattleLog('触发暴击！');
+                }
+                
+                battleState.monster.currentHP -= damage;
+                addBattleLog(`你答对了！对${battleState.monster.name}造成 ${damage} 点伤害！`);
+                
+                // 吸血效果
+                if (gameData.pet.skills.includes('吸血')) {
+                    const heal = Math.floor(damage * 0.2);
+                    battleState.petHP = Math.min(battleState.petHP + heal, gameData.pet.maxHP);
+                    addBattleLog(`吸血效果恢复 ${heal} 点生命！`);
+                }
+                
+                if (battleState.monster.currentHP <= 0) {
+                    setTimeout(() => winBattle(), 1000);
+                    return;
+                }
+            } else {
+                // 答错，怪兽攻击
+                let damage = Math.max(1, battleState.monster.attack - gameData.pet.defense + Math.floor(Math.random() * 3));
+                
+                // 护盾效果
+                if (gameData.pet.skills.includes('护盾')) {
+                    damage = Math.floor(damage * 0.7);
+                }
+                
+                battleState.petHP -= damage;
+                addBattleLog(`答错了！${battleState.monster.name}对你造成 ${damage} 点伤害！`);
+                
+                if (battleState.petHP <= 0) {
+                    battleState.petHP = 0;
+                    setTimeout(() => loseBattle(), 1000);
+                    return;
+                }
+            }
+            
+            updateBattleDisplay();
+            
+            setTimeout(() => {
+                showBattleQuestion();
+            }, 1500);
+        }
+
+        function addBattleLog(text) {
+            const log = document.getElementById('battleLog');
+            const entry = document.createElement('div');
+            entry.textContent = `> ${text}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function winBattle() {
+            const exp = battleState.monster.exp;
+            const coins = battleState.monster.coins;
+            
+            gameData.exp += exp;
+            gameData.coins += coins;
+            gameData.pet.exp += exp;
+            
+            // 随机掉落装备
+            let equipDrop = '';
+            if (Math.random() < 0.3) {
+                const drops = ['神秘武器碎片', '古老护甲残片', '能量水晶', '幸运符'];
+                equipDrop = drops[Math.floor(Math.random() * drops.length)];
+                gameData.inventory.push(equipDrop);
+            }
+            
+            checkLevelUp();
+            updateDisplay();
+            
+            document.getElementById('battleResultTitle').textContent = '战斗胜利！';
+            document.getElementById('battleResultText').innerHTML = 
+                `你击败了 ${battleState.monster.name}！<br>` +
+                `获得 ${exp} 经验<br>` +
+                `获得 ${coins} 金币` +
+                (equipDrop ? `<br>掉落: ${equipDrop}` : '');
+            document.getElementById('battleResultModal').classList.remove('hidden');
+        }
+
+        function loseBattle() {
+            gameData.pet.hp = 1; // 保留1点生命
+            updateDisplay();
+            
+            document.getElementById('battleResultTitle').textContent = '战斗失败';
+            document.getElementById('battleResultText').textContent = 
+                `你被 ${battleState.monster.name} 击败了...\n下次再接再厉！`;
+            document.getElementById('battleResultModal').classList.remove('hidden');
+        }
+
+        function closeBattleResultModal() {
+            document.getElementById('battleResultModal').classList.add('hidden');
+            gameData.pet.hp = battleState.petHP;
+            updateDisplay();
+            showMap();
+        }
+
+        // ==================== 商店系统 ====================
+        function switchShopTab(tab) {
+            gameData.currentShopTab = tab;
+            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderShop();
+        }
+
+        function renderShop() {
+            const container = document.getElementById('shopItems');
+            container.innerHTML = '';
+            
+            const items = shopData[gameData.currentShopTab];
+            
+            items.forEach(item => {
+                const isOwned = gameData.inventory.includes(item.id) || 
+                               (item.id && gameData.pet.equipment[gameData.currentShopTab === 'weapons' ? 'weapon' : 
+                                gameData.currentShopTab === 'armor' ? 'armor' : ''] === item.id);
+                
+                const card = document.createElement('div');
+                card.className = 'shop-item';
+                card.innerHTML = `
+                    <div class="shop-item-icon">${item.icon}</div>
+                    <div class="shop-item-name">${item.name}</div>
+                    <div class="shop-item-desc">${item.desc}</div>
+                    ${item.attack ? `<div style="color: #f5576c; font-size: 12px;">+${item.attack} 攻击</div>` : ''}
+                    ${item.defense ? `<div style="color: #2196F3; font-size: 12px;">+${item.defense} 防御</div>` : ''}
+                    ${isOwned ? '<div class="shop-item-owned">已拥有</div>' : `<div class="shop-item-price">${item.price} 💰</div>`}
+                `;
+                
+                if (!isOwned) {
+                    card.onclick = () => buyItem(item);
+                }
+                
+                container.appendChild(card);
+            });
+        }
+
+        function buyItem(item) {
+            if (gameData.coins < item.price) {
+                alert('金币不足！');
+                return;
+            }
+            
+            gameData.coins -= item.price;
+            
+            if (gameData.currentShopTab === 'weapons') {
+                gameData.pet.attack += item.attack;
+                gameData.pet.equipment.weapon = item.id;
+            } else if (gameData.currentShopTab === 'armor') {
+                gameData.pet.defense += item.defense;
+                gameData.pet.equipment.armor = item.id;
+            } else if (gameData.currentShopTab === 'items') {
+                if (item.hp) {
+                    gameData.pet.hp = Math.min(gameData.pet.hp + item.hp, gameData.pet.maxHP);
+                }
+                if (item.energy) {
+                    gameData.pet.energy = Math.min(gameData.pet.energy + item.energy, gameData.pet.maxEnergy);
+                }
+            } else if (gameData.currentShopTab === 'skills') {
+                if (!gameData.pet.skills.includes(item.name)) {
+                    gameData.pet.skills.push(item.name);
+                }
+            }
+            
+            gameData.inventory.push(item.id);
+            updateDisplay();
+            renderShop();
+            alert(`购买成功！获得 ${item.name}`);
+        }
+
+        // ==================== 启动游戏 ====================
+        init();
+    </script>
 </body>
 </html>
