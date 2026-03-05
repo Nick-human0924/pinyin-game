@@ -1463,6 +1463,9 @@
             alert(`购买成功！获得 ${item.name}`);
         }
 
+        
+        // 移动端触摸支持
+        document.addEventListener('touchstart', function() {}, {passive: true});
         // ==================== 启动游戏 ====================
         init();
 
@@ -1481,7 +1484,18 @@ function showStats() {
     renderCheckInCalendar();
 }
 
-function updateStatsDisplay() {
+
+        function showAccuracy(period) {
+            // 切换正确率显示时段
+            document.querySelectorAll('#statsScreen .stats-tab').forEach(tab => tab.classList.remove('active'));
+            const tabEl = document.getElementById('acc-tab-' + period);
+            if (tabEl) tabEl.classList.add('active');
+            
+            // 这里可以根据不同时段更新数据
+            console.log('切换到' + period + '正确率');
+        }
+        
+        function updateStatsDisplay() {
     const totalMinutes = Math.floor((gameData.totalPlayTime || 0) / 60);
     const hours = Math.floor(totalMinutes / 60);
     const mins = totalMinutes % 60;
