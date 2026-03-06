@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v6.6 - 拼读训练版</title>
+    <title>拼音大冒险 v6.7 - 用户管理版</title>
     <style>
         /* ===== 基础样式（v6.3完整样式） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -154,6 +154,7 @@
             <div class="menu-card" onclick="showPage('shop')"><div class="icon">🏪</div><h2>商店</h2></div>
             <div class="menu-card" onclick="showPage('stats')"><div class="icon">📊</div><h2>统计</h2></div>
             <div class="menu-card" onclick="showErrorAnalysis()"><div class="icon">📈</div><h2>错题分析</h2></div>
+            <div class="menu-card" onclick="showUserManager()"><div class="icon">👤</div><h2>用户管理</h2></div>
         </div>
 
         <!-- 基础教学 -->
@@ -272,6 +273,51 @@
                 <div class="pet-stat"><div>🛡️ 防御</div><div class="pet-stat-value" id="petDefense">5</div></div>
                 <div class="pet-stat"><div>❤️ 生命</div><div class="pet-stat-value" id="petHP">100</div></div>
                 <div class="pet-stat"><div>⚡ 体力</div><div class="pet-stat-value" id="petEnergy">50</div></div>
+            </div>
+        </div>
+
+        <!-- 用户管理 -->
+        <div id="userManager" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <h2 style="text-align: center; margin: 10px 0;">👤 用户管理</h2>
+            
+            <!-- 当前用户信息 -->
+            <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; margin-bottom: 20px; color: white; text-align: center;">
+                <div id="currentUserAvatar" style="font-size: 64px; margin-bottom: 10px;">🐼</div>
+                <div id="currentUserName" style="font-size: 24px; font-weight: bold; margin-bottom: 5px;">小勇士</div>
+                <div style="font-size: 14px; opacity: 0.9;">当前用户</div>
+                <button class="btn" onclick="showEditUserModal()" style="margin-top: 15px; width: auto; padding: 10px 20px; background: white; color: #667eea;">✏️ 编辑资料</button>
+            </div>
+            
+            <!-- 用户列表 -->
+            <h3 style="margin: 20px 0 15px; color: #333;">📋 用户列表</h3>
+            <div id="userList"></div>
+            
+            <!-- 添加用户按钮 -->
+            <button class="btn" onclick="showAddUserModal()" style="margin-top: 20px;">➕ 添加新用户</button>
+        </div>
+
+        <!-- 编辑用户弹窗 -->
+        <div id="editUserModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+            <div style="background: white; border-radius: 20px; padding: 30px; max-width: 400px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                <h3 style="text-align: center; margin-bottom: 20px;">✏️ 编辑用户资料</h3>
+                
+                <!-- 头像选择 -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 10px; font-weight: bold;">选择头像：</label>
+                    <div id="avatarSelector" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;"></div>
+                </div>
+                
+                <!-- 姓名输入 -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 10px; font-weight: bold;">用户姓名：</label>
+                    <input type="text" id="editUserNameInput" style="width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px;" placeholder="请输入姓名" maxlength="10">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <button class="btn btn-secondary" onclick="hideEditUserModal()">取消</button>
+                    <button class="btn" onclick="saveUserEdit()">保存</button>
+                </div>
             </div>
         </div>
 
@@ -406,22 +452,200 @@
         var inBattle = false, currentEnemy = null, currentBattleQuestion = null;
         var ownedItems = [];
         
-        // ========== v6.6 数据持久化 (localStorage) ==========
+        // ========== v6.7 多用户管理系统 ==========
+        var currentUserId = null;
+        var users = {}; // 存储所有用户数据
         var errorLog = []; // 错误记录
         
-        function saveGameData() {
-            var data = {
+        // 可选头像列表
+        var avatarOptions = ['🐼', '🐯', '🦁', '🐶', '🐱', '🐰', '🦊', '🐸', '🐙', '🦄', '🐲', '👦', '👧', '🧒', '👶'];
+        
+        // 初始化用户系统
+        function initUserSystem() {
+            var savedUsers = localStorage.getItem('pinyinGameUsers');
+            var savedCurrentUser = localStorage.getItem('pinyinGameCurrentUser');
+            
+            if (savedUsers) {
+                users = JSON.parse(savedUsers);
+            }
+            if (savedCurrentUser && users[savedCurrentUser]) {
+                currentUserId = savedCurrentUser;
+                loadUserData(currentUserId);
+            } else if (Object.keys(users).length > 0) {
+                // 有用户但没有当前用户，选择第一个
+                currentUserId = Object.keys(users)[0];
+                loadUserData(currentUserId);
+            } else {
+                // 没有用户，创建默认用户
+                createUser('小勇士', '🐼');
+            }
+            updateUI();
+        }
+        
+        // 创建新用户
+        function createUser(name, avatar) {
+            var userId = 'user_' + Date.now();
+            var userData = {
+                id: userId,
+                name: name,
+                avatar: avatar,
+                createdAt: new Date().toISOString(),
+                // 游戏数据
+                playerLevel: 1, coins: 100, hp: 100, maxHp: 100, energy: 50, exp: 0,
+                petAttack: 10, petDefense: 5, battleWins: 0, completedLevels: 0,
+                totalCorrect: 0, totalWrong: 0, streak: 0, checkedIn: false,
+                ownedItems: [],
+                levels: JSON.parse(JSON.stringify(levels)),
+                achievements: JSON.parse(JSON.stringify(achievements)),
+                tasks: JSON.parse(JSON.stringify(tasks)),
+                errorLog: []
+            };
+            users[userId] = userData;
+            saveUsersData();
+            return userId;
+        }
+        
+        // 切换用户
+        function switchUser(userId) {
+            if (users[userId]) {
+                // 先保存当前用户数据
+                if (currentUserId) {
+                    saveUserData(currentUserId);
+                }
+                // 切换并加载新用户
+                currentUserId = userId;
+                localStorage.setItem('pinyinGameCurrentUser', userId);
+                loadUserData(userId);
+                updateUI();
+                return true;
+            }
+            return false;
+        }
+        
+        // 删除用户
+        function deleteUser(userId) {
+            if (users[userId]) {
+                delete users[userId];
+                saveUsersData();
+                // 如果删除的是当前用户，切换到其他用户
+                if (currentUserId === userId) {
+                    currentUserId = null;
+                    localStorage.removeItem('pinyinGameCurrentUser');
+                    if (Object.keys(users).length > 0) {
+                        switchUser(Object.keys(users)[0]);
+                    } else {
+                        // 没有用户了，创建默认用户
+                        createUser('小勇士', '🐼');
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+        
+        // 更新用户信息
+        function updateUserInfo(userId, updates) {
+            if (users[userId]) {
+                Object.assign(users[userId], updates);
+                saveUsersData();
+                if (currentUserId === userId) {
+                    // 同步到当前游戏数据
+                    if (updates.name) document.querySelector('.player-info .avatar').nextElementSibling.querySelector('div').textContent = updates.name;
+                    if (updates.avatar) document.querySelector('.player-info .avatar').textContent = updates.avatar;
+                }
+                return true;
+            }
+            return false;
+        }
+        
+        // 加载用户数据到游戏变量
+        function loadUserData(userId) {
+            var user = users[userId];
+            if (!user) return;
+            
+            // 加载到全局变量
+            playerLevel = user.playerLevel;
+            coins = user.coins;
+            hp = user.hp;
+            maxHp = user.maxHp;
+            energy = user.energy;
+            exp = user.exp;
+            petAttack = user.petAttack;
+            petDefense = user.petDefense;
+            battleWins = user.battleWins;
+            completedLevels = user.completedLevels;
+            totalCorrect = user.totalCorrect;
+            totalWrong = user.totalWrong;
+            streak = user.streak;
+            checkedIn = user.checkedIn;
+            ownedItems = user.ownedItems || [];
+            levels = user.levels || levels;
+            achievements = user.achievements || achievements;
+            tasks = user.tasks || tasks;
+            errorLog = user.errorLog || [];
+            
+            // 更新UI显示
+            updateUI();
+            document.querySelector('.player-info .avatar').textContent = user.avatar;
+            document.querySelector('.player-info .avatar').nextElementSibling.querySelector('div').textContent = user.name;
+        }
+        
+        // 保存当前用户数据
+        function saveUserData(userId) {
+            if (!users[userId]) return;
+            users[userId] = {
+                ...users[userId],
                 playerLevel, coins, hp, maxHp, energy, exp,
                 petAttack, petDefense, battleWins, completedLevels,
                 totalCorrect, totalWrong, streak, checkedIn,
-                ownedItems, levels, achievements, tasks,
-                errorLog, lastSave: new Date().toISOString()
+                ownedItems, levels, achievements, tasks, errorLog,
+                lastSave: new Date().toISOString()
             };
-            localStorage.setItem('pinyinGameData', JSON.stringify(data));
+            saveUsersData();
         }
         
+        // 保存所有用户数据
+        function saveUsersData() {
+            localStorage.setItem('pinyinGameUsers', JSON.stringify(users));
+            if (currentUserId) {
+                localStorage.setItem('pinyinGameCurrentUser', currentUserId);
+                saveUserData(currentUserId);
+            }
+        }
+        
+        // 覆盖原有的saveGameData函数
+        function saveGameData() {
+            if (currentUserId) {
+                saveUserData(currentUserId);
+            }
+        }
+        
+        // 覆盖原有的loadGameData函数
         function loadGameData() {
-            var saved = localStorage.getItem('pinyinGameData');
+            initUserSystem();
+        }
+        
+        // 记录错误（更新为多用户版本）
+        function recordError(question, userAnswer, correctAnswer, errorType) {
+            if (!currentUserId) return;
+            errorLog.push({
+                question: question,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer,
+                errorType: errorType,
+                time: new Date().toISOString()
+            });
+            if (errorLog.length > 50) errorLog.shift();
+            saveGameData();
+        }
+        
+        // 页面加载时初始化用户系统
+        initUserSystem();
+        
+        // 定期自动保存
+        setInterval(saveGameData, 30000);
+        
+        // ========== v6.6 保留的注释 ==========
             if (saved) {
                 try {
                     var data = JSON.parse(saved);
@@ -1191,6 +1415,109 @@
             div.innerHTML += '<button class="btn btn-secondary" onclick="this.parentElement.remove(); showPage(\'mainMenu\');" style="margin: 20px;">返回主菜单</button>';
             document.querySelector('.game-container').appendChild(div);
             showPage(div.id);
+        }
+        
+        // ========== v6.7 用户管理功能 ==========
+        function showUserManager() {
+            showPage('userManager');
+            renderUserList();
+            updateCurrentUserDisplay();
+        }
+        
+        function updateCurrentUserDisplay() {
+            if (currentUserId && users[currentUserId]) {
+                var user = users[currentUserId];
+                document.getElementById('currentUserAvatar').textContent = user.avatar;
+                document.getElementById('currentUserName').textContent = user.name;
+            }
+        }
+        
+        function renderUserList() {
+            var html = '';
+            Object.keys(users).forEach(function(userId) {
+                var user = users[userId];
+                var isCurrent = userId === currentUserId;
+                html += '<div style="background: ' + (isCurrent ? '#E3F2FD' : '#f8f9fa') + '; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">';
+                html += '<div style="display: flex; align-items: center; gap: 15px;">';
+                html += '<div style="font-size: 40px;">' + user.avatar + '</div>';
+                html += '<div>';
+                html += '<div style="font-weight: bold; font-size: 18px;">' + user.name + (isCurrent ? ' (当前)' : '') + '</div>';
+                html += '<div style="font-size: 12px; color: #666;">金币: ' + user.coins + ' | 关卡: ' + user.completedLevels + '</div>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div style="display: flex; gap: 10px;">';
+                if (!isCurrent) {
+                    html += '<button class="btn" onclick="switchUser(\'' + userId + '\'); renderUserList(); updateCurrentUserDisplay();" style="width: auto; padding: 8px 15px; font-size: 12px;">切换</button>';
+                }
+                html += '<button class="btn btn-secondary" onclick="if(confirm(\'确定删除用户 ' + user.name + ' 吗？\')) { deleteUser(\'' + userId + '\'); renderUserList(); updateCurrentUserDisplay(); }" style="width: auto; padding: 8px 15px; font-size: 12px;">删除</button>';
+                html += '</div>';
+                html += '</div>';
+            });
+            document.getElementById('userList').innerHTML = html;
+        }
+        
+        // 显示编辑用户弹窗
+        var selectedAvatar = '🐼';
+        function showEditUserModal() {
+            if (!currentUserId) return;
+            var user = users[currentUserId];
+            selectedAvatar = user.avatar;
+            
+            // 渲染头像选择器
+            var avatarHtml = '';
+            avatarOptions.forEach(function(avatar) {
+                avatarHtml += '<div onclick="selectAvatar(\'' + avatar + '\')" style="cursor: pointer; font-size: 32px; padding: 10px; border-radius: 10px; border: 3px solid ' + (avatar === selectedAvatar ? '#667eea' : 'transparent') + '; background: ' + (avatar === selectedAvatar ? '#E3F2FD' : '#f8f9fa') + '; text-align: center;" id="avatar-option-' + avatar + '">' + avatar + '</div>';
+            });
+            document.getElementById('avatarSelector').innerHTML = avatarHtml;
+            
+            document.getElementById('editUserNameInput').value = user.name;
+            document.getElementById('editUserModal').style.display = 'flex';
+        }
+        
+        function hideEditUserModal() {
+            document.getElementById('editUserModal').style.display = 'none';
+        }
+        
+        function selectAvatar(avatar) {
+            selectedAvatar = avatar;
+            document.querySelectorAll('#avatarSelector > div').forEach(function(el) {
+                el.style.border = '3px solid transparent';
+                el.style.background = '#f8f9fa';
+            });
+            var selectedEl = document.getElementById('avatar-option-' + avatar);
+            if (selectedEl) {
+                selectedEl.style.border = '3px solid #667eea';
+                selectedEl.style.background = '#E3F2FD';
+            }
+        }
+        
+        function saveUserEdit() {
+            var newName = document.getElementById('editUserNameInput').value.trim();
+            if (!newName) {
+                alert('请输入姓名');
+                return;
+            }
+            if (currentUserId) {
+                updateUserInfo(currentUserId, { name: newName, avatar: selectedAvatar });
+                updateCurrentUserDisplay();
+                hideEditUserModal();
+                alert('资料已更新！');
+            }
+        }
+        
+        // 显示添加用户弹窗
+        function showAddUserModal() {
+            var name = prompt('请输入新用户名称：');
+            if (name && name.trim()) {
+                var avatar = avatarOptions[Math.floor(Math.random() * avatarOptions.length)];
+                var newUserId = createUser(name.trim(), avatar);
+                if (newUserId) {
+                    switchUser(newUserId);
+                    renderUserList();
+                    updateCurrentUserDisplay();
+                    alert('新用户 ' + name.trim() + ' 已创建！');
+                }
+            }
         }
         
         function setTab(n) {
