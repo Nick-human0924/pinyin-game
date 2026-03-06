@@ -3078,20 +3078,6 @@
             petAttack = baseAttack + equipment.weapon.attack + equipment.accessory.bonus.attack;
             petDefense = baseDefense + equipment.armor.defense + equipment.accessory.bonus.defense;
         }
-            html += '<div style="display: flex; gap: 10px; align-items: center;">';
-            var accReq = upgradeRequirements.accessory;
-            var accMatCount = countMaterial(accReq.material);
-            html += '<div style="flex: 1; font-size: 12px;">需要: 🟢绿宝石 x' + accReq.baseCost + ' (你有' + accMatCount + ')</div>';
-            html += '<button class="btn" onclick="upgradeEquipment(\'accessory\')" style="width: auto; padding: 10px 20px; font-size: 12px;" ' + (accMatCount < accReq.baseCost || coins < accReq.goldCost ? 'disabled' : '') + '>升级 ' + accReq.goldCost + '💰</button>';
-            html += '</div>';
-            html += '</div>';
-            
-            html += '<div style="padding: 15px; background: #E3F2FD; border-radius: 10px; font-size: 12px; color: #1565C0;">';
-            html += '💡 升级装备需要材料，去野外探险击败怪物可以获得宝石！';
-            html += '</div>';
-            
-            document.getElementById('equipmentContent').innerHTML = html;
-        }
         
         function countMaterial(materialId) {
             return inventory.treasures.filter(function(t) { return t.id === materialId; }).length;
