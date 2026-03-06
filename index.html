@@ -899,9 +899,9 @@
             checkAchievements();
             setTimeout(function() {
                 console.log('准备下一题', currentQuestionInLevel);
-                levelAnswered = false; // 重置标志
                 currentQuestionInLevel++;
                 console.log('题号增加到', currentQuestionInLevel);
+                levelAnswered = false; // 重置标志 - 在增加题号之后
                 if (currentQuestionInLevel <= 3) {
                     console.log('加载下一题');
                     loadLevelQuestion();
