@@ -1456,17 +1456,84 @@
             });
             html += '</div>';
             
-            html += '<h3 style="margin: 20px 0 10px; color: #333;">声调小游戏</h3>';
+            html += '<h3 style="margin: 20px 0 10px; color: #333;">🎮 声调练习</h3>';
             html += '<div style="text-align: center; padding: 20px; background: #F5F5F5; border-radius: 15px;">';
-            html += '<p style="margin-bottom: 15px;">👂 点击播放按钮，选择正确的声调</p>';
-            html += '<button class="btn" onclick="startToneGame()" style="width: auto; padding: 15px 30px;">开始声调辨别</button>';
+            html += '<button class="btn btn-secondary" onclick="startToneTest()" style="width: auto; padding: 15px 30px; margin-right: 10px;">📝 声调测试</button>';
+            html += '<button class="btn" onclick="startToneGame()" style="width: auto; padding: 15px 30px;">🎮 声调辨别游戏</button>';
             html += '</div>';
             
             document.getElementById('learningContent').innerHTML = html;
         }
         
+        // 声调测试数据
+        var toneTestData = [
+            {pinyin: 'mā', tone: '1', char: '妈'}, {pinyin: 'má', tone: '2', char: '麻'},
+            {pinyin: 'mǎ', tone: '3', char: '马'}, {pinyin: 'mà', tone: '4', char: '骂'},
+            {pinyin: 'bā', tone: '1', char: '八'}, {pinyin: 'bá', tone: '2', char: '拔'},
+            {pinyin: 'bǎ', tone: '3', char: '把'}, {pinyin: 'bà', tone: '4', char: '爸'},
+            {pinyin: 'dā', tone: '1', char: '搭'}, {pinyin: 'dá', tone: '2', char: '答'},
+            {pinyin: 'dǎ', tone: '3', char: '打'}, {pinyin: 'dà', tone: '4', char: '大'},
+            {pinyin: 'lā', tone: '1', char: '拉'}, {pinyin: 'lá', tone: '2', char: '拉'},
+            {pinyin: 'lǎ', tone: '3', char: '喇'}, {pinyin: 'là', tone: '4', char: '辣'}
+        ];
+        
+        // 开始声调测试
+        function startToneTest() {
+            currentTestIndex = 0;
+            testScore = 0;
+            currentTestType = 'tone';
+            showToneQuestion();
+        }
+        
+        function showToneQuestion() {
+            if (currentTestIndex >= 10) {
+                var html = '<div style="text-align: center; padding: 40px;">';
+                html += '<h2>🎉 声调测试完成!</h2>';
+                html += '<p style="font-size: 24px; margin: 20px 0;">得分: ' + testScore + '/10</p>';
+                html += '<button class="btn" onclick="showTones()">返回声调学习</button>';
+                html += '</div>';
+                document.getElementById('learningContent').innerHTML = html;
+                return;
+            }
+            
+            var q = toneTestData[currentTestIndex];
+            var html = '<div style="text-align: center; padding: 20px;">';
+            html += '<p>问题 ' + (currentTestIndex + 1) + '/10</p>';
+            html += '<h2 style="font-size: 48px; margin: 30px 0;">"' + q.pinyin + '" 是几声?</h2>';
+            html += '<button class="btn" onclick="playToneSound(\'' + q.pinyin + '\')" style="width: auto; padding: 15px 30px; margin-bottom: 20px;">🔊 听发音</button>';
+            html += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 400px; margin: 0 auto;">';
+            ['1', '2', '3', '4'].forEach(function(tone) {
+                html += '<button class="btn" onclick="checkToneAnswer(\'' + tone + '\', \'' + q.tone + '\')" style="font-size: 28px; padding: 20px;">' + tone + '声</button>';
+            });
+            html += '</div>';
+            html += '</div>';
+            document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        function playToneSound(pinyin) {
+            // 使用Web Speech API播放
+            if ('speechSynthesis' in window) {
+                var utterance = new SpeechSynthesisUtterance(pinyin);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+        
+        function checkToneAnswer(selected, correct) {
+            if (selected === correct) {
+                testScore++;
+                showToast('✅ 正确!', 'success');
+            } else {
+                showToast('❌ 错误! 正确答案是: ' + correct + '声', 'error');
+            }
+            currentTestIndex++;
+            setTimeout(showToneQuestion, 1000);
+        }
+        
         // 播放带声调的拼音
         function speakTone(filename) {
+            // 尝试播放音频，如果失败则使用Web Speech API
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio = null;
@@ -1474,7 +1541,18 @@
             var audio = new Audio('audio/' + filename + '.mp3');
             currentAudio = audio;
             audio.play().catch(function(e) {
-                console.log('音频播放失败：' + filename, e);
+                // 音频文件不存在，使用Web Speech API
+                console.log('音频文件不存在，使用语音合成: ' + filename);
+                var pinyin = filename.replace(/\d/, '');
+                var tone = filename.slice(-1);
+                var toneMarks = {'1': '¯', '2': '´', '3': 'ˇ', '4': 'ˋ'};
+                
+                if ('speechSynthesis' in window) {
+                    var utterance = new SpeechSynthesisUtterance(pinyin);
+                    utterance.lang = 'zh-CN';
+                    utterance.rate = 0.8;
+                    speechSynthesis.speak(utterance);
+                }
             });
         }
         
