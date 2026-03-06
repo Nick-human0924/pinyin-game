@@ -857,6 +857,35 @@
             checkedIn = user.checkedIn;
             ownedItems = user.ownedItems || [];
             levels = user.levels || levels;
+            // 确保 levels 数据兼容性（旧数据可能没有 type 属性）
+            if (levels.length > 0 && !levels[0].type) {
+                // 重新初始化 levels 以获取最新的关卡结构
+                var defaultLevels = [
+                    { id: 1, name: '声母·基础', type: 'initial', stage: 1, desc: '学习基础声母 b p m f', completed: false, locked: false },
+                    { id: 2, name: '声母·进阶', type: 'initial', stage: 2, desc: '学习声母 d t n l g k h', completed: false, locked: true },
+                    { id: 3, name: '声母·挑战', type: 'initial', stage: 3, desc: '学习声母 j q x zh ch sh r z c s y w', completed: false, locked: true },
+                    { id: 4, name: '韵母·单韵母', type: 'final', stage: 1, desc: '学习单韵母 a o e i u ü', completed: false, locked: true },
+                    { id: 5, name: '韵母·复韵母', type: 'final', stage: 2, desc: '学习复韵母 ai ei ui ao ou iu ie üe er', completed: false, locked: true },
+                    { id: 6, name: '韵母·鼻韵母', type: 'final', stage: 3, desc: '学习鼻韵母 an en in un ün ang eng ing ong', completed: false, locked: true },
+                    { id: 7, name: '整体认读·基础', type: 'whole', stage: 1, desc: '学习 zhi chi shi ri zi ci si', completed: false, locked: true },
+                    { id: 8, name: '整体认读·进阶', type: 'whole', stage: 2, desc: '学习 yi wu yu ye yue yuan', completed: false, locked: true },
+                    { id: 9, name: '整体认读·挑战', type: 'whole', stage: 3, desc: '学习 yin yun ying', completed: false, locked: true },
+                    { id: 10, name: '声调·基础', type: 'tone', stage: 1, desc: '学习单韵母声调', completed: false, locked: true },
+                    { id: 11, name: '声调·进阶', type: 'tone', stage: 2, desc: '学习复韵母声调', completed: false, locked: true },
+                    { id: 12, name: '声调·挑战', type: 'tone', stage: 3, desc: '学习鼻韵母和整体认读音节声调', completed: false, locked: true },
+                    { id: 13, name: '词语·基础', type: 'word', stage: 1, desc: '学习两字词语拼音', completed: false, locked: true },
+                    { id: 14, name: '词语·进阶', type: 'word', stage: 2, desc: '学习三字词语拼音', completed: false, locked: true },
+                    { id: 15, name: '词语·大师', type: 'word', stage: 3, desc: '挑战复杂词语和句子', isBoss: true, completed: false, locked: true }
+                ];
+                // 保留旧数据的完成状态
+                levels.forEach(function(oldLv, i) {
+                    if (defaultLevels[i]) {
+                        defaultLevels[i].completed = oldLv.completed || false;
+                        defaultLevels[i].locked = oldLv.locked !== undefined ? oldLv.locked : (i > 0);
+                    }
+                });
+                levels = defaultLevels;
+            }
             achievements = user.achievements || achievements;
             tasks = user.tasks || tasks;
             errorLog = user.errorLog || [];
