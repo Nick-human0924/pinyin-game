@@ -1,0 +1,183 @@
+/* ===== v7.0 童趣探险风格 - 新设计系统 ===== */
+:root {
+    --sky-blue: #4FC3F7;
+    --sun-yellow: #FFD54F;
+    --grass-green: #81C784;
+    --cloud-white: #FAFAFA;
+    --deep-blue: #1A237E;
+    --coral: #FF8A65;
+    --lavender: #B39DDB;
+}
+
+/* 新背景 - 天空到草地渐变 */
+body { 
+    background: linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 40%, #C8E6C9 100%) !important;
+}
+
+/* 新头部 - 蓝天白云风格 */
+.header {
+    background: linear-gradient(135deg, var(--sky-blue) 0%, #29B6F6 100%) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 25px rgba(79, 195, 247, 0.35) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '☁️';
+    position: absolute;
+    top: -5px;
+    right: 15px;
+    font-size: 45px;
+    opacity: 0.5;
+}
+
+/* 头像 - 阳光黄 */
+.avatar {
+    background: linear-gradient(135deg, var(--sun-yellow) 0%, #FFB300 100%) !important;
+    border: 3px solid white !important;
+    box-shadow: 0 4px 15px rgba(255, 213, 79, 0.4) !important;
+}
+
+/* 统计项 - 更圆润 */
+.stat-item {
+    background: rgba(255,255,255,0.95) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+
+/* 主菜单卡片 - 彩色顶部边框 */
+.menu-card {
+    border-radius: 20px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-top: 4px solid transparent !important;
+}
+
+.menu-card:nth-child(1) { border-top-color: var(--sky-blue) !important; }
+.menu-card:nth-child(2) { border-top-color: var(--grass-green) !important; }
+.menu-card:nth-child(3) { border-top-color: #8D6E63 !important; }
+.menu-card:nth-child(4) { border-top-color: var(--coral) !important; }
+.menu-card:nth-child(5) { border-top-color: var(--sun-yellow) !important; }
+.menu-card:nth-child(6) { border-top-color: var(--lavender) !important; }
+.menu-card:nth-child(7) { border-top-color: #EF5350 !important; }
+.menu-card:nth-child(8) { border-top-color: #42A5F5 !important; }
+.menu-card:nth-child(9) { border-top-color: #AB47BC !important; }
+.menu-card:nth-child(10) { border-top-color: #26A69A !important; }
+
+.menu-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important;
+}
+
+.menu-card .icon {
+    font-size: 38px !important;
+    margin-bottom: 10px !important;
+}
+
+/* 按钮 - 天空蓝渐变 */
+.btn {
+    background: linear-gradient(135deg, var(--sky-blue) 0%, #0288D1 100%) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 15px rgba(79, 195, 247, 0.35) !important;
+}
+
+/* 页面容器 */
+.page {
+    border-radius: 24px !important;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1) !important;
+}
+
+/* 返回按钮 */
+button[onclick*="showInitial"], .back-btn {
+    background: rgba(0,0,0,0.05) !important;
+    border-radius: 12px !important;
+}
+
+/* 拼音卡片 */
+.pinyin-card {
+    background: white !important;
+    border-radius: 16px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+    border: 2px solid transparent !important;
+}
+
+.pinyin-card:hover {
+    border-color: var(--sky-blue) !important;
+}
+
+/* 选项按钮 */
+.option-btn {
+    background: white !important;
+    border: 3px solid #E0E0E0 !important;
+    border-radius: 16px !important;
+}
+
+.option-btn.correct {
+    background: linear-gradient(135deg, #66BB6A, #43A047) !important;
+    border-color: #2E7D32 !important;
+}
+
+.option-btn.wrong {
+    background: linear-gradient(135deg, #EF5350, #C62828) !important;
+    border-color: #B71C1C !important;
+}
+
+/* 进度条 */
+.progress-fill {
+    background: linear-gradient(90deg, var(--sky-blue) 0%, var(--grass-green) 100%) !important;
+}
+
+/* 学习标签 */
+.learning-tab.active {
+    background: linear-gradient(135deg, var(--sky-blue) 0%, #0288D1 100%) !important;
+}
+
+/* 地图位置 */
+.map-location {
+    background: linear-gradient(135deg, var(--grass-green) 0%, #388E3C 100%) !important;
+    border-radius: 16px !important;
+}
+
+/* 宠物统计 */
+.pet-stat {
+    background: #F5F5F5 !important;
+    border-radius: 16px !important;
+}
+
+.pet-stat-value {
+    color: var(--sky-blue) !important;
+}
+
+/* 统计卡片 */
+.stats-card {
+    background: #F5F5F5 !important;
+    border-radius: 16px !important;
+}
+
+.stats-value {
+    color: var(--sky-blue) !important;
+}
+
+/* 商店 */
+.shop-tab.active {
+    background: linear-gradient(135deg, var(--sky-blue) 0%, #0288D1 100%) !important;
+}
+
+.shop-item-btn {
+    background: var(--sky-blue) !important;
+    border-radius: 12px !important;
+}
+
+/* 等级节点 */
+.level-node.current {
+    background: linear-gradient(135deg, #FF9800, #F57C00) !important;
+}
+
+.level-node.completed {
+    background: linear-gradient(135deg, #66BB6A, #43A047) !important;
+}
+
+.level-node.boss {
+    background: linear-gradient(135deg, #EF5350, #C62828) !important;
+}
