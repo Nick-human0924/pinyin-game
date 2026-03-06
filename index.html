@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.1.0 - 教学优化版</title>
+    <title>拼音大冒险 v8.2.0 - 教学优化版</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -713,7 +713,26 @@
                 levels: JSON.parse(JSON.stringify(levels)),
                 achievements: JSON.parse(JSON.stringify(achievements)),
                 tasks: JSON.parse(JSON.stringify(tasks)),
-                errorLog: []
+                errorLog: [],
+                // v8.2.0 新数据
+                pets: {
+                    current: 'panda',
+                    owned: ['panda']
+                },
+                inventory: {
+                    treasures: [],
+                    materials: [],
+                    consumables: []
+                },
+                equipment: {
+                    weapon: { level: 1, name: '木剑', icon: '🗡️', attack: 5 },
+                    armor: { level: 1, name: '布衣', icon: '👕', defense: 3 },
+                    accessory: { level: 1, name: '铜戒指', icon: '💍', bonus: { attack: 2, defense: 2 } }
+                },
+                errorBook: {
+                    errors: [],
+                    fixed: 0
+                }
             };
             users[userId] = userData;
             saveUsersData();
@@ -801,6 +820,18 @@
             tasks = user.tasks || tasks;
             errorLog = user.errorLog || [];
             
+            // v8.2.0 新数据加载
+            if (user.pets) {
+                pets = user.pets;
+            } else {
+                // 旧数据迁移
+                pets.current = 'panda';
+                pets.owned = ['panda'];
+            }
+            if (user.inventory) inventory = user.inventory;
+            if (user.equipment) equipment = user.equipment;
+            if (user.errorBook) errorBook = user.errorBook;
+            
             // 更新UI显示
             updateUI();
             // 更新头像
@@ -823,6 +854,8 @@
                 petAttack, petDefense, battleWins, completedLevels,
                 totalCorrect, totalWrong, streak, checkedIn,
                 ownedItems, levels, achievements, tasks, errorLog,
+                // v8.2.0 新数据
+                pets, inventory, equipment, errorBook,
                 lastSave: new Date().toISOString()
             };
             // 只保存到localStorage，不调用saveUsersData避免循环
@@ -2454,19 +2487,602 @@
             document.querySelectorAll('.shop-tab').forEach(function(t) { t.classList.remove('active'); });
             event.target.classList.add('active');
             var html = '';
-            shopItems[type].forEach(function(item) {
-                // 装备类(weapons/armor)限制购买一次，药水类(items)可重复购买
-                var isEquipment = (type === 'weapons' || type === 'armor');
-                var owned = isEquipment && ownedItems.includes(item.id);
-                var effect = item.attack ? '+' + item.attack + '攻' : item.defense ? '+' + item.defense + '防' : item.hp ? '恢复' + item.hp + 'HP' : '恢复' + item.energy + '体力';
-                html += '<div class="shop-item"><div class="shop-item-icon">' + item.icon + '</div><div class="shop-item-info"><div class="shop-item-name">' + item.name + '</div><div style="font-size:11px;color:#666">' + effect + '</div></div><button class="shop-item-btn" onclick="buyItem(\'' + item.id + '\',' + item.price + ', \'' + type + '\')" ' + (owned ? 'disabled' : '') + '>' + (owned ? '已拥有' : item.price + '💰') + '</button></div>';
-            });
+            
+            if (type === 'pets') {
+                // 渲染宠物商店
+                shopItems.pets.forEach(function(item) {
+                    var owned = pets.owned.includes(item.id);
+                    html += '<div class="shop-item" style="padding: 15px;">' +
+                        '<div style="font-size: 40px;">' + item.emoji + '</div>' +
+                        '<div style="flex: 1; margin-left: 15px;">' +
+                            '<div style="font-weight: bold; font-size: 16px;">' + item.name + '</div>' +
+                            '<div style="font-size: 12px; color: #666;">' + item.desc + '</div>' +
+                        '</div>' +
+                        '<button class="shop-item-btn" onclick="buyPet(\'' + item.id + '\',' + item.price + ')" ' + (owned ? 'disabled style="background:#ccc;"' : '') + '>' + 
+                            (owned ? '已拥有' : item.price + '💰') + 
+                        '</button>' +
+                    '</div>';
+                });
+            } else {
+                // 渲染装备和物品
+                shopItems[type].forEach(function(item) {
+                    var isEquipment = (type === 'weapons' || type === 'armor');
+                    var owned = isEquipment && ownedItems.includes(item.id);
+                    var effect = item.attack ? '+' + item.attack + '攻' : item.defense ? '+' + item.defense + '防' : item.hp ? '恢复' + item.hp + 'HP' : '恢复' + item.energy + '体力';
+                    html += '<div class="shop-item"><div class="shop-item-icon">' + item.icon + '</div><div class="shop-item-info"><div class="shop-item-name">' + item.name + '</div><div style="font-size:11px;color:#666">' + effect + '</div></div><button class="shop-item-btn" onclick="buyItem(\'' + item.id + '\',' + item.price + ', \'' + type + '\')" ' + (owned ? 'disabled' : '') + '>' + (owned ? '已拥有' : item.price + '💰') + '</button></div>';
+                });
+            }
             document.getElementById('shopContent').innerHTML = html;
         }
-        function buyItem(itemId, price, type) {
+        
+        // 购买宠物
+        function buyPet(petId, price) {
+            if (pets.owned.includes(petId)) {
+                alert('你已经拥有这只宠物了！');
+                return;
+            }
+            if (coins < price) {
+                alert('金币不足！需要 ' + price + ' 金币');
+                return;
+            }
+            coins -= price;
+            pets.owned.push(petId);
+            updateUI();
+            saveGameData();
+            renderShop('pets');
+            alert('🎉 恭喜获得新宠物！请到"我的宠物"页面切换使用。');
+        }
+        
+        // 切换宠物
+        function switchPet(petId) {
+            if (!pets.owned.includes(petId)) {
+                alert('你还没有这只宠物！');
+                return;
+            }
+            var pet = pets.list[petId];
+            pets.current = petId;
+            petAttack = pet.attack;
+            petDefense = pet.defense;
+            maxHp = pet.maxHp;
+            hp = pet.hp;
+            saveGameData();
+            renderPetPage();
+            updateUI();
+            alert('已切换到 ' + pet.name + '！');
+        }
+        
+        // 渲染宠物页面
+        function renderPetPage() {
+            var currentPet = pets.list[pets.current];
+            var html = '';
+            
+            // 当前宠物信息
+            html += '<button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>';
+            html += '<h2 style="text-align: center; margin: 10px 0;">🐼 我的宠物</h2>';
+            html += '<div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; text-align: center;">';
+            html += '<div style="font-size: 80px; margin-bottom: 10px;">' + currentPet.emoji + '</div>';
+            html += '<div style="font-size: 24px; font-weight: bold;">' + currentPet.name + '</div>';
+            html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">当前出战</div>';
+            html += '</div>';
+            
+            // 宠物属性
+            html += '<div class="pet-stats">';
+            html += '<div class="pet-stat"><div>⚔️ 攻击</div><div class="pet-stat-value">' + currentPet.attack + '</div></div>';
+            html += '<div class="pet-stat"><div>🛡️ 防御</div><div class="pet-stat-value">' + currentPet.defense + '</div></div>';
+            html += '<div class="pet-stat"><div>❤️ 生命</div><div class="pet-stat-value">' + currentPet.maxHp + '</div></div>';
+            html += '<div class="pet-stat"><div>⚡ 体力</div><div class="pet-stat-value">' + energy + '</div></div>';
+            html += '</div>';
+            
+            // 拥有的宠物列表
+            html += '<h3 style="margin: 25px 0 15px;">我的宠物收藏 (' + pets.owned.length + ')</h3>';
+            html += '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+            pets.owned.forEach(function(petId) {
+                var pet = pets.list[petId];
+                var isCurrent = petId === pets.current;
+                html += '<div onclick="switchPet(\'' + petId + '\')" style="flex: 1; min-width: 100px; background: ' + (isCurrent ? '#E3F2FD' : '#f8f9fa') + '; border: 2px solid ' + (isCurrent ? '#667eea' : 'transparent') + '; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer;">';
+                html += '<div style="font-size: 40px;">' + pet.emoji + '</div>';
+                html += '<div style="font-size: 12px; font-weight: bold;">' + pet.name + '</div>';
+                html += '<div style="font-size: 10px; color: #666;">攻' + pet.attack + ' 防' + pet.defense + '</div>';
+                if (isCurrent) html += '<div style="font-size: 10px; color: #667eea; margin-top: 5px;">✓ 当前</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            
+            // 提示
+            html += '<div style="margin-top: 20px; padding: 15px; background: #FFF3E0; border-radius: 10px; font-size: 13px; color: #E65100;">';
+            html += '💡 提示：点击宠物可以切换出战。不同宠物有不同属性，选择适合你的战斗风格！';
+            html += '</div>';
+            
+            document.getElementById('pet').innerHTML = html;
+        }
+        
+        // ========== v8.2.0 错题本功能 ==========
+        function recordError(question, userAnswer, correctAnswer, errorType) {
+            if (!currentUserId) return;
+            var error = {
+                id: Date.now() + '_' + Math.random(),
+                question: question,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer,
+                errorType: errorType || 'unknown',
+                time: new Date().toISOString(),
+                fixed: false,
+                reviewCount: 0
+            };
+            errorBook.errors.unshift(error);
+            if (errorBook.errors.length > 100) errorBook.errors.pop();
+            saveGameData();
+        }
+        
+        function renderErrorBook() {
+            var errors = errorBook.errors.filter(function(e) { return !e.fixed; });
+            document.getElementById('errorCount').textContent = errorBook.errors.length;
+            document.getElementById('errorFixed').textContent = errorBook.fixed;
+            
+            var listEl = document.getElementById('errorList');
+            var reviewBtn = document.getElementById('reviewBtn');
+            
+            if (errors.length === 0) {
+                listEl.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">' +
+                    '<div style="font-size: 48px; margin-bottom: 10px;">🎉</div>' +
+                    '<div>太棒了！你没有错题</div>' +
+                '</div>';
+                if (reviewBtn) reviewBtn.style.display = 'none';
+                return;
+            }
+            
+            if (reviewBtn) reviewBtn.style.display = 'block';
+            
+            var html = '';
+            errors.slice(0, 10).forEach(function(err, index) {
+                var date = new Date(err.time);
+                var timeStr = date.getMonth() + 1 + '/' + date.getDate() + ' ' + date.getHours() + ':' + String(date.getMinutes()).padStart(2, '0');
+                html += '<div style="background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #f44336;">';
+                html += '<div style="display: flex; justify-content: space-between; align-items: flex-start;">';
+                html += '<div style="flex: 1;">';
+                html += '<div style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px;">题目: ' + err.question + '</div>';
+                html += '<div style="color: #f44336; font-size: 14px;">❌ 你的答案: ' + err.userAnswer + '</div>';
+                html += '<div style="color: #4CAF50; font-size: 14px;">✅ 正确答案: ' + err.correctAnswer + '</div>';
+                html += '</div>';
+                html += '<div style="text-align: right;">';
+                html += '<div style="font-size: 11px; color: #999;">' + timeStr + '</div>';
+                html += '<button class="btn btn-secondary" onclick="fixError(\'' + err.id + '\')" style="width: auto; padding: 5px 15px; font-size: 12px; margin-top: 10px;">标记已掌握</button>';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+            });
+            
+            if (errors.length > 10) {
+                html += '<div style="text-align: center; color: #666; padding: 10px;">还有 ' + (errors.length - 10) + ' 道错题...</div>';
+            }
+            
+            listEl.innerHTML = html;
+        }
+        
+        function fixError(errorId) {
+            var err = errorBook.errors.find(function(e) { return e.id === errorId; });
+            if (err) {
+                err.fixed = true;
+                errorBook.fixed++;
+                saveGameData();
+                renderErrorBook();
+                showToast('已标记为掌握', 'success');
+            }
+        }
+        
+        function clearAllErrors() {
+            if (errorBook.errors.length === 0) {
+                alert('错题本已经是空的！');
+                return;
+            }
+            if (confirm('确定要清空所有错题吗？此操作不可恢复。')) {
+                errorBook.errors = [];
+                errorBook.fixed = 0;
+                saveGameData();
+                renderErrorBook();
+                showToast('错题本已清空', 'success');
+            }
+        }
+        
+        function startErrorReview() {
+            var unfixedErrors = errorBook.errors.filter(function(e) { return !e.fixed; });
+            if (unfixedErrors.length === 0) {
+                alert('没有需要复习的错题！');
+                return;
+            }
+            
+            currentReviewErrors = unfixedErrors.slice(0, 10);
+            currentReviewIndex = 0;
+            reviewScore = 0;
+            
+            document.getElementById('reviewTotal').textContent = currentReviewErrors.length;
+            showPage('errorReview');
+            showReviewQuestion();
+        }
+        
+        function showReviewQuestion() {
+            if (currentReviewIndex >= currentReviewErrors.length) {
+                // 复习完成
+                var html = '<div style="text-align: center; padding: 40px;">';
+                html += '<h2>🎉 错题复习完成！</h2>';
+                html += '<p style="font-size: 24px; margin: 20px 0;">得分: ' + reviewScore + '/' + currentReviewErrors.length + '</p>';
+                html += '<p style="color: #666;">答对的题目已从错题本中移除</p>';
+                html += '<button class="btn" onclick="showPage(\'errorBook\')">返回错题本</button>';
+                html += '</div>';
+                document.getElementById('reviewQuestion').innerHTML = html;
+                document.getElementById('reviewProgress').style.width = '100%';
+                document.getElementById('reviewCurrent').textContent = currentReviewErrors.length;
+                return;
+            }
+            
+            var err = currentReviewErrors[currentReviewIndex];
+            document.getElementById('reviewCurrent').textContent = currentReviewIndex + 1;
+            document.getElementById('reviewProgress').style.width = ((currentReviewIndex / currentReviewErrors.length) * 100) + '%';
+            
+            // 生成选项
+            var options = [err.correctAnswer];
+            var allOptions = [];
+            if (err.errorType === 'tone') {
+                allOptions = ['1', '2', '3', '4'];
+            } else {
+                allOptions = pinyinData.initialNames.concat(pinyinData.finalNames).concat(pinyinData.wholeNames);
+            }
+            
+            while (options.length < 4) {
+                var r = allOptions[Math.floor(Math.random() * allOptions.length)];
+                if (options.indexOf(r) === -1) options.push(r);
+            }
+            options.sort(function() { return Math.random() - 0.5; });
+            
+            var html = '<h3 style="font-size: 36px; margin-bottom: 20px;">' + err.question + '</h3>';
+            if (err.errorType === 'tone') {
+                html += '<p style="margin-bottom: 15px; color: #666;">这是几声?</p>';
+            }
+            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
+            options.forEach(function(opt) {
+                html += '<button class="btn" onclick="checkReviewAnswer(\'' + opt + '\', \'' + err.correctAnswer + '\', \'' + err.id + '\')" style="font-size: 20px; padding: 20px;">' + opt + '</button>';
+            });
+            html += '</div>';
+            
+            document.getElementById('reviewQuestion').innerHTML = html;
+        }
+        
+        function checkReviewAnswer(selected, correct, errorId) {
+            if (selected === correct) {
+                reviewScore++;
+                showToast('✅ 正确！', 'success');
+                // 标记为已掌握
+                var err = errorBook.errors.find(function(e) { return e.id === errorId; });
+                if (err) {
+                    err.fixed = true;
+                    errorBook.fixed++;
+                }
+            } else {
+                showToast('❌ 错误，答案是: ' + correct, 'error');
+            }
+            saveGameData();
+            currentReviewIndex++;
+            setTimeout(showReviewQuestion, 1000);
+        }
+        
+        // ========== v8.2.0 背包功能 ==========
+        function showInventoryTab(tab) {
+            document.querySelectorAll('#inventory .shop-tab').forEach(function(t) { t.classList.remove('active'); });
+            event.target.classList.add('active');
+            
+            var contentEl = document.getElementById('inventoryContent');
+            var html = '';
+            
+            if (tab === 'treasures') {
+                if (inventory.treasures.length === 0) {
+                    html = '<div style="text-align: center; padding: 40px; color: #666;">' +
+                        '<div style="font-size: 48px; margin-bottom: 10px;">💎</div>' +
+                        '<div>还没有宝物</div>' +
+                        '<div style="font-size: 12px; margin-top: 10px;">去野外探险打怪可以获得宝物！</div>' +
+                    '</div>';
+                } else {
+                    html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">';
+                    var treasureCounts = {};
+                    inventory.treasures.forEach(function(t) {
+                        treasureCounts[t.id] = (treasureCounts[t.id] || 0) + 1;
+                    });
+                    
+                    Object.keys(treasureCounts).forEach(function(id) {
+                        var treasure = treasuresData.find(function(t) { return t.id === id; });
+                        if (treasure) {
+                            html += '<div style="background: #f8f9fa; border-radius: 10px; padding: 15px; text-align: center;">';
+                            html += '<div style="font-size: 32px;">' + treasure.emoji + '</div>';
+                            html += '<div style="font-size: 12px; font-weight: bold; margin: 5px 0;">' + treasure.name + '</div>';
+                            html += '<div style="font-size: 10px; color: #666;">' + treasure.desc + '</div>';
+                            html += '<div style="font-size: 14px; color: #667eea; font-weight: bold; margin-top: 5px;">x' + treasureCounts[id] + '</div>';
+                            html += '</div>';
+                        }
+                    });
+                    html += '</div>';
+                }
+            } else if (tab === 'materials') {
+                html = '<div style="text-align: center; padding: 40px; color: #666;">' +
+                    '<div style="font-size: 48px; margin-bottom: 10px;">🔧</div>' +
+                    '<div>材料功能即将开放</div>' +
+                '</div>';
+            } else if (tab === 'consumables') {
+                html = '<div style="text-align: center; padding: 40px; color: #666;">' +
+                    '<div style="font-size: 48px; margin-bottom: 10px;">🧪</div>' +
+                    '<div>消耗品功能即将开放</div>' +
+                '</div>';
+            }
+            
+            contentEl.innerHTML = html;
+        }
+        
+        // 掉落宝物
+        function dropTreasure() {
+            var roll = Math.random();
+            var cumulative = 0;
+            var dropped = null;
+            
+            for (var i = 0; i < treasuresData.length; i++) {
+                cumulative += treasuresData[i].dropRate;
+                if (roll <= cumulative) {
+                    dropped = treasuresData[i];
+                    break;
+                }
+            }
+            
+            if (dropped) {
+                inventory.treasures.push({ id: dropped.id, obtainedAt: new Date().toISOString() });
+                saveGameData();
+                return dropped;
+            }
+            return null;
+        }
+        
+        // ========== v8.2.0 装备升级 ==========
+        function renderEquipment() {
+            document.getElementById('weaponLevel').textContent = 'Lv.' + equipment.weapon.level;
+            document.getElementById('armorLevel').textContent = 'Lv.' + equipment.armor.level;
+            document.getElementById('accessoryLevel').textContent = 'Lv.' + equipment.accessory.level;
+            
+            var html = '';
+            
+            // 武器升级
+            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;">';
+            html += '<div style="display: flex; align-items: center; margin-bottom: 15px;">';
+            html += '<div style="font-size: 40px; margin-right: 15px;">' + equipment.weapon.icon + '</div>';
+            html += '<div style="flex: 1;">';
+            html += '<div style="font-weight: bold;">' + equipment.weapon.name + ' Lv.' + equipment.weapon.level + '</div>';
+            html += '<div style="font-size: 12px; color: #666;">攻击 +' + equipment.weapon.attack + '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div style="display: flex; gap: 10px; align-items: center;">';
+            var weaponReq = upgradeRequirements.weapon;
+            var weaponMatCount = countMaterial(weaponReq.material);
+            html += '<div style="flex: 1; font-size: 12px;">需要: 🔴红宝石 x' + weaponReq.baseCost + ' (你有' + weaponMatCount + ')</div>';
+            html += '<button class="btn" onclick="upgradeEquipment(\'weapon\')" style="width: auto; padding: 10px 20px; font-size: 12px;" ' + (weaponMatCount < weaponReq.baseCost || coins < weaponReq.goldCost ? 'disabled' : '') + '>升级 ' + weaponReq.goldCost + '💰</button>';
+            html += '</div>';
+            html += '</div>';
+            
+            // 防具升级
+            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;">';
+            html += '<div style="display: flex; align-items: center; margin-bottom: 15px;">';
+            html += '<div style="font-size: 40px; margin-right: 15px;">' + equipment.armor.icon + '</div>';
+            html += '<div style="flex: 1;">';
+            html += '<div style="font-weight: bold;">' + equipment.armor.name + ' Lv.' + equipment.armor.level + '</div>';
+            html += '<div style="font-size: 12px; color: #666;">防御 +' + equipment.armor.defense + '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div style="display: flex; gap: 10px; align-items: center;">';
+            var armorReq = upgradeRequirements.armor;
+            var armorMatCount = countMaterial(armorReq.material);
+            html += '<div style="flex: 1; font-size: 12px;">需要: 🔵蓝宝石 x' + armorReq.baseCost + ' (你有' + armorMatCount + ')</div>';
+            html += '<button class="btn" onclick="upgradeEquipment(\'armor\')" style="width: auto; padding: 10px 20px; font-size: 12px;" ' + (armorMatCount < armorReq.baseCost || coins < armorReq.goldCost ? 'disabled' : '') + '>升级 ' + armorReq.goldCost + '💰</button>';
+            html += '</div>';
+            html += '</div>';
+            
+            // 饰品升级
+            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;">';
+            html += '<div style="display: flex; align-items: center; margin-bottom: 15px;">';
+            html += '<div style="font-size: 40px; margin-right: 15px;">' + equipment.accessory.icon + '</div>';
+            html += '<div style="flex: 1;">';
+            html += '<div style="font-weight: bold;">' + equipment.accessory.name + ' Lv.' + equipment.accessory.level + '</div>';
+            html += '<div style="font-size: 12px; color: #666;">攻+' + equipment.accessory.bonus.attack + ' 防+' + equipment.accessory.bonus.defense + '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div style="display: flex; gap: 10px; align-items: center;">';
+            var accReq = upgradeRequirements.accessory;
+            var accMatCount = countMaterial(accReq.material);
+            html += '<div style="flex: 1; font-size: 12px;">需要: 🟢绿宝石 x' + accReq.baseCost + ' (你有' + accMatCount + ')</div>';
+            html += '<button class="btn" onclick="upgradeEquipment(\'accessory\')" style="width: auto; padding: 10px 20px; font-size: 12px;" ' + (accMatCount < accReq.baseCost || coins < accReq.goldCost ? 'disabled' : '') + '>升级 ' + accReq.goldCost + '💰</button>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div style="padding: 15px; background: #E3F2FD; border-radius: 10px; font-size: 12px; color: #1565C0;">';
+            html += '💡 升级装备需要材料，去野外探险击败怪物可以获得宝石！';
+            html += '</div>';
+            
+            document.getElementById('equipmentContent').innerHTML = html;
+        }
+        
+        function countMaterial(materialId) {
+            return inventory.treasures.filter(function(t) { return t.id === materialId; }).length;
+        }
+        
+        function upgradeEquipment(type) {
+            var req = upgradeRequirements[type];
+            var matCount = countMaterial(req.material);
+            
+            if (matCount < req.baseCost) {
+                alert('材料不足！需要 ' + req.baseCost + ' 个宝石');
+                return;
+            }
+            if (coins < req.goldCost) {
+                alert('金币不足！需要 ' + req.goldCost + ' 金币');
+                return;
+            }
+            
+            // 消耗材料
+            var removed = 0;
+            inventory.treasures = inventory.treasures.filter(function(t) {
+                if (t.id === req.material && removed < req.baseCost) {
+                    removed++;
+                    return false;
+                }
+                return true;
+            });
+            
+            coins -= req.goldCost;
+            
+            // 升级装备
+            equipment[type].level++;
+            if (type === 'weapon') {
+                equipment[type].attack += 3;
+                petAttack += 3;
+            } else if (type === 'armor') {
+                equipment[type].defense += 2;
+                petDefense += 2;
+            } else if (type === 'accessory') {
+                equipment[type].bonus.attack += 1;
+                equipment[type].bonus.defense += 1;
+                petAttack += 1;
+                petDefense += 1;
+            }
+            
+            saveGameData();
+            updateUI();
+            renderEquipment();
+            alert('🎉 ' + equipment[type].name + ' 升级成功！');
+        }
+        
+        // 修改探险函数，添加宝物掉落
+        var originalExplore = explore;
+        explore = function(location) {
+            var costs = {forest: 10, desert: 15, ocean: 20, volcano: 30};
+            var encounterRates = {forest: 0.4, desert: 0.6, ocean: 0.8, volcano: 1};
+            
+            if (hp <= 0) {
+                alert('❌ 你的宠物已经没血了！\n\n请返回主菜单购买药水恢复后再来探险！');
+                return;
+            }
+            if (hp < 20) {
+                if (!confirm('⚠️ 你的宠物血量很低！\n\n建议购买药水恢复后再探险，否则可能被怪物击败！\n\n确定要继续吗？')) {
+                    return;
+                }
+            }
+            
+            if (energy < costs[location]) {
+                alert('体力不足！');
+                return;
+            }
+            energy -= costs[location];
+            updateTaskProgress('task_explore', 1);
+            updateUI();
+            
+            if (Math.random() < encounterRates[location]) {
+                var mons = monsters[location];
+                currentEnemy = JSON.parse(JSON.stringify(mons[Math.floor(Math.random() * mons.length)]));
+                currentEnemy.maxHp = currentEnemy.hp;
+                currentEnemy.location = location;
+                startBattle();
+            } else {
+                var reward = 10 + Math.floor(Math.random() * 20);
+                coins += reward;
+                updateUI();
+                alert('安全探索！获得 ' + reward + ' 金币');
+            }
+        };
+        
+        // 修改战斗胜利，添加宝物掉落
+        var originalBattleAnswer = battleAnswer;
+        battleAnswer = function(btn, selected, correct) {
+            var isCorrect = selected === correct;
+            if (isCorrect) {
+                btn.classList.add('correct');
+                var player = document.getElementById('playerChar');
+                var enemy = document.getElementById('enemyChar');
+                player.classList.add('attack-right');
+                setTimeout(function() {
+                    player.classList.remove('attack-right');
+                    enemy.classList.add('shake');
+                    showDamage(enemy, Math.floor(Math.random() * 10 + 5));
+                    setTimeout(function() { enemy.classList.remove('shake'); }, 500);
+                }, 300);
+                
+                var damage = petAttack + Math.floor(Math.random() * 5);
+                currentEnemy.hp -= damage;
+                document.getElementById('battleLog').innerHTML = '✅ 正确！造成 <span style="color:#4CAF50">' + damage + '</span> 伤害！';
+                speak('攻击！');
+                
+                if (currentEnemy.hp <= 0) {
+                    updateBattleUI();
+                    setTimeout(function() {
+                        playVictoryAnimation();
+                        var reward = 30 + Math.floor(Math.random() * 50);
+                        showCoinReward(reward);
+                        coins += reward;
+                        battleWins++;
+                        checkAchievements();
+                        updateUI();
+                        
+                        // 掉落宝物
+                        var treasure = dropTreasure();
+                        var msg = '🎉 战斗胜利！获得 ' + reward + ' 金币！';
+                        if (treasure) {
+                            msg += '\n\n💎 额外获得宝物: ' + treasure.emoji + ' ' + treasure.name + '！';
+                        }
+                        
+                        setTimeout(function() {
+                            alert(msg);
+                            inBattle = false;
+                            showMainMenu();
+                        }, 1500);
+                    }, 500);
+                    return;
+                }
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('#battleOptions .option-btn').forEach(function(b) {
+                    if (b.textContent === correct) b.classList.add('correct');
+                });
+                
+                var player = document.getElementById('playerChar');
+                var enemy = document.getElementById('enemyChar');
+                enemy.classList.add('attack-left');
+                setTimeout(function() {
+                    enemy.classList.remove('attack-left');
+                    player.classList.add('shake');
+                    showDamage(player, Math.floor(Math.random() * 10 + 5));
+                    setTimeout(function() { player.classList.remove('shake'); }, 500);
+                }, 300);
+                
+                var damage = Math.max(1, currentEnemy.attack - petDefense);
+                hp -= damage;
+                document.getElementById('battleLog').innerHTML = '❌ 错误！受到 <span style="color:#f44336">' + damage + '</span> 伤害！';
+                speak('受到伤害');
+                
+                if (hp <= 0) {
+                    hp = 0;
+                    updateUI(); updateBattleUI();
+                    var lostCoins = Math.floor(coins * 0.1);
+                    alert('💀 战斗失败！你的宠物被打败了！\n\n损失 ' + lostCoins + ' 金币\n\n请返回主菜单购买药水恢复宠物血量！');
+                    coins -= lostCoins;
+                    inBattle = false;
+                    showMainMenu();
+                    return;
+                }
+            }
+            updateUI(); updateBattleUI();
+            setTimeout(function() { loadBattleQuestion(); }, 1500);
+        };
+        
+        // 修改buyItem函数，添加宠物购买支持
+        var originalBuyItem = buyItem;
+        buyItem = function(itemId, price, type) {
+            if (type === 'pets') {
+                buyPet(itemId, price);
+                return;
+            }
             if (coins < price) { alert('金币不足！'); return; }
             coins -= price;
-            // 只有装备类才记录到ownedItems
             if (type === 'weapons' || type === 'armor') {
                 ownedItems.push(itemId);
             }
@@ -2474,13 +3090,36 @@
             ['weapons','armor','items'].forEach(function(t) {
                 shopItems[t].forEach(function(i) { if (i.id === itemId) item = i; });
             });
-            if (item.attack) petAttack += item.attack;
-            if (item.defense) petDefense += item.defense;
-            if (item.hp) hp = Math.min(hp + item.hp, maxHp);
-            if (item.energy) energy = Math.min(energy + item.energy, 100);
+            if (item && item.attack) petAttack += item.attack;
+            if (item && item.defense) petDefense += item.defense;
+            if (item && item.hp) hp = Math.min(hp + item.hp, maxHp);
+            if (item && item.energy) energy = Math.min(energy + item.energy, 100);
             checkAchievements();
             updateUI(); renderShop(type);
-            alert('购买成功！' + (item.hp ? '恢复' + item.hp + '点HP' : item.energy ? '恢复' + item.energy + '点体力' : ''));
+            alert('购买成功！' + (item && item.hp ? '恢复' + item.hp + '点HP' : item && item.energy ? '恢复' + item.energy + '点体力' : ''));
+        };
+        
+        function buyItem(itemId, price, type) {
+            if (type === 'pets') {
+                buyPet(itemId, price);
+                return;
+            }
+            if (coins < price) { alert('金币不足！'); return; }
+            coins -= price;
+            if (type === 'weapons' || type === 'armor') {
+                ownedItems.push(itemId);
+            }
+            var item = null;
+            ['weapons','armor','items'].forEach(function(t) {
+                shopItems[t].forEach(function(i) { if (i.id === itemId) item = i; });
+            });
+            if (item && item.attack) petAttack += item.attack;
+            if (item && item.defense) petDefense += item.defense;
+            if (item && item.hp) hp = Math.min(hp + item.hp, maxHp);
+            if (item && item.energy) energy = Math.min(energy + item.energy, 100);
+            checkAchievements();
+            updateUI(); renderShop(type);
+            alert('购买成功！' + (item && item.hp ? '恢复' + item.hp + '点HP' : item && item.energy ? '恢复' + item.energy + '点体力' : ''));
         }
         function updateShopCoins() { document.getElementById('shopCoins').textContent = coins; }
         
