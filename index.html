@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v6.7.1 - Bug修复版</title>
+    <title>拼音大冒险 v6.7.2 - 修复用户管理显示</title>
     <style>
         /* ===== 基础样式（v6.3完整样式） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -548,11 +548,6 @@
             if (users[userId]) {
                 Object.assign(users[userId], updates);
                 saveUsersData();
-                if (currentUserId === userId) {
-                    // 同步到当前游戏数据
-                    if (updates.name) document.querySelector('.player-info .avatar').nextElementSibling.querySelector('div').textContent = updates.name;
-                    if (updates.avatar) document.querySelector('.player-info .avatar').textContent = updates.avatar;
-                }
                 return true;
             }
             return false;
@@ -586,8 +581,15 @@
             
             // 更新UI显示
             updateUI();
-            document.querySelector('.player-info .avatar').textContent = user.avatar;
-            document.querySelector('.player-info .avatar').nextElementSibling.querySelector('div').textContent = user.name;
+            // 更新头像
+            var avatarEl = document.querySelector('.header .player-info .avatar');
+            if (avatarEl) avatarEl.textContent = user.avatar;
+            // 更新名称（保留等级信息）
+            var nameEl = document.querySelector('.header .player-info > div:nth-child(2) > div:first-child');
+            if (nameEl) {
+                var levelMatch = nameEl.innerHTML.match(/Lv\.<span id="playerLevel">\d+<\/span>/);
+                nameEl.innerHTML = user.name + ' ' + (levelMatch ? levelMatch[0] : 'Lv.<span id="playerLevel">' + playerLevel + '</span>');
+            }
         }
         
         // 保存当前用户数据
@@ -1465,6 +1467,17 @@
             }
             if (currentUserId) {
                 updateUserInfo(currentUserId, { name: newName, avatar: selectedAvatar });
+                // 更新顶部主界面显示 - 修正选择器
+                var headerAvatar = document.querySelector('.header .avatar');
+                var headerName = document.querySelector('.header .player-info > div > div:first-child');
+                if (headerAvatar) headerAvatar.textContent = selectedAvatar;
+                if (headerName) {
+                    // 保留等级信息，只更新名称
+                    var levelMatch = headerName.innerHTML.match(/Lv\.<span id="playerLevel">\d+<\/span>/);
+                    headerName.innerHTML = newName + ' ' + (levelMatch ? levelMatch[0] : '');
+                }
+                // 刷新用户管理页面
+                renderUserList();
                 updateCurrentUserDisplay();
                 hideEditUserModal();
                 alert('资料已更新！');
