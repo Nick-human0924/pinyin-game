@@ -209,8 +209,10 @@
             <div class="menu-card" onclick="showPage('achievements')"><div class="icon">🏆</div><h2>成就</h2></div>
             <div class="menu-card" onclick="showPage('tasks')"><div class="icon">📋</div><h2>任务</h2></div>
             <div class="menu-card" onclick="showPage('shop')"><div class="icon">🏪</div><h2>商店</h2></div>
+            <div class="menu-card" onclick="showPage('inventory')"><div class="icon">🎒</div><h2>背包</h2></div>
+            <div class="menu-card" onclick="showPage('equipment')"><div class="icon">⚔️</div><h2>装备</h2></div>
             <div class="menu-card" onclick="showPage('stats')"><div class="icon">📊</div><h2>统计</h2></div>
-            <div class="menu-card" onclick="showErrorAnalysis()"><div class="icon">📈</div><h2>错题分析</h2></div>
+            <div class="menu-card" onclick="showPage('errorBook')"><div class="icon">📕</div><h2>错题本</h2></div>
             <div class="menu-card" onclick="showUserManager()"><div class="icon">👤</div><h2>用户管理</h2></div>
         </div>
 
@@ -413,7 +415,8 @@
             <div style="text-align: center; background: #F7F9FC; padding: 12px; border-radius: 15px; margin-bottom: 12px;"><div style="font-size: 20px; font-weight: bold; color: #667eea;">💰 <span id="shopCoins">100</span></div></div>
             
             <div class="shop-tabs">
-                <div class="shop-tab active" onclick="showShopTab('weapons')">⚔️ 武器</div>
+                <div class="shop-tab active" onclick="showShopTab('pets')">🐾 宠物</div>
+                <div class="shop-tab" onclick="showShopTab('weapons')">⚔️ 武器</div>
                 <div class="shop-tab" onclick="showShopTab('armor')">🛡️ 防具</div>
                 <div class="shop-tab" onclick="showShopTab('items')">🧪 药水</div>
             </div>
@@ -432,6 +435,86 @@
             </div>
             <div class="calendar" id="calendar"></div>
             <button class="btn" onclick="checkIn()">今日打卡 +50💰</button>
+        </div>
+
+        <!-- v8.2.0 错题本 -->
+        <div id="errorBook" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <h2 style="text-align: center; margin: 10px 0;">📕 错题本</h2>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <div style="flex: 1; background: #FFEBEE; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #C62828;" id="errorCount">0</div>
+                    <div style="font-size: 12px; color: #666;">错题总数</div>
+                </div>
+                <div style="flex: 1; background: #E8F5E9; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #2E7D32;" id="errorFixed">0</div>
+                    <div style="font-size: 12px; color: #666;">已订正</div>
+                </div>
+            </div>
+            
+            <div id="errorList" style="max-height: 400px; overflow-y: auto;"></div>
+            
+            <button class="btn" onclick="startErrorReview()" id="reviewBtn" style="margin-top: 15px;">📝 开始错题复习</button>
+            <button class="btn btn-secondary" onclick="clearAllErrors()" style="margin-top: 10px;">🗑️ 清空错题</button>
+        </div>
+
+        <!-- v8.2.0 错题复习 -->
+        <div id="errorReview" class="page hidden">
+            <button class="btn btn-secondary" onclick="showPage('errorBook')">← 返回错题本</button>
+            <h2 style="text-align: center; margin: 10px 0;">📝 错题复习</h2>
+            
+            <div class="progress-bar" style="margin: 15px 0;">
+                <div class="progress-fill" id="reviewProgress" style="width: 0%"></div>
+            </div>
+            <div style="text-align: center; margin-bottom: 15px; color: #666;">
+                <span id="reviewCurrent">1</span> / <span id="reviewTotal">0</span>
+            </div>
+            
+            <div id="reviewQuestion" style="text-align: center; padding: 20px;"></div>
+        </div>
+
+        <!-- v8.2.0 背包 -->
+        <div id="inventory" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <h2 style="text-align: center; margin: 10px 0;">🎒 我的背包</h2>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto;">
+                <div class="shop-tab active" onclick="showInventoryTab('treasures')">💎 宝物</div>
+                <div class="shop-tab" onclick="showInventoryTab('materials')">🔧 材料</div>
+                <div class="shop-tab" onclick="showInventoryTab('consumables')">🧪 消耗品</div>
+            </div>
+            
+            <div id="inventoryContent"></div>
+        </div>
+
+        <!-- v8.2.0 装备升级 -->
+        <div id="equipment" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <h2 style="text-align: center; margin: 10px 0;">⚔️ 装备升级</h2>
+            
+            <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px;">
+                <div style="text-align: center; font-size: 14px; opacity: 0.9; margin-bottom: 10px;">当前装备等级</div>
+                <div style="display: flex; justify-content: space-around;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px;">⚔️</div>
+                        <div style="font-size: 12px;">武器</div>
+                        <div style="font-size: 20px; font-weight: bold;" id="weaponLevel">Lv.1</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px;">🛡️</div>
+                        <div style="font-size: 12px;">防具</div>
+                        <div style="font-size: 20px; font-weight: bold;" id="armorLevel">Lv.1</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px;">💍</div>
+                        <div style="font-size: 12px;">饰品</div>
+                        <div style="font-size: 20px; font-weight: bold;" id="accessoryLevel">Lv.1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="equipmentContent"></div>
         </div>
     </div>
 
@@ -527,6 +610,59 @@
         var totalCorrect = 0, totalWrong = 0, streak = 0, checkedIn = false;
         var inBattle = false, currentEnemy = null, currentBattleQuestion = null;
         var ownedItems = [];
+        
+        // ========== v8.2.0 宠物系统 ==========
+        var pets = {
+            current: 'panda',
+            owned: ['panda'],
+            list: {
+                panda: { id: 'panda', name: '拼音小熊猫', emoji: '🐼', attack: 10, defense: 5, hp: 100, maxHp: 100, desc: '平衡的初学者宠物' },
+                tiger: { id: 'tiger', name: '勇猛小老虎', emoji: '🐯', attack: 18, defense: 3, hp: 85, maxHp: 85, desc: '高攻击型宠物', price: 300 },
+                lion: { id: 'lion', name: '威武小狮子', emoji: '🦁', attack: 15, defense: 8, hp: 95, maxHp: 95, desc: '攻守平衡型', price: 500 },
+                dragon: { id: 'dragon', name: '火焰小龙', emoji: '🐲', attack: 25, defense: 5, hp: 90, maxHp: 90, desc: '强力攻击型', price: 800 },
+                unicorn: { id: 'unicorn', name: '魔法独角兽', emoji: '🦄', attack: 12, defense: 15, hp: 110, maxHp: 110, desc: '高防御型宠物', price: 600 },
+                rabbit: { id: 'rabbit', name: '迅捷小兔', emoji: '🐰', attack: 8, defense: 6, hp: 80, maxHp: 80, desc: '敏捷型宠物', price: 200 }
+            }
+        };
+        
+        // ========== v8.2.0 背包系统 ==========
+        var inventory = {
+            treasures: [],
+            materials: [],
+            consumables: []
+        };
+        
+        var treasuresData = [
+            { id: 'ruby', name: '红宝石', emoji: '🔴', desc: '升级武器的材料', rarity: 'common', dropRate: 0.3 },
+            { id: 'sapphire', name: '蓝宝石', emoji: '🔵', desc: '升级防具的材料', rarity: 'common', dropRate: 0.3 },
+            { id: 'emerald', name: '绿宝石', emoji: '🟢', desc: '升级饰品的材料', rarity: 'common', dropRate: 0.3 },
+            { id: 'diamond', name: '钻石', emoji: '💎', desc: '万能升级材料', rarity: 'rare', dropRate: 0.08 },
+            { id: 'gold', name: '金块', emoji: '🟨', desc: '出售获得金币', rarity: 'common', dropRate: 0.2 },
+            { id: 'crystal', name: '魔法水晶', emoji: '🔮', desc: '稀有升级材料', rarity: 'epic', dropRate: 0.02 }
+        ];
+        
+        // ========== v8.2.0 装备升级系统 ==========
+        var equipment = {
+            weapon: { level: 1, name: '木剑', icon: '🗡️', attack: 5 },
+            armor: { level: 1, name: '布衣', icon: '👕', defense: 3 },
+            accessory: { level: 1, name: '铜戒指', icon: '💍', bonus: { attack: 2, defense: 2 } }
+        };
+        
+        // 升级所需材料
+        var upgradeRequirements = {
+            weapon: { material: 'ruby', baseCost: 2, goldCost: 100 },
+            armor: { material: 'sapphire', baseCost: 2, goldCost: 100 },
+            accessory: { material: 'emerald', baseCost: 2, goldCost: 100 }
+        };
+        
+        // ========== v8.2.0 错题本系统 ==========
+        var errorBook = {
+            errors: [],
+            fixed: 0
+        };
+        var currentReviewErrors = [];
+        var currentReviewIndex = 0;
+        var reviewScore = 0;
         
         // ========== v8.1.0 教学系统设置 ==========
         var showPinyinHints = true; // 默认显示拼音提示字
@@ -834,11 +970,15 @@
             if (target) {
                 target.classList.remove('hidden');
             }
-            if (pageId === 'shop') { renderShop('weapons'); updateShopCoins(); }
+            if (pageId === 'shop') { renderShop('pets'); updateShopCoins(); }
             if (pageId === 'stats') renderCalendar();
             if (pageId === 'learning') showInitial();
             if (pageId === 'achievements') renderAchievements();
             if (pageId === 'tasks') renderTasks();
+            if (pageId === 'errorBook') renderErrorBook();
+            if (pageId === 'inventory') showInventoryTab('treasures');
+            if (pageId === 'equipment') renderEquipment();
+            if (pageId === 'pet') renderPetPage();
         }
         
         function showMainMenu() { showPage('mainMenu'); inBattle = false; }
@@ -846,23 +986,56 @@
         function goToLevelMap() { showPage('levelMap'); renderLevelMap(); }
         function goToMap() { showPage('map'); }
         
-        // 渲染关卡地图
+        // 渲染关卡地图 - v8.2.0 按阶段分组显示
         function renderLevelMap() {
             var container = document.getElementById('levelMapContainer');
             var html = '';
-            for (var row = 0; row < 5; row++) {
-                html += '<div class="level-row">';
-                for (var col = 0; col < 3; col++) {
-                    var idx = row * 3 + col;
-                    if (idx >= levels.length) break;
-                    var lv = levels[idx];
+            
+            // 定义阶段信息
+            var stages = [
+                { id: 1, name: '第一阶段', title: '声母', type: 'initial', color: '#4CAF50', icon: '🔤' },
+                { id: 2, name: '第二阶段', title: '韵母', type: 'final', color: '#2196F3', icon: '🎵' },
+                { id: 3, name: '第三阶段', title: '整体认读', type: 'whole', color: '#9C27B0', icon: '📖' },
+                { id: 4, name: '第四阶段', title: '声调', type: 'tone', color: '#FF9800', icon: '🎼' },
+                { id: 5, name: '第五阶段', title: '词语', type: 'word', color: '#F44336', icon: '📝' }
+            ];
+            
+            stages.forEach(function(stage) {
+                // 获取该阶段的所有关卡
+                var stageLevels = levels.filter(function(lv) { return lv.type === stage.type; });
+                if (stageLevels.length === 0) return;
+                
+                // 阶段标题
+                html += '<div style="margin: 25px 0 15px; background: linear-gradient(135deg, ' + stage.color + '22, ' + stage.color + '11); border-radius: 15px; padding: 15px;">';
+                html += '<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">';
+                html += '<div style="font-size: 28px;">' + stage.icon + '</div>';
+                html += '<div>';
+                html += '<div style="font-size: 14px; color: #666;">' + stage.name + '</div>';
+                html += '<div style="font-size: 18px; font-weight: bold; color: ' + stage.color + ';">' + stage.title + '</div>';
+                html += '</div>';
+                html += '<div style="margin-left: auto; background: ' + stage.color + '; color: white; padding: 5px 15px; border-radius: 15px; font-size: 12px;">';
+                html += stageLevels.filter(function(l) { return l.completed; }).length + '/' + stageLevels.length + ' 关';
+                html += '</div>';
+                html += '</div>';
+                
+                // 关卡节点
+                html += '<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">';
+                stageLevels.forEach(function(lv) {
                     var cls = lv.completed ? 'completed' : lv.locked ? 'locked' : lv.isBoss ? 'boss' : 'current';
                     var icon = lv.isBoss ? '👹' : lv.completed ? '✓' : lv.locked ? '🔒' : '⭐';
+                    var bgColor = lv.completed ? '#4CAF50' : lv.locked ? '#ccc' : lv.isBoss ? '#F44336' : '#FF9800';
                     var onclick = lv.locked ? '' : 'onclick="startLevel(' + lv.id + ')"';
-                    html += '<div class="level-node ' + cls + '" ' + onclick + '>' + icon + '<div>' + lv.name + '</div></div>';
-                }
+                    
+                    html += '<div style="width: 80px; cursor: ' + (lv.locked ? 'not-allowed' : 'pointer') + '; opacity: ' + (lv.locked ? 0.6 : 1) + ';" ' + onclick + '>';
+                    html += '<div style="width: 60px; height: 60px; border-radius: 50%; background: ' + bgColor + '; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);' + (lv.locked ? '' : ' transition: transform 0.2s;') + '" onmouseover="if(!' + lv.locked + ')this.style.transform='scale(1.1)'" onmouseout="if(!' + lv.locked + ')this.style.transform='scale(1)'">' + icon + '</div>';
+                    html += '<div style="text-align: center; font-size: 11px; font-weight: bold; color: #333;">' + lv.name + '</div>';
+                    html += '<div style="text-align: center; font-size: 9px; color: #666; margin-top: 2px;">' + lv.desc + '</div>';
+                    html += '</div>';
+                });
                 html += '</div>';
-            }
+                html += '</div>';
+            });
+            
             container.innerHTML = html;
         }
         
@@ -2270,6 +2443,7 @@
         
         // 商店
         var shopItems = {
+            pets: [{id:'tiger', name:'勇猛小老虎', emoji:'🐯', price:300, type:'pet', desc:'高攻击型 | 攻18 防3 血85'}, {id:'rabbit', name:'迅捷小兔', emoji:'🐰', price:200, type:'pet', desc:'敏捷型 | 攻8 防6 血80'}, {id:'lion', name:'威武小狮子', emoji:'🦁', price:500, type:'pet', desc:'攻守平衡 | 攻15 防8 血95'}, {id:'unicorn', name:'魔法独角兽', emoji:'🦄', price:600, type:'pet', desc:'高防御型 | 攻12 防15 血110'}, {id:'dragon', name:'火焰小龙', emoji:'🐲', price:800, type:'pet', desc:'强力攻击 | 攻25 防5 血90'}],
             weapons: [{id:'w1',name:'木剑',icon:'🗡️',price:50,attack:5},{id:'w2',name:'铁剑',icon:'⚔️',price:150,attack:12},{id:'w3',name:'钢刀',icon:'🔪',price:300,attack:25}],
             armor: [{id:'a1',name:'布衣',icon:'👕',price:40,defense:3},{id:'a2',name:'皮甲',icon:'🦺',price:120,defense:8},{id:'a3',name:'铁甲',icon:'👔',price:250,defense:15}],
             items: [{id:'i1',name:'小药水',icon:'🧪',price:20,hp:30},{id:'i2',name:'大药水',icon:'🧫',price:50,hp:80},{id:'i3',name:'能量饮料',icon:'🥤',price:30,energy:20}]
