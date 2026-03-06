@@ -1,0 +1,11 @@
+--- a/index.html
++++ b/index.html
+@@ -131,7 +131,7 @@
+         <!-- 头部 -->
+         <div class="header">
+             <div class="player-info">
+-                <div class="avatar" onclick="showPage('pet')">🐼</div>
++                <div class="avatar" onclick="showPage('pet')" style="background: url('images/ai_generated/panda_hero.png') center/cover no-repeat !important;"></div>
+                 <div>
+                     <div style="font-weight: bold;">拼音小勇士 Lv.<span id="playerLevel">1</span></div>
+                     <div class="stats">
