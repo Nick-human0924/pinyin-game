@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v6.7 - 用户管理版</title>
+    <title>拼音大冒险 v6.7.1 - Bug修复版</title>
     <style>
         /* ===== 基础样式（v6.3完整样式） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -645,41 +645,7 @@
         // 定期自动保存
         setInterval(saveGameData, 30000);
         
-        // ========== v6.6 保留的注释 ==========
-            if (saved) {
-                try {
-                    var data = JSON.parse(saved);
-                    playerLevel = data.playerLevel || 1;
-                    coins = data.coins || 100;
-                    hp = data.hp || 100;
-                    maxHp = data.maxHp || 100;
-                    energy = data.energy || 50;
-                    exp = data.exp || 0;
-                    petAttack = data.petAttack || 10;
-                    petDefense = data.petDefense || 5;
-                    battleWins = data.battleWins || 0;
-                    completedLevels = data.completedLevels || 0;
-                    totalCorrect = data.totalCorrect || 0;
-                    totalWrong = data.totalWrong || 0;
-                    streak = data.streak || 0;
-                    checkedIn = data.checkedIn || false;
-                    ownedItems = data.ownedItems || [];
-                    errorLog = data.errorLog || [];
-                    if (data.levels) levels = data.levels;
-                    if (data.achievements) achievements = data.achievements;
-                    if (data.tasks) tasks = data.tasks;
-                    console.log('游戏数据已加载');
-                } catch (e) {
-                    console.error('加载游戏数据失败', e);
-                }
-            }
-        }
-        
-        // 页面加载时读取数据
-        loadGameData();
-        
-        // 定期自动保存
-        setInterval(saveGameData, 30000); // 每30秒保存一次
+        // ========== v6.7 保留的注释 ==========
         
         // 记录错误
         function recordError(question, userAnswer, correctAnswer, errorType) {
