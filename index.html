@@ -75,6 +75,7 @@
         @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 20%, 40%, 60%, 80% { transform: translateX(10px); } }
         @keyframes damageFloat { 0% { opacity: 1; transform: translateY(0) scale(1); } 50% { transform: translateY(-30px) scale(1.3); } 100% { opacity: 0; transform: translateY(-60px) scale(1); } }
         @keyframes victoryBounce { 0%, 100% { transform: scale(1) rotate(0); } 25% { transform: scale(1.2) rotate(-10deg); } 50% { transform: scale(1.3) rotate(10deg); } 75% { transform: scale(1.2) rotate(-5deg); } }
+        @keyframes fadeInOut { 0% { opacity: 0; transform: translateX(-50%) translateY(-10px); } 20% { opacity: 1; transform: translateX(-50%) translateY(0); } 80% { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); } }
         @keyframes starPop { 0% { transform: scale(0) rotate(0); opacity: 0; } 50% { transform: scale(1.5) rotate(180deg); opacity: 1; } 100% { transform: scale(1) rotate(360deg); opacity: 1; } }
         @keyframes coinSpin { 0% { transform: rotateY(0) scale(1); } 50% { transform: rotateY(360deg) scale(1.5); } 100% { transform: rotateY(720deg) scale(1); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,152,0,0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255,152,0,0); } }
@@ -577,9 +578,11 @@
                 renderUserList();
                 updateCurrentUserDisplay();
                 // 显示切换成功提示
+                showToast('已切换到用户: ' + users[userId].name, 'success');
                 console.log('已切换到用户:', users[userId].name);
                 return true;
             }
+            showToast('切换用户失败', 'error');
             return false;
         }
         
@@ -734,6 +737,15 @@
         // 震动反馈
         function vibrate(pattern) {
             if (navigator.vibrate) navigator.vibrate(pattern);
+        }
+        
+        // 显示通用提示
+        function showToast(message, type) {
+            var toast = document.createElement('div');
+            toast.style.cssText = 'position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: ' + (type === 'success' ? '#4CAF50' : '#f44336') + '; color: white; padding: 15px 30px; border-radius: 10px; font-size: 16px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: fadeInOut 2s ease;';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(function() { toast.remove(); }, 2000);
         }
         
         // 显示拼音提示
@@ -1517,7 +1529,7 @@
                 html += '</div>';
                 html += '<div style="display: flex; gap: 10px;">';
                 if (!isCurrent) {
-                    html += '<button class="btn" onclick="switchUser(\'' + userId + '\'); renderUserList(); updateCurrentUserDisplay();" style="width: auto; padding: 8px 15px; font-size: 12px;">切换</button>';
+                    html += '<button class="btn" onclick="switchUser(\'' + userId + '\');" style="width: auto; padding: 8px 15px; font-size: 12px;">切换</button>';
                 }
                 html += '<button class="btn btn-secondary" onclick="if(confirm(\'确定删除用户 ' + user.name + ' 吗？\')) { deleteUser(\'' + userId + '\'); renderUserList(); updateCurrentUserDisplay(); }" style="width: auto; padding: 8px 15px; font-size: 12px;">删除</button>';
                 html += '</div>';
