@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v6.5.1 - 完整声调版</title>
+    <title>拼音大冒险 v6.6 - 拼读训练版</title>
     <style>
         /* ===== 基础样式（v6.3完整样式） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -153,6 +153,7 @@
             <div class="menu-card" onclick="showPage('tasks')"><div class="icon">📋</div><h2>任务</h2></div>
             <div class="menu-card" onclick="showPage('shop')"><div class="icon">🏪</div><h2>商店</h2></div>
             <div class="menu-card" onclick="showPage('stats')"><div class="icon">📊</div><h2>统计</h2></div>
+            <div class="menu-card" onclick="showErrorAnalysis()"><div class="icon">📈</div><h2>错题分析</h2></div>
         </div>
 
         <!-- 基础教学 -->
@@ -167,6 +168,8 @@
                 <div class="learning-tab" id="tab2" onclick="showFinal()">韵母(24)</div>
                 <div class="learning-tab" id="tab3" onclick="showWhole()">整体认读(16)</div>
                 <div class="learning-tab" id="tab4" onclick="showTones()">声调(160)</div>
+                <div class="learning-tab" id="tab5" onclick="showBlend()">拼读训练</div>
+                <div class="learning-tab" id="tab6" onclick="showWords()">词语拼音</div>
             </div>
             <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 10px;">👆 点击任意拼音听发音</p>
             <div id="learningContent"></div>
@@ -403,6 +406,71 @@
         var inBattle = false, currentEnemy = null, currentBattleQuestion = null;
         var ownedItems = [];
         
+        // ========== v6.6 数据持久化 (localStorage) ==========
+        var errorLog = []; // 错误记录
+        
+        function saveGameData() {
+            var data = {
+                playerLevel, coins, hp, maxHp, energy, exp,
+                petAttack, petDefense, battleWins, completedLevels,
+                totalCorrect, totalWrong, streak, checkedIn,
+                ownedItems, levels, achievements, tasks,
+                errorLog, lastSave: new Date().toISOString()
+            };
+            localStorage.setItem('pinyinGameData', JSON.stringify(data));
+        }
+        
+        function loadGameData() {
+            var saved = localStorage.getItem('pinyinGameData');
+            if (saved) {
+                try {
+                    var data = JSON.parse(saved);
+                    playerLevel = data.playerLevel || 1;
+                    coins = data.coins || 100;
+                    hp = data.hp || 100;
+                    maxHp = data.maxHp || 100;
+                    energy = data.energy || 50;
+                    exp = data.exp || 0;
+                    petAttack = data.petAttack || 10;
+                    petDefense = data.petDefense || 5;
+                    battleWins = data.battleWins || 0;
+                    completedLevels = data.completedLevels || 0;
+                    totalCorrect = data.totalCorrect || 0;
+                    totalWrong = data.totalWrong || 0;
+                    streak = data.streak || 0;
+                    checkedIn = data.checkedIn || false;
+                    ownedItems = data.ownedItems || [];
+                    errorLog = data.errorLog || [];
+                    if (data.levels) levels = data.levels;
+                    if (data.achievements) achievements = data.achievements;
+                    if (data.tasks) tasks = data.tasks;
+                    console.log('游戏数据已加载');
+                } catch (e) {
+                    console.error('加载游戏数据失败', e);
+                }
+            }
+        }
+        
+        // 页面加载时读取数据
+        loadGameData();
+        
+        // 定期自动保存
+        setInterval(saveGameData, 30000); // 每30秒保存一次
+        
+        // 记录错误
+        function recordError(question, userAnswer, correctAnswer, errorType) {
+            errorLog.push({
+                question: question,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer,
+                errorType: errorType,
+                time: new Date().toISOString()
+            });
+            // 只保留最近50条错误记录
+            if (errorLog.length > 50) errorLog.shift();
+            saveGameData();
+        }
+        
         // 语音功能
                 // ========== v6.4.2 视觉反馈系统（替代TTS） ==========
         
@@ -546,8 +614,11 @@
                 document.querySelectorAll('.option-btn').forEach(function(b) {
                     if (b.textContent === correct) b.classList.add('correct');
                 });
+                // 记录错误
+                recordError(questionsInLevel[currentQuestionInLevel - 1].q, selected, correct, 'level');
             }
             updateUI();
+            saveGameData();
             checkAchievements();
             setTimeout(function() {
                 currentQuestionInLevel++;
@@ -858,6 +929,7 @@
             if (selected === correct) {
                 coins += 5;
                 updateUI();
+                saveGameData();
                 alert('🎉 回答正确！+5金币');
                 startToneGame();
             } else {
@@ -866,8 +938,263 @@
             }
         }
         
+        // ========== v6.6 拼读训练 ==========
+        function showBlend() {
+            setTab(5);
+            updateTaskProgress('task_practice', 1);
+            
+            var html = '<div style="margin-bottom: 15px; padding: 10px; background: #E8F5E9; border-radius: 10px;">';
+            html += '<h3 style="color: #2E7D32; margin-bottom: 10px;">🎯 拼读训练</h3>';
+            html += '<p style="font-size: 14px; color: #666;">点击声母和韵母，学习拼音拼读规则</p>';
+            html += '</div>';
+            
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">';
+            html += '<div><h4 style="margin-bottom: 10px;">声母</h4><div class="pinyin-grid" style="grid-template-columns: repeat(4, 1fr);">';
+            pinyinData.initial.forEach(function(py) {
+                html += '<div class="pinyin-card" onclick="selectBlendInitial(\'' + py + '\')" id="blend-initial-' + py + '">' + py + '</div>';
+            });
+            html += '</div></div>';
+            
+            html += '<div><h4 style="margin-bottom: 10px;">韵母</h4><div class="pinyin-grid" style="grid-template-columns: repeat(4, 1fr);">';
+            ['a', 'o', 'e', 'i', 'u', 'v'].forEach(function(py) {
+                html += '<div class="pinyin-card" onclick="selectBlendFinal(\'' + py + '\')" id="blend-final-' + py + '">' + py + '</div>';
+            });
+            html += '</div></div>';
+            html += '</div>';
+            
+            html += '<div style="text-align: center; padding: 20px; background: #FFF3E0; border-radius: 15px; margin-bottom: 20px;">';
+            html += '<h3 style="margin-bottom: 15px;">拼读结果</h3>';
+            html += '<div id="blendResult" style="font-size: 48px; font-weight: bold; color: #E65100; margin-bottom: 15px;">?</div>';
+            html += '<button class="btn" onclick="playBlend()" style="width: auto; padding: 15px 30px; margin-right: 10px;">🔊 听发音</button>';
+            html += '<button class="btn btn-secondary" onclick="resetBlend()" style="width: auto; padding: 15px 30px;">重置</button>';
+            html += '</div>';
+            
+            html += '<h3 style="margin: 20px 0 10px; color: #333;">常用拼读组合</h3>';
+            html += '<div class="pinyin-grid">';
+            var commonBlends = ['ba', 'bi', 'bu', 'pa', 'pi', 'pu', 'ma', 'mi', 'mu', 'fa', 'fo', 'da', 'di', 'du', 'ta', 'ti', 'tu'];
+            commonBlends.forEach(function(blend) {
+                html += '<div class="pinyin-card" onclick="speak(\'' + blend + '\'); showBlendResult(\'' + blend + '\')">' + blend + '</div>';
+            });
+            html += '</div>';
+            
+            document.getElementById('learningContent').innerHTML = html;
+            window.blendInitial = '';
+            window.blendFinal = '';
+        }
+        
+        function selectBlendInitial(py) {
+            window.blendInitial = py;
+            document.querySelectorAll('[id^="blend-initial-"]').forEach(function(el) {
+                el.style.background = '#f8f9fa';
+            });
+            document.getElementById('blend-initial-' + py).style.background = '#4CAF50';
+            updateBlendResult();
+        }
+        
+        function selectBlendFinal(py) {
+            window.blendFinal = py;
+            document.querySelectorAll('[id^="blend-final-"]').forEach(function(el) {
+                el.style.background = '#f8f9fa';
+            });
+            document.getElementById('blend-final-' + py).style.background = '#2196F3';
+            updateBlendResult();
+        }
+        
+        function updateBlendResult() {
+            if (window.blendInitial && window.blendFinal) {
+                var result = window.blendInitial + window.blendFinal;
+                showBlendResult(result);
+            }
+        }
+        
+        function showBlendResult(result) {
+            document.getElementById('blendResult').textContent = result;
+        }
+        
+        function playBlend() {
+            if (window.blendInitial && window.blendFinal) {
+                var result = window.blendInitial + window.blendFinal;
+                speak(result);
+            } else {
+                alert('请先选择声母和韵母');
+            }
+        }
+        
+        function resetBlend() {
+            window.blendInitial = '';
+            window.blendFinal = '';
+            document.querySelectorAll('[id^="blend-initial-"]').forEach(function(el) {
+                el.style.background = '#f8f9fa';
+            });
+            document.querySelectorAll('[id^="blend-final-"]').forEach(function(el) {
+                el.style.background = '#f8f9fa';
+            });
+            document.getElementById('blendResult').textContent = '?';
+        }
+        
+        // ========== v6.6 词语拼音 ==========
+        var wordData = [
+            {word: '爸爸', pinyin: 'bàba', tone: '4 0'},
+            {word: '妈妈', pinyin: 'māma', tone: '1 0'},
+            {word: '哥哥', pinyin: 'gēge', tone: '1 0'},
+            {word: '姐姐', pinyin: 'jiějie', tone: '3 0'},
+            {word: '弟弟', pinyin: 'dìdi', tone: '4 0'},
+            {word: '妹妹', pinyin: 'mèimei', tone: '4 0'},
+            {word: '老师', pinyin: 'lǎoshī', tone: '3 1'},
+            {word: '学生', pinyin: 'xuésheng', tone: '2 0'},
+            {word: '学校', pinyin: 'xuéxiào', tone: '2 4'},
+            {word: '教室', pinyin: 'jiàoshì', tone: '4 4'},
+            {word: '书本', pinyin: 'shūběn', tone: '1 3'},
+            {word: '桌子', pinyin: 'zhuōzi', tone: '1 0'},
+            {word: '椅子', pinyin: 'yǐzi', tone: '3 0'},
+            {word: '大门', pinyin: 'dàmén', tone: '4 2'},
+            {word: '窗户', pinyin: 'chuānghu', tone: '1 0'},
+            {word: '苹果', pinyin: 'píngguǒ', tone: '2 3'},
+            {word: '香蕉', pinyin: 'xiāngjiāo', tone: '1 1'},
+            {word: '西瓜', pinyin: 'xīguā', tone: '1 1'},
+            {word: '小鸟', pinyin: 'xiǎoniǎo', tone: '3 3'},
+            {word: '小猫', pinyin: 'xiǎomāo', tone: '3 1'}
+        ];
+        
+        function showWords() {
+            setTab(6);
+            updateTaskProgress('task_practice', 1);
+            
+            var html = '<div style="margin-bottom: 15px; padding: 10px; background: #F3E5F5; border-radius: 10px;">';
+            html += '<h3 style="color: #7B1FA2; margin-bottom: 10px;">📚 词语拼音</h3>';
+            html += '<p style="font-size: 14px; color: #666;">学习常用词语的拼音和声调</p>';
+            html += '</div>';
+            
+            html += '<div class="pinyin-grid" style="grid-template-columns: repeat(3, 1fr);">';
+            wordData.forEach(function(item) {
+                html += '<div class="pinyin-card" style="padding: 20px;" onclick="speakWord(\'' + item.pinyin.replace(/\s/g, '') + '\', \'' + item.word + '\')">';
+                html += '<div style="font-size: 24px; margin-bottom: 5px;">' + item.word + '</div>';
+                html += '<div style="font-size: 18px; color: #667eea;">' + item.pinyin + '</div>';
+                html += '<small style="color: #999;">声调: ' + item.tone + '</small>';
+                html += '</div>';
+            });
+            html += '</div>';
+            
+            html += '<h3 style="margin: 20px 0 10px; color: #333;">词语拼读练习</h3>';
+            html += '<div style="text-align: center; padding: 20px; background: #F5F5F5; border-radius: 15px;">';
+            html += '<button class="btn" onclick="startWordGame()" style="width: auto; padding: 15px 30px;">开始词语练习</button>';
+            html += '</div>';
+            
+            document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        function speakWord(pinyin, word) {
+            // 播放每个字的拼音
+            var syllables = pinyin.match(/[bpmfdtnlgkhjqxzcsryw][aoeiuv]+[0-4]?/gi) || [];
+            syllables.forEach(function(syl, index) {
+                setTimeout(function() {
+                    speak(syl);
+                }, index * 800);
+            });
+        }
+        
+        function startWordGame() {
+            var randomWord = wordData[Math.floor(Math.random() * wordData.length)];
+            window.currentWord = randomWord;
+            
+            var html = '<div style="text-align: center; padding: 20px;">';
+            html += '<h3 style="font-size: 36px; margin-bottom: 20px;">' + randomWord.word + '</h3>';
+            html += '<button class="btn" onclick="speakWord(\'' + randomWord.pinyin + '\', \'' + randomWord.word + '\')" style="width: auto; margin-bottom: 20px;">🔊 听拼音</button>';
+            html += '<p style="margin-bottom: 15px;">请选择正确的拼音：</p>';
+            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 400px; margin: 0 auto;">';
+            
+            // 生成选项（包含正确答案和3个干扰项）
+            var options = [randomWord.pinyin];
+            while (options.length < 4) {
+                var randomOption = wordData[Math.floor(Math.random() * wordData.length)].pinyin;
+                if (!options.includes(randomOption)) options.push(randomOption);
+            }
+            options.sort(function() { return Math.random() - 0.5; });
+            
+            options.forEach(function(opt) {
+                html += '<button class="option-btn" onclick="checkWordAnswer(\'' + opt + '\', \'' + randomWord.pinyin + '\')">' + opt + '</button>';
+            });
+            html += '</div>';
+            html += '<button class="btn btn-secondary" onclick="showWords()" style="margin-top: 20px;">返回词语学习</button>';
+            html += '</div>';
+            
+            document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        function checkWordAnswer(selected, correct) {
+            if (selected === correct) {
+                coins += 10;
+                updateUI();
+                saveGameData();
+                alert('🎉 回答正确！+10金币');
+                startWordGame();
+            } else {
+                recordError(window.currentWord.word, selected, correct, 'word');
+                alert('❌ 正确答案应该是：' + correct);
+            }
+        }
+        
+        // ========== v6.6 错误模式分析 ==========
+        function showErrorAnalysis() {
+            var html = '<div style="padding: 20px;">';
+            html += '<h2 style="text-align: center; margin-bottom: 20px;">📊 错误模式分析</h2>';
+            
+            if (errorLog.length === 0) {
+                html += '<div style="text-align: center; padding: 40px; background: #F5F5F5; border-radius: 15px;">';
+                html += '<p style="font-size: 18px; color: #666;">🎉 太棒了！你还没有犯过错误</p>';
+                html += '</div>';
+            } else {
+                // 统计错误类型
+                var errorStats = {};
+                errorLog.forEach(function(err) {
+                    var type = err.errorType || 'other';
+                    errorStats[type] = (errorStats[type] || 0) + 1;
+                });
+                
+                html += '<div style="background: #FFEBEE; border-radius: 10px; padding: 15px; margin-bottom: 20px;">';
+                html += '<h3 style="color: #C62828; margin-bottom: 10px;">错误统计</h3>';
+                html += '<p>总错误次数：' + errorLog.length + '</p>';
+                html += '</div>';
+                
+                html += '<h3 style="margin-bottom: 15px;">最近错误记录</h3>';
+                html += '<div style="max-height: 300px; overflow-y: auto;">';
+                errorLog.slice(-10).reverse().forEach(function(err) {
+                    html += '<div style="background: #f8f9fa; padding: 10px; margin-bottom: 10px; border-radius: 8px;">';
+                    html += '<div><strong>题目：</strong>' + err.question + '</div>';
+                    html += '<div style="color: #f44336;"><strong>你的答案：</strong>' + err.userAnswer + '</div>';
+                    html += '<div style="color: #4CAF50;"><strong>正确答案：</strong>' + err.correctAnswer + '</div>';
+                    html += '<small style="color: #999;">' + new Date(err.time).toLocaleString() + '</small>';
+                    html += '</div>';
+                });
+                html += '</div>';
+                
+                html += '<h3 style="margin: 20px 0 15px;">针对性建议</h3>';
+                html += '<div style="background: #E3F2FD; border-radius: 10px; padding: 15px;">';
+                if (errorStats['tone'] > 2) {
+                    html += '<p>🎯 建议：多练习声调辨别，特别是三声和四声的区分</p>';
+                }
+                if (errorStats['word'] > 2) {
+                    html += '<p>📚 建议：加强词语拼音的记忆和练习</p>';
+                }
+                if (errorStats['blend'] > 2) {
+                    html += '<p>🔗 建议：多进行拼读训练，熟悉声母韵母的组合规则</p>';
+                }
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            
+            // 创建一个临时页面显示错误分析
+            var div = document.createElement('div');
+            div.className = 'page';
+            div.innerHTML = html;
+            div.innerHTML += '<button class="btn btn-secondary" onclick="this.parentElement.remove(); showPage(\'mainMenu\');" style="margin: 20px;">返回主菜单</button>';
+            document.querySelector('.game-container').appendChild(div);
+            showPage(div.id);
+        }
+        
         function setTab(n) {
-            ['tab1','tab2','tab3','tab4'].forEach(function(id, i) {
+            ['tab1','tab2','tab3','tab4','tab5','tab6'].forEach(function(id, i) {
                 document.getElementById(id).className = i === n-1 ? 'learning-tab active' : 'learning-tab';
             });
         }
