@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v6.4.4 - 本地音频版</title>
+    <title>拼音大冒险 v6.5 - 声调学习版</title>
     <style>
         /* ===== 基础样式（v6.3完整样式） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -166,6 +166,7 @@
                 <div class="learning-tab active" id="tab1" onclick="showInitial()">声母(23)</div>
                 <div class="learning-tab" id="tab2" onclick="showFinal()">韵母(24)</div>
                 <div class="learning-tab" id="tab3" onclick="showWhole()">整体认读(16)</div>
+                <div class="learning-tab" id="tab4" onclick="showTones()">声调(160)</div>
             </div>
             <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 10px;">👆 点击任意拼音听发音</p>
             <div id="learningContent"></div>
@@ -697,8 +698,106 @@
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
         }
+        
+        // 声调学习 - v6.5新增
+        function showTones() {
+            setTab(4);
+            updateTaskProgress('task_practice', 1);
+            
+            var toneData = [
+                {py: 'a', tones: ['ā', 'á', 'ǎ', 'à'], files: ['a1', 'a2', 'a3', 'a4']},
+                {py: 'o', tones: ['ō', 'ó', 'ǒ', 'ò'], files: ['o1', 'o2', 'o3', 'o4']},
+                {py: 'e', tones: ['ē', 'é', 'ě', 'è'], files: ['e1', 'e2', 'e3', 'e4']},
+                {py: 'i', tones: ['ī', 'í', 'ǐ', 'ì'], files: ['i1', 'i2', 'i3', 'i4']},
+                {py: 'u', tones: ['ū', 'ú', 'ǔ', 'ù'], files: ['u1', 'u2', 'u3', 'u4']},
+                {py: 'ü', tones: ['ǖ', 'ǘ', 'ǚ', 'ǜ'], files: ['v1', 'v2', 'v3', 'v4']}
+            ];
+            
+            var html = '<div style="margin-bottom: 15px; padding: 10px; background: #E3F2FD; border-radius: 10px;">';
+            html += '<h3 style="color: #1565C0; margin-bottom: 10px;">🎯 声调说明</h3>';
+            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px;">';
+            html += '<div>一声(阴平): 高平调 ˉ 如 mā</div>';
+            html += '<div>二声(阳平): 中升调 ˊ 如 má</div>';
+            html += '<div>三声(上声): 降升调 ˇ 如 mǎ</div>';
+            html += '<div>四声(去声): 全降调 ˋ 如 mà</div>';
+            html += '</div></div>';
+            
+            html += '<h3 style="margin: 15px 0 10px; color: #333;">单韵母声调</h3>';
+            html += '<div class="pinyin-grid">';
+            toneData.forEach(function(item) {
+                item.tones.forEach(function(tone, i) {
+                    html += '<div class="pinyin-card" onclick="speakTone(\'' + item.files[i] + '\')">' + tone + '<br/><small style="color:#999">' + (i+1) + '声</small></div>';
+                });
+            });
+            html += '</div>';
+            
+            html += '<h3 style="margin: 20px 0 10px; color: #333;">声调小游戏</h3>';
+            html += '<div style="text-align: center; padding: 20px; background: #F5F5F5; border-radius: 15px;">';
+            html += '<p style="margin-bottom: 15px;">👂 点击播放按钮，选择正确的声调</p>';
+            html += '<button class="btn" onclick="startToneGame()" style="width: auto; padding: 15px 30px;">开始声调辨别</button>';
+            html += '</div>';
+            
+            document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        // 播放带声调的拼音
+        function speakTone(filename) {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            var audio = new Audio('audio/' + filename + '.mp3');
+            currentAudio = audio;
+            audio.play().catch(function(e) {
+                console.log('音频播放失败：' + filename, e);
+            });
+        }
+        
+        // 声调辨别游戏
+        function startToneGame() {
+            var toneFiles = ['a1','a2','a3','a4','o1','o2','o3','o4','e1','e2','e3','e4'];
+            var randomFile = toneFiles[Math.floor(Math.random() * toneFiles.length)];
+            var correctTone = randomFile.slice(-1);
+            
+            speakTone(randomFile);
+            
+            var html = '<div style="text-align: center; padding: 20px;">';
+            html += '<h3 style="margin-bottom: 20px;">👂 听到了哪个声调？</h3>';
+            html += '<button class="btn" onclick="playCurrentTone()" style="width: auto; margin-bottom: 20px;">🔊 重播</button>';
+            html += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
+            html += '<button class="option-btn" onclick="checkToneAnswer(1, ' + correctTone + ')">一声</button>';
+            html += '<button class="option-btn" onclick="checkToneAnswer(2, ' + correctTone + ')">二声</button>';
+            html += '<button class="option-btn" onclick="checkToneAnswer(3, ' + correctTone + ')">三声</button>';
+            html += '<button class="option-btn" onclick="checkToneAnswer(4, ' + correctTone + ')">四声</button>';
+            html += '</div>';
+            html += '<button class="btn btn-secondary" onclick="showTones()" style="margin-top: 20px;">返回声调学习</button>';
+            html += '</div>';
+            
+            document.getElementById('learningContent').innerHTML = html;
+            
+            window.currentToneFile = randomFile;
+        }
+        
+        function playCurrentTone() {
+            if (window.currentToneFile) {
+                speakTone(window.currentToneFile);
+            }
+        }
+        
+        function checkToneAnswer(selected, correct) {
+            if (selected === correct) {
+                coins += 5;
+                updateUI();
+                alert('🎉 回答正确！+5金币');
+                startToneGame();
+            } else {
+                alert('❌ 再听一次，仔细辨别声调');
+                playCurrentTone();
+            }
+        }
+        
         function setTab(n) {
-            ['tab1','tab2','tab3'].forEach(function(id, i) {
+            ['tab1','tab2','tab3','tab4'].forEach(function(id, i) {
                 document.getElementById(id).className = i === n-1 ? 'learning-tab active' : 'learning-tab';
             });
         }
