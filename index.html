@@ -664,7 +664,8 @@
                 ownedItems, levels, achievements, tasks, errorLog,
                 lastSave: new Date().toISOString()
             };
-            saveUsersData();
+            // 只保存到localStorage，不调用saveUsersData避免循环
+            localStorage.setItem('pinyinGameUsers', JSON.stringify(users));
         }
         
         // 保存所有用户数据
@@ -672,7 +673,10 @@
             localStorage.setItem('pinyinGameUsers', JSON.stringify(users));
             if (currentUserId) {
                 localStorage.setItem('pinyinGameCurrentUser', currentUserId);
-                saveUserData(currentUserId);
+                // 保存当前用户数据但不再次调用saveUsersData
+                if (users[currentUserId]) {
+                    users[currentUserId].lastSave = new Date().toISOString();
+                }
             }
         }
         
