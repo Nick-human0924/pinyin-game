@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v6.7.2 - 修复用户管理显示</title>
+    <title>拼音大冒险 v6.7.3 - 修复用户切换</title>
     <style>
         /* ===== 基础样式（v6.3完整样式） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -517,6 +517,11 @@
                 localStorage.setItem('pinyinGameCurrentUser', userId);
                 loadUserData(userId);
                 updateUI();
+                // 刷新用户管理页面显示
+                renderUserList();
+                updateCurrentUserDisplay();
+                // 显示切换成功提示
+                console.log('已切换到用户:', users[userId].name);
                 return true;
             }
             return false;
