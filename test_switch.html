@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test Switch User</title>
+</head>
+<body>
+<div id="output"></div>
+<script>
+var users = {
+    'user1': { name: '用户1', avatar: '🐼', playerLevel: 1, coins: 100 },
+    'user2': { name: '用户2', avatar: '🐯', playerLevel: 2, coins: 200 }
+};
+var currentUserId = 'user1';
+
+function switchUser(userId) {
+    console.log('切换用户:', userId);
+    if (users[userId]) {
+        currentUserId = userId;
+        console.log('切换成功, 当前用户:', currentUserId);
+        return true;
+    }
+    console.log('切换失败, 用户不存在');
+    return false;
+}
+
+function renderUserList() {
+    var html = '';
+    Object.keys(users).forEach(function(userId) {
+        var user = users[userId];
+        var isCurrent = userId === currentUserId;
+        html += '<div>' + user.name + (isCurrent ? ' (当前)' : '');
+        if (!isCurrent) {
+            html += ' <button onclick="switchUser(\'' + userId + '\'); renderUserList();">切换</button>';
+        }
+        html += '</div>';
+    });
+    document.getElementById('output').innerHTML = html;
+    console.log('渲染完成, 当前用户:', currentUserId);
+}
+
+renderUserList();
+</script>
+</body>
+</html>
