@@ -6,6 +6,51 @@
     <title>拼音大冒险 v7.0 - 全新视觉设计</title>
     <link rel="stylesheet" href="v7-styles.css">
     <style>
+        /* v7.0 强制覆盖样式 */
+        body { 
+            background: linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 40%, #C8E6C9 100%) !important;
+        }
+        .header {
+            background: linear-gradient(135deg, #4FC3F7 0%, #29B6F6 100%) !important;
+            border-radius: 20px !important;
+            box-shadow: 0 8px 25px rgba(79, 195, 247, 0.35) !important;
+        }
+        .menu-card {
+            border-top: 4px solid #4FC3F7 !important;
+            border-radius: 20px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important;
+            transition: all 0.3s !important;
+        }
+        .menu-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important;
+        }
+        .menu-card:nth-child(2) { border-top-color: #81C784 !important; }
+        .menu-card:nth-child(3) { border-top-color: #8D6E63 !important; }
+        .menu-card:nth-child(4) { border-top-color: #FF8A65 !important; }
+        .menu-card:nth-child(5) { border-top-color: #FFD54F !important; }
+        .menu-card:nth-child(6) { border-top-color: #B39DDB !important; }
+        .menu-card:nth-child(7) { border-top-color: #EF5350 !important; }
+        .menu-card:nth-child(8) { border-top-color: #42A5F5 !important; }
+        .menu-card:nth-child(9) { border-top-color: #AB47BC !important; }
+        .menu-card:nth-child(10) { border-top-color: #26A69A !important; }
+        .btn {
+            background: linear-gradient(135deg, #4FC3F7 0%, #0288D1 100%) !important;
+            border-radius: 16px !important;
+        }
+        .avatar {
+            background: linear-gradient(135deg, #FFD54F 0%, #FFB300 100%) !important;
+            border: 3px solid white !important;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.95) !important;
+            border-radius: 20px !important;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #4FC3F7 0%, #81C784 100%) !important;
+        }
+    </style>
+    <style>
         /* ===== 基础样式（v6.3完整样式） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 10px; }
@@ -734,10 +779,13 @@
         }
         
         function showPage(pageId) {
-            // 先隐藏所有页面
-            document.querySelectorAll('.page').forEach(function(el) { el.classList.add('hidden'); });
+            // 先隐藏所有页面（包括mainMenu）
+            document.querySelectorAll('.page, #mainMenu').forEach(function(el) { el.classList.add('hidden'); });
             // 显示目标页面
-            document.getElementById(pageId).classList.remove('hidden');
+            var target = document.getElementById(pageId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
             if (pageId === 'shop') { renderShop('weapons'); updateShopCoins(); }
             if (pageId === 'stats') renderCalendar();
             if (pageId === 'learning') showInitial();
