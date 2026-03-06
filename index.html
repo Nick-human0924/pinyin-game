@@ -1783,26 +1783,32 @@
             event.target.classList.add('active');
             var html = '';
             shopItems[type].forEach(function(item) {
-                var owned = ownedItems.includes(item.id);
+                // 装备类(weapons/armor)限制购买一次，药水类(items)可重复购买
+                var isEquipment = (type === 'weapons' || type === 'armor');
+                var owned = isEquipment && ownedItems.includes(item.id);
                 var effect = item.attack ? '+' + item.attack + '攻' : item.defense ? '+' + item.defense + '防' : item.hp ? '恢复' + item.hp + 'HP' : '恢复' + item.energy + '体力';
-                html += '<div class="shop-item"><div class="shop-item-icon">' + item.icon + '</div><div class="shop-item-info"><div class="shop-item-name">' + item.name + '</div><div style="font-size:11px;color:#666">' + effect + '</div></div><button class="shop-item-btn" onclick="buyItem(\'' + item.id + '\',' + item.price + ')" ' + (owned ? 'disabled' : '') + '>' + (owned ? '已拥有' : item.price + '💰') + '</button></div>';
+                html += '<div class="shop-item"><div class="shop-item-icon">' + item.icon + '</div><div class="shop-item-info"><div class="shop-item-name">' + item.name + '</div><div style="font-size:11px;color:#666">' + effect + '</div></div><button class="shop-item-btn" onclick="buyItem(\'' + item.id + '\',' + item.price + ', \'' + type + '\')" ' + (owned ? 'disabled' : '') + '>' + (owned ? '已拥有' : item.price + '💰') + '</button></div>';
             });
             document.getElementById('shopContent').innerHTML = html;
         }
-        function buyItem(itemId, price) {
+        function buyItem(itemId, price, type) {
             if (coins < price) { alert('金币不足！'); return; }
-            coins -= price; ownedItems.push(itemId);
+            coins -= price;
+            // 只有装备类才记录到ownedItems
+            if (type === 'weapons' || type === 'armor') {
+                ownedItems.push(itemId);
+            }
             var item = null;
-            ['weapons','armor','items'].forEach(function(type) {
-                shopItems[type].forEach(function(i) { if (i.id === itemId) item = i; });
+            ['weapons','armor','items'].forEach(function(t) {
+                shopItems[t].forEach(function(i) { if (i.id === itemId) item = i; });
             });
             if (item.attack) petAttack += item.attack;
             if (item.defense) petDefense += item.defense;
             if (item.hp) hp = Math.min(hp + item.hp, maxHp);
             if (item.energy) energy = Math.min(energy + item.energy, 100);
             checkAchievements();
-            updateUI(); renderShop('weapons');
-            alert('购买成功！');
+            updateUI(); renderShop(type);
+            alert('购买成功！' + (item.hp ? '恢复' + item.hp + '点HP' : item.energy ? '恢复' + item.energy + '点体力' : ''));
         }
         function updateShopCoins() { document.getElementById('shopCoins').textContent = coins; }
         
