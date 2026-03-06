@@ -841,7 +841,15 @@
         }
         
         function loadLevelQuestion() {
+            // 重置答题状态
+            levelAnswered = false;
+            
             var q = questionsInLevel[currentQuestionInLevel - 1];
+            if (!q) {
+                console.error('问题加载失败', currentQuestionInLevel, questionsInLevel);
+                return;
+            }
+            
             document.getElementById('currentQ').textContent = currentQuestionInLevel;
             document.getElementById('totalQ').textContent = 3;
             document.getElementById('currentLevel').textContent = currentLevel;
@@ -853,10 +861,11 @@
                 html += '<button class="option-btn" onclick="checkLevelAnswer(this, \'' + opt + '\', \'' + q.a + '\')">' + opt + '</button>';
             });
             document.getElementById('optionsGrid').innerHTML = html;
+            console.log('加载问题', currentQuestionInLevel, q.q);
             setTimeout(function() { speak(q.q); }, 500);
         }
         
-        var levelAnswered = false; // 防止重复点击
+        var levelAnswered = false; // 防止重复点击 - 全局变量
         
         function checkLevelAnswer(btn, selected, correct) {
             if (levelAnswered) return; // 防止重复点击
@@ -889,11 +898,15 @@
             saveGameData();
             checkAchievements();
             setTimeout(function() {
+                console.log('准备下一题', currentQuestionInLevel);
                 levelAnswered = false; // 重置标志
                 currentQuestionInLevel++;
+                console.log('题号增加到', currentQuestionInLevel);
                 if (currentQuestionInLevel <= 3) {
+                    console.log('加载下一题');
                     loadLevelQuestion();
                 } else {
+                    console.log('关卡完成');
                     // 检查是否完美通关
                     var allCorrect = document.querySelectorAll('.option-btn.correct').length === 3;
                     if (allCorrect) {
