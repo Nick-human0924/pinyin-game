@@ -464,7 +464,12 @@
         function speakCurrent() {
             var q = inBattle ? currentBattleQuestion : questionsInLevel[currentQuestionInLevel - 1];
             if (q) speak(q.q);
-        });
+        }
+        
+        function showPage(pageId) {
+            // 先隐藏所有页面
+            document.querySelectorAll('.page').forEach(function(el) { el.classList.add('hidden'); });
+            // 显示目标页面
             document.getElementById(pageId).classList.remove('hidden');
             if (pageId === 'shop') { renderShop('weapons'); updateShopCoins(); }
             if (pageId === 'stats') renderCalendar();
