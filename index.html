@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v6.5 - 声调学习版</title>
+    <title>拼音大冒险 v6.5.1 - 完整声调版</title>
     <style>
         /* ===== 基础样式（v6.3完整样式） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -727,6 +727,76 @@
             toneData.forEach(function(item) {
                 item.tones.forEach(function(tone, i) {
                     html += '<div class="pinyin-card" onclick="speakTone(\'' + item.files[i] + '\')">' + tone + '<br/><small style="color:#999">' + (i+1) + '声</small></div>';
+                });
+            });
+            html += '</div>';
+            
+            // 复韵母声调
+            var complexToneData = [
+                {py: 'ai', tones: ['āi', 'ái', 'ǎi', 'ài']},
+                {py: 'ei', tones: ['ēi', 'éi', 'ěi', 'èi']},
+                {py: 'ui', tones: ['uī', 'uí', 'uǐ', 'uì']},
+                {py: 'ao', tones: ['āo', 'áo', 'ǎo', 'ào']},
+                {py: 'ou', tones: ['ōu', 'óu', 'ǒu', 'òu']},
+                {py: 'iu', tones: ['iū', 'iú', 'iǔ', 'iù']},
+                {py: 'ie', tones: ['iē', 'ié', 'iě', 'iè']},
+                {py: 've', tones: ['üē', 'üé', 'üě', 'üè']},
+                {py: 'er', tones: ['ēr', 'ér', 'ěr', 'èr']}
+            ];
+            html += '<h3 style="margin: 20px 0 10px; color: #333;">复韵母声调</h3>';
+            html += '<div class="pinyin-grid">';
+            complexToneData.forEach(function(item) {
+                item.tones.forEach(function(tone, i) {
+                    html += '<div class="pinyin-card" onclick="speakTone(\'' + item.py + (i+1) + '\')">' + tone + '<br/><small style="color:#999">' + (i+1) + '声</small></div>';
+                });
+            });
+            html += '</div>';
+            
+            // 鼻韵母声调
+            var nasalToneData = [
+                {py: 'an', tones: ['ān', 'án', 'ǎn', 'àn']},
+                {py: 'en', tones: ['ēn', 'én', 'ěn', 'èn']},
+                {py: 'in', tones: ['īn', 'ín', 'ǐn', 'ìn']},
+                {py: 'un', tones: ['ūn', 'ún', 'ǔn', 'ùn']},
+                {py: 'vn', tones: ['ǖn', 'ǘn', 'ǚn', 'ǜn']},
+                {py: 'ang', tones: ['āng', 'áng', 'ǎng', 'àng']},
+                {py: 'eng', tones: ['ēng', 'éng', 'ěng', 'èng']},
+                {py: 'ing', tones: ['īng', 'íng', 'ǐng', 'ìng']},
+                {py: 'ong', tones: ['ōng', 'óng', 'ǒng', 'òng']}
+            ];
+            html += '<h3 style="margin: 20px 0 10px; color: #333;">鼻韵母声调</h3>';
+            html += '<div class="pinyin-grid">';
+            nasalToneData.forEach(function(item) {
+                item.tones.forEach(function(tone, i) {
+                    html += '<div class="pinyin-card" onclick="speakTone(\'' + item.py + (i+1) + '\')">' + tone + '<br/><small style="color:#999">' + (i+1) + '声</small></div>';
+                });
+            });
+            html += '</div>';
+            
+            // 整体认读音节声调
+            var wholeToneData = [
+                {py: 'zhi', tones: ['zhī', 'zhí', 'zhǐ', 'zhì']},
+                {py: 'chi', tones: ['chī', 'chí', 'chǐ', 'chì']},
+                {py: 'shi', tones: ['shī', 'shí', 'shǐ', 'shì']},
+                {py: 'ri', tones: ['rī', 'rí', 'rǐ', 'rì']},
+                {py: 'zi', tones: ['zī', 'zí', 'zǐ', 'zì']},
+                {py: 'ci', tones: ['cī', 'cí', 'cǐ', 'cì']},
+                {py: 'si', tones: ['sī', 'sí', 'sǐ', 'sì']},
+                {py: 'yi', tones: ['yī', 'yí', 'yǐ', 'yì']},
+                {py: 'wu', tones: ['wū', 'wú', 'wǔ', 'wù']},
+                {py: 'yu', tones: ['yū', 'yú', 'yǔ', 'yù']},
+                {py: 'ye', tones: ['yē', 'yé', 'yě', 'yè']},
+                {py: 'yue', tones: ['yuē', 'yué', 'yuě', 'yuè']},
+                {py: 'yuan', tones: ['yuān', 'yuán', 'yuǎn', 'yuàn']},
+                {py: 'yin', tones: ['yīn', 'yín', 'yǐn', 'yìn']},
+                {py: 'yun', tones: ['yūn', 'yún', 'yǔn', 'yùn']},
+                {py: 'ying', tones: ['yīng', 'yíng', 'yǐng', 'yìng']}
+            ];
+            html += '<h3 style="margin: 20px 0 10px; color: #333;">整体认读音节声调</h3>';
+            html += '<div class="pinyin-grid">';
+            wholeToneData.forEach(function(item) {
+                item.tones.forEach(function(tone, i) {
+                    html += '<div class="pinyin-card" onclick="speakTone(\'' + item.py + (i+1) + '\')">' + tone + '<br/><small style="color:#999">' + (i+1) + '声</small></div>';
                 });
             });
             html += '</div>';
