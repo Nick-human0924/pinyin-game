@@ -856,8 +856,20 @@
             setTimeout(function() { speak(q.q); }, 500);
         }
         
+        var levelAnswered = false; // 防止重复点击
+        
         function checkLevelAnswer(btn, selected, correct) {
+            if (levelAnswered) return; // 防止重复点击
+            levelAnswered = true;
+            
             var isCorrect = selected === correct;
+            
+            // 禁用所有选项按钮
+            document.querySelectorAll('.option-btn').forEach(function(b) {
+                b.disabled = true;
+                b.style.pointerEvents = 'none';
+            });
+            
             if (isCorrect) {
                 btn.classList.add('correct');
                 totalCorrect++;
@@ -877,6 +889,7 @@
             saveGameData();
             checkAchievements();
             setTimeout(function() {
+                levelAnswered = false; // 重置标志
                 currentQuestionInLevel++;
                 if (currentQuestionInLevel <= 3) {
                     loadLevelQuestion();
