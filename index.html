@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.0.1 - 闯关模式修复版</title>
+    <title>拼音大冒险 v8.1.0 - 教学优化版</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -471,12 +471,12 @@
             levels.push({ id: i, name: '第' + i + '关', isBoss: i % 5 === 0, completed: false, locked: i > 1 });
         }
         
-        // 怪物数据
+        // 怪物数据 - v8.1.0 增强难度
         var monsters = {
-            forest: [{name: '小蘑菇', emoji: '🍄', hp: 25, attack: 8}, {name: '小树苗', emoji: '🌱', hp: 20, attack: 6}],
-            desert: [{name: '蝎子', emoji: '🦂', hp: 40, attack: 12}, {name: '沙漠蛇', emoji: '🐍', hp: 35, attack: 10}],
-            ocean: [{name: '螃蟹', emoji: '🦀', hp: 50, attack: 15}, {name: '章鱼', emoji: '🐙', hp: 45, attack: 14}],
-            volcano: [{name: '火蜥蜴', emoji: '🦎', hp: 90, attack: 22}, {name: '炎魔', emoji: '👺', hp: 180, attack: 35}]
+            forest: [{name: '小蘑菇', emoji: '🍄', hp: 50, attack: 12}, {name: '小树苗', emoji: '🌱', hp: 45, attack: 10}],
+            desert: [{name: '蝎子', emoji: '🦂', hp: 80, attack: 18}, {name: '沙漠蛇', emoji: '🐍', hp: 70, attack: 15}],
+            ocean: [{name: '螃蟹', emoji: '🦀', hp: 100, attack: 22}, {name: '章鱼', emoji: '🐙', hp: 90, attack: 20}],
+            volcano: [{name: '火蜥蜴', emoji: '🦎', hp: 150, attack: 30}, {name: '炎魔', emoji: '👺', hp: 250, attack: 45}]
         };
         
         // ===== 成就系统数据 =====
@@ -508,6 +508,9 @@
         var totalCorrect = 0, totalWrong = 0, streak = 0, checkedIn = false;
         var inBattle = false, currentEnemy = null, currentBattleQuestion = null;
         var ownedItems = [];
+        
+        // ========== v8.1.0 教学系统设置 ==========
+        var showPinyinHints = true; // 默认显示拼音提示字
         
         // ========== v6.7 多用户管理系统 ==========
         var currentUserId = null;
@@ -848,13 +851,55 @@
         function startLevel(levelId) {
             currentLevel = levelId;
             questionsInLevel = [];
-            for (var i = 0; i < 3; i++) {
-                questionsInLevel.push(questionBank[Math.floor(Math.random() * questionBank.length)]);
+            // 每关10题，显示中文选择拼音
+            for (var i = 0; i < 10; i++) {
+                questionsInLevel.push(generateLevelQuestion());
             }
             currentQuestionInLevel = 1;
+            levelCorrectCount = 0; // 记录答对题数
             showPage('game');
             loadLevelQuestion();
         }
+        
+        // 生成关卡问题（显示中文，选择拼音）
+        function generateLevelQuestion() {
+            var chars = ['爸', '妈', '大', '地', '你', '好', '老', '师', '学', '生', '书', '本', '苹', '果', '鸟', '鱼', '天', '气', '水', '火'];
+            var char = chars[Math.floor(Math.random() * chars.length)];
+            
+            // 查找包含这个字的词语
+            var wordList = [
+                {word: '爸爸', pinyin: 'bà ba', initial: 'b'},
+                {word: '妈妈', pinyin: 'mā ma', initial: 'm'},
+                {word: '大地', pinyin: 'dà dì', initial: 'd'},
+                {word: '你好', pinyin: 'nǐ hǎo', initial: 'n'},
+                {word: '老师', pinyin: 'lǎo shī', initial: 'l'},
+                {word: '学生', pinyin: 'xué sheng', initial: 'x'},
+                {word: '书本', pinyin: 'shū běn', initial: 'sh'},
+                {word: '苹果', pinyin: 'píng guǒ', initial: 'p'},
+                {word: '小鸟', pinyin: 'xiǎo niǎo', initial: 'n'},
+                {word: '鱼儿', pinyin: 'yú er', initial: 'y'},
+                {word: '天气', pinyin: 'tiān qì', initial: 't'},
+                {word: '水果', pinyin: 'shuǐ guǒ', initial: 'sh'}
+            ];
+            
+            var item = wordList[Math.floor(Math.random() * wordList.length)];
+            var q = item.word;
+            var a = item.pinyin;
+            
+            // 生成干扰项（其他拼音）
+            var allPinyins = wordList.map(function(w) { return w.pinyin; });
+            var options = [a];
+            while (options.length < 4) {
+                var r = allPinyins[Math.floor(Math.random() * allPinyins.length)];
+                if (options.indexOf(r) === -1) options.push(r);
+            }
+            options.sort(function() { return Math.random() - 0.5; });
+            
+            return { q: q, a: a, options: options };
+        }
+        
+        var levelCorrectCount = 0; // 答对题数
+        var levelAnswered = false;
         
         function loadLevelQuestion() {
             // 重置答题状态
@@ -867,18 +912,16 @@
             }
             
             document.getElementById('currentQ').textContent = currentQuestionInLevel;
-            document.getElementById('totalQ').textContent = 3;
+            document.getElementById('totalQ').textContent = 10;
             document.getElementById('currentLevel').textContent = currentLevel;
-            document.getElementById('progressFill').style.width = (currentQuestionInLevel / 3 * 100) + '%';
-            document.getElementById('questionDisplay').innerHTML = q.q + '<button class="voice-btn" onclick="speakCurrent()">🔊</button>';
+            document.getElementById('progressFill').style.width = (currentQuestionInLevel / 10 * 100) + '%';
+            document.getElementById('questionDisplay').innerHTML = '<div style="font-size: 36px;">' + q.q + '</div><div style="font-size: 14px; color: #666; margin-top: 5px;">请选择正确的拼音</div>';
             
             var html = '';
             q.options.forEach(function(opt) {
-                html += '<button class="option-btn" onclick="checkLevelAnswer(this, \'' + opt + '\', \'' + q.a + '\')">' + opt + '</button>';
+                html += '<button class="option-btn" onclick="checkLevelAnswer(this, \'' + opt + '\', \'' + q.a + '\')" style="font-size: 18px;">' + opt + '</button>';
             });
             document.getElementById('optionsGrid').innerHTML = html;
-            console.log('加载问题', currentQuestionInLevel, q.q);
-            setTimeout(function() { speak(q.q); }, 500);
         }
         
         var levelAnswered = false; // 防止重复点击 - 全局变量
@@ -898,38 +941,41 @@
             if (isCorrect) {
                 btn.classList.add('correct');
                 totalCorrect++;
-                coins += 5;
-                speak('正确！');
+                levelCorrectCount++; // 记录本关答对
+                coins += 2; // 每题答对给2金币
+                showToast('✅ 正确!', 'success');
             } else {
                 btn.classList.add('wrong');
                 totalWrong++;
-                speak('错误');
+                showToast('❌ 错误', 'error');
                 document.querySelectorAll('.option-btn').forEach(function(b) {
                     if (b.textContent === correct) b.classList.add('correct');
                 });
-                // 记录错误
-                recordError(questionsInLevel[currentQuestionInLevel - 1].q, selected, correct, 'level');
             }
             updateUI();
             saveGameData();
             checkAchievements();
             setTimeout(function() {
-                console.log('准备下一题', currentQuestionInLevel);
                 currentQuestionInLevel++;
-                console.log('题号增加到', currentQuestionInLevel);
-                levelAnswered = false; // 重置标志 - 在增加题号之后
-                if (currentQuestionInLevel <= 3) {
-                    console.log('加载下一题');
+                levelAnswered = false;
+                if (currentQuestionInLevel <= 10) {
                     loadLevelQuestion();
                 } else {
-                    console.log('关卡完成');
-                    // 检查是否完美通关
-                    var allCorrect = document.querySelectorAll('.option-btn.correct').length === 3;
-                    if (allCorrect) {
+                    // 关卡结束，判断是否全对通关
+                    if (levelCorrectCount === 10) {
+                        // 全对通关
                         perfectLevels++;
                         checkAchievements();
+                        completeLevel();
+                    } else {
+                        // 未全对，通关失败
+                        var failMsg = '❌ 第' + currentLevel + '关未通过！\n\n';
+                        failMsg += '你答对了 ' + levelCorrectCount + '/10 题\n';
+                        failMsg += '需要全部答对才能通关\n\n';
+                        failMsg += '请重新挑战！';
+                        alert(failMsg);
+                        goToLevelMap();
                     }
-                    completeLevel();
                 }
             }, isCorrect ? 800 : 1500);
         }
@@ -942,11 +988,13 @@
                 updateTaskProgress('task_level', 1);
                 if (currentLevel < levels.length) levels[currentLevel].locked = false;
             }
-            var reward = lv.isBoss ? 100 : 20;
+            // 通关奖励（每题已经给了2金币，这里给额外通关奖励）
+            var reward = lv.isBoss ? 50 : 20;
             coins += reward;
             checkAchievements();
             updateUI();
-            alert('🎉 第' + currentLevel + '关通关！获得' + reward + '金币！');
+            saveGameData();
+            alert('🎉 恭喜！第' + currentLevel + '关完美通关！\n获得通关奖励：' + reward + '金币！');
             goToLevelMap();
         }
         
@@ -1048,32 +1096,262 @@
         function showInitial() {
             setTab(1);
             updateTaskProgress('task_practice', 1);
-            var html = '<div class="pinyin-grid">';
+            var html = '<div style="margin-bottom: 15px; text-align: center;">';
+            html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
+            html += '<button class="btn" onclick="startInitialTest()" style="width: auto; padding: 10px 20px;">📝 小测试</button>';
+            html += '</div>';
+            html += '<div class="pinyin-grid">';
             pinyinData.initial.forEach(function(py, i) {
-                html += '<div class="pinyin-card" onclick="speak(\'' + py + '\')">' + py + '<br/><small style="color:#999">' + pinyinData.initialNames[i] + '</small></div>';
+                var hint = showPinyinHints ? '<br/><small style="color:#999">' + pinyinData.initialNames[i] + '</small>' : '';
+                html += '<div class="pinyin-card" onclick="speak(\'' + py + '\')">' + py + hint + '</div>';
             });
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        // 切换提示字显示
+        function togglePinyinHints() {
+            showPinyinHints = !showPinyinHints;
+            // 刷新当前页面
+            var activeTab = document.querySelector('.learning-tab.active');
+            if (activeTab) {
+                if (activeTab.id === 'tab1') showInitial();
+                else if (activeTab.id === 'tab2') showFinal();
+                else if (activeTab.id === 'tab3') showWhole();
+            }
+        }
+        
+        // 声母测试数据
+        var initialTestData = [
+            {char: '爸', answer: 'b', options: ['b', 'p', 'm', 'f']},
+            {char: '妈', answer: 'm', options: ['b', 'p', 'm', 'f']},
+            {char: '大', answer: 'd', options: ['d', 't', 'n', 'l']},
+            {char: '你', answer: 'n', options: ['d', 't', 'n', 'l']},
+            {char: '来', answer: 'l', options: ['d', 't', 'n', 'l']},
+            {char: '哥', answer: 'g', options: ['g', 'k', 'h', 'j']},
+            {char: '看', answer: 'k', options: ['g', 'k', 'h', 'j']},
+            {char: '鸡', answer: 'j', options: ['g', 'k', 'h', 'j']},
+            {char: '七', answer: 'q', options: ['j', 'q', 'x', 'zh']},
+            {char: '下', answer: 'x', options: ['j', 'q', 'x', 'zh']},
+            {char: '知', answer: 'zh', options: ['zh', 'ch', 'sh', 'r']},
+            {char: '吃', answer: 'ch', options: ['zh', 'ch', 'sh', 'r']},
+            {char: '十', answer: 'sh', options: ['zh', 'ch', 'sh', 'r']},
+            {char: '日', answer: 'r', options: ['zh', 'ch', 'sh', 'r']},
+            {char: '在', answer: 'z', options: ['z', 'c', 's', 'y']},
+            {char: '从', answer: 'c', options: ['z', 'c', 's', 'y']},
+            {char: '三', answer: 's', options: ['z', 'c', 's', 'y']},
+            {char: '一', answer: 'y', options: ['z', 'c', 's', 'y']},
+            {char: '我', answer: 'w', options: ['y', 'w', 'r', 'l']}
+        ];
+        
+        var currentTestIndex = 0;
+        var testScore = 0;
+        var currentTestType = '';
+        
+        // 开始声母测试
+        function startInitialTest() {
+            currentTestIndex = 0;
+            testScore = 0;
+            currentTestType = 'initial';
+            showInitialQuestion();
+        }
+        
+        function showInitialQuestion() {
+            if (currentTestIndex >= initialTestData.length) {
+                // 测试结束
+                var html = '<div style="text-align: center; padding: 40px;">';
+                html += '<h2>🎉 测试完成!</h2>';
+                html += '<p style="font-size: 24px; margin: 20px 0;">得分: ' + testScore + '/' + initialTestData.length + '</p>';
+                html += '<button class="btn" onclick="showInitial()">返回学习</button>';
+                html += '</div>';
+                document.getElementById('learningContent').innerHTML = html;
+                return;
+            }
+            
+            var q = initialTestData[currentTestIndex];
+            var html = '<div style="text-align: center; padding: 20px;">';
+            html += '<p>问题 ' + (currentTestIndex + 1) + '/' + initialTestData.length + '</p>';
+            html += '<h2 style="font-size: 48px; margin: 30px 0;">"' + q.char + '" 的声母是?</h2>';
+            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
+            q.options.forEach(function(opt) {
+                html += '<button class="btn" onclick="checkInitialAnswer(\'' + opt + '\')" style="font-size: 24px; padding: 20px;">' + opt + '</button>';
+            });
+            html += '</div>';
+            html += '</div>';
+            document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        function checkInitialAnswer(answer) {
+            var q = initialTestData[currentTestIndex];
+            if (answer === q.answer) {
+                testScore++;
+                showToast('✅ 正确!', 'success');
+            } else {
+                showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
+            }
+            currentTestIndex++;
+            setTimeout(showInitialQuestion, 1000);
         }
         function showFinal() {
             setTab(2);
             updateTaskProgress('task_practice', 1);
-            var html = '<div class="pinyin-grid">';
+            var html = '<div style="margin-bottom: 15px; text-align: center;">';
+            html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
+            html += '<button class="btn" onclick="startFinalTest()" style="width: auto; padding: 10px 20px;">📝 小测试</button>';
+            html += '</div>';
+            html += '<div class="pinyin-grid">';
             pinyinData.final.forEach(function(py, i) {
-                html += '<div class="pinyin-card" onclick="speak(\'' + py + '\')">' + py + '<br/><small style="color:#999">' + pinyinData.finalNames[i] + '</small></div>';
+                var hint = showPinyinHints ? '<br/><small style="color:#999">' + pinyinData.finalNames[i] + '</small>' : '';
+                html += '<div class="pinyin-card" onclick="speak(\'' + py + '\')">' + py + hint + '</div>';
             });
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
         }
+        
+        // 韵母测试数据
+        var finalTestData = [
+            {char: '妈', answer: 'a', options: ['a', 'o', 'e', 'i']},
+            {char: '我', answer: 'o', options: ['a', 'o', 'e', 'u']},
+            {char: '的', answer: 'e', options: ['a', 'o', 'e', 'i']},
+            {char: '你', answer: 'i', options: ['a', 'e', 'i', 'u']},
+            {char: '不', answer: 'u', options: ['a', 'o', 'u', 'ü']},
+            {char: '去', answer: 'ü', options: ['u', 'ü', 'e', 'i']},
+            {char: '来', answer: 'ai', options: ['ai', 'ei', 'ui', 'ao']},
+            {char: '北', answer: 'ei', options: ['ai', 'ei', 'ui', 'ie']},
+            {char: '水', answer: 'ui', options: ['ai', 'ei', 'ui', 'iu']},
+            {char: '好', answer: 'ao', options: ['ao', 'ou', 'iu', 'ie']},
+            {char: '有', answer: 'ou', options: ['ao', 'ou', 'iu', 'ui']},
+            {char: '就', answer: 'iu', options: ['ao', 'ou', 'iu', 'ui']},
+            {char: '天', answer: 'an', options: ['an', 'en', 'in', 'ang']},
+            {char: '人', answer: 'en', options: ['an', 'en', 'in', 'un']},
+            {char: '心', answer: 'in', options: ['an', 'en', 'in', 'ing']},
+            {char: '上', answer: 'ang', options: ['an', 'ang', 'eng', 'ing']},
+            {char: '冷', answer: 'eng', options: ['en', 'eng', 'ing', 'ong']},
+            {char: '明', answer: 'ing', options: ['in', 'ing', 'eng', 'ong']},
+            {char: '龙', answer: 'ong', options: ['eng', 'ing', 'ong', 'un']}
+        ];
+        
+        // 开始韵母测试
+        function startFinalTest() {
+            currentTestIndex = 0;
+            testScore = 0;
+            currentTestType = 'final';
+            showFinalQuestion();
+        }
+        
+        function showFinalQuestion() {
+            if (currentTestIndex >= finalTestData.length) {
+                var html = '<div style="text-align: center; padding: 40px;">';
+                html += '<h2>🎉 测试完成!</h2>';
+                html += '<p style="font-size: 24px; margin: 20px 0;">得分: ' + testScore + '/' + finalTestData.length + '</p>';
+                html += '<button class="btn" onclick="showFinal()">返回学习</button>';
+                html += '</div>';
+                document.getElementById('learningContent').innerHTML = html;
+                return;
+            }
+            
+            var q = finalTestData[currentTestIndex];
+            var html = '<div style="text-align: center; padding: 20px;">';
+            html += '<p>问题 ' + (currentTestIndex + 1) + '/' + finalTestData.length + '</p>';
+            html += '<h2 style="font-size: 48px; margin: 30px 0;">"' + q.char + '" 的韵母是?</h2>';
+            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
+            q.options.forEach(function(opt) {
+                html += '<button class="btn" onclick="checkFinalAnswer(\'' + opt + '\')" style="font-size: 20px; padding: 20px;">' + opt + '</button>';
+            });
+            html += '</div>';
+            html += '</div>';
+            document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        function checkFinalAnswer(answer) {
+            var q = finalTestData[currentTestIndex];
+            if (answer === q.answer) {
+                testScore++;
+                showToast('✅ 正确!', 'success');
+            } else {
+                showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
+            }
+            currentTestIndex++;
+            setTimeout(showFinalQuestion, 1000);
+        }
         function showWhole() {
             setTab(3);
             updateTaskProgress('task_practice', 1);
-            var html = '<div class="pinyin-grid">';
+            var html = '<div style="margin-bottom: 15px; text-align: center;">';
+            html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
+            html += '<button class="btn" onclick="startWholeTest()" style="width: auto; padding: 10px 20px;">📝 小测试</button>';
+            html += '</div>';
+            html += '<div class="pinyin-grid">';
             pinyinData.whole.forEach(function(py, i) {
-                html += '<div class="pinyin-card" onclick="speak(\'' + py + '\')">' + py + '<br/><small style="color:#999">' + pinyinData.wholeNames[i] + '</small></div>';
+                var hint = showPinyinHints ? '<br/><small style="color:#999">' + pinyinData.wholeNames[i] + '</small>' : '';
+                html += '<div class="pinyin-card" onclick="speak(\'' + py + '\')">' + py + hint + '</div>';
             });
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        // 整体认读测试数据
+        var wholeTestData = [
+            {char: '一只', answer: 'zhi', options: ['zhi', 'chi', 'shi', 'ri']},
+            {char: '吃饭', answer: 'chi', options: ['zhi', 'chi', 'shi', 'ri']},
+            {char: '狮子', answer: 'shi', options: ['zhi', 'chi', 'shi', 'si']},
+            {char: '日子', answer: 'ri', options: ['zhi', 'chi', 'shi', 'ri']},
+            {char: '字母', answer: 'zi', options: ['zi', 'ci', 'si', 'zhi']},
+            {char: '词语', answer: 'ci', options: ['zi', 'ci', 'si', 'chi']},
+            {char: '四十', answer: 'si', options: ['shi', 'si', 'ci', 'zi']},
+            {char: '一', answer: 'yi', options: ['yi', 'wu', 'yu', 'ye']},
+            {char: '五', answer: 'wu', options: ['yi', 'wu', 'yu', 'yue']},
+            {char: '鱼', answer: 'yu', options: ['yi', 'wu', 'yu', 'yuan']},
+            {char: '叶', answer: 'ye', options: ['yi', 'ye', 'yue', 'yuan']},
+            {char: '月', answer: 'yue', options: ['ye', 'yue', 'yuan', 'yin']},
+            {char: '元', answer: 'yuan', options: ['ye', 'yue', 'yuan', 'ying']},
+            {char: '音', answer: 'yin', options: ['ying', 'yin', 'yun', 'yong']},
+            {char: '鹰', answer: 'ying', options: ['ying', 'yin', 'yun', 'yuan']},
+            {char: '云', answer: 'yun', options: ['ying', 'yin', 'yun', 'yong']}
+        ];
+        
+        // 开始整体认读测试
+        function startWholeTest() {
+            currentTestIndex = 0;
+            testScore = 0;
+            currentTestType = 'whole';
+            showWholeQuestion();
+        }
+        
+        function showWholeQuestion() {
+            if (currentTestIndex >= wholeTestData.length) {
+                var html = '<div style="text-align: center; padding: 40px;">';
+                html += '<h2>🎉 测试完成!</h2>';
+                html += '<p style="font-size: 24px; margin: 20px 0;">得分: ' + testScore + '/' + wholeTestData.length + '</p>';
+                html += '<button class="btn" onclick="showWhole()">返回学习</button>';
+                html += '</div>';
+                document.getElementById('learningContent').innerHTML = html;
+                return;
+            }
+            
+            var q = wholeTestData[currentTestIndex];
+            var html = '<div style="text-align: center; padding: 20px;">';
+            html += '<p>问题 ' + (currentTestIndex + 1) + '/' + wholeTestData.length + '</p>';
+            html += '<h2 style="font-size: 48px; margin: 30px 0;">"' + q.char + '" 的读音是?</h2>';
+            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
+            q.options.forEach(function(opt) {
+                html += '<button class="btn" onclick="checkWholeAnswer(\'' + opt + '\')" style="font-size: 20px; padding: 20px;">' + opt + '</button>';
+            });
+            html += '</div>';
+            html += '</div>';
+            document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        function checkWholeAnswer(answer) {
+            var q = wholeTestData[currentTestIndex];
+            if (answer === q.answer) {
+                testScore++;
+                showToast('✅ 正确!', 'success');
+            } else {
+                showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
+            }
+            currentTestIndex++;
+            setTimeout(showWholeQuestion, 1000);
         }
         
         // 声调学习 - v6.5新增
@@ -1320,7 +1598,15 @@
         function playBlend() {
             if (window.blendInitial && window.blendFinal) {
                 var result = window.blendInitial + window.blendFinal;
-                speak(result);
+                // 使用Web Speech API播放拼读
+                if ('speechSynthesis' in window) {
+                    var utterance = new SpeechSynthesisUtterance(result);
+                    utterance.lang = 'zh-CN';
+                    utterance.rate = 0.7;
+                    speechSynthesis.speak(utterance);
+                } else {
+                    alert('您的浏览器不支持语音播放');
+                }
             } else {
                 alert('请先选择声母和韵母');
             }
@@ -1371,12 +1657,14 @@
             html += '<p style="font-size: 14px; color: #666;">学习常用词语的拼音和声调</p>';
             html += '</div>';
             
-            html += '<div class="pinyin-grid" style="grid-template-columns: repeat(3, 1fr);">';
+            html += '<div class="pinyin-grid" style="grid-template-columns: repeat(2, 1fr);">';
             wordData.forEach(function(item) {
-                html += '<div class="pinyin-card" style="padding: 20px;" onclick="speakWord(\'' + item.pinyin.replace(/\s/g, '') + '\', \'' + item.word + '\')">';
-                html += '<div style="font-size: 24px; margin-bottom: 5px;">' + item.word + '</div>';
-                html += '<div style="font-size: 18px; color: #667eea;">' + item.pinyin + '</div>';
-                html += '<small style="color: #999;">声调: ' + item.tone + '</small>';
+                var pinyinParts = item.pinyin.split(/(\s+)/).filter(function(p) { return p.trim(); });
+                var displayPinyin = pinyinParts.join(' ');
+                html += '<div class="pinyin-card" style="padding: 15px;" onclick="speakWord(\'' + item.pinyin.replace(/\s/g, '') + '\', \'' + item.word + '\')">';
+                html += '<div style="font-size: 28px; margin-bottom: 8px;">' + item.word + '</div>';
+                html += '<div style="font-size: 20px; color: #667eea; letter-spacing: 5px;">' + displayPinyin + '</div>';
+                html += '<div style="font-size: 12px; color: #999; margin-top: 5px;">声调: ' + item.tone + '</div>';
                 html += '</div>';
             });
             html += '</div>';
@@ -1390,13 +1678,13 @@
         }
         
         function speakWord(pinyin, word) {
-            // 播放每个字的拼音
-            var syllables = pinyin.match(/[bpmfdtnlgkhjqxzcsryw][aoeiuv]+[0-4]?/gi) || [];
-            syllables.forEach(function(syl, index) {
-                setTimeout(function() {
-                    speak(syl);
-                }, index * 800);
-            });
+            // 使用Web Speech API播放整词
+            if ('speechSynthesis' in window) {
+                var utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
         }
         
         function startWordGame() {
@@ -1621,8 +1909,18 @@
         
         // 探险
         function explore(location) {
+            // v8.1.0: 检查宠物血量
+            if (hp <= 0) {
+                alert('❌ 你的宠物已经没血了！\n\n请返回主菜单购买药水恢复后再来探险！');
+                return;
+            }
+            if (hp < 20) {
+                alert('⚠️ 你的宠物血量很低！\n\n建议购买药水恢复后再探险，否则可能被怪物击败！');
+                // 继续执行，但警告用户
+            }
+            
             var costs = {forest: 10, desert: 15, ocean: 20, volcano: 30};
-            var encounterRates = {forest: 0.3, desert: 0.5, ocean: 0.7, volcano: 1};
+            var encounterRates = {forest: 0.4, desert: 0.6, ocean: 0.8, volcano: 1};
             if (energy < costs[location]) { alert('体力不足！'); return; }
             energy -= costs[location];
             updateTaskProgress('task_explore', 1);
@@ -1723,10 +2021,11 @@
                 speak('受到伤害');
                 
                 if (hp <= 0) {
-                    hp = 1;
+                    hp = 0; // 血量为0，不再自动恢复
                     updateUI(); updateBattleUI();
-                    alert('💀 战斗失败... 损失 ' + Math.floor(coins * 0.1) + ' 金币');
-                    coins = Math.floor(coins * 0.9);
+                    var lostCoins = Math.floor(coins * 0.1);
+                    alert('💀 战斗失败！你的宠物被打败了！\n\n损失 ' + lostCoins + ' 金币\n\n请返回主菜单购买药水恢复宠物血量！');
+                    coins -= lostCoins;
                     inBattle = false;
                     showMainMenu();
                     return;
