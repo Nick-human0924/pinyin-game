@@ -616,12 +616,12 @@
             current: 'panda',
             owned: ['panda'],
             list: {
-                panda: { id: 'panda', name: '拼音小熊猫', emoji: '🐼', attack: 10, defense: 5, hp: 100, maxHp: 100, desc: '平衡的初学者宠物' },
-                tiger: { id: 'tiger', name: '勇猛小老虎', emoji: '🐯', attack: 18, defense: 3, hp: 85, maxHp: 85, desc: '高攻击型宠物', price: 300 },
-                lion: { id: 'lion', name: '威武小狮子', emoji: '🦁', attack: 15, defense: 8, hp: 95, maxHp: 95, desc: '攻守平衡型', price: 500 },
-                dragon: { id: 'dragon', name: '火焰小龙', emoji: '🐲', attack: 25, defense: 5, hp: 90, maxHp: 90, desc: '强力攻击型', price: 800 },
-                unicorn: { id: 'unicorn', name: '魔法独角兽', emoji: '🦄', attack: 12, defense: 15, hp: 110, maxHp: 110, desc: '高防御型宠物', price: 600 },
-                rabbit: { id: 'rabbit', name: '迅捷小兔', emoji: '🐰', attack: 8, defense: 6, hp: 80, maxHp: 80, desc: '敏捷型宠物', price: 200 }
+                panda: { id: 'panda', name: '拼音小熊猫', emoji: '🐼', attack: 10, defense: 5, hp: 100, maxHp: 100, desc: '平衡的初学者宠物', level: 1, exp: 0, expToLevel: 100 },
+                tiger: { id: 'tiger', name: '勇猛小老虎', emoji: '🐯', attack: 18, defense: 3, hp: 85, maxHp: 85, desc: '高攻击型宠物', price: 300, level: 1, exp: 0, expToLevel: 100 },
+                lion: { id: 'lion', name: '威武小狮子', emoji: '🦁', attack: 15, defense: 8, hp: 95, maxHp: 95, desc: '攻守平衡型', price: 500, level: 1, exp: 0, expToLevel: 100 },
+                dragon: { id: 'dragon', name: '火焰小龙', emoji: '🐲', attack: 25, defense: 5, hp: 90, maxHp: 90, desc: '强力攻击型', price: 800, level: 1, exp: 0, expToLevel: 100 },
+                unicorn: { id: 'unicorn', name: '魔法独角兽', emoji: '🦄', attack: 12, defense: 15, hp: 110, maxHp: 110, desc: '高防御型宠物', price: 600, level: 1, exp: 0, expToLevel: 100 },
+                rabbit: { id: 'rabbit', name: '迅捷小兔', emoji: '🐰', attack: 8, defense: 6, hp: 80, maxHp: 80, desc: '敏捷型宠物', price: 200, level: 1, exp: 0, expToLevel: 100 }
             }
         };
         
@@ -642,10 +642,43 @@
         ];
         
         // ========== v8.2.0 装备升级系统 ==========
+        // 所有可用装备
+        var allEquipments = {
+            weapon: [
+                { id: 'wood_sword', name: '木剑', icon: '🗡️', attack: 5, level: 1, unlocked: true },
+                { id: 'iron_sword', name: '铁剑', icon: '⚔️', attack: 12, level: 1, unlocked: false, unlockLevel: 3 },
+                { id: 'steel_sword', name: '钢剑', icon: '🗡️', attack: 20, level: 1, unlocked: false, unlockLevel: 5 },
+                { id: 'magic_sword', name: '魔法剑', icon: '🔮', attack: 35, level: 1, unlocked: false, unlockLevel: 8 },
+                { id: 'dragon_sword', name: '龙魂剑', icon: '🐲', attack: 50, level: 1, unlocked: false, unlockLevel: 10 }
+            ],
+            armor: [
+                { id: 'cloth_armor', name: '布衣', icon: '👕', defense: 3, level: 1, unlocked: true },
+                { id: 'leather_armor', name: '皮甲', icon: '🦺', defense: 8, level: 1, unlocked: false, unlockLevel: 3 },
+                { id: 'iron_armor', name: '铁甲', icon: '👔', defense: 15, level: 1, unlocked: false, unlockLevel: 5 },
+                { id: 'magic_armor', name: '魔法袍', icon: '🧥', defense: 25, level: 1, unlocked: false, unlockLevel: 8 },
+                { id: 'dragon_armor', name: '龙鳞甲', icon: '🛡️', defense: 40, level: 1, unlocked: false, unlockLevel: 10 }
+            ],
+            accessory: [
+                { id: 'copper_ring', name: '铜戒指', icon: '💍', bonus: { attack: 2, defense: 2 }, level: 1, unlocked: true },
+                { id: 'silver_ring', name: '银戒指', icon: '💎', bonus: { attack: 5, defense: 5 }, level: 1, unlocked: false, unlockLevel: 3 },
+                { id: 'gold_ring', name: '金戒指', icon: '👑', bonus: { attack: 8, defense: 8 }, level: 1, unlocked: false, unlockLevel: 5 },
+                { id: 'magic_ring', name: '魔法戒指', icon: '✨', bonus: { attack: 12, defense: 12 }, level: 1, unlocked: false, unlockLevel: 8 },
+                { id: 'dragon_ring', name: '龙魂戒', icon: '🔥', bonus: { attack: 20, defense: 20 }, level: 1, unlocked: false, unlockLevel: 10 }
+            ]
+        };
+        
+        // 当前装备的装备ID
+        var equipped = {
+            weapon: 'wood_sword',
+            armor: 'cloth_armor',
+            accessory: 'copper_ring'
+        };
+        
+        // 当前装备数据（引用allEquipments中的对象）
         var equipment = {
-            weapon: { level: 1, name: '木剑', icon: '🗡️', attack: 5 },
-            armor: { level: 1, name: '布衣', icon: '👕', defense: 3 },
-            accessory: { level: 1, name: '铜戒指', icon: '💍', bonus: { attack: 2, defense: 2 } }
+            weapon: allEquipments.weapon[0],
+            armor: allEquipments.armor[0],
+            accessory: allEquipments.accessory[0]
         };
         
         // 升级所需材料
@@ -1294,7 +1327,8 @@
                 totalCorrect++;
                 levelCorrectCount++; // 记录本关答对
                 coins += 2; // 每题答对给2金币
-                showToast('✅ 正确!', 'success');
+                addPetExp(2); // 答对题目宠物获得经验
+                showToast('✅ 正确! +2经验', 'success');
             } else {
                 btn.classList.add('wrong');
                 totalWrong++;
@@ -1342,11 +1376,64 @@
             // 通关奖励（每题已经给了2金币，这里给额外通关奖励）
             var reward = lv.isBoss ? 50 : 20;
             coins += reward;
+            
+            // 宠物获得经验
+            var expGain = lv.isBoss ? 30 : 15;
+            addPetExp(expGain);
+            
+            // 解锁装备
+            unlockEquipmentByLevel(currentLevel);
+            
             checkAchievements();
             updateUI();
             saveGameData();
-            alert('🎉 恭喜！第' + currentLevel + '关完美通关！\n获得通关奖励：' + reward + '金币！');
+            alert('🎉 恭喜！第' + currentLevel + '关完美通关！\n获得通关奖励：' + reward + '金币！\n宠物获得 ' + expGain + ' 经验值！');
             goToLevelMap();
+        }
+        
+        // 宠物获得经验
+        function addPetExp(amount) {
+            var currentPet = pets.list[pets.current];
+            currentPet.exp += amount;
+            
+            // 检查是否升级
+            while (currentPet.exp >= currentPet.expToLevel) {
+                currentPet.exp -= currentPet.expToLevel;
+                levelUpPet(currentPet);
+            }
+        }
+        
+        // 宠物升级
+        function levelUpPet(pet) {
+            pet.level++;
+            pet.expToLevel = Math.floor(pet.expToLevel * 1.2); // 每级所需经验增加20%
+            
+            // 属性提升
+            var attackGain = Math.floor(pet.attack * 0.1) + 1;
+            var defenseGain = Math.floor(pet.defense * 0.1) + 1;
+            var hpGain = Math.floor(pet.maxHp * 0.1) + 5;
+            
+            pet.attack += attackGain;
+            pet.defense += defenseGain;
+            pet.maxHp += hpGain;
+            pet.hp = pet.maxHp; // 升级后回满血
+            
+            // 同步到战斗属性
+            recalcPetStats();
+            
+            showToast('🎉 ' + pet.name + ' 升到 Lv.' + pet.level + '!', 'success');
+        }
+        
+        // 根据通关关卡解锁装备
+        function unlockEquipmentByLevel(level) {
+            ['weapon', 'armor', 'accessory'].forEach(function(type) {
+                allEquipments[type].forEach(function(item) {
+                    if (!item.unlocked && item.unlockLevel && level >= item.unlockLevel) {
+                        item.unlocked = true;
+                        showToast('🔓 解锁新装备：' + item.name + '!', 'success');
+                    }
+                });
+            });
         }
         
         // 成就系统
@@ -1536,7 +1623,8 @@
             var q = initialTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
-                showToast('✅ 正确!', 'success');
+                addPetExp(1); // 基础教学答对获得1经验
+                showToast('✅ 正确! +1经验', 'success');
             } else {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
@@ -1618,7 +1706,8 @@
             var q = finalTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
-                showToast('✅ 正确!', 'success');
+                addPetExp(1);
+                showToast('✅ 正确! +1经验', 'success');
             } else {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
@@ -1697,7 +1786,8 @@
             var q = wholeTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
-                showToast('✅ 正确!', 'success');
+                addPetExp(1);
+                showToast('✅ 正确! +1经验', 'success');
             } else {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
@@ -2418,10 +2508,15 @@
                         showCoinReward(reward);
                         coins += reward;
                         battleWins++;
+                        
+                        // 战斗胜利宠物获得经验
+                        var battleExp = 10 + Math.floor(Math.random() * 10);
+                        addPetExp(battleExp);
+                        
                         checkAchievements();
                         updateUI();
                         setTimeout(function() {
-                            alert('🎉 战斗胜利！获得 ' + reward + ' 金币！');
+                            alert('🎉 战斗胜利！获得 ' + reward + ' 金币和 ' + battleExp + ' 经验值！');
                             inBattle = false;
                             showMainMenu();
                         }, 1500);
@@ -2586,7 +2681,13 @@
             html += '<div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; text-align: center;">';
             html += '<div style="font-size: 80px; margin-bottom: 10px;">' + currentPet.emoji + '</div>';
             html += '<div style="font-size: 24px; font-weight: bold;">' + currentPet.name + '</div>';
-            html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">当前出战</div>';
+            html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">Lv.' + currentPet.level + ' | 当前出战</div>';
+            // 经验条
+            var expPercent = (currentPet.exp / currentPet.expToLevel * 100).toFixed(1);
+            html += '<div style="margin-top: 15px; background: rgba(255,255,255,0.3); border-radius: 10px; padding: 3px;">';
+            html += '<div style="background: #FFD700; height: 8px; border-radius: 5px; width: ' + expPercent + '%; transition: width 0.3s;"></div>';
+            html += '</div>';
+            html += '<div style="font-size: 12px; margin-top: 5px;">经验: ' + currentPet.exp + '/' + currentPet.expToLevel + ' (' + expPercent + '%)</div>';
             html += '</div>';
             
             // 宠物属性
@@ -2603,10 +2704,13 @@
             pets.owned.forEach(function(petId) {
                 var pet = pets.list[petId];
                 var isCurrent = petId === pets.current;
+                var petExpPercent = (pet.exp / pet.expToLevel * 100).toFixed(0);
                 html += '<div onclick="switchPet(\'' + petId + '\')" style="flex: 1; min-width: 100px; background: ' + (isCurrent ? '#E3F2FD' : '#f8f9fa') + '; border: 2px solid ' + (isCurrent ? '#667eea' : 'transparent') + '; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer;">';
                 html += '<div style="font-size: 40px;">' + pet.emoji + '</div>';
                 html += '<div style="font-size: 12px; font-weight: bold;">' + pet.name + '</div>';
-                html += '<div style="font-size: 10px; color: #666;">攻' + pet.attack + ' 防' + pet.defense + '</div>';
+                html += '<div style="font-size: 11px; color: #667eea; margin: 3px 0;">Lv.' + pet.level + '</div>';
+                html += '<div style="font-size: 10px; color: #666;">⚔️' + pet.attack + ' 🛡️' + pet.defense + '</div>';
+                html += '<div style="font-size: 9px; color: #999; margin-top: 3px;">经验: ' + petExpPercent + '%</div>';
                 if (isCurrent) html += '<div style="font-size: 10px; color: #667eea; margin-top: 5px;">✓ 当前</div>';
                 html += '</div>';
             });
@@ -2614,7 +2718,7 @@
             
             // 提示
             html += '<div style="margin-top: 20px; padding: 15px; background: #FFF3E0; border-radius: 10px; font-size: 13px; color: #E65100;">';
-            html += '💡 提示：点击宠物可以切换出战。不同宠物有不同属性，选择适合你的战斗风格！';
+            html += '💡 宠物通过答题和战斗获得经验升级！升级后属性会提升。点击宠物可以切换出战。';
             html += '</div>';
             
             document.getElementById('pet').innerHTML = html;
@@ -2863,55 +2967,117 @@
         
         // ========== v8.2.0 装备升级 ==========
         function renderEquipment() {
-            document.getElementById('weaponLevel').textContent = 'Lv.' + equipment.weapon.level;
-            document.getElementById('armorLevel').textContent = 'Lv.' + equipment.armor.level;
-            document.getElementById('accessoryLevel').textContent = 'Lv.' + equipment.accessory.level;
-            
             var html = '';
             
-            // 武器升级
+            // 武器部分 - 显示已解锁的武器列表
             html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;">';
-            html += '<div style="display: flex; align-items: center; margin-bottom: 15px;">';
-            html += '<div style="font-size: 40px; margin-right: 15px;">' + equipment.weapon.icon + '</div>';
-            html += '<div style="flex: 1;">';
-            html += '<div style="font-weight: bold;">' + equipment.weapon.name + ' Lv.' + equipment.weapon.level + '</div>';
-            html += '<div style="font-size: 12px; color: #666;">攻击 +' + equipment.weapon.attack + '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div style="display: flex; gap: 10px; align-items: center;">';
-            var weaponReq = upgradeRequirements.weapon;
-            var weaponMatCount = countMaterial(weaponReq.material);
-            html += '<div style="flex: 1; font-size: 12px;">需要: 🔴红宝石 x' + weaponReq.baseCost + ' (你有' + weaponMatCount + ')</div>';
-            html += '<button class="btn" onclick="upgradeEquipment(\'weapon\')" style="width: auto; padding: 10px 20px; font-size: 12px;" ' + (weaponMatCount < weaponReq.baseCost || coins < weaponReq.goldCost ? 'disabled' : '') + '>升级 ' + weaponReq.goldCost + '💰</button>';
-            html += '</div>';
+            html += '<div style="font-weight: bold; margin-bottom: 15px;">⚔️ 武器 (已解锁: ' + getUnlockedCount('weapon') + '/' + allEquipments.weapon.length + ')</div>';
+            
+            // 显示所有已解锁的武器
+            allEquipments.weapon.forEach(function(item) {
+                if (!item.unlocked) return;
+                var isEquipped = equipped.weapon === item.id;
+                html += '<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
+                html += '<div style="font-size: 30px; margin-right: 15px;">' + item.icon + '</div>';
+                html += '<div style="flex: 1;">';
+                html += '<div style="font-weight: bold;">' + item.name + ' Lv.' + item.level + (isEquipped ? ' ✓' : '') + '</div>';
+                html += '<div style="font-size: 12px; color: #666;">攻击 +' + item.attack + '</div>';
+                html += '</div>';
+                if (isEquipped) {
+                    var weaponReq = upgradeRequirements.weapon;
+                    var weaponMatCount = countMaterial(weaponReq.material);
+                    html += '<button class="btn" onclick="upgradeEquipment(\'weapon\')" style="width: auto; padding: 8px 15px; font-size: 11px;" ' + (weaponMatCount < weaponReq.baseCost || coins < weaponReq.goldCost ? 'disabled' : '') + '>升级 ' + weaponReq.goldCost + '💰</button>';
+                } else {
+                    html += '<button class="btn btn-secondary" onclick="equipItem(\'weapon\', \'' + item.id + '\')" style="width: auto; padding: 8px 15px; font-size: 11px;">装备</button>';
+                }
+                html += '</div>';
+            });
             html += '</div>';
             
-            // 防具升级
+            // 防具部分
             html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;">';
-            html += '<div style="display: flex; align-items: center; margin-bottom: 15px;">';
-            html += '<div style="font-size: 40px; margin-right: 15px;">' + equipment.armor.icon + '</div>';
-            html += '<div style="flex: 1;">';
-            html += '<div style="font-weight: bold;">' + equipment.armor.name + ' Lv.' + equipment.armor.level + '</div>';
-            html += '<div style="font-size: 12px; color: #666;">防御 +' + equipment.armor.defense + '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div style="display: flex; gap: 10px; align-items: center;">';
-            var armorReq = upgradeRequirements.armor;
-            var armorMatCount = countMaterial(armorReq.material);
-            html += '<div style="flex: 1; font-size: 12px;">需要: 🔵蓝宝石 x' + armorReq.baseCost + ' (你有' + armorMatCount + ')</div>';
-            html += '<button class="btn" onclick="upgradeEquipment(\'armor\')" style="width: auto; padding: 10px 20px; font-size: 12px;" ' + (armorMatCount < armorReq.baseCost || coins < armorReq.goldCost ? 'disabled' : '') + '>升级 ' + armorReq.goldCost + '💰</button>';
-            html += '</div>';
+            html += '<div style="font-weight: bold; margin-bottom: 15px;">🛡️ 防具 (已解锁: ' + getUnlockedCount('armor') + '/' + allEquipments.armor.length + ')</div>';
+            
+            allEquipments.armor.forEach(function(item) {
+                if (!item.unlocked) return;
+                var isEquipped = equipped.armor === item.id;
+                html += '<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
+                html += '<div style="font-size: 30px; margin-right: 15px;">' + item.icon + '</div>';
+                html += '<div style="flex: 1;">';
+                html += '<div style="font-weight: bold;">' + item.name + ' Lv.' + item.level + (isEquipped ? ' ✓' : '') + '</div>';
+                html += '<div style="font-size: 12px; color: #666;">防御 +' + item.defense + '</div>';
+                html += '</div>';
+                if (isEquipped) {
+                    var armorReq = upgradeRequirements.armor;
+                    var armorMatCount = countMaterial(armorReq.material);
+                    html += '<button class="btn" onclick="upgradeEquipment(\'armor\')" style="width: auto; padding: 8px 15px; font-size: 11px;" ' + (armorMatCount < armorReq.baseCost || coins < armorReq.goldCost ? 'disabled' : '') + '>升级 ' + armorReq.goldCost + '💰</button>';
+                } else {
+                    html += '<button class="btn btn-secondary" onclick="equipItem(\'armor\', \'' + item.id + '\')" style="width: auto; padding: 8px 15px; font-size: 11px;">装备</button>';
+                }
+                html += '</div>';
+            });
             html += '</div>';
             
-            // 饰品升级
+            // 饰品部分
             html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;">';
-            html += '<div style="display: flex; align-items: center; margin-bottom: 15px;">';
-            html += '<div style="font-size: 40px; margin-right: 15px;">' + equipment.accessory.icon + '</div>';
-            html += '<div style="flex: 1;">';
-            html += '<div style="font-weight: bold;">' + equipment.accessory.name + ' Lv.' + equipment.accessory.level + '</div>';
-            html += '<div style="font-size: 12px; color: #666;">攻+' + equipment.accessory.bonus.attack + ' 防+' + equipment.accessory.bonus.defense + '</div>';
+            html += '<div style="font-weight: bold; margin-bottom: 15px;">💍 饰品 (已解锁: ' + getUnlockedCount('accessory') + '/' + allEquipments.accessory.length + ')</div>';
+            
+            allEquipments.accessory.forEach(function(item) {
+                if (!item.unlocked) return;
+                var isEquipped = equipped.accessory === item.id;
+                html += '<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
+                html += '<div style="font-size: 30px; margin-right: 15px;">' + item.icon + '</div>';
+                html += '<div style="flex: 1;">';
+                html += '<div style="font-weight: bold;">' + item.name + ' Lv.' + item.level + (isEquipped ? ' ✓' : '') + '</div>';
+                html += '<div style="font-size: 12px; color: #666;">攻+' + item.bonus.attack + ' 防+' + item.bonus.defense + '</div>';
+                html += '</div>';
+                if (isEquipped) {
+                    var accReq = upgradeRequirements.accessory;
+                    var accMatCount = countMaterial(accReq.material);
+                    html += '<button class="btn" onclick="upgradeEquipment(\'accessory\')" style="width: auto; padding: 8px 15px; font-size: 11px;" ' + (accMatCount < accReq.baseCost || coins < accReq.goldCost ? 'disabled' : '') + '>升级 ' + accReq.goldCost + '💰</button>';
+                } else {
+                    html += '<button class="btn btn-secondary" onclick="equipItem(\'accessory\', \'' + item.id + '\')" style="width: auto; padding: 8px 15px; font-size: 11px;">装备</button>';
+                }
+                html += '</div>';
+            });
             html += '</div>';
-            html += '</div>';
+            
+            // 解锁提示
+            html += '<div style="padding: 15px; background: #FFF3E0; border-radius: 10px; font-size: 12px; color: #E65100;">';
+            html += '💡 通关关卡可解锁更高级装备！</div>';
+            
+            document.getElementById('equipmentContent').innerHTML = html;
+        }
+        
+        function getUnlockedCount(type) {
+            return allEquipments[type].filter(function(item) { return item.unlocked; }).length;
+        }
+        
+        function equipItem(type, itemId) {
+            equipped[type] = itemId;
+            // 更新equipment对象引用
+            allEquipments[type].forEach(function(item) {
+                if (item.id === itemId) {
+                    equipment[type] = item;
+                }
+            });
+            // 重新计算宠物属性
+            recalcPetStats();
+            saveGameData();
+            renderEquipment();
+            showToast('✓ 已装备' + equipment[type].name, 'success');
+        }
+        
+        function recalcPetStats() {
+            var currentPet = pets.list[pets.current];
+            // 基础属性
+            var baseAttack = currentPet.attack;
+            var baseDefense = currentPet.defense;
+            
+            // 装备加成
+            petAttack = baseAttack + equipment.weapon.attack + equipment.accessory.bonus.attack;
+            petDefense = baseDefense + equipment.armor.defense + equipment.accessory.bonus.defense;
+        }
             html += '<div style="display: flex; gap: 10px; align-items: center;">';
             var accReq = upgradeRequirements.accessory;
             var accMatCount = countMaterial(accReq.material);
