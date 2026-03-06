@@ -999,16 +999,21 @@
                 currentAudio = null;
             }
             
-            // 创建新音频（使用本地文件）
-            var audio = new Audio('audio/' + text + '.mp3');
-            currentAudio = audio;
-            
-            // 播放
-            audio.play().catch(function(e) {
-                console.log('音频播放失败：' + text, e);
-                // 如果本地音频失败，显示视觉提示
-                showPinyinToast(text, getPronunciation(text));
-            });
+            // 优先使用Web Speech API播放中文拼音
+            if ('speechSynthesis' in window) {
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            } else {
+                // 降级使用本地音频
+                var audio = new Audio('audio/' + text + '.mp3');
+                currentAudio = audio;
+                audio.play().catch(function(e) {
+                    console.log('音频播放失败：' + text, e);
+                    showPinyinToast(text, getPronunciation(text));
+                });
+            }
         }
         
         function speakCurrent() {
@@ -1247,7 +1252,7 @@
         }
         
         var levelCorrectCount = 0;
-        var levelAnswered = false;
+        var levelAnswered = false; // 防止重复点击 - 全局变量
         
         function loadLevelQuestion() {
             // 重置答题状态
@@ -1263,7 +1268,7 @@
             document.getElementById('totalQ').textContent = 10;
             document.getElementById('currentLevel').textContent = currentLevel;
             document.getElementById('progressFill').style.width = (currentQuestionInLevel / 10 * 100) + '%';
-            document.getElementById('questionDisplay').innerHTML = '<div style="font-size: 36px;">' + q.q + '</div><div style="font-size: 14px; color: #666; margin-top: 5px;">请选择正确的拼音</div>';
+            document.getElementById('questionDisplay').innerHTML = '<div style="font-size: 36px;">' + q.q + '</div><div style="font-size: 14px; color: #666; margin-top: 5px;">' + q.hint + '</div>';
             
             var html = '';
             q.options.forEach(function(opt) {
@@ -1271,8 +1276,6 @@
             });
             document.getElementById('optionsGrid').innerHTML = html;
         }
-        
-        var levelAnswered = false; // 防止重复点击 - 全局变量
         
         function checkLevelAnswer(btn, selected, correct) {
             if (levelAnswered) return; // 防止重复点击
