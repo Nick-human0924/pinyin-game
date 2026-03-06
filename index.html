@@ -717,7 +717,15 @@
                 // v8.2.0 新数据
                 pets: {
                     current: 'panda',
-                    owned: ['panda']
+                    owned: ['panda'],
+                    list: {
+                        panda: { id: 'panda', name: '拼音小熊猫', emoji: '🐼', attack: 10, defense: 5, hp: 100, maxHp: 100, desc: '平衡的初学者宠物' },
+                        tiger: { id: 'tiger', name: '勇猛小老虎', emoji: '🐯', attack: 18, defense: 3, hp: 85, maxHp: 85, desc: '高攻击型宠物', price: 300 },
+                        lion: { id: 'lion', name: '威武小狮子', emoji: '🦁', attack: 15, defense: 8, hp: 95, maxHp: 95, desc: '攻守平衡型', price: 500 },
+                        dragon: { id: 'dragon', name: '火焰小龙', emoji: '🐲', attack: 25, defense: 5, hp: 90, maxHp: 90, desc: '强力攻击型', price: 800 },
+                        unicorn: { id: 'unicorn', name: '魔法独角兽', emoji: '🦄', attack: 12, defense: 15, hp: 110, maxHp: 110, desc: '高防御型宠物', price: 600 },
+                        rabbit: { id: 'rabbit', name: '迅捷小兔', emoji: '🐰', attack: 8, defense: 6, hp: 80, maxHp: 80, desc: '敏捷型宠物', price: 200 }
+                    }
                 },
                 inventory: {
                     treasures: [],
@@ -822,15 +830,28 @@
             
             // v8.2.0 新数据加载
             if (user.pets) {
-                pets = user.pets;
+                pets.current = user.pets.current || 'panda';
+                pets.owned = user.pets.owned || ['panda'];
+                // 保留全局的 pets.list，不要覆盖
             } else {
                 // 旧数据迁移
                 pets.current = 'panda';
                 pets.owned = ['panda'];
             }
-            if (user.inventory) inventory = user.inventory;
-            if (user.equipment) equipment = user.equipment;
-            if (user.errorBook) errorBook = user.errorBook;
+            if (user.inventory) {
+                inventory.treasures = user.inventory.treasures || [];
+                inventory.materials = user.inventory.materials || [];
+                inventory.consumables = user.inventory.consumables || [];
+            }
+            if (user.equipment) {
+                if (user.equipment.weapon) equipment.weapon = user.equipment.weapon;
+                if (user.equipment.armor) equipment.armor = user.equipment.armor;
+                if (user.equipment.accessory) equipment.accessory = user.equipment.accessory;
+            }
+            if (user.errorBook) {
+                errorBook.errors = user.errorBook.errors || [];
+                errorBook.fixed = user.errorBook.fixed || 0;
+            }
             
             // 更新UI显示
             updateUI();
