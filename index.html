@@ -466,10 +466,29 @@
         }
         
         // 15关数据
-        var levels = [];
-        for (var i = 1; i <= 15; i++) {
-            levels.push({ id: i, name: '第' + i + '关', isBoss: i % 5 === 0, completed: false, locked: i > 1 });
-        }
+        // v8.2.0 重新设计关卡系统 - 按基础教学进度进阶
+        var levels = [
+            // 第一阶段：声母 (1-3关)
+            { id: 1, name: '声母·基础', type: 'initial', stage: 1, desc: '学习基础声母 b p m f', completed: false, locked: false },
+            { id: 2, name: '声母·进阶', type: 'initial', stage: 2, desc: '学习声母 d t n l g k h', completed: false, locked: true },
+            { id: 3, name: '声母·挑战', type: 'initial', stage: 3, desc: '学习声母 j q x zh ch sh r z c s y w', completed: false, locked: true },
+            // 第二阶段：韵母 (4-6关)
+            { id: 4, name: '韵母·单韵母', type: 'final', stage: 1, desc: '学习单韵母 a o e i u ü', completed: false, locked: true },
+            { id: 5, name: '韵母·复韵母', type: 'final', stage: 2, desc: '学习复韵母 ai ei ui ao ou iu ie üe er', completed: false, locked: true },
+            { id: 6, name: '韵母·鼻韵母', type: 'final', stage: 3, desc: '学习鼻韵母 an en in un ün ang eng ing ong', completed: false, locked: true },
+            // 第三阶段：整体认读 (7-9关)
+            { id: 7, name: '整体认读·基础', type: 'whole', stage: 1, desc: '学习 zhi chi shi ri zi ci si', completed: false, locked: true },
+            { id: 8, name: '整体认读·进阶', type: 'whole', stage: 2, desc: '学习 yi wu yu ye yue yuan', completed: false, locked: true },
+            { id: 9, name: '整体认读·挑战', type: 'whole', stage: 3, desc: '学习 yin yun ying', completed: false, locked: true },
+            // 第四阶段：声调 (10-12关)
+            { id: 10, name: '声调·基础', type: 'tone', stage: 1, desc: '学习单韵母声调', completed: false, locked: true },
+            { id: 11, name: '声调·进阶', type: 'tone', stage: 2, desc: '学习复韵母声调', completed: false, locked: true },
+            { id: 12, name: '声调·挑战', type: 'tone', stage: 3, desc: '学习鼻韵母和整体认读音节声调', completed: false, locked: true },
+            // 第五阶段：完整词语 (13-15关)
+            { id: 13, name: '词语·基础', type: 'word', stage: 1, desc: '学习两字词语拼音', completed: false, locked: true },
+            { id: 14, name: '词语·进阶', type: 'word', stage: 2, desc: '学习三字词语拼音', completed: false, locked: true },
+            { id: 15, name: '词语·大师', type: 'word', stage: 3, desc: '挑战复杂词语和句子', isBoss: true, completed: false, locked: true }
+        ];
         
         // 怪物数据 - v8.1.0 增强难度
         var monsters = {
@@ -850,55 +869,157 @@
         // 开始关卡
         function startLevel(levelId) {
             currentLevel = levelId;
+            var level = levels[currentLevel - 1];
             questionsInLevel = [];
-            // 每关10题，显示中文选择拼音
+            levelCorrectCount = 0;
+            
+            // 根据关卡类型生成问题
             for (var i = 0; i < 10; i++) {
-                questionsInLevel.push(generateLevelQuestion());
+                questionsInLevel.push(generateLevelQuestionByType(level.type, level.stage));
             }
+            
             currentQuestionInLevel = 1;
-            levelCorrectCount = 0; // 记录答对题数
             showPage('game');
             loadLevelQuestion();
         }
         
-        // 生成关卡问题（显示中文，选择拼音）
-        function generateLevelQuestion() {
-            var chars = ['爸', '妈', '大', '地', '你', '好', '老', '师', '学', '生', '书', '本', '苹', '果', '鸟', '鱼', '天', '气', '水', '火'];
-            var char = chars[Math.floor(Math.random() * chars.length)];
+        // 根据关卡类型和阶段生成问题
+        function generateLevelQuestionByType(type, stage) {
+            var q, a, options;
             
-            // 查找包含这个字的词语
-            var wordList = [
-                {word: '爸爸', pinyin: 'bà ba', initial: 'b'},
-                {word: '妈妈', pinyin: 'mā ma', initial: 'm'},
-                {word: '大地', pinyin: 'dà dì', initial: 'd'},
-                {word: '你好', pinyin: 'nǐ hǎo', initial: 'n'},
-                {word: '老师', pinyin: 'lǎo shī', initial: 'l'},
-                {word: '学生', pinyin: 'xué sheng', initial: 'x'},
-                {word: '书本', pinyin: 'shū běn', initial: 'sh'},
-                {word: '苹果', pinyin: 'píng guǒ', initial: 'p'},
-                {word: '小鸟', pinyin: 'xiǎo niǎo', initial: 'n'},
-                {word: '鱼儿', pinyin: 'yú er', initial: 'y'},
-                {word: '天气', pinyin: 'tiān qì', initial: 't'},
-                {word: '水果', pinyin: 'shuǐ guǒ', initial: 'sh'}
+            switch(type) {
+                case 'initial': // 声母
+                    return generateInitialQuestion(stage);
+                case 'final': // 韵母
+                    return generateFinalQuestion(stage);
+                case 'whole': // 整体认读
+                    return generateWholeQuestion(stage);
+                case 'tone': // 声调
+                    return generateToneQuestion(stage);
+                case 'word': // 词语
+                    return generateWordQuestion(stage);
+                default:
+                    return generateInitialQuestion(1);
+            }
+        }
+        
+        // 生成声母问题
+        function generateInitialQuestion(stage) {
+            var chars, answers;
+            if (stage === 1) {
+                chars = [{c: '爸', a: 'b'}, {c: '妈', a: 'm'}, {c: '怕', a: 'p'}, {c: '发', a: 'f'}];
+            } else if (stage === 2) {
+                chars = [{c: '大', a: 'd'}, {c: '他', a: 't'}, {c: '你', a: 'n'}, {c: '乐', a: 'l'}, 
+                        {c: '哥', a: 'g'}, {c: '看', a: 'k'}, {c: '喝', a: 'h'}];
+            } else {
+                chars = [{c: '鸡', a: 'j'}, {c: '七', a: 'q'}, {c: '下', a: 'x'}, {c: '知', a: 'zh'},
+                        {c: '吃', a: 'ch'}, {c: '十', a: 'sh'}, {c: '日', a: 'r'}, {c: '在', a: 'z'},
+                        {c: '从', a: 'c'}, {c: '三', a: 's'}, {c: '一', a: 'y'}, {c: '我', a: 'w'}];
+            }
+            var item = chars[Math.floor(Math.random() * chars.length)];
+            var allOptions = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x', 
+                             'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w'];
+            return generateQuestion(item.c, item.a, allOptions, '声母');
+        }
+        
+        // 生成韵母问题
+        function generateFinalQuestion(stage) {
+            var chars;
+            if (stage === 1) {
+                chars = [{c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '的', a: 'e'}, {c: '你', a: 'i'}, {c: '不', a: 'u'}, {c: '去', a: 'ü'}];
+            } else if (stage === 2) {
+                chars = [{c: '来', a: 'ai'}, {c: '北', a: 'ei'}, {c: '水', a: 'ui'}, {c: '好', a: 'ao'},
+                        {c: '有', a: 'ou'}, {c: '就', a: 'iu'}, {c: '写', a: 'ie'}, {c: '月', a: 'üe'}, {c: '儿', a: 'er'}];
+            } else {
+                chars = [{c: '天', a: 'an'}, {c: '人', a: 'en'}, {c: '心', a: 'in'}, {c: '问', a: 'un'}, {c: '云', a: 'ün'},
+                        {c: '上', a: 'ang'}, {c: '冷', a: 'eng'}, {c: '明', a: 'ing'}, {c: '龙', a: 'ong'}];
+            }
+            var allOptions = ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu', 'ie', 'üe', 'er',
+                             'an', 'en', 'in', 'un', 'ün', 'ang', 'eng', 'ing', 'ong'];
+            var item = chars[Math.floor(Math.random() * chars.length)];
+            return generateQuestion(item.c, item.a, allOptions, '韵母');
+        }
+        
+        // 生成整体认读问题
+        function generateWholeQuestion(stage) {
+            var chars;
+            if (stage === 1) {
+                chars = [{c: '一只', a: 'zhi'}, {c: '吃饭', a: 'chi'}, {c: '狮子', a: 'shi'}, {c: '日子', a: 'ri'},
+                        {c: '字母', a: 'zi'}, {c: '词语', a: 'ci'}, {c: '四十', a: 'si'}];
+            } else if (stage === 2) {
+                chars = [{c: '一', a: 'yi'}, {c: '五', a: 'wu'}, {c: '鱼', a: 'yu'}, {c: '叶', a: 'ye'},
+                        {c: '月', a: 'yue'}, {c: '元', a: 'yuan'}];
+            } else {
+                chars = [{c: '音', a: 'yin'}, {c: '云', a: 'yun'}, {c: '鹰', a: 'ying'}];
+            }
+            var allOptions = ['zhi', 'chi', 'shi', 'ri', 'zi', 'ci', 'si', 'yi', 'wu', 'yu', 'ye', 'yue', 'yuan', 'yin', 'yun', 'ying'];
+            var item = chars[Math.floor(Math.random() * chars.length)];
+            return generateQuestion(item.c, item.a, allOptions, '整体认读');
+        }
+        
+        // 生成声调问题
+        function generateToneQuestion(stage) {
+            var pinyinData = [
+                {p: 'mā', t: '1'}, {p: 'má', t: '2'}, {p: 'mǎ', t: '3'}, {p: 'mà', t: '4'},
+                {p: 'bā', t: '1'}, {p: 'bá', t: '2'}, {p: 'bǎ', t: '3'}, {p: 'bà', t: '4'},
+                {p: 'dā', t: '1'}, {p: 'dá', t: '2'}, {p: 'dǎ', t: '3'}, {p: 'dà', t: '4'}
             ];
-            
-            var item = wordList[Math.floor(Math.random() * wordList.length)];
-            var q = item.word;
-            var a = item.pinyin;
-            
-            // 生成干扰项（其他拼音）
-            var allPinyins = wordList.map(function(w) { return w.pinyin; });
-            var options = [a];
+            var item = pinyinData[Math.floor(Math.random() * pinyinData.length)];
+            return {
+                q: item.p,
+                a: item.t,
+                options: ['1', '2', '3', '4'],
+                type: 'tone',
+                hint: '这是几声?'
+            };
+        }
+        
+        // 生成词语问题
+        function generateWordQuestion(stage) {
+            var words;
+            if (stage === 1) {
+                words = [{w: '爸爸', p: 'bà ba'}, {w: '妈妈', p: 'mā ma'}, {w: '哥哥', p: 'gē ge'}, 
+                        {w: '姐姐', p: 'jiě jie'}, {w: '老师', p: 'lǎo shī'}, {w: '学生', p: 'xué sheng'}];
+            } else if (stage === 2) {
+                words = [{w: '小学生', p: 'xiǎo xué shēng'}, {w: '好朋友', p: 'hǎo péng you'}, {w: '大熊猫', p: 'dà xióng māo'}];
+            } else {
+                words = [{w: '我爱学习', p: 'wǒ ài xué xí'}, {w: '你好世界', p: 'nǐ hǎo shì jiè'}];
+            }
+            var item = words[Math.floor(Math.random() * words.length)];
+            var allPinyins = words.map(function(w) { return w.p; });
+            var options = [item.p];
             while (options.length < 4) {
                 var r = allPinyins[Math.floor(Math.random() * allPinyins.length)];
                 if (options.indexOf(r) === -1) options.push(r);
             }
             options.sort(function() { return Math.random() - 0.5; });
-            
-            return { q: q, a: a, options: options };
+            return {
+                q: item.w,
+                a: item.p,
+                options: options,
+                type: 'word',
+                hint: '选择正确的拼音'
+            };
         }
         
-        var levelCorrectCount = 0; // 答对题数
+        // 通用问题生成
+        function generateQuestion(char, answer, allOptions, typeName) {
+            var options = [answer];
+            while (options.length < 4) {
+                var r = allOptions[Math.floor(Math.random() * allOptions.length)];
+                if (options.indexOf(r) === -1) options.push(r);
+            }
+            options.sort(function() { return Math.random() - 0.5; });
+            return {
+                q: char,
+                a: answer,
+                options: options,
+                type: 'pinyin',
+                hint: '选择正确的' + typeName
+            };
+        }
+        
+        var levelCorrectCount = 0;
         var levelAnswered = false;
         
         function loadLevelQuestion() {
