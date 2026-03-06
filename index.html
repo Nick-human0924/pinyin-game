@@ -936,9 +936,17 @@
         
         // 成就系统
         function renderAchievements() {
+            if (!achievements || !Array.isArray(achievements)) {
+                console.error('achievements未定义');
+                return;
+            }
             var html = '';
             var unlockedCount = 0;
             achievements.forEach(function(ach) {
+                if (!ach || typeof ach.condition !== 'function') {
+                    console.error('成就数据异常', ach);
+                    return;
+                }
                 var isUnlocked = ach.condition();
                 if (isUnlocked && !ach.unlocked) {
                     ach.unlocked = true;
