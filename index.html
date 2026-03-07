@@ -55,17 +55,17 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 10px; }
         .game-container { max-width: 800px; margin: 0 auto; padding: 10px; }
-        .header { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
+        .header { background: white; border-radius: 15px; padding: 15px; margin-bottom: 4px; }
         .player-info { display: flex; align-items: center; gap: 15px; }
         .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; }
         .stats { display: flex; gap: 10px; flex-wrap: wrap; }
         .stat-item { background: #F7F9FC; padding: 8px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
         .main-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .menu-card { background: white; border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; }
-        .menu-card .icon { font-size: 32px; margin-bottom: 8px; }
+        .menu-card .icon { font-size: 32px; margin-bottom: 4px; }
         .page { background: white; border-radius: 20px; padding: 20px; min-height: 500px; }
         .hidden { display: none !important; }
-        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; }
         .btn-secondary { background: #F7F9FC; color: #2C3E50; }
         .voice-btn { background: #4CAF50; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; margin-left: 10px; vertical-align: middle; }
         
@@ -107,10 +107,10 @@
         .pinyin-card { padding: 15px; background: #f8f9fa; border-radius: 10px; text-align: center; font-size: 20px; font-weight: bold; color: #667eea; cursor: pointer; transition: all 0.2s; }
         .pinyin-card:active { transform: scale(0.95); background: #667eea; color: white; }
         
-        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .progress-bar { height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; margin: 10px 0; }
         .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 5px; transition: width 0.3s; }
-        .question-display { font-size: 40px; text-align: center; margin: 20px 0; color: #667eea; font-weight: bold; }
+        .question-display { font-size: 36px; text-align: center; margin: 20px 0; color: #667eea; font-weight: bold; }
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0; }
         .option-btn { padding: 18px; background: #F7F9FC; border: 3px solid transparent; border-radius: 15px; font-size: 22px; cursor: pointer; font-weight: bold; }
         .option-btn.correct { background: linear-gradient(135deg, #4CAF50, #45a049) !important; animation: correctPulse 0.5s ease; }
@@ -124,18 +124,18 @@
         .character-avatar { font-size: 60px; }
         .hp-bar { width: 100px; height: 10px; background: #333; border-radius: 5px; margin: 5px auto; overflow: hidden; }
         .hp-fill { height: 100%; background: #4CAF50; border-radius: 5px; transition: width 0.3s; }
-        .battle-log { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; min-height: 80px; margin-bottom: 15px; font-size: 14px; }
+        .battle-log { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; min-height: 80px; margin-bottom: 4px; font-size: 14px; }
         
         .pet-avatar { text-align: center; font-size: 80px; margin: 10px 0; }
         .pet-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
         .pet-stat { background: #F7F9FC; padding: 15px; border-radius: 15px; text-align: center; }
-        .pet-stat-value { font-size: 16px; font-weight: bold; color: #667eea; margin-top: 5px; }
+        .pet-stat-value { font-size: 14px; font-weight: bold; color: #667eea; margin-top: 5px; }
         
         .map-location { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 15px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .shop-tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; }
+        .shop-tabs { display: flex; gap: 8px; margin-bottom: 4px; overflow-x: auto; }
         .shop-tab { padding: 8px 15px; background: #F7F9FC; border-radius: 20px; cursor: pointer; }
         .shop-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .shop-item { background: #F7F9FC; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .shop-item { background: #F7F9FC; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .shop-item-btn { background: #667eea; color: white; border: none; padding: 8px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; }
         
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
@@ -148,9 +148,9 @@
         /* ===== v6.4 新增：成就系统 ===== */
         .achievement-card { background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 15px; padding: 15px; margin: 10px 0; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); }
         .achievement-card.locked { background: #e0e0e0; opacity: 0.7; }
-        .achievement-icon { font-size: 40px; }
+        .achievement-icon { font-size: 36px; }
         .achievement-info { flex: 1; }
-        .achievement-name { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .achievement-name { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
         .achievement-desc { font-size: 12px; color: #666; }
         .achievement-reward { background: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #FF6B35; }
         .achievement-progress { margin-top: 8px; }
@@ -159,23 +159,23 @@
         /* ===== v6.4 新增：任务系统 ===== */
         .task-card { background: #F7F9FC; border-radius: 15px; padding: 15px; margin: 10px 0; border-left: 5px solid #667eea; }
         .task-card.completed { border-left-color: #4CAF50; background: #e8f5e9; }
-        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .task-title { font-weight: bold; font-size: 16px; }
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .task-title { font-weight: bold; font-size: 14px; }
         .task-reward { background: #FFD700; color: #333; padding: 3px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; }
-        .task-desc { font-size: 14px; color: #666; margin-bottom: 10px; }
+        .task-desc { font-size: 14px; color: #666; margin-bottom: 6px; }
         .task-progress-bar { height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }
         .task-progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 4px; transition: width 0.3s; }
         .task-btn { background: #4CAF50; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 14px; cursor: pointer; margin-top: 10px; }
         .task-btn:disabled { background: #ccc; }
         
-        .daily-tasks-title { font-size: 18px; font-weight: bold; color: #667eea; margin: 20px 0 10px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+        .daily-tasks-title { font-size: 14px; font-weight: bold; color: #667eea; margin: 20px 0 10px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
         .refresh-time { font-size: 12px; color: #999; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="game-container">
         <!-- 头部 -->
-        <div style="text-align: center; margin-bottom: 15px;">
+        <div style="text-align: center; margin-bottom: 4px;">
             <img src="images/ai_generated/logo.png" alt="拼音大冒险" style="max-width: 300px; width: 80%; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
         </div>
         <div class="header">
@@ -209,19 +209,19 @@
                 <!-- 学习Tab：基础教学、智能学习、拼音儿歌 -->
                 <div id="tab-study" class="tab-panel" style="display: block;">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <div class="menu-card" onclick="goToLearning()" style="padding: 30px 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">📖</div>
-                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">基础教学</div>
+                        <div class="menu-card" onclick="goToLearning()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 36px; margin-bottom: 4px;">📖</div>
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">基础教学</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('learningPath')" style="padding: 30px 15px; background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">🎯</div>
-                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">智能学习</div>
+                        <div class="menu-card" onclick="showPage('learningPath')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 36px; margin-bottom: 4px;">🎯</div>
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">智能学习</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('songs')" style="padding: 30px 15px; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">🎵</div>
-                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">拼音儿歌</div>
+                        <div class="menu-card" onclick="showPage('songs')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 36px; margin-bottom: 4px;">🎵</div>
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">拼音儿歌</div>
                         </div>
                     </div>
                 </div>
@@ -230,19 +230,19 @@
                 <div id="tab-adventure" class="tab-panel" style="display: none;">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         
-                        <div class="menu-card" onclick="goToLevelMap()" style="padding: 30px 15px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">🗺️</div>
-                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">闯关地图</div>
+                        <div class="menu-card" onclick="goToLevelMap()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 36px; margin-bottom: 4px;">🗺️</div>
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">闯关地图</div>
                         </div>
                         
-                        <div class="menu-card" onclick="goToMap()" style="padding: 30px 15px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">🏕️</div>
-                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">野外探险</div>
+                        <div class="menu-card" onclick="goToMap()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 36px; margin-bottom: 4px;">🏕️</div>
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">野外探险</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('storyMode')" style="padding: 30px 15px; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">📖</div>
-                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">故事模式</div>
+                        <div class="menu-card" onclick="showPage('storyMode')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 36px; margin-bottom: 4px;">📖</div>
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">故事模式</div>
                         </div>
                     </div>
                 </div>
@@ -251,19 +251,19 @@
                 <div id="tab-shop" class="tab-panel" style="display: none;">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         
-                        <div class="menu-card" onclick="showPage('shop')" style="padding: 30px 15px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">🏪</div>
-                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">商店</div>
+                        <div class="menu-card" onclick="showPage('shop')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 36px; margin-bottom: 4px;">🏪</div>
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">商店</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('inventory')" style="padding: 30px 15px; background: linear-gradient(135deg, #00bcd4, #0097a7); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">🎒</div>
-                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">背包</div>
+                        <div class="menu-card" onclick="showPage('inventory')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #00bcd4, #0097a7); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 36px; margin-bottom: 4px;">🎒</div>
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">背包</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('equipment')" style="padding: 30px 15px; background: linear-gradient(135deg, #795548, #5d4037); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">⚔️</div>
-                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">装备</div>
+                        <div class="menu-card" onclick="showPage('equipment')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #795548, #5d4037); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 36px; margin-bottom: 4px;">⚔️</div>
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">装备</div>
                         </div>
                     </div>
                 </div>
@@ -273,23 +273,23 @@
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
                         
                         <div class="menu-card" onclick="showPage('achievements')" style="padding: 30px 15px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 44px; margin-bottom: 10px;">🏆</div>
-                            <div style="font-size: 18px; font-weight: bold;">成就</div>
+                            <div style="font-size: 32px; margin-bottom: 6px;">🏆</div>
+                            <div style="font-size: 14px; font-weight: bold;">成就</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('tasks')" style="padding: 30px 15px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 44px; margin-bottom: 10px;">📋</div>
-                            <div style="font-size: 18px; font-weight: bold;">任务</div>
+                            <div style="font-size: 32px; margin-bottom: 6px;">📋</div>
+                            <div style="font-size: 14px; font-weight: bold;">任务</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('stats')" style="padding: 30px 15px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 44px; margin-bottom: 10px;">📊</div>
-                            <div style="font-size: 18px; font-weight: bold;">统计</div>
+                            <div style="font-size: 32px; margin-bottom: 6px;">📊</div>
+                            <div style="font-size: 14px; font-weight: bold;">统计</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('errorBook')" style="padding: 30px 15px; background: linear-gradient(135deg, #f44336, #d32f2f); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 44px; margin-bottom: 10px;">📕</div>
-                            <div style="font-size: 18px; font-weight: bold;">错题本</div>
+                            <div style="font-size: 32px; margin-bottom: 6px;">📕</div>
+                            <div style="font-size: 14px; font-weight: bold;">错题本</div>
                         </div>
                     </div>
                 </div>
@@ -299,14 +299,14 @@
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
                         
                         <div class="menu-card" onclick="showUserManager()" style="padding: 30px 15px; background: linear-gradient(135deg, #607d8b, #455a64); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">👤</div>
-                            <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">用户管理</div>
+                            <div style="font-size: 36px; margin-bottom: 4px;">👤</div>
+                            <div style="font-size: 22px; font-weight: bold; margin-bottom: 4px;">用户管理</div>
                             <div style="font-size: 14px; opacity: 0.9;">切换用户 · 设置</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('pet')" style="padding: 30px 15px; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 15px;">🐼</div>
-                            <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">我的宠物</div>
+                            <div style="font-size: 36px; margin-bottom: 4px;">🐼</div>
+                            <div style="font-size: 22px; font-weight: bold; margin-bottom: 4px;">我的宠物</div>
                             <div style="font-size: 14px; opacity: 0.9;">养成 · 升级 · 进化</div>
                         </div>
                     </div>
@@ -318,23 +318,23 @@
         <div style="position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #eee; padding: 8px 0; z-index: 1000;">
             <div style="display: flex; justify-content: space-around; max-width: 500px; margin: 0 auto;">
                 <div onclick="switchTab('study')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
-                    <div style="font-size: 16px;">📖</div>
+                    <div style="font-size: 14px;">📖</div>
                     <div id="label-study" style="font-size: 12px; color: #667eea; font-weight: bold;">学习</div>
                 </div>
                 <div onclick="switchTab('adventure')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
-                    <div style="font-size: 16px;">🏕️</div>
+                    <div style="font-size: 14px;">🏕️</div>
                     <div id="label-adventure" style="font-size: 12px; color: #999;">探险</div>
                 </div>
                 <div onclick="switchTab('shop')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
-                    <div style="font-size: 16px;">🏪</div>
+                    <div style="font-size: 14px;">🏪</div>
                     <div id="label-shop" style="font-size: 12px; color: #999;">商店</div>
                 </div>
                 <div onclick="switchTab('stats')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
-                    <div style="font-size: 16px;">📊</div>
+                    <div style="font-size: 14px;">📊</div>
                     <div id="label-stats" style="font-size: 12px; color: #999;">统计</div>
                 </div>
                 <div onclick="switchTab('profile')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
-                    <div style="font-size: 16px;">👤</div>
+                    <div style="font-size: 14px;">👤</div>
                     <div id="label-profile" style="font-size: 12px; color: #999;">我的</div>
                 </div>
             </div>
@@ -342,7 +342,7 @@
         <div id="learning" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">📖 基础教学</h2>
-            <div style="background: #FFF3E0; border-radius: 10px; padding: 10px; margin-bottom: 10px; font-size: 13px; color: #E65100; text-align: center;">
+            <div style="background: #FFF3E0; border-radius: 10px; padding: 10px; margin-bottom: 6px; font-size: 13px; color: #E65100; text-align: center;">
                 🔊 首次使用请点击任意拼音激活语音功能
             </div>
             <div class="learning-tabs">
@@ -353,7 +353,7 @@
                 <div class="learning-tab" id="tab5" onclick="showBlend()">拼读训练</div>
                 <div class="learning-tab" id="tab6" onclick="showWords()">词语拼音</div>
             </div>
-            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 10px;">👆 点击任意拼音听发音</p>
+            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 6px;">👆 点击任意拼音听发音</p>
             <div id="learningContent"></div>
         </div>
 
@@ -361,7 +361,7 @@
         <div id="levelMap" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🗺️ 闯关地图</h2>
-                        <div style="background: #E3F2FD; border-radius: 10px; padding: 10px; margin-bottom: 15px; font-size: 13px; color: #1565C0; text-align: center;">
+                        <div style="background: #E3F2FD; border-radius: 10px; padding: 10px; margin-bottom: 4px; font-size: 13px; color: #1565C0; text-align: center;">
                 🔊 点击 🔊 按钮或使用自动语音朗读
             </div>每关3道题，通关解锁下一关，BOSS关有奖励！</p>
             <div class="level-map" id="levelMapContainer"></div>
@@ -371,7 +371,7 @@
         <div id="game" class="page hidden">
             <div class="quiz-header">
                 <button class="btn btn-secondary" onclick="goToLevelMap()" style="width: auto; padding: 10px 15px;">← 返回地图</button>
-                <span style="font-size: 16px; font-weight: bold;"><span id="currentQ">1</span>/<span id="totalQ">3</span></span>
+                <span style="font-size: 14px; font-weight: bold;"><span id="currentQ">1</span>/<span id="totalQ">3</span></span>
                 <span style="font-size: 14px; color: #666;">关卡 <span id="currentLevel">1</span></span>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 33%"></div></div>
@@ -413,7 +413,7 @@
         <!-- 战斗系统 -->
         <div id="battle" class="page hidden">
             <div class="battle-arena">
-                <h3 style="text-align: center; margin-bottom: 15px;">⚔️ 遭遇战斗！答对攻击，答错受伤</h3>
+                <h3 style="text-align: center; margin-bottom: 4px;">⚔️ 遭遇战斗！答对攻击，答错受伤</h3>
                 
                 <div class="battle-characters">
                     <div class="character" id="playerChar">
@@ -437,7 +437,7 @@
             </div>
             
             <div id="battleQuestion">
-                <div class="question-display" id="battleQDisplay" style="font-size: 40px; margin: 15px 0;"></div>
+                <div class="question-display" id="battleQDisplay" style="font-size: 36px; margin: 15px 0;"></div>
                 <div class="options-grid" id="battleOptions"></div>
             </div>
         </div>
@@ -447,7 +447,7 @@
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🐼 我的宠物</h2>
             <div class="pet-avatar">🐼</div>
-            <div style="text-align: center; margin-bottom: 15px;"><h3>拼音小熊猫</h3></div>
+            <div style="text-align: center; margin-bottom: 4px;"><h3>拼音小熊猫</h3></div>
             
             <div class="pet-stats">
                 <div class="pet-stat"><div>⚔️ 攻击</div><div class="pet-stat-value" id="petAttack">10</div></div>
@@ -464,8 +464,8 @@
             
             <!-- 当前用户信息 -->
             <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; margin-bottom: 20px; color: white; text-align: center;">
-                <div id="currentUserAvatar" style="font-size: 64px; margin-bottom: 10px;">🐼</div>
-                <div id="currentUserName" style="font-size: 16px; font-weight: bold; margin-bottom: 5px;">小勇士</div>
+                <div id="currentUserAvatar" style="font-size: 64px; margin-bottom: 6px;">🐼</div>
+                <div id="currentUserName" style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">小勇士</div>
                 <div style="font-size: 14px; opacity: 0.9;">当前用户</div>
                 <button class="btn" onclick="showEditUserModal()" style="margin-top: 15px; width: auto; padding: 10px 20px; background: white; color: #667eea;">✏️ 编辑资料</button>
             </div>
@@ -485,14 +485,14 @@
                 
                 <!-- 头像选择 -->
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 10px; font-weight: bold;">选择头像：</label>
+                    <label style="display: block; margin-bottom: 6px; font-weight: bold;">选择头像：</label>
                     <div id="avatarSelector" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;"></div>
                 </div>
                 
                 <!-- 姓名输入 -->
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 10px; font-weight: bold;">用户姓名：</label>
-                    <input type="text" id="editUserNameInput" style="width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px;" placeholder="请输入姓名" maxlength="10">
+                    <label style="display: block; margin-bottom: 6px; font-weight: bold;">用户姓名：</label>
+                    <input type="text" id="editUserNameInput" style="width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 14px;" placeholder="请输入姓名" maxlength="10">
                 </div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -520,7 +520,7 @@
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">📋 每日任务</h2>
             
-            <div style="text-align: center; background: #F7F9FC; padding: 15px; border-radius: 15px; margin-bottom: 15px;">
+            <div style="text-align: center; background: #F7F9FC; padding: 15px; border-radius: 15px; margin-bottom: 4px;">
                 <div style="font-size: 14px; color: #666;">完成任务获得丰厚奖励！</div>
                 <div style="font-size: 20px; font-weight: bold; color: #667eea; margin-top: 5px;">今日进度: <span id="tasksCompleted">0</span>/<span id="totalTasks">5</span></div>
             </div>
@@ -564,13 +564,13 @@
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">📕 错题本</h2>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 4px;">
                 <div style="flex: 1; background: #FFEBEE; padding: 15px; border-radius: 10px; text-align: center;">
-                    <div style="font-size: 16px; font-weight: bold; color: #C62828;" id="errorCount">0</div>
+                    <div style="font-size: 14px; font-weight: bold; color: #C62828;" id="errorCount">0</div>
                     <div style="font-size: 12px; color: #666;">错题总数</div>
                 </div>
                 <div style="flex: 1; background: #E8F5E9; padding: 15px; border-radius: 10px; text-align: center;">
-                    <div style="font-size: 16px; font-weight: bold; color: #2E7D32;" id="errorFixed">0</div>
+                    <div style="font-size: 14px; font-weight: bold; color: #2E7D32;" id="errorFixed">0</div>
                     <div style="font-size: 12px; color: #666;">已订正</div>
                 </div>
             </div>
@@ -589,7 +589,7 @@
             <div class="progress-bar" style="margin: 15px 0;">
                 <div class="progress-fill" id="reviewProgress" style="width: 0%"></div>
             </div>
-            <div style="text-align: center; margin-bottom: 15px; color: #666;">
+            <div style="text-align: center; margin-bottom: 4px; color: #666;">
                 <span id="reviewCurrent">1</span> / <span id="reviewTotal">0</span>
             </div>
             
@@ -603,7 +603,7 @@
             
             <!-- 掌握度仪表盘 -->
             <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px;">
-                <div style="text-align: center; font-size: 14px; opacity: 0.9; margin-bottom: 15px;">拼音掌握度</div>
+                <div style="text-align: center; font-size: 14px; opacity: 0.9; margin-bottom: 4px;">拼音掌握度</div>
                 <div style="display: flex; justify-content: space-around; text-align: center;">
                     <div>
                         <div style="font-size: 32px; font-weight: bold;" id="masteredCount">0</div>
@@ -620,7 +620,7 @@
                 </div>
                 <div style="margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: 10px; padding: 10px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <div style="font-size: 16px;">🎯</div>
+                        <div style="font-size: 14px;">🎯</div>
                         <div style="flex: 1;">
                             <div style="font-size: 12px; opacity: 0.9;">今日推荐</div>
                             <div style="font-size: 14px; font-weight: bold;" id="todayRecommendation">分析中...</div>
@@ -631,23 +631,23 @@
             </div>
             
             <!-- 薄弱点分析 -->
-            <div style="background: #FFF3E0; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
-                <div style="font-size: 16px; font-weight: bold; color: #E65100; margin-bottom: 10px;">⚠️ 薄弱点分析</div>
+            <div style="background: #FFF3E0; border-radius: 15px; padding: 15px; margin-bottom: 4px;">
+                <div style="font-size: 14px; font-weight: bold; color: #E65100; margin-bottom: 6px;">⚠️ 薄弱点分析</div>
                 <div id="weakPointsList" style="display: flex; flex-wrap: wrap; gap: 8px;">
                     <div style="text-align: center; width: 100%; color: #999; padding: 20px;">暂无薄弱点数据，多练习几次即可分析</div>
                 </div>
             </div>
             
             <!-- 拼音掌握度热力图 -->
-            <div style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">📊 拼音掌握度热力图</div>
-                <div style="font-size: 12px; color: #666; margin-bottom: 10px;">🟢 熟练 🟡 学习中 🔴 薄弱 ⚪ 未练习</div>
+            <div style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">📊 拼音掌握度热力图</div>
+                <div style="font-size: 12px; color: #666; margin-bottom: 6px;">🟢 熟练 🟡 学习中 🔴 薄弱 ⚪ 未练习</div>
                 <div id="masteryHeatmap" style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;"></div>
             </div>
             
             <!-- 遗忘曲线复习提醒 -->
-            <div style="background: #E3F2FD; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
-                <div style="font-size: 16px; font-weight: bold; color: #1565C0; margin-bottom: 10px;">🧠 遗忘曲线复习</div>
+            <div style="background: #E3F2FD; border-radius: 15px; padding: 15px; margin-bottom: 4px;">
+                <div style="font-size: 14px; font-weight: bold; color: #1565C0; margin-bottom: 6px;">🧠 遗忘曲线复习</div>
                 <div id="reviewReminderList">
                     <div style="text-align: center; color: #999; padding: 20px;">暂无需要复习的内容</div>
                 </div>
@@ -662,8 +662,8 @@
             <h2 style="text-align: center; margin: 10px 0;">🎵 拼音儿歌</h2>
             
             <div style="background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px; text-align: center;">
-                <div style="font-size: 48px; margin-bottom: 10px;">🎵</div>
-                <div style="font-size: 16px;">跟着儿歌学拼音，快乐又轻松！</div>
+                <div style="font-size: 48px; margin-bottom: 6px;">🎵</div>
+                <div style="font-size: 14px;">跟着儿歌学拼音，快乐又轻松！</div>
             </div>
             
             <div id="songsList">
@@ -684,14 +684,14 @@
             <!-- 故事剧情展示 -->
             <div id="storyScene" class="hidden" style="background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 15px; padding: 20px; color: white; min-height: 300px;">
                 <div id="storyDialogue" style="margin-bottom: 20px;">
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px;">
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 6px;">
                         <div style="font-size: 12px; color: #aaa; margin-bottom: 5px;">📖 剧情</div>
-                        <div id="storyText" style="font-size: 16px; line-height: 1.6;"></div>
+                        <div id="storyText" style="font-size: 14px; line-height: 1.6;"></div>
                     </div>
                 </div>
                 
                 <div id="storyQuestion" class="hidden">
-                    <div style="background: rgba(102, 126, 234, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                    <div style="background: rgba(102, 126, 234, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 4px;">
                         <div style="font-size: 12px; color: #aaa; margin-bottom: 5px;">❓ 挑战</div>
                         <div id="storyQuestionText" style="font-size: 20px; font-weight: bold; text-align: center;"></div>
                     </div>
@@ -707,7 +707,7 @@
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🎒 我的背包</h2>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto;">
+            <div style="display: flex; gap: 10px; margin-bottom: 4px; overflow-x: auto;">
                 <div class="shop-tab active" onclick="showInventoryTab('treasures')">💎 宝物</div>
                 <div class="shop-tab" onclick="showInventoryTab('materials')">🔧 材料</div>
                 <div class="shop-tab" onclick="showInventoryTab('consumables')">🧪 消耗品</div>
@@ -722,7 +722,7 @@
             <h2 style="text-align: center; margin: 10px 0;">⚔️ 装备升级</h2>
             
             <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px;">
-                <div style="text-align: center; font-size: 14px; opacity: 0.9; margin-bottom: 10px;">当前装备等级</div>
+                <div style="text-align: center; font-size: 14px; opacity: 0.9; margin-bottom: 6px;">当前装备等级</div>
                 <div style="display: flex; justify-content: space-around;">
                     <div style="text-align: center;">
                         <div style="font-size: 32px;">⚔️</div>
@@ -1463,8 +1463,8 @@
             
             var html = '';
             reminders.forEach(function(r) {
-                html += '<div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">';
-                html += '<div><span style="font-size: 18px; font-weight: bold;">' + r.pinyin + '</span> <span style="font-size: 12px; color: #666;">' + r.message + '</span></div>';
+                html += '<div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">';
+                html += '<div><span style="font-size: 14px; font-weight: bold;">' + r.pinyin + '</span> <span style="font-size: 12px; color: #666;">' + r.message + '</span></div>';
                 html += '<button class="btn" onclick="quickPractice(\'' + r.pinyin + '\')" style="padding: 5px 10px; font-size: 12px;">复习</button>';
                 html += '</div>';
             });
@@ -1603,14 +1603,14 @@
             
             var html = '';
             pinyinSongs.forEach(function(song, index) {
-                html += '<div style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;" onclick="playSong(' + index + ')" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'scale(1)\'" style="transition: transform 0.2s;">';
+                html += '<div style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;" onclick="playSong(' + index + ')" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'scale(1)\'" style="transition: transform 0.2s;">';
                 html += '<div style="display: flex; align-items: center; gap: 15px;">';
-                html += '<div style="width: 60px; height: 60px; border-radius: 50%; background: ' + song.color + '; display: flex; align-items: center; justify-content: center; font-size: 16px;">🎵</div>';
+                html += '<div style="width: 60px; height: 60px; border-radius: 50%; background: ' + song.color + '; display: flex; align-items: center; justify-content: center; font-size: 14px;">🎵</div>';
                 html += '<div style="flex: 1;">';
-                html += '<div style="font-size: 18px; font-weight: bold;">' + song.title + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold;">' + song.title + '</div>';
                 html += '<div style="font-size: 14px; color: #666; margin-top: 5px;">学习目标：' + song.target + '</div>';
                 html += '</div>';
-                html += '<div style="font-size: 16px;">▶️</div>';
+                html += '<div style="font-size: 14px;">▶️</div>';
                 html += '</div>';
                 html += '</div>';
             });
@@ -1627,13 +1627,13 @@
             if (!container) return;
             
             var html = '<div style="background: linear-gradient(135deg, ' + currentSong.color + ', ' + adjustColor(currentSong.color, -20) + '); border-radius: 15px; padding: 20px; color: white;">';
-            html += '<button class="btn" onclick="renderSongsList()" style="background: rgba(255,255,255,0.3); color: white; margin-bottom: 15px;">← 返回列表</button>';
+            html += '<button class="btn" onclick="renderSongsList()" style="background: rgba(255,255,255,0.3); color: white; margin-bottom: 4px;">← 返回列表</button>';
             html += '<div style="text-align: center; margin-bottom: 20px;">';
-            html += '<div style="font-size: 16px; font-weight: bold;">' + currentSong.title + '</div>';
+            html += '<div style="font-size: 14px; font-weight: bold;">' + currentSong.title + '</div>';
             html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">学习目标：' + currentSong.target + '</div>';
             html += '</div>';
             
-            html += '<div id="songLyrics" style="background: rgba(255,255,255,0.2); border-radius: 10px; padding: 20px; margin-bottom: 15px;">';
+            html += '<div id="songLyrics" style="background: rgba(255,255,255,0.2); border-radius: 10px; padding: 20px; margin-bottom: 4px;">';
             html += renderLyrics();
             html += '</div>';
             
@@ -1661,7 +1661,7 @@
                 var opacity = isActive ? '1' : '0.5';
                 var scale = isActive ? 'scale(1.05)' : 'scale(1)';
                 html += '<div style="padding: 10px; margin: 5px 0; background: ' + (isActive ? 'rgba(255,255,255,0.3)' : 'transparent') + '; border-radius: 8px; transform: ' + scale + '; transition: all 0.3s; cursor: pointer;" onclick="jumpToLyric(' + index + ')" onmouseover="speak(\'' + line.pinyin + '\')">';
-                html += '<div style="font-size: 16px; font-weight: bold;">' + line.text + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold;">' + line.text + '</div>';
                 html += '<div style="font-size: 14px; opacity: 0.9;">' + line.pinyin + ' - ' + line.note + '</div>';
                 html += '</div>';
             });
@@ -1767,12 +1767,12 @@
                 
                 html += '<div style="background: ' + bg + '; border-radius: 15px; padding: 15px; color: white; cursor: ' + (chapter.unlocked ? 'pointer' : 'not-allowed') + '; opacity: ' + opacity + ';" onclick="' + (chapter.unlocked ? 'startChapter(' + chapter.id + ')' : '') + '">';
                 html += '<div style="display: flex; align-items: center; gap: 15px;">';
-                html += '<div style="font-size: 40px;">' + chapter.emoji + '</div>';
+                html += '<div style="font-size: 36px;">' + chapter.emoji + '</div>';
                 html += '<div style="flex: 1;">';
-                html += '<div style="font-size: 18px; font-weight: bold;">' + statusEmoji + ' ' + chapter.title + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold;">' + statusEmoji + ' ' + chapter.title + '</div>';
                 html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">' + chapter.desc + '</div>';
                 html += '</div>';
-                html += chapter.completed ? '<div style="font-size: 16px;">🏆</div>' : '';
+                html += chapter.completed ? '<div style="font-size: 14px;">🏆</div>' : '';
                 html += '</div>';
                 html += '</div>';
             });
@@ -1820,7 +1820,7 @@
                 
                 var html = '';
                 scene.options.forEach(function(opt) {
-                    html += '<button class="option-btn" onclick="answerStoryQuestion(\'' + opt + '\', \'' + scene.pinyin + '\')" style="font-size: 18px; padding: 12px;">' + opt + '</button>';
+                    html += '<button class="option-btn" onclick="answerStoryQuestion(\'' + opt + '\', \'' + scene.pinyin + '\')" style="font-size: 14px; padding: 12px;">' + opt + '</button>';
                 });
                 storyOptionsEl.innerHTML = html;
                 
@@ -1916,7 +1916,7 @@
         // 显示通用提示
         function showToast(message, type) {
             var toast = document.createElement('div');
-            toast.style.cssText = 'position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: ' + (type === 'success' ? '#4CAF50' : '#f44336') + '; color: white; padding: 15px 30px; border-radius: 10px; font-size: 16px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: fadeInOut 2s ease;';
+            toast.style.cssText = 'position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: ' + (type === 'success' ? '#4CAF50' : '#f44336') + '; color: white; padding: 15px 30px; border-radius: 10px; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: fadeInOut 2s ease;';
             toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(function() { toast.remove(); }, 2000);
@@ -2095,7 +2095,7 @@ function showPage(pageId) {
                 html += '<div style="font-size: 28px;">' + stage.icon + '</div>';
                 html += '<div>';
                 html += '<div style="font-size: 14px; color: #666;">' + stage.name + '</div>';
-                html += '<div style="font-size: 18px; font-weight: bold; color: ' + stage.color + ';">' + stage.title + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold; color: ' + stage.color + ';">' + stage.title + '</div>';
                 html += '</div>';
                 html += '<div style="margin-left: auto; background: ' + stage.color + '; color: white; padding: 5px 15px; border-radius: 15px; font-size: 12px;">';
                 html += stageLevels.filter(function(l) { return l.completed; }).length + '/' + stageLevels.length + ' 关';
@@ -2111,7 +2111,7 @@ function showPage(pageId) {
                     var onclick = lv.locked ? '' : 'onclick="startLevel(' + lv.id + ')"';
                     
                     html += '<div style="width: 80px; cursor: ' + (lv.locked ? 'not-allowed' : 'pointer') + '; opacity: ' + (lv.locked ? 0.6 : 1) + ';" ' + onclick + '>';
-                    html += '<div style="width: 60px; height: 60px; border-radius: 50%; background: ' + bgColor + '; color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; margin: 0 auto 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);' + (lv.locked ? '' : ' transition: transform 0.2s;') + '">' + icon + '</div>';
+                    html += '<div style="width: 60px; height: 60px; border-radius: 50%; background: ' + bgColor + '; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; margin: 0 auto 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);' + (lv.locked ? '' : ' transition: transform 0.2s;') + '">' + icon + '</div>';
                     html += '<div style="text-align: center; font-size: 11px; font-weight: bold; color: #333;">' + lv.name + '</div>';
                     html += '<div style="text-align: center; font-size: 9px; color: #666; margin-top: 2px;">' + lv.desc + '</div>';
                     html += '</div>';
@@ -2443,7 +2443,7 @@ function showPage(pageId) {
             
             var html = '';
             q.options.forEach(function(opt) {
-                html += '<button class="option-btn" onclick="checkLevelAnswer(this, \'' + opt + '\', \'' + q.a + '\')" style="font-size: 18px;">' + opt + '</button>';
+                html += '<button class="option-btn" onclick="checkLevelAnswer(this, \'' + opt + '\', \'' + q.a + '\')" style="font-size: 14px;">' + opt + '</button>';
             });
             document.getElementById('optionsGrid').innerHTML = html;
         }
@@ -2677,7 +2677,7 @@ function showPage(pageId) {
         function showInitial() {
             setTab(1);
             updateTaskProgress('task_practice', 1);
-            var html = '<div style="margin-bottom: 15px; text-align: center;">';
+            var html = '<div style="margin-bottom: 4px; text-align: center;">';
             html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
             html += '<button class="btn" onclick="startInitialTest()" style="width: auto; padding: 10px 20px;">📝 小测试</button>';
             html += '</div>';
@@ -2742,7 +2742,7 @@ function showPage(pageId) {
                 // 测试结束
                 var html = '<div style="text-align: center; padding: 40px;">';
                 html += '<h2>🎉 测试完成!</h2>';
-                html += '<p style="font-size: 16px; margin: 20px 0;">得分: ' + testScore + '/' + initialTestData.length + '</p>';
+                html += '<p style="font-size: 14px; margin: 20px 0;">得分: ' + testScore + '/' + initialTestData.length + '</p>';
                 html += '<button class="btn" onclick="showInitial()">返回学习</button>';
                 html += '</div>';
                 document.getElementById('learningContent').innerHTML = html;
@@ -2755,7 +2755,7 @@ function showPage(pageId) {
             html += '<h2 style="font-size: 48px; margin: 30px 0;">"' + q.char + '" 的声母是?</h2>';
             html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
             q.options.forEach(function(opt) {
-                html += '<button class="btn" onclick="checkInitialAnswer(\'' + opt + '\')" style="font-size: 16px; padding: 20px;">' + opt + '</button>';
+                html += '<button class="btn" onclick="checkInitialAnswer(\'' + opt + '\')" style="font-size: 14px; padding: 20px;">' + opt + '</button>';
             });
             html += '</div>';
             html += '</div>';
@@ -2777,7 +2777,7 @@ function showPage(pageId) {
         function showFinal() {
             setTab(2);
             updateTaskProgress('task_practice', 1);
-            var html = '<div style="margin-bottom: 15px; text-align: center;">';
+            var html = '<div style="margin-bottom: 4px; text-align: center;">';
             html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
             html += '<button class="btn" onclick="startFinalTest()" style="width: auto; padding: 10px 20px;">📝 小测试</button>';
             html += '</div>';
@@ -2825,7 +2825,7 @@ function showPage(pageId) {
             if (currentTestIndex >= finalTestData.length) {
                 var html = '<div style="text-align: center; padding: 40px;">';
                 html += '<h2>🎉 测试完成!</h2>';
-                html += '<p style="font-size: 16px; margin: 20px 0;">得分: ' + testScore + '/' + finalTestData.length + '</p>';
+                html += '<p style="font-size: 14px; margin: 20px 0;">得分: ' + testScore + '/' + finalTestData.length + '</p>';
                 html += '<button class="btn" onclick="showFinal()">返回学习</button>';
                 html += '</div>';
                 document.getElementById('learningContent').innerHTML = html;
@@ -2860,7 +2860,7 @@ function showPage(pageId) {
         function showWhole() {
             setTab(3);
             updateTaskProgress('task_practice', 1);
-            var html = '<div style="margin-bottom: 15px; text-align: center;">';
+            var html = '<div style="margin-bottom: 4px; text-align: center;">';
             html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
             html += '<button class="btn" onclick="startWholeTest()" style="width: auto; padding: 10px 20px;">📝 小测试</button>';
             html += '</div>';
@@ -2905,7 +2905,7 @@ function showPage(pageId) {
             if (currentTestIndex >= wholeTestData.length) {
                 var html = '<div style="text-align: center; padding: 40px;">';
                 html += '<h2>🎉 测试完成!</h2>';
-                html += '<p style="font-size: 16px; margin: 20px 0;">得分: ' + testScore + '/' + wholeTestData.length + '</p>';
+                html += '<p style="font-size: 14px; margin: 20px 0;">得分: ' + testScore + '/' + wholeTestData.length + '</p>';
                 html += '<button class="btn" onclick="showWhole()">返回学习</button>';
                 html += '</div>';
                 document.getElementById('learningContent').innerHTML = html;
@@ -2952,8 +2952,8 @@ function showPage(pageId) {
                 {py: 'ü', tones: ['ǖ', 'ǘ', 'ǚ', 'ǜ'], files: ['v1', 'v2', 'v3', 'v4']}
             ];
             
-            var html = '<div style="margin-bottom: 15px; padding: 10px; background: #E3F2FD; border-radius: 10px;">';
-            html += '<h3 style="color: #1565C0; margin-bottom: 10px;">🎯 声调说明</h3>';
+            var html = '<div style="margin-bottom: 4px; padding: 10px; background: #E3F2FD; border-radius: 10px;">';
+            html += '<h3 style="color: #1565C0; margin-bottom: 6px;">🎯 声调说明</h3>';
             html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px;">';
             html += '<div>一声(阴平): 高平调 ˉ 如 mā</div>';
             html += '<div>二声(阳平): 中升调 ˊ 如 má</div>';
@@ -3073,7 +3073,7 @@ function showPage(pageId) {
             if (currentTestIndex >= 10) {
                 var html = '<div style="text-align: center; padding: 40px;">';
                 html += '<h2>🎉 声调测试完成!</h2>';
-                html += '<p style="font-size: 16px; margin: 20px 0;">得分: ' + testScore + '/10</p>';
+                html += '<p style="font-size: 14px; margin: 20px 0;">得分: ' + testScore + '/10</p>';
                 html += '<button class="btn" onclick="showTones()">返回声调学习</button>';
                 html += '</div>';
                 document.getElementById('learningContent').innerHTML = html;
@@ -3196,19 +3196,19 @@ function showPage(pageId) {
             setTab(5);
             updateTaskProgress('task_practice', 1);
             
-            var html = '<div style="margin-bottom: 15px; padding: 10px; background: #E8F5E9; border-radius: 10px;">';
-            html += '<h3 style="color: #2E7D32; margin-bottom: 10px;">🎯 拼读训练</h3>';
+            var html = '<div style="margin-bottom: 4px; padding: 10px; background: #E8F5E9; border-radius: 10px;">';
+            html += '<h3 style="color: #2E7D32; margin-bottom: 6px;">🎯 拼读训练</h3>';
             html += '<p style="font-size: 14px; color: #666;">点击声母和韵母，学习拼音拼读规则</p>';
             html += '</div>';
             
             html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">';
-            html += '<div><h4 style="margin-bottom: 10px;">声母</h4><div class="pinyin-grid" style="grid-template-columns: repeat(4, 1fr);">';
+            html += '<div><h4 style="margin-bottom: 6px;">声母</h4><div class="pinyin-grid" style="grid-template-columns: repeat(4, 1fr);">';
             pinyinData.initial.forEach(function(py) {
                 html += '<div class="pinyin-card" onclick="selectBlendInitial(\'' + py + '\')" id="blend-initial-' + py + '">' + py + '</div>';
             });
             html += '</div></div>';
             
-            html += '<div><h4 style="margin-bottom: 10px;">韵母</h4><div class="pinyin-grid" style="grid-template-columns: repeat(4, 1fr);">';
+            html += '<div><h4 style="margin-bottom: 6px;">韵母</h4><div class="pinyin-grid" style="grid-template-columns: repeat(4, 1fr);">';
             ['a', 'o', 'e', 'i', 'u', 'v'].forEach(function(py) {
                 html += '<div class="pinyin-card" onclick="selectBlendFinal(\'' + py + '\')" id="blend-final-' + py + '">' + py + '</div>';
             });
@@ -3216,8 +3216,8 @@ function showPage(pageId) {
             html += '</div>';
             
             html += '<div style="text-align: center; padding: 20px; background: #FFF3E0; border-radius: 15px; margin-bottom: 20px;">';
-            html += '<h3 style="margin-bottom: 15px;">拼读结果</h3>';
-            html += '<div id="blendResult" style="font-size: 48px; font-weight: bold; color: #E65100; margin-bottom: 15px;">?</div>';
+            html += '<h3 style="margin-bottom: 4px;">拼读结果</h3>';
+            html += '<div id="blendResult" style="font-size: 48px; font-weight: bold; color: #E65100; margin-bottom: 4px;">?</div>';
             html += '<button class="btn" onclick="playBlend()" style="width: auto; padding: 15px 30px; margin-right: 10px;">🔊 听发音</button>';
             html += '<button class="btn btn-secondary" onclick="resetBlend()" style="width: auto; padding: 15px 30px;">重置</button>';
             html += '</div>';
@@ -3321,8 +3321,8 @@ function showPage(pageId) {
             setTab(6);
             updateTaskProgress('task_practice', 1);
             
-            var html = '<div style="margin-bottom: 15px; padding: 10px; background: #F3E5F5; border-radius: 10px;">';
-            html += '<h3 style="color: #7B1FA2; margin-bottom: 10px;">📚 词语拼音</h3>';
+            var html = '<div style="margin-bottom: 4px; padding: 10px; background: #F3E5F5; border-radius: 10px;">';
+            html += '<h3 style="color: #7B1FA2; margin-bottom: 6px;">📚 词语拼音</h3>';
             html += '<p style="font-size: 14px; color: #666;">学习常用词语的拼音和声调</p>';
             html += '</div>';
             
@@ -3331,7 +3331,7 @@ function showPage(pageId) {
                 var pinyinParts = item.pinyin.split(/(\s+)/).filter(function(p) { return p.trim(); });
                 var displayPinyin = pinyinParts.join(' ');
                 html += '<div class="pinyin-card" style="padding: 15px;" onclick="speakWord(\'' + item.pinyin.replace(/\s/g, '') + '\', \'' + item.word + '\')">';
-                html += '<div style="font-size: 28px; margin-bottom: 8px;">' + item.word + '</div>';
+                html += '<div style="font-size: 28px; margin-bottom: 4px;">' + item.word + '</div>';
                 html += '<div style="font-size: 20px; color: #667eea; letter-spacing: 5px;">' + displayPinyin + '</div>';
                 html += '<div style="font-size: 12px; color: #999; margin-top: 5px;">声调: ' + item.tone + '</div>';
                 html += '</div>';
@@ -3363,7 +3363,7 @@ function showPage(pageId) {
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<h3 style="font-size: 36px; margin-bottom: 20px;">' + randomWord.word + '</h3>';
             html += '<button class="btn" onclick="speakWord(\'' + randomWord.pinyin + '\', \'' + randomWord.word + '\')" style="width: auto; margin-bottom: 20px;">🔊 听拼音</button>';
-            html += '<p style="margin-bottom: 15px;">请选择正确的拼音：</p>';
+            html += '<p style="margin-bottom: 4px;">请选择正确的拼音：</p>';
             html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 400px; margin: 0 auto;">';
             
             // 生成选项（包含正确答案和3个干扰项）
@@ -3404,7 +3404,7 @@ function showPage(pageId) {
             
             if (errorLog.length === 0) {
                 html += '<div style="text-align: center; padding: 40px; background: #F5F5F5; border-radius: 15px;">';
-                html += '<p style="font-size: 18px; color: #666;">🎉 太棒了！你还没有犯过错误</p>';
+                html += '<p style="font-size: 14px; color: #666;">🎉 太棒了！你还没有犯过错误</p>';
                 html += '</div>';
             } else {
                 // 统计错误类型
@@ -3415,14 +3415,14 @@ function showPage(pageId) {
                 });
                 
                 html += '<div style="background: #FFEBEE; border-radius: 10px; padding: 15px; margin-bottom: 20px;">';
-                html += '<h3 style="color: #C62828; margin-bottom: 10px;">错误统计</h3>';
+                html += '<h3 style="color: #C62828; margin-bottom: 6px;">错误统计</h3>';
                 html += '<p>总错误次数：' + errorLog.length + '</p>';
                 html += '</div>';
                 
-                html += '<h3 style="margin-bottom: 15px;">最近错误记录</h3>';
+                html += '<h3 style="margin-bottom: 4px;">最近错误记录</h3>';
                 html += '<div style="max-height: 300px; overflow-y: auto;">';
                 errorLog.slice(-10).reverse().forEach(function(err) {
-                    html += '<div style="background: #f8f9fa; padding: 10px; margin-bottom: 10px; border-radius: 8px;">';
+                    html += '<div style="background: #f8f9fa; padding: 10px; margin-bottom: 6px; border-radius: 8px;">';
                     html += '<div><strong>题目：</strong>' + err.question + '</div>';
                     html += '<div style="color: #f44336;"><strong>你的答案：</strong>' + err.userAnswer + '</div>';
                     html += '<div style="color: #4CAF50;"><strong>正确答案：</strong>' + err.correctAnswer + '</div>';
@@ -3488,11 +3488,11 @@ function showPage(pageId) {
             Object.keys(users).forEach(function(userId) {
                 var user = users[userId];
                 var isCurrent = userId === currentUserId;
-                html += '<div style="background: ' + (isCurrent ? '#E3F2FD' : '#f8f9fa') + '; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">';
+                html += '<div style="background: ' + (isCurrent ? '#E3F2FD' : '#f8f9fa') + '; border-radius: 10px; padding: 15px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">';
                 html += '<div style="display: flex; align-items: center; gap: 15px;">';
-                html += '<div style="font-size: 40px;">' + user.avatar + '</div>';
+                html += '<div style="font-size: 36px;">' + user.avatar + '</div>';
                 html += '<div>';
-                html += '<div style="font-weight: bold; font-size: 18px;">' + user.name + (isCurrent ? ' (当前)' : '') + '</div>';
+                html += '<div style="font-weight: bold; font-size: 14px;">' + user.name + (isCurrent ? ' (当前)' : '') + '</div>';
                 html += '<div style="font-size: 12px; color: #666;">金币: ' + user.coins + ' | 关卡: ' + user.completedLevels + '</div>';
                 html += '</div>';
                 html += '</div>';
@@ -3672,7 +3672,7 @@ function showPage(pageId) {
             
             // 显示：汉字大字 + 提示条（选出XX）
             var displayHtml = '<div style="font-size: 72px; margin: 5px 0; color: #667eea;">' + char.char + '</div>';
-            displayHtml += '<div style="font-size: 16px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
+            displayHtml += '<div style="font-size: 14px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
             displayHtml += '请选出 "' + char.char + '" 的' + modeName + '';
             displayHtml += '</div>';
             displayHtml += '<button class="voice-btn" onclick="speakBattleChar()" style="margin-left: 10px;">🔊</button>';
@@ -3849,9 +3849,9 @@ function showPage(pageId) {
                 shopItems.pets.forEach(function(item) {
                     var owned = pets.owned.includes(item.id);
                     html += '<div class="shop-item" style="padding: 15px;">' +
-                        '<div style="font-size: 40px;">' + item.emoji + '</div>' +
+                        '<div style="font-size: 36px;">' + item.emoji + '</div>' +
                         '<div style="flex: 1; margin-left: 15px;">' +
-                            '<div style="font-weight: bold; font-size: 16px;">' + item.name + '</div>' +
+                            '<div style="font-weight: bold; font-size: 14px;">' + item.name + '</div>' +
                             '<div style="font-size: 12px; color: #666;">' + item.desc + '</div>' +
                         '</div>' +
                         '<button class="shop-item-btn" onclick="buyPet(\'' + item.id + '\',' + item.price + ')" ' + (owned ? 'disabled style="background:#ccc;"' : '') + '>' + 
@@ -3916,8 +3916,8 @@ function showPage(pageId) {
             html += '<button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>';
             html += '<h2 style="text-align: center; margin: 10px 0;">🐼 我的宠物</h2>';
             html += '<div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; text-align: center;">';
-            html += '<div style="font-size: 80px; margin-bottom: 10px;">' + currentPet.emoji + '</div>';
-            html += '<div style="font-size: 16px; font-weight: bold;">' + currentPet.name + '</div>';
+            html += '<div style="font-size: 80px; margin-bottom: 6px;">' + currentPet.emoji + '</div>';
+            html += '<div style="font-size: 14px; font-weight: bold;">' + currentPet.name + '</div>';
             html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">Lv.' + currentPet.level + ' | 当前出战</div>';
             // 经验条
             var expPercent = (currentPet.exp / currentPet.expToLevel * 100).toFixed(1);
@@ -3943,7 +3943,7 @@ function showPage(pageId) {
                 var isCurrent = petId === pets.current;
                 var petExpPercent = (pet.exp / pet.expToLevel * 100).toFixed(0);
                 html += '<div onclick="switchPet(\'' + petId + '\')" style="flex: 1; min-width: 100px; background: ' + (isCurrent ? '#E3F2FD' : '#f8f9fa') + '; border: 2px solid ' + (isCurrent ? '#667eea' : 'transparent') + '; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer;">';
-                html += '<div style="font-size: 40px;">' + pet.emoji + '</div>';
+                html += '<div style="font-size: 36px;">' + pet.emoji + '</div>';
                 html += '<div style="font-size: 12px; font-weight: bold;">' + pet.name + '</div>';
                 html += '<div style="font-size: 11px; color: #667eea; margin: 3px 0;">Lv.' + pet.level + '</div>';
                 html += '<div style="font-size: 10px; color: #666;">⚔️' + pet.attack + ' 🛡️' + pet.defense + '</div>';
@@ -3989,7 +3989,7 @@ function showPage(pageId) {
             
             if (errors.length === 0) {
                 listEl.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">' +
-                    '<div style="font-size: 48px; margin-bottom: 10px;">🎉</div>' +
+                    '<div style="font-size: 48px; margin-bottom: 6px;">🎉</div>' +
                     '<div>太棒了！你没有错题</div>' +
                 '</div>';
                 if (reviewBtn) reviewBtn.style.display = 'none';
@@ -4002,10 +4002,10 @@ function showPage(pageId) {
             errors.slice(0, 10).forEach(function(err, index) {
                 var date = new Date(err.time);
                 var timeStr = date.getMonth() + 1 + '/' + date.getDate() + ' ' + date.getHours() + ':' + String(date.getMinutes()).padStart(2, '0');
-                html += '<div style="background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #f44336;">';
+                html += '<div style="background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 6px; border-left: 4px solid #f44336;">';
                 html += '<div style="display: flex; justify-content: space-between; align-items: flex-start;">';
                 html += '<div style="flex: 1;">';
-                html += '<div style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px;">题目: ' + err.question + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold; color: #333; margin-bottom: 5px;">题目: ' + err.question + '</div>';
                 html += '<div style="color: #f44336; font-size: 14px;">❌ 你的答案: ' + err.userAnswer + '</div>';
                 html += '<div style="color: #4CAF50; font-size: 14px;">✅ 正确答案: ' + err.correctAnswer + '</div>';
                 html += '</div>';
@@ -4070,7 +4070,7 @@ function showPage(pageId) {
                 // 复习完成
                 var html = '<div style="text-align: center; padding: 40px;">';
                 html += '<h2>🎉 错题复习完成！</h2>';
-                html += '<p style="font-size: 16px; margin: 20px 0;">得分: ' + reviewScore + '/' + currentReviewErrors.length + '</p>';
+                html += '<p style="font-size: 14px; margin: 20px 0;">得分: ' + reviewScore + '/' + currentReviewErrors.length + '</p>';
                 html += '<p style="color: #666;">答对的题目已从错题本中移除</p>';
                 html += '<button class="btn" onclick="showPage(\'errorBook\')">返回错题本</button>';
                 html += '</div>';
@@ -4101,7 +4101,7 @@ function showPage(pageId) {
             
             var html = '<h3 style="font-size: 36px; margin-bottom: 20px;">' + err.question + '</h3>';
             if (err.errorType === 'tone') {
-                html += '<p style="margin-bottom: 15px; color: #666;">这是几声?</p>';
+                html += '<p style="margin-bottom: 4px; color: #666;">这是几声?</p>';
             }
             html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
             options.forEach(function(opt) {
@@ -4141,7 +4141,7 @@ function showPage(pageId) {
             if (tab === 'treasures') {
                 if (inventory.treasures.length === 0) {
                     html = '<div style="text-align: center; padding: 40px; color: #666;">' +
-                        '<div style="font-size: 48px; margin-bottom: 10px;">💎</div>' +
+                        '<div style="font-size: 48px; margin-bottom: 6px;">💎</div>' +
                         '<div>还没有宝物</div>' +
                         '<div style="font-size: 12px; margin-top: 10px;">去野外探险打怪可以获得宝物！</div>' +
                     '</div>';
@@ -4167,12 +4167,12 @@ function showPage(pageId) {
                 }
             } else if (tab === 'materials') {
                 html = '<div style="text-align: center; padding: 40px; color: #666;">' +
-                    '<div style="font-size: 48px; margin-bottom: 10px;">🔧</div>' +
+                    '<div style="font-size: 48px; margin-bottom: 6px;">🔧</div>' +
                     '<div>材料功能即将开放</div>' +
                 '</div>';
             } else if (tab === 'consumables') {
                 html = '<div style="text-align: center; padding: 40px; color: #666;">' +
-                    '<div style="font-size: 48px; margin-bottom: 10px;">🧪</div>' +
+                    '<div style="font-size: 48px; margin-bottom: 6px;">🧪</div>' +
                     '<div>消耗品功能即将开放</div>' +
                 '</div>';
             }
@@ -4207,14 +4207,14 @@ function showPage(pageId) {
             var html = '';
             
             // 武器部分 - 显示已解锁的武器列表
-            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;">';
-            html += '<div style="font-weight: bold; margin-bottom: 15px;">⚔️ 武器 (已解锁: ' + getUnlockedCount('weapon') + '/' + allEquipments.weapon.length + ')</div>';
+            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 4px;">';
+            html += '<div style="font-weight: bold; margin-bottom: 4px;">⚔️ 武器 (已解锁: ' + getUnlockedCount('weapon') + '/' + allEquipments.weapon.length + ')</div>';
             
             // 显示所有已解锁的武器
             allEquipments.weapon.forEach(function(item) {
                 if (!item.unlocked) return;
                 var isEquipped = equipped.weapon === item.id;
-                html += '<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
+                html += '<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 6px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
                 html += '<div style="font-size: 30px; margin-right: 15px;">' + item.icon + '</div>';
                 html += '<div style="flex: 1;">';
                 html += '<div style="font-weight: bold;">' + item.name + ' Lv.' + item.level + (isEquipped ? ' ✓' : '') + '</div>';
@@ -4232,13 +4232,13 @@ function showPage(pageId) {
             html += '</div>';
             
             // 防具部分
-            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;">';
-            html += '<div style="font-weight: bold; margin-bottom: 15px;">🛡️ 防具 (已解锁: ' + getUnlockedCount('armor') + '/' + allEquipments.armor.length + ')</div>';
+            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 4px;">';
+            html += '<div style="font-weight: bold; margin-bottom: 4px;">🛡️ 防具 (已解锁: ' + getUnlockedCount('armor') + '/' + allEquipments.armor.length + ')</div>';
             
             allEquipments.armor.forEach(function(item) {
                 if (!item.unlocked) return;
                 var isEquipped = equipped.armor === item.id;
-                html += '<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
+                html += '<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 6px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
                 html += '<div style="font-size: 30px; margin-right: 15px;">' + item.icon + '</div>';
                 html += '<div style="flex: 1;">';
                 html += '<div style="font-weight: bold;">' + item.name + ' Lv.' + item.level + (isEquipped ? ' ✓' : '') + '</div>';
@@ -4256,13 +4256,13 @@ function showPage(pageId) {
             html += '</div>';
             
             // 饰品部分
-            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;">';
-            html += '<div style="font-weight: bold; margin-bottom: 15px;">💍 饰品 (已解锁: ' + getUnlockedCount('accessory') + '/' + allEquipments.accessory.length + ')</div>';
+            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 4px;">';
+            html += '<div style="font-weight: bold; margin-bottom: 4px;">💍 饰品 (已解锁: ' + getUnlockedCount('accessory') + '/' + allEquipments.accessory.length + ')</div>';
             
             allEquipments.accessory.forEach(function(item) {
                 if (!item.unlocked) return;
                 var isEquipped = equipped.accessory === item.id;
-                html += '<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
+                html += '<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 6px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
                 html += '<div style="font-size: 30px; margin-right: 15px;">' + item.icon + '</div>';
                 html += '<div style="flex: 1;">';
                 html += '<div style="font-weight: bold;">' + item.name + ' Lv.' + item.level + (isEquipped ? ' ✓' : '') + '</div>';
