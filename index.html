@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.2.4 - 装备与宠物升级</title>
+    <title>拼音大冒险 v8.2.5 - 闯关题目不重复+音频修复</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -2511,6 +2511,18 @@
             showPage(div.id);
         }
         
+        // ========== 游戏版本信息 ==========
+        var GAME_VERSION = 'v8.2.5';
+        var GAME_BUILD_DATE = '2026-03-07';
+        
+        // 显示版本号
+        function showVersion() {
+            console.log('拼音大冒险 ' + GAME_VERSION + ' (' + GAME_BUILD_DATE + ')');
+        }
+        
+        // 页面加载时显示版本
+        document.addEventListener('DOMContentLoaded', showVersion);
+        
         // ========== v6.7 用户管理功能 ==========
         function showUserManager() {
             showPage('userManager');
@@ -3541,6 +3553,16 @@
         updateUI();
         renderAchievements();
         renderTasks();
+    </script>
+    
+    <!-- 版本号显示 -->
+    <div id="versionDisplay" style="position: fixed; bottom: 5px; right: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
+        拼音大冒险 v8.2.5 (2026-03-07)
+    </div>
+    
+    <script>
+        // 动态更新版本号
+        document.getElementById('versionDisplay').textContent = '拼音大冒险 ' + GAME_VERSION + ' (' + GAME_BUILD_DATE + ')';
     </script>
 </body>
 </html>
