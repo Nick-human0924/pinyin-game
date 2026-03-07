@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.5.0 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v8.5.1 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -252,7 +252,7 @@
             <div class="hero-subtitle">今天也要努力学习拼音哦！✨</div>
         </div>
 
-        <!-- 主菜单 - v8.5.0 底部Tab导航 -->
+        <!-- 主菜单 - v8.5.1 底部Tab导航 -->
         <div id="mainMenu" class="main-menu" style="padding-bottom: 120px; overflow-y: auto; height: calc(100vh - 180px);">
             
             <!-- Tab内容区域 -->
@@ -440,22 +440,22 @@
             
             <div class="map-location" onclick="explore('forest')">
                 <div>🌲 神秘森林</div>
-                <div style="font-size: 12px;">⚡10 | 怪物: 30% | 奖励: 10-30💰</div>
+                <div style="font-size: 12px;">⚡10 | 怪物: 40% | 奖励: 5-10💰</div>
             </div>
             
             <div class="map-location" onclick="explore('desert')">
                 <div>🏜️ 炎热沙漠</div>
-                <div style="font-size: 12px;">⚡15 | 怪物: 50% | 奖励: 20-50💰</div>
+                <div style="font-size: 12px;">⚡15 | 怪物: 60% | 奖励: 5-10💰</div>
             </div>
             
             <div class="map-location" onclick="explore('ocean')">
                 <div>🌊 深海秘境</div>
-                <div style="font-size: 12px;">⚡20 | 怪物: 70% | 奖励: 30-80💰</div>
+                <div style="font-size: 12px;">⚡20 | 怪物: 80% | 奖励: 5-10💰</div>
             </div>
             
             <div class="map-location" onclick="explore('volcano')">
                 <div>🌋 烈焰火山</div>
-                <div style="font-size: 12px;">⚡30 | BOSS战 | 奖励: 100-200💰</div>
+                <div style="font-size: 12px;">⚡30 | BOSS战 | 奖励: 5-10💰</div>
             </div>
         </div>
 
@@ -2083,6 +2083,11 @@
                 selectedLabel.style.color = '#667eea';
                 selectedLabel.style.fontWeight = 'bold';
             }
+            
+            // 切换到探险Tab时刷新关卡地图
+            if (tabName === 'adventure') {
+                renderLevelMap();
+            }
         }
 
 function showPage(pageId) {
@@ -3513,7 +3518,7 @@ function showPage(pageId) {
         }
         
         // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.5.0';
+        var GAME_VERSION = 'v8.5.1';
         var GAME_BUILD_DATE = '2026-03-07';
         
         // 显示版本号
@@ -4633,7 +4638,7 @@ function showPage(pageId) {
     
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v8.5.0 (2026-03-07)
+        拼音大冒险 v8.5.1 (2026-03-07)
     </div>
     
     <script>
