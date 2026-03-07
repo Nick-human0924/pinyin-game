@@ -904,24 +904,24 @@
         
         // ===== 成就系统数据 =====
         var achievements = [
-            { id: 'first_win', name: '初次胜利', desc: '首次通关任意关卡', icon: '🏆', reward: 50, condition: function() { return completedLevels >= 1; }, unlocked: false },
-            { id: 'level_master', name: '闯关达人', desc: '通关5个关卡', icon: '⭐', reward: 100, condition: function() { return completedLevels >= 5; }, unlocked: false },
-            { id: 'level_king', name: '闯关王者', desc: '通关全部15关', icon: '👑', reward: 500, icon: '👑', reward: 500, condition: function() { return completedLevels >= 15; }, unlocked: false },
-            { id: 'battle_hero', name: '战斗英雄', desc: '赢得5场战斗胜利', icon: '⚔️', reward: 100, condition: function() { return battleWins >= 5; }, unlocked: false },
-            { id: 'rich', name: '小有积蓄', desc: '拥有500金币', icon: '💰', reward: 50, condition: function() { return coins >= 500; }, unlocked: false },
-            { id: 'streak_3', name: '坚持不懈', desc: '连续打卡3天', icon: '🔥', reward: 100, condition: function() { return streak >= 3; }, unlocked: false },
-            { id: 'shopaholic', name: '购物达人', desc: '购买5件商品', icon: '🛍️', reward: 100, condition: function() { return ownedItems.length >= 5; }, unlocked: false },
-            { id: 'perfect', name: '完美答题', desc: '一关中3题全对', icon: '💯', reward: 50, condition: function() { return perfectLevels > 0; }, unlocked: false }
+            { id: 'first_win', name: '初次胜利', desc: '首次通关任意关卡', icon: '🏆', reward: 10, condition: function() { return completedLevels >= 1; }, unlocked: false },
+            { id: 'level_master', name: '闯关达人', desc: '通关5个关卡', icon: '⭐', reward: 15, condition: function() { return completedLevels >= 5; }, unlocked: false },
+            { id: 'level_king', name: '闯关王者', desc: '通关全部15关', icon: '👑', reward: 20, icon: '👑', reward: 20, condition: function() { return completedLevels >= 15; }, unlocked: false },
+            { id: 'battle_hero', name: '战斗英雄', desc: '赢得5场战斗胜利', icon: '⚔️', reward: 15, condition: function() { return battleWins >= 5; }, unlocked: false },
+            { id: 'rich', name: '小有积蓄', desc: '拥有500金币', icon: '💰', reward: 10, condition: function() { return coins >= 500; }, unlocked: false },
+            { id: 'streak_3', name: '坚持不懈', desc: '连续打卡3天', icon: '🔥', reward: 15, condition: function() { return streak >= 3; }, unlocked: false },
+            { id: 'shopaholic', name: '购物达人', desc: '购买5件商品', icon: '🛍️', reward: 15, condition: function() { return ownedItems.length >= 5; }, unlocked: false },
+            { id: 'perfect', name: '完美答题', desc: '一关中3题全对', icon: '💯', reward: 10, condition: function() { return perfectLevels > 0; }, unlocked: false }
         ];
         var perfectLevels = 0;
         
         // ===== 任务系统数据 =====
         var dailyTasks = [
-            { id: 'task_login', name: '每日登录', desc: '登录游戏即可领取', reward: 20, progress: 1, target: 1, completed: true, claimed: false },
-            { id: 'task_practice', name: '练习拼音', desc: '完成1次基础教学', reward: 30, progress: 0, target: 1, completed: false, claimed: false },
-            { id: 'task_level', name: '闯关挑战', desc: '通关1个关卡', reward: 50, progress: 0, target: 1, completed: false, claimed: false },
-            { id: 'task_explore', name: '野外探险', desc: '进行1次野外探险', reward: 40, progress: 0, target: 1, completed: false, claimed: false },
-            { id: 'task_checkin', name: '每日打卡', desc: '完成今日打卡', reward: 50, progress: 0, target: 1, completed: false, claimed: false }
+            { id: 'task_login', name: '每日登录', desc: '登录游戏即可领取', reward: 5, progress: 1, target: 1, completed: true, claimed: false },
+            { id: 'task_practice', name: '练习拼音', desc: '完成1次基础教学', reward: 8, progress: 0, target: 1, completed: false, claimed: false },
+            { id: 'task_level', name: '闯关挑战', desc: '通关1个关卡', reward: 10, progress: 0, target: 1, completed: false, claimed: false },
+            { id: 'task_explore', name: '野外探险', desc: '进行1次野外探险', reward: 8, progress: 0, target: 1, completed: false, claimed: false },
+            { id: 'task_checkin', name: '每日打卡', desc: '完成今日打卡', reward: 10, progress: 0, target: 1, completed: false, claimed: false }
         ];
         
         // 游戏数据
@@ -1932,7 +1932,7 @@
             }
             
             // 奖励
-            var reward = 50 + currentChapter.id * 20;
+            var reward = 10 + currentChapter.id * 2;
             coins += reward;
             
             alert('🎉 章节完成！\n\n' + currentChapter.title + ' 已完成！\n获得 ' + reward + ' 金币奖励！');
@@ -2520,7 +2520,7 @@ function showPage(pageId) {
                 btn.classList.add('correct');
                 totalCorrect++;
                 levelCorrectCount++; // 记录本关答对
-                coins += 2; // 每题答对给2金币
+                coins += 1; // 每题答对给1金币
                 addPetExp(2); // 答对题目宠物获得经验
                 showToast('✅ 正确! +2经验', 'success');
             } else {
@@ -2573,7 +2573,7 @@ function showPage(pageId) {
                 if (currentLevel < levels.length) levels[currentLevel].locked = false;
             }
             // 通关奖励（每题已经给了2金币，这里给额外通关奖励）
-            var reward = lv.isBoss ? 50 : 20;
+            var reward = lv.isBoss ? 15 : 8;
             coins += reward;
             
             // 宠物获得经验
@@ -4603,12 +4603,12 @@ function showPage(pageId) {
         }
         function checkIn() {
             if (checkedIn) { alert('今天已打卡！'); return; }
-            checkedIn = true; streak++; coins += 50;
+            checkedIn = true; streak++; coins += 10;
             updateTaskProgress('task_checkin', 1);
             document.querySelector('.calendar-day.today').classList.add('checked');
             checkAchievements();
             updateUI();
-            alert('打卡成功！连续' + streak + '天，+50金币');
+            alert('打卡成功！连续' + streak + '天，+10金币');
         }
         function updateUI() {
             document.getElementById('coins').textContent = coins;
