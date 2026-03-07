@@ -1052,30 +1052,53 @@
         
         // 音频播放变量
         var currentAudio = null;
+        var audioContextInitialized = false;
         
-        // 主speak函数（v6.4.3 本地音频版）
+        // 初始化音频上下文（解决浏览器自动播放策略）
+        function initAudioContext() {
+            if (audioContextInitialized) return;
+            audioContextInitialized = true;
+            
+            // 尝试播放一个无声的音频来解锁音频上下文
+            var silentAudio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+            silentAudio.play().catch(function() {});
+        }
+        
+        // 主speak函数（v6.4.4 优先本地音频版）
         function speak(text) {
+            // 初始化音频上下文（首次调用时）
+            initAudioContext();
+            
             // 停止之前的音频
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio = null;
             }
             
-            // 优先使用Web Speech API播放中文拼音
-            if ('speechSynthesis' in window) {
-                var utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'zh-CN';
-                utterance.rate = 0.8;
-                speechSynthesis.speak(utterance);
-            } else {
-                // 降级使用本地音频
-                var audio = new Audio('audio/' + text + '.mp3');
-                currentAudio = audio;
-                audio.play().catch(function(e) {
-                    console.log('音频播放失败：' + text, e);
+            // 优先使用本地音频文件（更可靠）
+            var audio = new Audio('audio/' + text + '.mp3');
+            currentAudio = audio;
+            
+            var localAudioPlayed = false;
+            audio.play().then(function() {
+                localAudioPlayed = true;
+            }).catch(function(e) {
+                console.log('本地音频播放失败：' + text, e);
+                // 本地音频失败，尝试Web Speech API作为备用
+                if ('speechSynthesis' in window) {
+                    try {
+                        var utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = 'zh-CN';
+                        utterance.rate = 0.8;
+                        speechSynthesis.speak(utterance);
+                    } catch (speechError) {
+                        console.log('语音合成也失败了', speechError);
+                        showPinyinToast(text, getPronunciation(text));
+                    }
+                } else {
                     showPinyinToast(text, getPronunciation(text));
-                });
-            }
+                }
+            });
         }
         
         function speakCurrent() {
@@ -2149,6 +2172,9 @@
         
         // 播放带声调的拼音
         function speakTone(filename) {
+            // 初始化音频上下文
+            initAudioContext();
+            
             // 尝试播放音频，如果失败则使用Web Speech API
             if (currentAudio) {
                 currentAudio.pause();
@@ -2156,18 +2182,22 @@
             }
             var audio = new Audio('audio/' + filename + '.mp3');
             currentAudio = audio;
-            audio.play().catch(function(e) {
+            audio.play().then(function() {
+                // 本地音频播放成功
+            }).catch(function(e) {
                 // 音频文件不存在，使用Web Speech API
                 console.log('音频文件不存在，使用语音合成: ' + filename);
                 var pinyin = filename.replace(/\d/, '');
-                var tone = filename.slice(-1);
-                var toneMarks = {'1': '¯', '2': '´', '3': 'ˇ', '4': 'ˋ'};
                 
                 if ('speechSynthesis' in window) {
-                    var utterance = new SpeechSynthesisUtterance(pinyin);
-                    utterance.lang = 'zh-CN';
-                    utterance.rate = 0.8;
-                    speechSynthesis.speak(utterance);
+                    try {
+                        var utterance = new SpeechSynthesisUtterance(pinyin);
+                        utterance.lang = 'zh-CN';
+                        utterance.rate = 0.8;
+                        speechSynthesis.speak(utterance);
+                    } catch (speechError) {
+                        console.log('语音合成失败', speechError);
+                    }
                 }
             });
         }
