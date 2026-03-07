@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.3.0 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v8.3.6 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -200,26 +200,151 @@
             <div class="hero-subtitle">今天也要努力学习拼音哦！✨</div>
         </div>
 
-        <!-- 主菜单 -->
-        <div id="mainMenu" class="main-menu">
-            <div class="menu-card" onclick="goToLearning()"><div class="icon">📖</div><h2>基础教学</h2></div>
-            <div class="menu-card" onclick="goToLevelMap()"><div class="icon">🗺️</div><h2>闯关地图</h2></div>
-            <div class="menu-card" onclick="goToMap()"><div class="icon">🏕️</div><h2>野外探险</h2></div>
-            <div class="menu-card" onclick="showPage('pet')"><div class="icon">🐼</div><h2>我的宠物</h2></div>
-            <div class="menu-card" onclick="showPage('achievements')"><div class="icon">🏆</div><h2>成就</h2></div>
-            <div class="menu-card" onclick="showPage('tasks')"><div class="icon">📋</div><h2>任务</h2></div>
-            <div class="menu-card" onclick="showPage('shop')"><div class="icon">🏪</div><h2>商店</h2></div>
-            <div class="menu-card" onclick="showPage('inventory')"><div class="icon">🎒</div><h2>背包</h2></div>
-            <div class="menu-card" onclick="showPage('equipment')"><div class="icon">⚔️</div><h2>装备</h2></div>
-            <div class="menu-card" onclick="showPage('stats')"><div class="icon">📊</div><h2>统计</h2></div>
-            <div class="menu-card" onclick="showPage('learningPath')"><div class="icon">🎯</div><h2>智能学习</h2></div>
-            <div class="menu-card" onclick="showPage('songs')"><div class="icon">🎵</div><h2>拼音儿歌</h2></div>
-            <div class="menu-card" onclick="showPage('storyMode')"><div class="icon">📖</div><h2>故事模式</h2></div>
-            <div class="menu-card" onclick="showPage('errorBook')"><div class="icon">📕</div><h2>错题本</h2></div>
-            <div class="menu-card" onclick="showUserManager()"><div class="icon">👤</div><h2>用户管理</h2></div>
+        <!-- 主菜单 - v8.3.6 底部Tab导航 -->
+        <div id="mainMenu" class="main-menu" style="padding-bottom: 80px;">
+            
+            <!-- Tab内容区域 -->
+            <div id="tabContent">
+                
+                <!-- 学习Tab：基础教学、智能学习、拼音儿歌 -->
+                <div id="tab-study" class="tab-panel" style="display: block;">
+                    <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px;">
+                        <div class="menu-card" onclick="goToLearning()" style="padding: 35px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">📖</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">基础教学</div>
+                            <div style="font-size: 13px; opacity: 0.9;">声母·韵母·整体认读</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="showPage('learningPath')" style="padding: 35px; background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🎯</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">智能学习</div>
+                            <div style="font-size: 13px; opacity: 0.9;">薄弱点分析·热力图</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="showPage('songs')" style="padding: 35px; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🎵</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">拼音儿歌</div>
+                            <div style="font-size: 13px; opacity: 0.9;">唱着歌学拼音</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 探险Tab：闯关地图、野外探险、故事模式 -->
+                <div id="tab-adventure" class="tab-panel" style="display: none;">
+                    <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px;">
+                        <div class="menu-card" onclick="goToLevelMap()" style="padding: 35px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🗺️</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">闯关地图</div>
+                            <div style="font-size: 13px; opacity: 0.9;">15关拼音挑战</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="goToMap()" style="padding: 35px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🏕️</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">野外探险</div>
+                            <div style="font-size: 13px; opacity: 0.9;">战斗·宠物·赢金币</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="showPage('storyMode')" style="padding: 35px; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">📖</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">故事模式</div>
+                            <div style="font-size: 13px; opacity: 0.9;">拼音大冒险剧情</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 商店Tab：商店、背包、装备 -->
+                <div id="tab-shop" class="tab-panel" style="display: none;">
+                    <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px;">
+                        <div class="menu-card" onclick="showPage('shop')" style="padding: 35px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🏪</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">商店</div>
+                            <div style="font-size: 13px; opacity: 0.9;">购买道具·宠物</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="showPage('inventory')" style="padding: 35px; background: linear-gradient(135deg, #00bcd4, #0097a7); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🎒</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">背包</div>
+                            <div style="font-size: 13px; opacity: 0.9;">查看道具</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="showPage('equipment')" style="padding: 35px; background: linear-gradient(135deg, #795548, #5d4037); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">⚔️</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">装备</div>
+                            <div style="font-size: 13px; opacity: 0.9;">武器·防具·饰品</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 统计Tab：成就、任务、统计、错题本 -->
+                <div id="tab-stats" class="tab-panel" style="display: none;">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div class="menu-card" onclick="showPage('achievements')" style="padding: 30px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 40px; margin-bottom: 10px;">🏆</div>
+                            <div style="font-size: 16px; font-weight: bold;">成就</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="showPage('tasks')" style="padding: 30px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 40px; margin-bottom: 10px;">📋</div>
+                            <div style="font-size: 16px; font-weight: bold;">任务</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="showPage('stats')" style="padding: 30px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 40px; margin-bottom: 10px;">📊</div>
+                            <div style="font-size: 16px; font-weight: bold;">统计</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="showPage('errorBook')" style="padding: 30px; background: linear-gradient(135deg, #f44336, #d32f2f); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 40px; margin-bottom: 10px;">📕</div>
+                            <div style="font-size: 16px; font-weight: bold;">错题本</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 我的Tab：用户管理、我的宠物 -->
+                <div id="tab-profile" class="tab-panel" style="display: none;">
+                    <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px;">
+                        <div class="menu-card" onclick="showUserManager()" style="padding: 40px; background: linear-gradient(135deg, #607d8b, #455a64); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">👤</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">用户管理</div>
+                            <div style="font-size: 13px; opacity: 0.9;">切换用户·设置</div>
+                        </div>
+                        
+                        <div class="menu-card" onclick="showPage('pet')" style="padding: 40px; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🐼</div>
+                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">我的宠物</div>
+                            <div style="font-size: 13px; opacity: 0.9;">养成·升级·进化</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
-
-        <!-- 基础教学 -->
+        
+        <!-- 底部Tab导航：学习、探险、商店、统计、我的 -->
+        <div style="position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #eee; padding: 8px 0; z-index: 1000;">
+            <div style="display: flex; justify-content: space-around; max-width: 500px; margin: 0 auto;">
+                <div onclick="switchTab('study')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
+                    <div style="font-size: 24px;">📖</div>
+                    <div id="label-study" style="font-size: 12px; color: #667eea; font-weight: bold;">学习</div>
+                </div>
+                <div onclick="switchTab('adventure')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
+                    <div style="font-size: 24px;">🏕️</div>
+                    <div id="label-adventure" style="font-size: 12px; color: #999;">探险</div>
+                </div>
+                <div onclick="switchTab('shop')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
+                    <div style="font-size: 24px;">🏪</div>
+                    <div id="label-shop" style="font-size: 12px; color: #999;">商店</div>
+                </div>
+                <div onclick="switchTab('stats')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
+                    <div style="font-size: 24px;">📊</div>
+                    <div id="label-stats" style="font-size: 12px; color: #999;">统计</div>
+                </div>
+                <div onclick="switchTab('profile')" class="tab-btn" style="text-align: center; padding: 5px 12px; cursor: pointer;">
+                    <div style="font-size: 24px;">👤</div>
+                    <div id="label-profile" style="font-size: 12px; color: #999;">我的</div>
+                </div>
+            </div>
+        </div><!-- 基础教学 -->
         <div id="learning" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">📖 基础教学</h2>
@@ -1887,7 +2012,30 @@
             if (q) speak(q.q);
         }
         
-        function showPage(pageId) {
+        function switchTab(tabName) {
+    // 隐藏所有Tab内容
+    var tabs = ['study', 'adventure', 'shop', 'stats', 'profile'];
+    tabs.forEach(function(t) {
+        var panel = document.getElementById('tab-' + t);
+        var label = document.getElementById('label-' + t);
+        if (panel) panel.style.display = 'none';
+        if (label) {
+            label.style.color = '#999';
+            label.style.fontWeight = 'normal';
+        }
+    });
+    
+    // 显示选中的Tab
+    var selectedPanel = document.getElementById('tab-' + tabName);
+    var selectedLabel = document.getElementById('label-' + tabName);
+    if (selectedPanel) selectedPanel.style.display = 'block';
+    if (selectedLabel) {
+        selectedLabel.style.color = '#667eea';
+        selectedLabel.style.fontWeight = 'bold';
+    }
+}
+
+function showPage(pageId) {
             // 先隐藏所有页面（包括mainMenu）
             document.querySelectorAll('.page, #mainMenu').forEach(function(el) { el.classList.add('hidden'); });
             // 显示目标页面
@@ -1909,7 +2057,21 @@
             if (pageId === 'storyMode') renderStoryChapters();
         }
         
-        function showMainMenu() { showPage('mainMenu'); inBattle = false; }
+        function showMainMenu() { 
+            showPage('mainMenu'); 
+            inBattle = false;
+            // 重置到学习Tab
+            var tabs = ['study', 'adventure', 'shop', 'stats', 'profile'];
+            tabs.forEach(function(t) {
+                var panel = document.getElementById('tab-' + t);
+                var label = document.getElementById('label-' + t);
+                if (panel) panel.style.display = (t === 'study') ? 'block' : 'none';
+                if (label) {
+                    label.style.color = (t === 'study') ? '#667eea' : '#999';
+                    label.style.fontWeight = (t === 'study') ? 'bold' : 'normal';
+                }
+            });
+        }
         function goToLearning() { showPage('learning'); }
         function goToLevelMap() { showPage('levelMap'); renderLevelMap(); }
         function goToMap() { showPage('map'); }
@@ -3301,7 +3463,7 @@
         }
         
         // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.3.0';
+        var GAME_VERSION = 'v8.3.6';
         var GAME_BUILD_DATE = '2026-03-07';
         
         // 显示版本号
@@ -4420,8 +4582,8 @@
     </script>
     
     <!-- 版本号显示 -->
-    <div id="versionDisplay" style="position: fixed; bottom: 5px; right: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v8.3.0 (2026-03-07)
+    <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
+        拼音大冒险 v8.3.6 (2026-03-07)
     </div>
     
     <script>
