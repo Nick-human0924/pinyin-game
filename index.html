@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.4.1 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v8.4.2 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -48,6 +48,24 @@
         }
         .progress-fill {
             background: linear-gradient(90deg, #4FC3F7 0%, #81C784 100%) !important;
+        }
+    
+        /* 移动端适配 */
+        @media screen and (max-width: 480px) {
+            .main-menu { padding: 10px !important; }
+            #tab-study .menu-card, #tab-adventure .menu-card, #tab-shop .menu-card, #tab-profile .menu-card { 
+                min-height: 130px !important; padding: 25px 5px !important;
+            }
+            #tab-study .menu-card div:first-child, #tab-adventure .menu-card div:first-child { font-size: 32px !important; }
+            #tab-study .menu-card div:nth-child(2), #tab-adventure .menu-card div:nth-child(2) { font-size: 13px !important; }
+        }
+        
+        @media screen and (min-width: 768px) {
+            #tab-study .menu-card, #tab-adventure .menu-card, #tab-shop .menu-card, #tab-profile .menu-card { 
+                min-height: 200px !important; padding: 50px 20px !important;
+            }
+            #tab-study .menu-card div:first-child, #tab-adventure .menu-card div:first-child { font-size: 60px !important; }
+            #tab-study .menu-card div:nth-child(2), #tab-adventure .menu-card div:nth-child(2) { font-size: 22px !important; }
         }
     </style>
     <style>
@@ -170,6 +188,24 @@
         
         .daily-tasks-title { font-size: 16px; font-weight: bold; white-space: nowrap; color: #667eea; margin: 20px 0 10px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
         .refresh-time { font-size: 12px; color: #999; text-align: center; margin-top: 10px; }
+    
+        /* 移动端适配 */
+        @media screen and (max-width: 480px) {
+            .main-menu { padding: 10px !important; }
+            #tab-study .menu-card, #tab-adventure .menu-card, #tab-shop .menu-card, #tab-profile .menu-card { 
+                min-height: 130px !important; padding: 25px 5px !important;
+            }
+            #tab-study .menu-card div:first-child, #tab-adventure .menu-card div:first-child { font-size: 32px !important; }
+            #tab-study .menu-card div:nth-child(2), #tab-adventure .menu-card div:nth-child(2) { font-size: 13px !important; }
+        }
+        
+        @media screen and (min-width: 768px) {
+            #tab-study .menu-card, #tab-adventure .menu-card, #tab-shop .menu-card, #tab-profile .menu-card { 
+                min-height: 200px !important; padding: 50px 20px !important;
+            }
+            #tab-study .menu-card div:first-child, #tab-adventure .menu-card div:first-child { font-size: 60px !important; }
+            #tab-study .menu-card div:nth-child(2), #tab-adventure .menu-card div:nth-child(2) { font-size: 22px !important; }
+        }
     </style>
 </head>
 <body>
@@ -200,7 +236,7 @@
             <div class="hero-subtitle">今天也要努力学习拼音哦！✨</div>
         </div>
 
-        <!-- 主菜单 - v8.4.1 底部Tab导航 -->
+        <!-- 主菜单 - v8.4.2 底部Tab导航 -->
         <div id="mainMenu" class="main-menu" style="padding-bottom: 80px;">
             
             <!-- Tab内容区域 -->
@@ -3457,7 +3493,7 @@ function showPage(pageId) {
         }
         
         // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.4.1';
+        var GAME_VERSION = 'v8.4.2';
         var GAME_BUILD_DATE = '2026-03-07';
         
         // 显示版本号
@@ -4577,7 +4613,7 @@ function showPage(pageId) {
     
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v8.4.1 (2026-03-07)
+        拼音大冒险 v8.4.2 (2026-03-07)
     </div>
     
     <script>
