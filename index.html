@@ -65,7 +65,7 @@
         .menu-card .icon { font-size: 32px; margin-bottom: 4px; }
         .page { background: white; border-radius: 20px; padding: 20px; min-height: 500px; }
         .hidden { display: none !important; }
-        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px; border-radius: 25px; font-size: 14px; font-weight: bold; white-space: nowrap; cursor: pointer; width: 100%; margin: 10px 0; }
         .btn-secondary { background: #F7F9FC; color: #2C3E50; }
         .voice-btn { background: #4CAF50; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; margin-left: 10px; vertical-align: middle; }
         
@@ -129,7 +129,7 @@
         .pet-avatar { text-align: center; font-size: 80px; margin: 10px 0; }
         .pet-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
         .pet-stat { background: #F7F9FC; padding: 15px; border-radius: 15px; text-align: center; }
-        .pet-stat-value { font-size: 14px; font-weight: bold; color: #667eea; margin-top: 5px; }
+        .pet-stat-value { font-size: 14px; font-weight: bold; white-space: nowrap; color: #667eea; margin-top: 5px; }
         
         .map-location { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 15px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .shop-tabs { display: flex; gap: 8px; margin-bottom: 4px; overflow-x: auto; }
@@ -152,7 +152,7 @@
         .achievement-info { flex: 1; }
         .achievement-name { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
         .achievement-desc { font-size: 12px; color: #666; }
-        .achievement-reward { background: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #FF6B35; }
+        .achievement-reward { background: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; white-space: nowrap; color: #FF6B35; }
         .achievement-progress { margin-top: 8px; }
         .progress-text { font-size: 12px; color: #666; text-align: right; }
         
@@ -168,7 +168,7 @@
         .task-btn { background: #4CAF50; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 14px; cursor: pointer; margin-top: 10px; }
         .task-btn:disabled { background: #ccc; }
         
-        .daily-tasks-title { font-size: 14px; font-weight: bold; color: #667eea; margin: 20px 0 10px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+        .daily-tasks-title { font-size: 14px; font-weight: bold; white-space: nowrap; color: #667eea; margin: 20px 0 10px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
         .refresh-time { font-size: 12px; color: #999; text-align: center; margin-top: 10px; }
     </style>
 </head>
@@ -211,17 +211,17 @@
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         <div class="menu-card" onclick="goToLearning()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 36px; margin-bottom: 4px;">📖</div>
-                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">基础教学</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 4px;">基础教学</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('learningPath')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 36px; margin-bottom: 4px;">🎯</div>
-                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">智能学习</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 4px;">智能学习</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('songs')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 36px; margin-bottom: 4px;">🎵</div>
-                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">拼音儿歌</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 4px;">拼音儿歌</div>
                         </div>
                     </div>
                 </div>
@@ -232,17 +232,17 @@
                         
                         <div class="menu-card" onclick="goToLevelMap()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 36px; margin-bottom: 4px;">🗺️</div>
-                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">闯关地图</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 4px;">闯关地图</div>
                         </div>
                         
                         <div class="menu-card" onclick="goToMap()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 36px; margin-bottom: 4px;">🏕️</div>
-                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">野外探险</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 4px;">野外探险</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('storyMode')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 36px; margin-bottom: 4px;">📖</div>
-                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">故事模式</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 4px;">故事模式</div>
                         </div>
                     </div>
                 </div>
@@ -253,17 +253,17 @@
                         
                         <div class="menu-card" onclick="showPage('shop')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 36px; margin-bottom: 4px;">🏪</div>
-                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">商店</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 4px;">商店</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('inventory')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #00bcd4, #0097a7); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 36px; margin-bottom: 4px;">🎒</div>
-                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">背包</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 4px;">背包</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('equipment')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #795548, #5d4037); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 36px; margin-bottom: 4px;">⚔️</div>
-                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">装备</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 4px;">装备</div>
                         </div>
                     </div>
                 </div>
@@ -274,22 +274,22 @@
                         
                         <div class="menu-card" onclick="showPage('achievements')" style="padding: 30px 15px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 32px; margin-bottom: 6px;">🏆</div>
-                            <div style="font-size: 14px; font-weight: bold;">成就</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap;">成就</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('tasks')" style="padding: 30px 15px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 32px; margin-bottom: 6px;">📋</div>
-                            <div style="font-size: 14px; font-weight: bold;">任务</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap;">任务</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('stats')" style="padding: 30px 15px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 32px; margin-bottom: 6px;">📊</div>
-                            <div style="font-size: 14px; font-weight: bold;">统计</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap;">统计</div>
                         </div>
                         
                         <div class="menu-card" onclick="showPage('errorBook')" style="padding: 30px 15px; background: linear-gradient(135deg, #f44336, #d32f2f); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 32px; margin-bottom: 6px;">📕</div>
-                            <div style="font-size: 14px; font-weight: bold;">错题本</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap;">错题本</div>
                         </div>
                     </div>
                 </div>
@@ -371,7 +371,7 @@
         <div id="game" class="page hidden">
             <div class="quiz-header">
                 <button class="btn btn-secondary" onclick="goToLevelMap()" style="width: auto; padding: 10px 15px;">← 返回地图</button>
-                <span style="font-size: 14px; font-weight: bold;"><span id="currentQ">1</span>/<span id="totalQ">3</span></span>
+                <span style="font-size: 14px; font-weight: bold; white-space: nowrap;"><span id="currentQ">1</span>/<span id="totalQ">3</span></span>
                 <span style="font-size: 14px; color: #666;">关卡 <span id="currentLevel">1</span></span>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 33%"></div></div>
@@ -465,7 +465,7 @@
             <!-- 当前用户信息 -->
             <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; margin-bottom: 20px; color: white; text-align: center;">
                 <div id="currentUserAvatar" style="font-size: 64px; margin-bottom: 6px;">🐼</div>
-                <div id="currentUserName" style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">小勇士</div>
+                <div id="currentUserName" style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 5px;">小勇士</div>
                 <div style="font-size: 14px; opacity: 0.9;">当前用户</div>
                 <button class="btn" onclick="showEditUserModal()" style="margin-top: 15px; width: auto; padding: 10px 20px; background: white; color: #667eea;">✏️ 编辑资料</button>
             </div>
@@ -566,11 +566,11 @@
             
             <div style="display: flex; gap: 10px; margin-bottom: 4px;">
                 <div style="flex: 1; background: #FFEBEE; padding: 15px; border-radius: 10px; text-align: center;">
-                    <div style="font-size: 14px; font-weight: bold; color: #C62828;" id="errorCount">0</div>
+                    <div style="font-size: 14px; font-weight: bold; white-space: nowrap; color: #C62828;" id="errorCount">0</div>
                     <div style="font-size: 12px; color: #666;">错题总数</div>
                 </div>
                 <div style="flex: 1; background: #E8F5E9; padding: 15px; border-radius: 10px; text-align: center;">
-                    <div style="font-size: 14px; font-weight: bold; color: #2E7D32;" id="errorFixed">0</div>
+                    <div style="font-size: 14px; font-weight: bold; white-space: nowrap; color: #2E7D32;" id="errorFixed">0</div>
                     <div style="font-size: 12px; color: #666;">已订正</div>
                 </div>
             </div>
@@ -623,7 +623,7 @@
                         <div style="font-size: 14px;">🎯</div>
                         <div style="flex: 1;">
                             <div style="font-size: 12px; opacity: 0.9;">今日推荐</div>
-                            <div style="font-size: 14px; font-weight: bold;" id="todayRecommendation">分析中...</div>
+                            <div style="font-size: 14px; font-weight: bold; white-space: nowrap;" id="todayRecommendation">分析中...</div>
                         </div>
                         <button class="btn" onclick="startRecommendedPractice()" style="background: white; color: #667eea; padding: 8px 15px; font-size: 12px;">开始练习</button>
                     </div>
@@ -632,7 +632,7 @@
             
             <!-- 薄弱点分析 -->
             <div style="background: #FFF3E0; border-radius: 15px; padding: 15px; margin-bottom: 4px;">
-                <div style="font-size: 14px; font-weight: bold; color: #E65100; margin-bottom: 6px;">⚠️ 薄弱点分析</div>
+                <div style="font-size: 14px; font-weight: bold; white-space: nowrap; color: #E65100; margin-bottom: 6px;">⚠️ 薄弱点分析</div>
                 <div id="weakPointsList" style="display: flex; flex-wrap: wrap; gap: 8px;">
                     <div style="text-align: center; width: 100%; color: #999; padding: 20px;">暂无薄弱点数据，多练习几次即可分析</div>
                 </div>
@@ -640,14 +640,14 @@
             
             <!-- 拼音掌握度热力图 -->
             <div style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">📊 拼音掌握度热力图</div>
+                <div style="font-size: 14px; font-weight: bold; white-space: nowrap; margin-bottom: 6px;">📊 拼音掌握度热力图</div>
                 <div style="font-size: 12px; color: #666; margin-bottom: 6px;">🟢 熟练 🟡 学习中 🔴 薄弱 ⚪ 未练习</div>
                 <div id="masteryHeatmap" style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;"></div>
             </div>
             
             <!-- 遗忘曲线复习提醒 -->
             <div style="background: #E3F2FD; border-radius: 15px; padding: 15px; margin-bottom: 4px;">
-                <div style="font-size: 14px; font-weight: bold; color: #1565C0; margin-bottom: 6px;">🧠 遗忘曲线复习</div>
+                <div style="font-size: 14px; font-weight: bold; white-space: nowrap; color: #1565C0; margin-bottom: 6px;">🧠 遗忘曲线复习</div>
                 <div id="reviewReminderList">
                     <div style="text-align: center; color: #999; padding: 20px;">暂无需要复习的内容</div>
                 </div>
@@ -1464,7 +1464,7 @@
             var html = '';
             reminders.forEach(function(r) {
                 html += '<div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">';
-                html += '<div><span style="font-size: 14px; font-weight: bold;">' + r.pinyin + '</span> <span style="font-size: 12px; color: #666;">' + r.message + '</span></div>';
+                html += '<div><span style="font-size: 14px; font-weight: bold; white-space: nowrap;">' + r.pinyin + '</span> <span style="font-size: 12px; color: #666;">' + r.message + '</span></div>';
                 html += '<button class="btn" onclick="quickPractice(\'' + r.pinyin + '\')" style="padding: 5px 10px; font-size: 12px;">复习</button>';
                 html += '</div>';
             });
@@ -1607,7 +1607,7 @@
                 html += '<div style="display: flex; align-items: center; gap: 15px;">';
                 html += '<div style="width: 60px; height: 60px; border-radius: 50%; background: ' + song.color + '; display: flex; align-items: center; justify-content: center; font-size: 14px;">🎵</div>';
                 html += '<div style="flex: 1;">';
-                html += '<div style="font-size: 14px; font-weight: bold;">' + song.title + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold; white-space: nowrap;">' + song.title + '</div>';
                 html += '<div style="font-size: 14px; color: #666; margin-top: 5px;">学习目标：' + song.target + '</div>';
                 html += '</div>';
                 html += '<div style="font-size: 14px;">▶️</div>';
@@ -1629,7 +1629,7 @@
             var html = '<div style="background: linear-gradient(135deg, ' + currentSong.color + ', ' + adjustColor(currentSong.color, -20) + '); border-radius: 15px; padding: 20px; color: white;">';
             html += '<button class="btn" onclick="renderSongsList()" style="background: rgba(255,255,255,0.3); color: white; margin-bottom: 4px;">← 返回列表</button>';
             html += '<div style="text-align: center; margin-bottom: 20px;">';
-            html += '<div style="font-size: 14px; font-weight: bold;">' + currentSong.title + '</div>';
+            html += '<div style="font-size: 14px; font-weight: bold; white-space: nowrap;">' + currentSong.title + '</div>';
             html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">学习目标：' + currentSong.target + '</div>';
             html += '</div>';
             
@@ -1661,7 +1661,7 @@
                 var opacity = isActive ? '1' : '0.5';
                 var scale = isActive ? 'scale(1.05)' : 'scale(1)';
                 html += '<div style="padding: 10px; margin: 5px 0; background: ' + (isActive ? 'rgba(255,255,255,0.3)' : 'transparent') + '; border-radius: 8px; transform: ' + scale + '; transition: all 0.3s; cursor: pointer;" onclick="jumpToLyric(' + index + ')" onmouseover="speak(\'' + line.pinyin + '\')">';
-                html += '<div style="font-size: 14px; font-weight: bold;">' + line.text + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold; white-space: nowrap;">' + line.text + '</div>';
                 html += '<div style="font-size: 14px; opacity: 0.9;">' + line.pinyin + ' - ' + line.note + '</div>';
                 html += '</div>';
             });
@@ -1769,7 +1769,7 @@
                 html += '<div style="display: flex; align-items: center; gap: 15px;">';
                 html += '<div style="font-size: 36px;">' + chapter.emoji + '</div>';
                 html += '<div style="flex: 1;">';
-                html += '<div style="font-size: 14px; font-weight: bold;">' + statusEmoji + ' ' + chapter.title + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold; white-space: nowrap;">' + statusEmoji + ' ' + chapter.title + '</div>';
                 html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">' + chapter.desc + '</div>';
                 html += '</div>';
                 html += chapter.completed ? '<div style="font-size: 14px;">🏆</div>' : '';
@@ -2095,7 +2095,7 @@ function showPage(pageId) {
                 html += '<div style="font-size: 28px;">' + stage.icon + '</div>';
                 html += '<div>';
                 html += '<div style="font-size: 14px; color: #666;">' + stage.name + '</div>';
-                html += '<div style="font-size: 14px; font-weight: bold; color: ' + stage.color + ';">' + stage.title + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold; white-space: nowrap; color: ' + stage.color + ';">' + stage.title + '</div>';
                 html += '</div>';
                 html += '<div style="margin-left: auto; background: ' + stage.color + '; color: white; padding: 5px 15px; border-radius: 15px; font-size: 12px;">';
                 html += stageLevels.filter(function(l) { return l.completed; }).length + '/' + stageLevels.length + ' 关';
@@ -3917,7 +3917,7 @@ function showPage(pageId) {
             html += '<h2 style="text-align: center; margin: 10px 0;">🐼 我的宠物</h2>';
             html += '<div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; text-align: center;">';
             html += '<div style="font-size: 80px; margin-bottom: 6px;">' + currentPet.emoji + '</div>';
-            html += '<div style="font-size: 14px; font-weight: bold;">' + currentPet.name + '</div>';
+            html += '<div style="font-size: 14px; font-weight: bold; white-space: nowrap;">' + currentPet.name + '</div>';
             html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">Lv.' + currentPet.level + ' | 当前出战</div>';
             // 经验条
             var expPercent = (currentPet.exp / currentPet.expToLevel * 100).toFixed(1);
@@ -4005,7 +4005,7 @@ function showPage(pageId) {
                 html += '<div style="background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 6px; border-left: 4px solid #f44336;">';
                 html += '<div style="display: flex; justify-content: space-between; align-items: flex-start;">';
                 html += '<div style="flex: 1;">';
-                html += '<div style="font-size: 14px; font-weight: bold; color: #333; margin-bottom: 5px;">题目: ' + err.question + '</div>';
+                html += '<div style="font-size: 14px; font-weight: bold; white-space: nowrap; color: #333; margin-bottom: 5px;">题目: ' + err.question + '</div>';
                 html += '<div style="color: #f44336; font-size: 14px;">❌ 你的答案: ' + err.userAnswer + '</div>';
                 html += '<div style="color: #4CAF50; font-size: 14px;">✅ 正确答案: ' + err.correctAnswer + '</div>';
                 html += '</div>';
