@@ -2056,27 +2056,34 @@
         }
         
         function switchTab(tabName) {
-    // 隐藏所有Tab内容
-    var tabs = ['study', 'adventure', 'shop', 'stats', 'profile'];
-    tabs.forEach(function(t) {
-        var panel = document.getElementById('tab-' + t);
-        var label = document.getElementById('label-' + t);
-        if (panel) panel.style.display = 'none';
-        if (label) {
-            label.style.color = '#999';
-            label.style.fontWeight = 'normal';
+            // 先显示主菜单（如果被隐藏）
+            var mainMenu = document.getElementById('mainMenu');
+            if (mainMenu) mainMenu.classList.remove('hidden');
+            
+            // 隐藏所有子页面
+            document.querySelectorAll('.page').forEach(function(el) { el.classList.add('hidden'); });
+            
+            // 隐藏所有Tab内容
+            var tabs = ['study', 'adventure', 'shop', 'stats', 'profile'];
+            tabs.forEach(function(t) {
+                var panel = document.getElementById('tab-' + t);
+                var label = document.getElementById('label-' + t);
+                if (panel) panel.style.display = 'none';
+                if (label) {
+                    label.style.color = '#999';
+                    label.style.fontWeight = 'normal';
+                }
+            });
+            
+            // 显示选中的Tab
+            var selectedPanel = document.getElementById('tab-' + tabName);
+            var selectedLabel = document.getElementById('label-' + tabName);
+            if (selectedPanel) selectedPanel.style.display = 'block';
+            if (selectedLabel) {
+                selectedLabel.style.color = '#667eea';
+                selectedLabel.style.fontWeight = 'bold';
+            }
         }
-    });
-    
-    // 显示选中的Tab
-    var selectedPanel = document.getElementById('tab-' + tabName);
-    var selectedLabel = document.getElementById('label-' + tabName);
-    if (selectedPanel) selectedPanel.style.display = 'block';
-    if (selectedLabel) {
-        selectedLabel.style.color = '#667eea';
-        selectedLabel.style.fontWeight = 'bold';
-    }
-}
 
 function showPage(pageId) {
             // 先隐藏所有页面（包括mainMenu）
