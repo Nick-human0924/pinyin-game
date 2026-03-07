@@ -208,7 +208,7 @@
                 
                 <!-- 学习Tab：基础教学、智能学习、拼音儿歌 -->
                 <div id="tab-study" class="tab-panel" style="display: block;">
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         <div class="menu-card" onclick="goToLearning()" style="padding: 30px 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 40px; margin-bottom: 15px;">📖</div>
                             <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">基础教学</div>
@@ -228,7 +228,7 @@
                 
                 <!<!-- 探险Tab：闯关地图、野外探险、故事模式 -->
                 <div id="tab-adventure" class="tab-panel" style="display: none;">
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         
                         <div class="menu-card" onclick="goToLevelMap()" style="padding: 30px 15px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 40px; margin-bottom: 15px;">🗺️</div>
@@ -249,7 +249,7 @@
                 
                 <!<!-- 商店Tab：商店、背包、装备 -->
                 <div id="tab-shop" class="tab-panel" style="display: none;">
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         
                         <div class="menu-card" onclick="showPage('shop')" style="padding: 30px 15px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 40px; margin-bottom: 15px;">🏪</div>
@@ -296,7 +296,7 @@
                 
                 <!<!-- 我的Tab：用户管理、我的宠物 -->
                 <div id="tab-profile" class="tab-panel" style="display: none;">
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
                         
                         <div class="menu-card" onclick="showUserManager()" style="padding: 30px 15px; background: linear-gradient(135deg, #607d8b, #455a64); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 40px; margin-bottom: 15px;">👤</div>
