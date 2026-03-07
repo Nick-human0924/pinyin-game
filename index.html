@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.2.6 - 野外探险汉字答题</title>
+    <title>拼音大冒险 v8.2.7 - 野外探险随机出题</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -2556,7 +2556,7 @@
         }
         
         // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.2.6';
+        var GAME_VERSION = 'v8.2.7';
         var GAME_BUILD_DATE = '2026-03-07';
         
         // 显示版本号
@@ -2732,83 +2732,66 @@
         function loadBattleQuestion() {
             // 随机选择一个汉字
             currentBattleChar = battleCharacters[Math.floor(Math.random() * battleCharacters.length)];
-            currentBattleMode = null;
-            currentBattleQuestion = null;
             
-            // 显示汉字（大字）
-            var displayHtml = '<div style="font-size: 72px; margin: 10px 0; color: #667eea;">' + currentBattleChar.char + '</div>';
-            displayHtml += '<button class="voice-btn" onclick="speakBattleChar()">🔊</button>';
-            document.getElementById('battleQDisplay').innerHTML = displayHtml;
+            // 随机选择模式：0=声母, 1=韵母, 2=整体拼音, 3=声调
+            var modeIdx = Math.floor(Math.random() * 4);
+            var modes = ['initial', 'final', 'whole', 'tone'];
+            var modeNames = ['声母', '韵母', '整体拼音', '声调'];
+            var modeColors = ['#667eea', '#f5576c', '#00f2fe', '#38f9d7'];
             
-            // 显示4个选项类型
-            var html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 320px; margin: 0 auto;">';
-            html += '<button class="option-btn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 18px; padding: 15px;" onclick="selectBattleMode(\'initial\')">声母<br/><small style="font-size: 12px; opacity: 0.8;">b p m f...</small></button>';
-            html += '<button class="option-btn" style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; font-size: 18px; padding: 15px;" onclick="selectBattleMode(\'final\')">韵母<br/><small style="font-size: 12px; opacity: 0.8;">a o e i u...</small></button>';
-            html += '<button class="option-btn" style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; font-size: 18px; padding: 15px;" onclick="selectBattleMode(\'whole\')">整体拼音<br/><small style="font-size: 12px; opacity: 0.8;">ba ma da...</small></button>';
-            html += '<button class="option-btn" style="background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; font-size: 18px; padding: 15px;" onclick="selectBattleMode(\'tone\')">声调<br/><small style="font-size: 12px; opacity: 0.8;">1 2 3 4</small></button>';
-            html += '</div>';
+            currentBattleMode = modes[modeIdx];
+            var modeName = modeNames[modeIdx];
+            var modeColor = modeColors[modeIdx];
             
-            document.getElementById('battleOptions').innerHTML = html;
-            
-            // 播放汉字发音
-            setTimeout(function() { speak(currentBattleChar.char); }, 500);
-        }
-        
-        // 播放当前战斗汉字
-        function speakBattleChar() {
-            if (currentBattleChar) {
-                speak(currentBattleChar.char);
-            }
-        }
-        
-        // 选择战斗模式（声母/韵母/整体/声调）
-        function selectBattleMode(mode) {
-            currentBattleMode = mode;
             var char = currentBattleChar;
-            var answer, options, questionType;
+            var answer, options;
             
-            switch(mode) {
+            switch(currentBattleMode) {
                 case 'initial':
                     answer = char.initial;
-                    questionType = '声母';
                     options = generateBattleOptions(answer, allInitials);
-                    currentBattleQuestion = { q: char.char + ' 的声母是什么？', a: answer, type: 'initial' };
+                    currentBattleQuestion = { q: char.char, a: answer, type: 'initial', modeName: modeName };
                     break;
                 case 'final':
                     answer = char.final;
-                    questionType = '韵母';
                     options = generateBattleOptions(answer, allFinals);
-                    currentBattleQuestion = { q: char.char + ' 的韵母是什么？', a: answer, type: 'final' };
+                    currentBattleQuestion = { q: char.char, a: answer, type: 'final', modeName: modeName };
                     break;
                 case 'whole':
                     answer = char.whole;
-                    questionType = '整体拼音';
                     options = generateBattleOptions(answer, allWholes);
-                    currentBattleQuestion = { q: char.char + ' 的拼音是什么？', a: answer, type: 'whole' };
+                    currentBattleQuestion = { q: char.char, a: answer, type: 'whole', modeName: modeName };
                     break;
                 case 'tone':
                     answer = char.tone;
-                    questionType = '声调';
                     options = ['1', '2', '3', '4'];
-                    currentBattleQuestion = { q: char.char + ' 是第几声？', a: answer, type: 'tone' };
+                    currentBattleQuestion = { q: char.char, a: answer, type: 'tone', modeName: modeName };
                     break;
             }
             
-            // 更新显示
+            // 显示：汉字大字 + 提示条（选出XX）
             var displayHtml = '<div style="font-size: 72px; margin: 5px 0; color: #667eea;">' + char.char + '</div>';
-            displayHtml += '<div style="font-size: 16px; color: #666; margin-bottom: 10px;">请选择"' + questionType + '"' + '</button>';
-            displayHtml += '<button class="voice-btn" onclick="speakBattleChar()">🔊</button>';
+            displayHtml += '<div style="font-size: 16px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
+            displayHtml += '请选出 "' + char.char + '" 的' + modeName + '';
+            displayHtml += '</div>';
+            displayHtml += '<button class="voice-btn" onclick="speakBattleChar()" style="margin-left: 10px;">🔊</button>';
+            
             document.getElementById('battleQDisplay').innerHTML = displayHtml;
             
-            // 显示选项
-            var html = '';
+            // 显示4个选项
+            var html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 300px; margin: 15px auto;">';
             options.forEach(function(opt) {
                 var displayOpt = opt === '' ? '（零声母）' : opt;
-                html += '<button class="option-btn" onclick="battleAnswer(this, \'' + opt + '\', \'' + answer + '\')" style="font-size: 20px; padding: 12px;">' + displayOpt + '</button>';
+                html += '<button class="option-btn" onclick="battleAnswer(this, \'' + opt + '\', \'' + answer + '\')" style="font-size: 22px; padding: 15px;">' + displayOpt + '</button>';
             });
+            html += '</div>';
             document.getElementById('battleOptions').innerHTML = html;
             
-            document.getElementById('battleLog').textContent = '遭遇 ' + currentEnemy.name + '！请回答 ' + char.char + ' 的' + questionType + '！';
+            // 更新战斗日志
+            document.getElementById('battleLog').textContent = '遭遇 ' + currentEnemy.name + '！';
+            
+            // 播放汉字发音
+            setTimeout(function() { speak(char.char); }, 300);
         }
         
         // 生成战斗选项（确保包含正确答案）
@@ -3688,7 +3671,7 @@
     
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; bottom: 5px; right: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v8.2.6 (2026-03-07)
+        拼音大冒险 v8.2.7 (2026-03-07)
     </div>
     
     <script>
