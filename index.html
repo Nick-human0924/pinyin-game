@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.2.8 - 修复错题本记录</title>
+    <title>拼音大冒险 v8.3.0 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -212,6 +212,9 @@
             <div class="menu-card" onclick="showPage('inventory')"><div class="icon">🎒</div><h2>背包</h2></div>
             <div class="menu-card" onclick="showPage('equipment')"><div class="icon">⚔️</div><h2>装备</h2></div>
             <div class="menu-card" onclick="showPage('stats')"><div class="icon">📊</div><h2>统计</h2></div>
+            <div class="menu-card" onclick="showPage('learningPath')"><div class="icon">🎯</div><h2>智能学习</h2></div>
+            <div class="menu-card" onclick="showPage('songs')"><div class="icon">🎵</div><h2>拼音儿歌</h2></div>
+            <div class="menu-card" onclick="showPage('storyMode')"><div class="icon">📖</div><h2>故事模式</h2></div>
             <div class="menu-card" onclick="showPage('errorBook')"><div class="icon">📕</div><h2>错题本</h2></div>
             <div class="menu-card" onclick="showUserManager()"><div class="icon">👤</div><h2>用户管理</h2></div>
         </div>
@@ -472,6 +475,112 @@
             </div>
             
             <div id="reviewQuestion" style="text-align: center; padding: 20px;"></div>
+        </div>
+
+        <!-- v8.3.0 智能学习路径 -->
+        <div id="learningPath" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <h2 style="text-align: center; margin: 10px 0;">🎯 智能学习路径</h2>
+            
+            <!-- 掌握度仪表盘 -->
+            <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px;">
+                <div style="text-align: center; font-size: 14px; opacity: 0.9; margin-bottom: 15px;">拼音掌握度</div>
+                <div style="display: flex; justify-content: space-around; text-align: center;">
+                    <div>
+                        <div style="font-size: 32px; font-weight: bold;" id="masteredCount">0</div>
+                        <div style="font-size: 12px;">已掌握</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 32px; font-weight: bold;" id="learningCount">0</div>
+                        <div style="font-size: 12px;">学习中</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 32px; font-weight: bold;" id="weakCount">0</div>
+                        <div style="font-size: 12px;">需加强</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: 10px; padding: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="font-size: 24px;">🎯</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 12px; opacity: 0.9;">今日推荐</div>
+                            <div style="font-size: 14px; font-weight: bold;" id="todayRecommendation">分析中...</div>
+                        </div>
+                        <button class="btn" onclick="startRecommendedPractice()" style="background: white; color: #667eea; padding: 8px 15px; font-size: 12px;">开始练习</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 薄弱点分析 -->
+            <div style="background: #FFF3E0; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                <div style="font-size: 16px; font-weight: bold; color: #E65100; margin-bottom: 10px;">⚠️ 薄弱点分析</div>
+                <div id="weakPointsList" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div style="text-align: center; width: 100%; color: #999; padding: 20px;">暂无薄弱点数据，多练习几次即可分析</div>
+                </div>
+            </div>
+            
+            <!-- 拼音掌握度热力图 -->
+            <div style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">📊 拼音掌握度热力图</div>
+                <div style="font-size: 12px; color: #666; margin-bottom: 10px;">🟢 熟练 🟡 学习中 🔴 薄弱 ⚪ 未练习</div>
+                <div id="masteryHeatmap" style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;"></div>
+            </div>
+            
+            <!-- 遗忘曲线复习提醒 -->
+            <div style="background: #E3F2FD; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                <div style="font-size: 16px; font-weight: bold; color: #1565C0; margin-bottom: 10px;">🧠 遗忘曲线复习</div>
+                <div id="reviewReminderList">
+                    <div style="text-align: center; color: #999; padding: 20px;">暂无需要复习的内容</div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="generatePersonalizedPlan()" style="width: 100%;">🎯 生成个性化学习计划</button>
+        </div>
+
+        <!-- v8.3.0 拼音儿歌 -->
+        <div id="songs" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <h2 style="text-align: center; margin: 10px 0;">🎵 拼音儿歌</h2>
+            
+            <div style="background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 10px;">🎵</div>
+                <div style="font-size: 16px;">跟着儿歌学拼音，快乐又轻松！</div>
+            </div>
+            
+            <div id="songsList">
+                <!-- 儿歌列表由JavaScript生成 -->
+            </div>
+        </div>
+
+        <!-- v8.3.0 故事模式 -->
+        <div id="storyMode" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <h2 style="text-align: center; margin: 10px 0;">📖 拼音大冒险</h2>
+            
+            <!-- 故事章节选择 -->
+            <div id="storyChapters" style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- 章节卡片由JavaScript生成 -->
+            </div>
+            
+            <!-- 故事剧情展示 -->
+            <div id="storyScene" class="hidden" style="background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 15px; padding: 20px; color: white; min-height: 300px;">
+                <div id="storyDialogue" style="margin-bottom: 20px;">
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px;">
+                        <div style="font-size: 12px; color: #aaa; margin-bottom: 5px;">📖 剧情</div>
+                        <div id="storyText" style="font-size: 16px; line-height: 1.6;"></div>
+                    </div>
+                </div>
+                
+                <div id="storyQuestion" class="hidden">
+                    <div style="background: rgba(102, 126, 234, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                        <div style="font-size: 12px; color: #aaa; margin-bottom: 5px;">❓ 挑战</div>
+                        <div id="storyQuestionText" style="font-size: 20px; font-weight: bold; text-align: center;"></div>
+                    </div>
+                    <div id="storyOptions" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;"></div>
+                </div>
+                
+                <button id="storyContinueBtn" class="btn" onclick="continueStory()" style="width: 100%; margin-top: 15px;">继续 →</button>
+            </div>
         </div>
 
         <!-- v8.2.0 背包 -->
@@ -1027,6 +1136,648 @@
             saveGameData();
         }
         
+        // ========== v8.3.0 智能学习路径系统 ==========
+        var learningData = {
+            pinyinMastery: {}, // 每个拼音的掌握度数据
+            weakPoints: [], // 薄弱点列表
+            lastPractice: {}, // 上次练习时间
+            practiceHistory: [] // 练习历史
+        };
+        
+        // 拼音掌握度等级
+        var MASTERY_LEVELS = {
+            MASTERED: { threshold: 90, color: '#4CAF50', label: '熟练' },
+            LEARNING: { threshold: 60, color: '#FFC107', label: '学习中' },
+            WEAK: { threshold: 0, color: '#f44336', label: '薄弱' }
+        };
+        
+        // 分析拼音掌握度
+        function analyzePinyinMastery() {
+            var mastery = {};
+            var initials = ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'];
+            var finals = ['a','o','e','i','u','ü','ai','ei','ui','ao','ou','iu','ie','üe','er','an','en','in','un','ün','ang','eng','ing','ong'];
+            
+            // 从错题分析
+            errorLog.forEach(function(err) {
+                var pinyin = extractPinyinFromError(err);
+                if (pinyin) {
+                    if (!mastery[pinyin]) {
+                        mastery[pinyin] = { correct: 0, wrong: 0, total: 0, lastWrong: null };
+                    }
+                    mastery[pinyin].wrong++;
+                    mastery[pinyin].total++;
+                    mastery[pinyin].lastWrong = new Date(err.time);
+                }
+            });
+            
+            return mastery;
+        }
+        
+        // 从错误记录中提取拼音
+        function extractPinyinFromError(err) {
+            // 简化处理，返回问题中的第一个字符对应的拼音
+            if (err.question && err.question.length > 0) {
+                return err.question.charAt(0);
+            }
+            return null;
+        }
+        
+        // 获取拼音掌握度
+        function getPinyinMasteryLevel(pinyin) {
+            var data = learningData.pinyinMastery[pinyin];
+            if (!data || data.total === 0) return 'unpracticed';
+            
+            var accuracy = (data.correct / data.total) * 100;
+            if (accuracy >= MASTERY_LEVELS.MASTERED.threshold) return 'mastered';
+            if (accuracy >= MASTERY_LEVELS.LEARNING.threshold) return 'learning';
+            return 'weak';
+        }
+        
+        // 更新拼音掌握度
+        function updatePinyinMastery(pinyin, isCorrect) {
+            if (!learningData.pinyinMastery[pinyin]) {
+                learningData.pinyinMastery[pinyin] = { correct: 0, wrong: 0, total: 0 };
+            }
+            
+            var data = learningData.pinyinMastery[pinyin];
+            if (isCorrect) {
+                data.correct++;
+            } else {
+                data.wrong++;
+            }
+            data.total++;
+            data.lastPractice = new Date().toISOString();
+            
+            saveGameData();
+        }
+        
+        // 生成薄弱点列表
+        function generateWeakPoints() {
+            var weakPoints = [];
+            
+            for (var pinyin in learningData.pinyinMastery) {
+                var data = learningData.pinyinMastery[pinyin];
+                if (data.total >= 3) { // 至少练习3次才统计
+                    var accuracy = (data.correct / data.total) * 100;
+                    if (accuracy < 60) {
+                        weakPoints.push({
+                            pinyin: pinyin,
+                            accuracy: accuracy.toFixed(1),
+                            wrongCount: data.wrong,
+                            reason: data.wrong > 3 ? '多次错误' : '准确率偏低'
+                        });
+                    }
+                }
+            }
+            
+            // 按错误次数排序
+            weakPoints.sort(function(a, b) { return b.wrongCount - a.wrongCount; });
+            return weakPoints.slice(0, 5); // 只显示前5个
+        }
+        
+        // 生成今日推荐
+        function generateTodayRecommendation() {
+            var weakPoints = generateWeakPoints();
+            
+            if (weakPoints.length > 0) {
+                return '重点练习：' + weakPoints.map(function(w) { return w.pinyin; }).join('、');
+            }
+            
+            // 没有薄弱点，推荐随机拼音
+            var allPinyins = ['b','p','m','f','d','t','n','l','a','o','e','i','u'];
+            var random = allPinyins[Math.floor(Math.random() * allPinyins.length)];
+            return '建议复习：' + random;
+        }
+        
+        // 生成掌握度热力图
+        function renderMasteryHeatmap() {
+            var container = document.getElementById('masteryHeatmap');
+            if (!container) return;
+            
+            var initials = ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'];
+            var finals = ['a','o','e','i','u','ü','ai','ei','ui','ao','ou','iu','ie','üe','er','an','en','in','un','ün','ang','eng','ing','ong'];
+            
+            var html = '<div style="width: 100%;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">声母</div>';
+            
+            initials.forEach(function(py) {
+                var level = getPinyinMasteryLevel(py);
+                var color = level === 'mastered' ? '#4CAF50' : level === 'learning' ? '#FFC107' : level === 'weak' ? '#f44336' : '#e0e0e0';
+                html += '<span style="display: inline-block; width: 28px; height: 28px; line-height: 28px; text-align: center; background: ' + color + '; color: white; border-radius: 5px; margin: 2px; font-size: 12px; cursor: pointer;" onclick="speak(\'' + py + '\')">' + py + '</span>';
+            });
+            
+            html += '</div><div style="width: 100%; margin-top: 10px;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">韵母</div>';
+            
+            finals.forEach(function(py) {
+                var level = getPinyinMasteryLevel(py);
+                var color = level === 'mastered' ? '#4CAF50' : level === 'learning' ? '#FFC107' : level === 'weak' ? '#f44336' : '#e0e0e0';
+                html += '<span style="display: inline-block; width: 28px; height: 28px; line-height: 28px; text-align: center; background: ' + color + '; color: white; border-radius: 5px; margin: 2px; font-size: 11px; cursor: pointer;" onclick="speak(\'' + py + '\')">' + py + '</span>';
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // 渲染薄弱点列表
+        function renderWeakPoints() {
+            var container = document.getElementById('weakPointsList');
+            if (!container) return;
+            
+            var weakPoints = generateWeakPoints();
+            
+            if (weakPoints.length === 0) {
+                container.innerHTML = '<div style="text-align: center; width: 100%; color: #4CAF50; padding: 20px;">🎉 暂无薄弱点，继续保持！</div>';
+                return;
+            }
+            
+            var html = '';
+            weakPoints.forEach(function(point) {
+                html += '<div style="background: white; border-radius: 8px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex: 1; min-width: 200px;">';
+                html += '<div><span style="font-size: 20px; font-weight: bold; color: #f44336;">' + point.pinyin + '</span> <span style="font-size: 12px; color: #999;">' + point.reason + '</span></div>';
+                html += '<div style="font-size: 12px; color: #f44336;">错误' + point.wrongCount + '次</div>';
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // 检查遗忘曲线复习
+        function checkForgottenReview() {
+            var now = new Date();
+            var needReview = [];
+            
+            for (var pinyin in learningData.pinyinMastery) {
+                var data = learningData.pinyinMastery[pinyin];
+                if (data.lastWrong) {
+                    var lastWrong = new Date(data.lastWrong);
+                    var hoursPassed = (now - lastWrong) / (1000 * 60 * 60);
+                    
+                    // 艾宾浩斯遗忘曲线：1天、3天、7天、15天复习
+                    var reviewIntervals = [24, 72, 168, 360];
+                    for (var i = 0; i < reviewIntervals.length; i++) {
+                        var interval = reviewIntervals[i];
+                        if (hoursPassed >= interval && hoursPassed < interval + 24) {
+                            needReview.push({
+                                pinyin: pinyin,
+                                interval: interval,
+                                message: '已过去' + (interval / 24) + '天，建议复习'
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            return needReview;
+        }
+        
+        // 渲染复习提醒
+        function renderReviewReminders() {
+            var container = document.getElementById('reviewReminderList');
+            if (!container) return;
+            
+            var reminders = checkForgottenReview();
+            
+            if (reminders.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #4CAF50; padding: 20px;">✅ 暂无需要复习的内容，学得很棒！</div>';
+                return;
+            }
+            
+            var html = '';
+            reminders.forEach(function(r) {
+                html += '<div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">';
+                html += '<div><span style="font-size: 18px; font-weight: bold;">' + r.pinyin + '</span> <span style="font-size: 12px; color: #666;">' + r.message + '</span></div>';
+                html += '<button class="btn" onclick="quickPractice(\'' + r.pinyin + '\')" style="padding: 5px 10px; font-size: 12px;">复习</button>';
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // 渲染智能学习路径页面
+        function renderLearningPath() {
+            // 更新掌握度统计
+            var mastered = 0, learning = 0, weak = 0;
+            for (var py in learningData.pinyinMastery) {
+                var level = getPinyinMasteryLevel(py);
+                if (level === 'mastered') mastered++;
+                else if (level === 'learning') learning++;
+                else if (level === 'weak') weak++;
+            }
+            
+            var masteredEl = document.getElementById('masteredCount');
+            var learningEl = document.getElementById('learningCount');
+            var weakEl = document.getElementById('weakCount');
+            var recommendationEl = document.getElementById('todayRecommendation');
+            
+            if (masteredEl) masteredEl.textContent = mastered;
+            if (learningEl) learningEl.textContent = learning;
+            if (weakEl) weakEl.textContent = weak;
+            if (recommendationEl) recommendationEl.textContent = generateTodayRecommendation();
+            
+            renderMasteryHeatmap();
+            renderWeakPoints();
+            renderReviewReminders();
+        }
+        
+        // 开始推荐练习
+        function startRecommendedPractice() {
+            showToast('🎯 开始个性化练习！', 'success');
+            goToLearning();
+        }
+        
+        // 快速复习单个拼音
+        function quickPractice(pinyin) {
+            speak(pinyin);
+            showToast('🔊 已播放 ' + pinyin + ' 的发音，请跟读！', 'info');
+        }
+        
+        // 生成个性化学习计划
+        function generatePersonalizedPlan() {
+            var weakPoints = generateWeakPoints();
+            
+            if (weakPoints.length === 0) {
+                alert('🎉 恭喜！你目前没有薄弱点。\n\n建议：\n1. 继续闯关挑战更高难度\n2. 尝试故事模式\n3. 定期复习已学内容');
+                return;
+            }
+            
+            var plan = '📋 你的个性化学习计划\n\n';
+            plan += '【薄弱点】\n';
+            weakPoints.forEach(function(p, i) {
+                plan += (i + 1) + '. ' + p.pinyin + ' - ' + p.reason + '\n';
+            });
+            plan += '\n【学习建议】\n';
+            plan += '1. 每天练习薄弱拼音10分钟\n';
+            plan += '2. 使用拼音儿歌加深记忆\n';
+            plan += '3. 3天后会进行遗忘曲线复习\n';
+            plan += '\n加油！坚持就是胜利！💪';
+            
+            alert(plan);
+        }
+
+        // ========== v8.3.0 拼音儿歌系统 ==========
+        var pinyinSongs = [
+            {
+                title: '声母歌',
+                target: 'b p m f',
+                lyrics: [
+                    { text: 'b是爸爸', pinyin: 'b', note: '爸爸抱宝宝' },
+                    { text: 'p是爬山', pinyin: 'p', note: '山坡坡' },
+                    { text: 'm是妈妈', pinyin: 'm', note: '妈妈摸摸我' },
+                    { text: 'f是飞机', pinyin: 'f', note: '飞机飞高高' }
+                ],
+                color: '#667eea'
+            },
+            {
+                title: 'd t n l 歌',
+                target: 'd t n l',
+                lyrics: [
+                    { text: 'd是弟弟', pinyin: 'd', note: '弟弟嘀嘀嘀' },
+                    { text: 't是兔子', pinyin: 't', note: '兔子跳跳跳' },
+                    { text: 'n是奶牛', pinyin: 'n', note: '牛奶牛哞哞叫' },
+                    { text: 'l是路灯', pinyin: 'l', note: '路灯亮亮亮' }
+                ],
+                color: '#f5576c'
+            },
+            {
+                title: 'g k h 歌',
+                target: 'g k h',
+                lyrics: [
+                    { text: 'g是鸽子', pinyin: 'g', note: '鸽子咕咕叫' },
+                    { text: 'k是开关', pinyin: 'k', note: '开关咔咔响' },
+                    { text: 'h是喝水', pinyin: 'h', note: '喝水哈哈笑' }
+                ],
+                color: '#4facfe'
+            },
+            {
+                title: '单韵母歌',
+                target: 'a o e i u ü',
+                lyrics: [
+                    { text: 'a是阿姨', pinyin: 'a', note: '阿姨啊啊啊' },
+                    { text: 'o是公鸡', pinyin: 'o', note: '公鸡喔喔喔' },
+                    { text: 'e是白鹅', pinyin: 'e', note: '白鹅呃呃呃' },
+                    { text: 'i是衣服', pinyin: 'i', note: '衣服一一一' },
+                    { text: 'u是乌鸦', pinyin: 'u', note: '乌鸦呜呜呜' },
+                    { text: 'ü是小鱼', pinyin: 'ü', note: '小鱼鱼鱼鱼' }
+                ],
+                color: '#43e97b'
+            },
+            {
+                title: '整体认读歌',
+                target: 'zhi chi shi ri',
+                lyrics: [
+                    { text: 'zhi是蜘蛛', pinyin: 'zhi', note: '蜘蛛织织织' },
+                    { text: 'chi是吃饭', pinyin: 'chi', note: '吃饭吃吃吃' },
+                    { text: 'shi是狮子', pinyin: 'shi', note: '狮子狮狮狮' },
+                    { text: 'ri是日子', pinyin: 'ri', note: '日子日日日' }
+                ],
+                color: '#fa709a'
+            }
+        ];
+        
+        var currentSong = null;
+        var currentLyricIndex = 0;
+        
+        // 渲染儿歌列表
+        function renderSongsList() {
+            var container = document.getElementById('songsList');
+            if (!container) return;
+            
+            var html = '';
+            pinyinSongs.forEach(function(song, index) {
+                html += '<div style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;" onclick="playSong(' + index + ')" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'scale(1)\'" style="transition: transform 0.2s;">';
+                html += '<div style="display: flex; align-items: center; gap: 15px;">';
+                html += '<div style="width: 60px; height: 60px; border-radius: 50%; background: ' + song.color + '; display: flex; align-items: center; justify-content: center; font-size: 24px;">🎵</div>';
+                html += '<div style="flex: 1;">';
+                html += '<div style="font-size: 18px; font-weight: bold;">' + song.title + '</div>';
+                html += '<div style="font-size: 14px; color: #666; margin-top: 5px;">学习目标：' + song.target + '</div>';
+                html += '</div>';
+                html += '<div style="font-size: 24px;">▶️</div>';
+                html += '</div>';
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // 播放儿歌
+        function playSong(index) {
+            currentSong = pinyinSongs[index];
+            currentLyricIndex = 0;
+            
+            var container = document.getElementById('songsList');
+            if (!container) return;
+            
+            var html = '<div style="background: linear-gradient(135deg, ' + currentSong.color + ', ' + adjustColor(currentSong.color, -20) + '); border-radius: 15px; padding: 20px; color: white;">';
+            html += '<button class="btn" onclick="renderSongsList()" style="background: rgba(255,255,255,0.3); color: white; margin-bottom: 15px;">← 返回列表</button>';
+            html += '<div style="text-align: center; margin-bottom: 20px;">';
+            html += '<div style="font-size: 24px; font-weight: bold;">' + currentSong.title + '</div>';
+            html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">学习目标：' + currentSong.target + '</div>';
+            html += '</div>';
+            
+            html += '<div id="songLyrics" style="background: rgba(255,255,255,0.2); border-radius: 10px; padding: 20px; margin-bottom: 15px;">';
+            html += renderLyrics();
+            html += '</div>';
+            
+            html += '<div style="display: flex; gap: 10px; justify-content: center;">';
+            html += '<button class="btn" onclick="prevLyric()" style="background: rgba(255,255,255,0.3); color: white;">⏮ 上一句</button>';
+            html += '<button class="btn" onclick="playCurrentLyric()" style="background: white; color: ' + currentSong.color + ';">🔊 朗读</button>';
+            html += '<button class="btn" onclick="nextLyric()" style="background: rgba(255,255,255,0.3); color: white;">下一句 ⏭</button>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            container.innerHTML = html;
+            
+            // 自动播放第一句
+            setTimeout(function() { playCurrentLyric(); }, 500);
+        }
+        
+        // 渲染歌词
+        function renderLyrics() {
+            if (!currentSong) return '';
+            
+            var html = '';
+            currentSong.lyrics.forEach(function(line, index) {
+                var isActive = index === currentLyricIndex;
+                var opacity = isActive ? '1' : '0.5';
+                var scale = isActive ? 'scale(1.05)' : 'scale(1)';
+                html += '<div style="padding: 10px; margin: 5px 0; background: ' + (isActive ? 'rgba(255,255,255,0.3)' : 'transparent') + '; border-radius: 8px; transform: ' + scale + '; transition: all 0.3s; cursor: pointer;" onclick="jumpToLyric(' + index + ')" onmouseover="speak(\'' + line.pinyin + '\')">';
+                html += '<div style="font-size: 24px; font-weight: bold;">' + line.text + '</div>';
+                html += '<div style="font-size: 14px; opacity: 0.9;">' + line.pinyin + ' - ' + line.note + '</div>';
+                html += '</div>';
+            });
+            return html;
+        }
+        
+        // 播放当前歌词
+        function playCurrentLyric() {
+            if (!currentSong || !currentSong.lyrics[currentLyricIndex]) return;
+            
+            var line = currentSong.lyrics[currentLyricIndex];
+            speak(line.text);
+            
+            // 高亮当前行
+            var container = document.getElementById('songLyrics');
+            if (container) {
+                container.innerHTML = renderLyrics();
+            }
+        }
+        
+        // 下一句
+        function nextLyric() {
+            if (!currentSong) return;
+            currentLyricIndex = Math.min(currentLyricIndex + 1, currentSong.lyrics.length - 1);
+            playCurrentLyric();
+        }
+        
+        // 上一句
+        function prevLyric() {
+            currentLyricIndex = Math.max(currentLyricIndex - 1, 0);
+            playCurrentLyric();
+        }
+        
+        // 跳转到指定歌词
+        function jumpToLyric(index) {
+            currentLyricIndex = index;
+            playCurrentLyric();
+        }
+        
+        // 调整颜色亮度
+        function adjustColor(color, amount) {
+            return color; // 简化处理
+        }
+
+        // ========== v8.3.0 故事模式 ==========
+        var storyChapters = [
+            {
+                id: 1,
+                title: '拼音王国的邀请',
+                emoji: '🏰',
+                desc: '小熊猫收到神秘邀请，踏上拼音学习之旅',
+                unlocked: true,
+                completed: false,
+                scenes: [
+                    { type: 'dialogue', text: '一天，小熊猫收到一封神秘的信...' },
+                    { type: 'dialogue', text: '信中写道："欢迎来到拼音王国！只有通过拼音考验的勇者，才能进入城堡。"' },
+                    { type: 'question', text: '小熊猫要进入城堡，需要说出"门"的拼音', pinyin: 'men', options: ['men', 'meng', 'min', 'ming'] },
+                    { type: 'dialogue', text: '大门缓缓打开，小熊猫走进了拼音王国...' }
+                ]
+            },
+            {
+                id: 2,
+                title: '声母森林的试炼',
+                emoji: '🌲',
+                desc: '穿越神秘的声母森林，学会所有声母',
+                unlocked: false,
+                completed: false,
+                scenes: [
+                    { type: 'dialogue', text: '小熊猫来到声母森林，这里住着b、p、m、f四位守护者...' },
+                    { type: 'question', text: 'b守护者问："爸爸的爸怎么读？"', pinyin: 'ba', options: ['ba', 'pa', 'ma', 'fa'] },
+                    { type: 'dialogue', text: 'b守护者满意地点点头，放行了小熊猫...' },
+                    { type: 'question', text: 'm守护者问："妈妈的妈怎么读？"', pinyin: 'ma', options: ['ba', 'pa', 'ma', 'fa'] }
+                ]
+            },
+            {
+                id: 3,
+                title: '韵母山谷的秘密',
+                emoji: '⛰️',
+                desc: '探索韵母山谷，解开拼音的秘密',
+                unlocked: false,
+                completed: false,
+                scenes: [
+                    { type: 'dialogue', text: '穿过森林，小熊猫来到韵母山谷...' },
+                    { type: 'question', text: '山谷里传来声音："a、o、e，哪个是公鸡的叫声？"', pinyin: 'o', options: ['a', 'o', 'e', 'i'] }
+                ]
+            }
+        ];
+        
+        var currentChapter = null;
+        var currentSceneIndex = 0;
+        
+        // 渲染故事章节
+        function renderStoryChapters() {
+            var container = document.getElementById('storyChapters');
+            if (!container) return;
+            
+            var html = '';
+            storyChapters.forEach(function(chapter) {
+                var statusEmoji = chapter.completed ? '✅' : chapter.unlocked ? '🔓' : '🔒';
+                var opacity = chapter.unlocked ? '1' : '0.5';
+                var bg = chapter.completed ? 'linear-gradient(135deg, #4CAF50, #2E7D32)' : 
+                         chapter.unlocked ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#ccc';
+                
+                html += '<div style="background: ' + bg + '; border-radius: 15px; padding: 15px; color: white; cursor: ' + (chapter.unlocked ? 'pointer' : 'not-allowed') + '; opacity: ' + opacity + ';" onclick="' + (chapter.unlocked ? 'startChapter(' + chapter.id + ')' : '') + '">';
+                html += '<div style="display: flex; align-items: center; gap: 15px;">';
+                html += '<div style="font-size: 40px;">' + chapter.emoji + '</div>';
+                html += '<div style="flex: 1;">';
+                html += '<div style="font-size: 18px; font-weight: bold;">' + statusEmoji + ' ' + chapter.title + '</div>';
+                html += '<div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">' + chapter.desc + '</div>';
+                html += '</div>';
+                html += chapter.completed ? '<div style="font-size: 24px;">🏆</div>' : '';
+                html += '</div>';
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // 开始章节
+        function startChapter(chapterId) {
+            currentChapter = storyChapters.find(function(c) { return c.id === chapterId; });
+            currentSceneIndex = 0;
+            
+            if (!currentChapter) return;
+            
+            document.getElementById('storyChapters').classList.add('hidden');
+            document.getElementById('storyScene').classList.remove('hidden');
+            
+            showCurrentScene();
+        }
+        
+        // 显示当前场景
+        function showCurrentScene() {
+            if (!currentChapter || currentSceneIndex >= currentChapter.scenes.length) {
+                // 章节完成
+                completeChapter();
+                return;
+            }
+            
+            var scene = currentChapter.scenes[currentSceneIndex];
+            var storyTextEl = document.getElementById('storyText');
+            var storyQuestionEl = document.getElementById('storyQuestion');
+            var storyOptionsEl = document.getElementById('storyOptions');
+            var continueBtn = document.getElementById('storyContinueBtn');
+            
+            if (scene.type === 'dialogue') {
+                storyQuestionEl.classList.add('hidden');
+                storyTextEl.textContent = scene.text;
+                continueBtn.textContent = '继续 →';
+                continueBtn.onclick = continueStory;
+            } else if (scene.type === 'question') {
+                storyTextEl.textContent = scene.text;
+                document.getElementById('storyQuestionText').textContent = '';
+                
+                storyQuestionEl.classList.remove('hidden');
+                
+                var html = '';
+                scene.options.forEach(function(opt) {
+                    html += '<button class="option-btn" onclick="answerStoryQuestion(\'' + opt + '\', \'' + scene.pinyin + '\')" style="font-size: 18px; padding: 12px;">' + opt + '</button>';
+                });
+                storyOptionsEl.innerHTML = html;
+                
+                continueBtn.style.display = 'none';
+            }
+        }
+        
+        // 继续故事
+        function continueStory() {
+            currentSceneIndex++;
+            showCurrentScene();
+        }
+        
+        // 回答故事问题
+        function answerStoryQuestion(selected, correct) {
+            var isCorrect = selected === correct;
+            var buttons = document.querySelectorAll('#storyOptions .option-btn');
+            
+            buttons.forEach(function(btn) {
+                btn.disabled = true;
+                if (btn.textContent === correct) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent === selected && !isCorrect) {
+                    btn.classList.add('wrong');
+                }
+            });
+            
+            if (isCorrect) {
+                showToast('✅ 回答正确！剧情继续...', 'success');
+                speak('正确！');
+                
+                setTimeout(function() {
+                    currentSceneIndex++;
+                    showCurrentScene();
+                }, 1000);
+            } else {
+                showToast('❌ 回答错误，请再试一次', 'error');
+                speak(correct);
+                
+                // 记录错题
+                recordError(currentChapter.scenes[currentSceneIndex].text, selected, correct, 'story');
+                
+                setTimeout(function() {
+                    buttons.forEach(function(btn) {
+                        btn.disabled = false;
+                        btn.classList.remove('correct', 'wrong');
+                    });
+                }, 1500);
+            }
+        }
+        
+        // 完成章节
+        function completeChapter() {
+            currentChapter.completed = true;
+            
+            // 解锁下一章
+            var nextChapter = storyChapters.find(function(c) { return c.id === currentChapter.id + 1; });
+            if (nextChapter) {
+                nextChapter.unlocked = true;
+            }
+            
+            // 奖励
+            var reward = 50 + currentChapter.id * 20;
+            coins += reward;
+            
+            alert('🎉 章节完成！\n\n' + currentChapter.title + ' 已完成！\n获得 ' + reward + ' 金币奖励！');
+            
+            updateUI();
+            saveGameData();
+            
+            // 返回章节列表
+            document.getElementById('storyChapters').classList.remove('hidden');
+            document.getElementById('storyScene').classList.add('hidden');
+            renderStoryChapters();
+        }
+
         // 页面加载时初始化用户系统
         initUserSystem();
         
@@ -1153,6 +1904,9 @@
             if (pageId === 'inventory') showInventoryTab('treasures');
             if (pageId === 'equipment') renderEquipment();
             if (pageId === 'pet') renderPetPage();
+            if (pageId === 'learningPath') renderLearningPath();
+            if (pageId === 'songs') renderSongsList();
+            if (pageId === 'storyMode') renderStoryChapters();
         }
         
         function showMainMenu() { showPage('mainMenu'); inBattle = false; }
@@ -2547,7 +3301,7 @@
         }
         
         // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.2.8';
+        var GAME_VERSION = 'v8.3.0';
         var GAME_BUILD_DATE = '2026-03-07';
         
         // 显示版本号
@@ -3667,7 +4421,7 @@
     
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; bottom: 5px; right: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v8.2.8 (2026-03-07)
+        拼音大冒险 v8.3.0 (2026-03-07)
     </div>
     
     <script>
