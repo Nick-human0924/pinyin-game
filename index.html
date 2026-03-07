@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.4.3 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v8.4.4 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -86,7 +86,7 @@
         .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; }
         .stats { display: flex; gap: 10px; flex-wrap: wrap; }
         .stat-item { background: #F7F9FC; padding: 8px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
-        .main-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .main-menu { display: flex; flex-direction: row; gap: 10px; }
         .menu-card { background: white; border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; }
         .menu-card .icon { font-size: 40px; margin-bottom: 10px; }
         .page { background: white; border-radius: 20px; padding: 20px; min-height: 500px; }
@@ -252,7 +252,7 @@
             <div class="hero-subtitle">今天也要努力学习拼音哦！✨</div>
         </div>
 
-        <!-- 主菜单 - v8.4.3 底部Tab导航 -->
+        <!-- 主菜单 - v8.4.4 底部Tab导航 -->
         <div id="mainMenu" class="main-menu" style="padding-bottom: 80px;">
             
             <!-- Tab内容区域 -->
@@ -260,7 +260,7 @@
                 
                 <!-- 学习Tab：基础教学、智能学习、拼音儿歌 -->
                 <div id="tab-study" class="tab-panel" style="display: block;">
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                    <div style="display: flex; flex-direction: row; gap: 12px;">
                         <div class="menu-card" onclick="goToLearning()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">📖</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">基础教学</div>
@@ -280,7 +280,7 @@
                 
                 <!<!-- 探险Tab：闯关地图、野外探险、故事模式 -->
                 <div id="tab-adventure" class="tab-panel" style="display: none;">
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                    <div style="display: flex; flex-direction: row; gap: 12px;">
                         
                         <div class="menu-card" onclick="goToLevelMap()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🗺️</div>
@@ -301,7 +301,7 @@
                 
                 <!<!-- 商店Tab：商店、背包、装备 -->
                 <div id="tab-shop" class="tab-panel" style="display: none;">
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                    <div style="display: flex; flex-direction: row; gap: 12px;">
                         
                         <div class="menu-card" onclick="showPage('shop')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🏪</div>
@@ -322,7 +322,7 @@
                 
                 <!<!-- 统计Tab：成就、任务、统计、错题本 -->
                 <div id="tab-stats" class="tab-panel" style="display: none;">
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div style="display: flex; flex-direction: row; gap: 15px;">
                         
                         <div class="menu-card" onclick="showPage('achievements')" style="padding: 30px 15px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 40px; margin-bottom: 10px;">🏆</div>
@@ -348,7 +348,7 @@
                 
                 <!<!-- 我的Tab：用户管理、我的宠物 -->
                 <div id="tab-profile" class="tab-panel" style="display: none;">
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div style="display: flex; flex-direction: row; gap: 15px;">
                         
                         <div class="menu-card" onclick="showUserManager()" style="padding: 30px 15px; background: linear-gradient(135deg, #607d8b, #455a64); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">👤</div>
@@ -747,7 +747,7 @@
                         <div style="font-size: 12px; color: #aaa; margin-bottom: 5px;">❓ 挑战</div>
                         <div id="storyQuestionText" style="font-size: 20px; font-weight: bold; text-align: center;"></div>
                     </div>
-                    <div id="storyOptions" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;"></div>
+                    <div id="storyOptions" style="display: flex; flex-direction: row; gap: 12px;"></div>
                 </div>
                 
                 <button id="storyContinueBtn" class="btn" onclick="continueStory()" style="width: 100%; margin-top: 15px;">继续 →</button>
@@ -2805,7 +2805,7 @@ function showPage(pageId) {
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<p>问题 ' + (currentTestIndex + 1) + '/' + initialTestData.length + '</p>';
             html += '<h2 style="font-size: 48px; margin: 30px 0;">"' + q.char + '" 的声母是?</h2>';
-            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
+            html += '<div style="display: flex; flex-direction: row; gap: 15px; max-width: 300px; margin: 0 auto;">';
             q.options.forEach(function(opt) {
                 html += '<button class="btn" onclick="checkInitialAnswer(\'' + opt + '\')" style="font-size: 16px; padding: 20px;">' + opt + '</button>';
             });
@@ -2888,7 +2888,7 @@ function showPage(pageId) {
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<p>问题 ' + (currentTestIndex + 1) + '/' + finalTestData.length + '</p>';
             html += '<h2 style="font-size: 48px; margin: 30px 0;">"' + q.char + '" 的韵母是?</h2>';
-            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
+            html += '<div style="display: flex; flex-direction: row; gap: 15px; max-width: 300px; margin: 0 auto;">';
             q.options.forEach(function(opt) {
                 html += '<button class="btn" onclick="checkFinalAnswer(\'' + opt + '\')" style="font-size: 20px; padding: 20px;">' + opt + '</button>';
             });
@@ -2968,7 +2968,7 @@ function showPage(pageId) {
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<p>问题 ' + (currentTestIndex + 1) + '/' + wholeTestData.length + '</p>';
             html += '<h2 style="font-size: 48px; margin: 30px 0;">"' + q.char + '" 的读音是?</h2>';
-            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
+            html += '<div style="display: flex; flex-direction: row; gap: 15px; max-width: 300px; margin: 0 auto;">';
             q.options.forEach(function(opt) {
                 html += '<button class="btn" onclick="checkWholeAnswer(\'' + opt + '\')" style="font-size: 20px; padding: 20px;">' + opt + '</button>';
             });
@@ -3006,7 +3006,7 @@ function showPage(pageId) {
             
             var html = '<div style="margin-bottom: 10px; padding: 10px; background: #E3F2FD; border-radius: 10px;">';
             html += '<h3 style="color: #1565C0; margin-bottom: 10px;">🎯 声调说明</h3>';
-            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 16px;">';
+            html += '<div style="display: flex; flex-direction: row; gap: 10px; font-size: 16px;">';
             html += '<div>一声(阴平): 高平调 ˉ 如 mā</div>';
             html += '<div>二声(阳平): 中升调 ˊ 如 má</div>';
             html += '<div>三声(上声): 降升调 ˇ 如 mǎ</div>';
@@ -3416,7 +3416,7 @@ function showPage(pageId) {
             html += '<h3 style="font-size: 44px; margin-bottom: 20px;">' + randomWord.word + '</h3>';
             html += '<button class="btn" onclick="speakWord(\'' + randomWord.pinyin + '\', \'' + randomWord.word + '\')" style="width: auto; margin-bottom: 20px;">🔊 听拼音</button>';
             html += '<p style="margin-bottom: 10px;">请选择正确的拼音：</p>';
-            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 400px; margin: 0 auto;">';
+            html += '<div style="display: flex; flex-direction: row; gap: 15px; max-width: 400px; margin: 0 auto;">';
             
             // 生成选项（包含正确答案和3个干扰项）
             var options = [randomWord.pinyin];
@@ -3509,7 +3509,7 @@ function showPage(pageId) {
         }
         
         // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.4.3';
+        var GAME_VERSION = 'v8.4.4';
         var GAME_BUILD_DATE = '2026-03-07';
         
         // 显示版本号
@@ -3732,7 +3732,7 @@ function showPage(pageId) {
             document.getElementById('battleQDisplay').innerHTML = displayHtml;
             
             // 显示4个选项
-            var html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 300px; margin: 15px auto;">';
+            var html = '<div style="display: flex; flex-direction: row; gap: 12px; max-width: 300px; margin: 15px auto;">';
             options.forEach(function(opt) {
                 var displayOpt = opt === '' ? '（零声母）' : opt;
                 html += '<button class="option-btn" onclick="battleAnswer(this, \'' + opt + '\', \'' + answer + '\')" style="font-size: 22px; padding: 15px;">' + displayOpt + '</button>';
@@ -4155,7 +4155,7 @@ function showPage(pageId) {
             if (err.errorType === 'tone') {
                 html += '<p style="margin-bottom: 10px; color: #666;">这是几声?</p>';
             }
-            html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 300px; margin: 0 auto;">';
+            html += '<div style="display: flex; flex-direction: row; gap: 15px; max-width: 300px; margin: 0 auto;">';
             options.forEach(function(opt) {
                 html += '<button class="btn" onclick="checkReviewAnswer(\'' + opt + '\', \'' + err.correctAnswer + '\', \'' + err.id + '\')" style="font-size: 20px; padding: 20px;">' + opt + '</button>';
             });
@@ -4198,7 +4198,7 @@ function showPage(pageId) {
                         '<div style="font-size: 12px; margin-top: 10px;">去野外探险打怪可以获得宝物！</div>' +
                     '</div>';
                 } else {
-                    html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">';
+                    html += '<div style="display: flex; flex-direction: row; gap: 12px;">';
                     var treasureCounts = {};
                     inventory.treasures.forEach(function(t) {
                         treasureCounts[t.id] = (treasureCounts[t.id] || 0) + 1;
@@ -4629,7 +4629,7 @@ function showPage(pageId) {
     
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v8.4.3 (2026-03-07)
+        拼音大冒险 v8.4.4 (2026-03-07)
     </div>
     
     <script>
