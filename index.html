@@ -208,117 +208,120 @@
                 
                 <!-- 学习Tab：基础教学、智能学习、拼音儿歌 -->
                 <div id="tab-study" class="tab-panel" style="display: block;">
-                    <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px;">
-                        <div class="menu-card" onclick="goToLearning()" style="padding: 35px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">📖</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">基础教学</div>
-                            <div style="font-size: 13px; opacity: 0.9;">声母·韵母·整体认读</div>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div class="menu-card" onclick="goToLearning()" style="padding: 40px 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">📖</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">基础教学</div>
+                            <div style="font-size: 14px; opacity: 0.9;">声母 · 韵母 · 整体认读</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('learningPath')" style="padding: 35px; background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">🎯</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">智能学习</div>
-                            <div style="font-size: 13px; opacity: 0.9;">薄弱点分析·热力图</div>
+                        <div class="menu-card" onclick="showPage('learningPath')" style="padding: 40px 30px; background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">🎯</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">智能学习</div>
+                            <div style="font-size: 14px; opacity: 0.9;">薄弱点分析 · 热力图</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('songs')" style="padding: 35px; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">🎵</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">拼音儿歌</div>
-                            <div style="font-size: 13px; opacity: 0.9;">唱着歌学拼音</div>
+                        <div class="menu-card" onclick="showPage('songs')" style="padding: 40px 30px; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">🎵</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">拼音儿歌</div>
+                            <div style="font-size: 14px; opacity: 0.9;">唱着歌学拼音</div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 探险Tab：闯关地图、野外探险、故事模式 -->
+                <!<!-- 探险Tab：闯关地图、野外探险、故事模式 -->
                 <div id="tab-adventure" class="tab-panel" style="display: none;">
-                    <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px;">
-                        <div class="menu-card" onclick="goToLevelMap()" style="padding: 35px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">🗺️</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">闯关地图</div>
-                            <div style="font-size: 13px; opacity: 0.9;">15关拼音挑战</div>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        
+                        <div class="menu-card" onclick="goToLevelMap()" style="padding: 40px 30px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">🗺️</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">闯关地图</div>
+                            <div style="font-size: 14px; opacity: 0.9;">15关拼音挑战</div>
                         </div>
                         
-                        <div class="menu-card" onclick="goToMap()" style="padding: 35px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">🏕️</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">野外探险</div>
-                            <div style="font-size: 13px; opacity: 0.9;">战斗·宠物·赢金币</div>
+                        <div class="menu-card" onclick="goToMap()" style="padding: 40px 30px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">🏕️</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">野外探险</div>
+                            <div style="font-size: 14px; opacity: 0.9;">战斗 · 宠物 · 赢金币</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('storyMode')" style="padding: 35px; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">📖</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">故事模式</div>
-                            <div style="font-size: 13px; opacity: 0.9;">拼音大冒险剧情</div>
+                        <div class="menu-card" onclick="showPage('storyMode')" style="padding: 40px 30px; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">📖</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">故事模式</div>
+                            <div style="font-size: 14px; opacity: 0.9;">拼音大冒险剧情</div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 商店Tab：商店、背包、装备 -->
+                <!<!-- 商店Tab：商店、背包、装备 -->
                 <div id="tab-shop" class="tab-panel" style="display: none;">
-                    <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px;">
-                        <div class="menu-card" onclick="showPage('shop')" style="padding: 35px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">🏪</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">商店</div>
-                            <div style="font-size: 13px; opacity: 0.9;">购买道具·宠物</div>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        
+                        <div class="menu-card" onclick="showPage('shop')" style="padding: 40px 30px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">🏪</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">商店</div>
+                            <div style="font-size: 14px; opacity: 0.9;">购买道具 · 宠物</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('inventory')" style="padding: 35px; background: linear-gradient(135deg, #00bcd4, #0097a7); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">🎒</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">背包</div>
-                            <div style="font-size: 13px; opacity: 0.9;">查看道具</div>
+                        <div class="menu-card" onclick="showPage('inventory')" style="padding: 40px 30px; background: linear-gradient(135deg, #00bcd4, #0097a7); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">🎒</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">背包</div>
+                            <div style="font-size: 14px; opacity: 0.9;">查看我的道具</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('equipment')" style="padding: 35px; background: linear-gradient(135deg, #795548, #5d4037); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">⚔️</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">装备</div>
-                            <div style="font-size: 13px; opacity: 0.9;">武器·防具·饰品</div>
+                        <div class="menu-card" onclick="showPage('equipment')" style="padding: 40px 30px; background: linear-gradient(135deg, #795548, #5d4037); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">⚔️</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">装备</div>
+                            <div style="font-size: 14px; opacity: 0.9;">武器 · 防具 · 饰品</div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 统计Tab：成就、任务、统计、错题本 -->
+                <!<!-- 统计Tab：成就、任务、统计、错题本 -->
                 <div id="tab-stats" class="tab-panel" style="display: none;">
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                        <div class="menu-card" onclick="showPage('achievements')" style="padding: 30px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 10px;">🏆</div>
-                            <div style="font-size: 16px; font-weight: bold;">成就</div>
+                        
+                        <div class="menu-card" onclick="showPage('achievements')" style="padding: 35px 20px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 44px; margin-bottom: 10px;">🏆</div>
+                            <div style="font-size: 18px; font-weight: bold;">成就</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('tasks')" style="padding: 30px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 10px;">📋</div>
-                            <div style="font-size: 16px; font-weight: bold;">任务</div>
+                        <div class="menu-card" onclick="showPage('tasks')" style="padding: 35px 20px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 44px; margin-bottom: 10px;">📋</div>
+                            <div style="font-size: 18px; font-weight: bold;">任务</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('stats')" style="padding: 30px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 10px;">📊</div>
-                            <div style="font-size: 16px; font-weight: bold;">统计</div>
+                        <div class="menu-card" onclick="showPage('stats')" style="padding: 35px 20px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 44px; margin-bottom: 10px;">📊</div>
+                            <div style="font-size: 18px; font-weight: bold;">统计</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('errorBook')" style="padding: 30px; background: linear-gradient(135deg, #f44336, #d32f2f); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 40px; margin-bottom: 10px;">📕</div>
-                            <div style="font-size: 16px; font-weight: bold;">错题本</div>
+                        <div class="menu-card" onclick="showPage('errorBook')" style="padding: 35px 20px; background: linear-gradient(135deg, #f44336, #d32f2f); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 44px; margin-bottom: 10px;">📕</div>
+                            <div style="font-size: 18px; font-weight: bold;">错题本</div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 我的Tab：用户管理、我的宠物 -->
+                <!<!-- 我的Tab：用户管理、我的宠物 -->
                 <div id="tab-profile" class="tab-panel" style="display: none;">
-                    <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px;">
-                        <div class="menu-card" onclick="showUserManager()" style="padding: 40px; background: linear-gradient(135deg, #607d8b, #455a64); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">👤</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">用户管理</div>
-                            <div style="font-size: 13px; opacity: 0.9;">切换用户·设置</div>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        
+                        <div class="menu-card" onclick="showUserManager()" style="padding: 45px 30px; background: linear-gradient(135deg, #607d8b, #455a64); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">👤</div>
+                            <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">用户管理</div>
+                            <div style="font-size: 14px; opacity: 0.9;">切换用户 · 设置</div>
                         </div>
                         
-                        <div class="menu-card" onclick="showPage('pet')" style="padding: 40px; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">🐼</div>
-                            <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">我的宠物</div>
-                            <div style="font-size: 13px; opacity: 0.9;">养成·升级·进化</div>
+                        <div class="menu-card" onclick="showPage('pet')" style="padding: 45px 30px; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">🐼</div>
+                            <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">我的宠物</div>
+                            <div style="font-size: 14px; opacity: 0.9;">养成 · 升级 · 进化</div>
                         </div>
                     </div>
-                </div>
-            </div>
-            
+                </div>            </div>
         </div>
+        
         
         <!-- 底部Tab导航：学习、探险、商店、统计、我的 -->
         <div style="position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #eee; padding: 8px 0; z-index: 1000;">
