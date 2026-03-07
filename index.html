@@ -1167,14 +1167,160 @@
             questionsInLevel = [];
             levelCorrectCount = 0;
             
-            // 根据关卡类型生成问题
-            for (var i = 0; i < 10; i++) {
-                questionsInLevel.push(generateLevelQuestionByType(level.type, level.stage));
-            }
+            // 根据关卡类型生成问题 - 使用不重复随机
+            questionsInLevel = generateUniqueQuestions(level.type, level.stage, 10);
             
             currentQuestionInLevel = 1;
             showPage('game');
             loadLevelQuestion();
+        }
+        
+        // 生成不重复的题目数组
+        function generateUniqueQuestions(type, stage, count) {
+            var pool = getQuestionPoolByType(type, stage);
+            var used = [];
+            var result = [];
+            
+            // 如果题目池足够大，不重复选择
+            if (pool.length >= count) {
+                // 洗牌算法
+                var shuffled = pool.slice().sort(function() { return 0.5 - Math.random(); });
+                return shuffled.slice(0, count);
+            } else {
+                // 题目池不足，先全部放入，再随机补充
+                result = pool.slice();
+                while (result.length < count) {
+                    var item = pool[Math.floor(Math.random() * pool.length)];
+                    result.push(item);
+                }
+                return result;
+            }
+        }
+        
+        // 根据类型获取完整题目池
+        function getQuestionPoolByType(type, stage) {
+            var pool = [];
+            var allOptions;
+            
+            switch(type) {
+                case 'initial': // 声母
+                    var chars;
+                    if (stage === 1) {
+                        chars = [{c: '爸', a: 'b'}, {c: '妈', a: 'm'}, {c: '怕', a: 'p'}, {c: '发', a: 'f'},
+                                {c: '大', a: 'd'}, {c: '他', a: 't'}, {c: '你', a: 'n'}, {c: '乐', a: 'l'}];
+                    } else if (stage === 2) {
+                        chars = [{c: '哥', a: 'g'}, {c: '看', a: 'k'}, {c: '喝', a: 'h'},
+                                {c: '鸡', a: 'j'}, {c: '七', a: 'q'}, {c: '下', a: 'x'},
+                                {c: '知', a: 'zh'}, {c: '吃', a: 'ch'}, {c: '十', a: 'sh'}, {c: '日', a: 'r'}];
+                    } else {
+                        chars = [{c: '在', a: 'z'}, {c: '从', a: 'c'}, {c: '三', a: 's'},
+                                {c: '一', a: 'y'}, {c: '我', a: 'w'}, {c: '爸', a: 'b'}, {c: '妈', a: 'm'},
+                                {c: '怕', a: 'p'}, {c: '发', a: 'f'}, {c: '大', a: 'd'}, {c: '他', a: 't'}];
+                    }
+                    allOptions = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x', 
+                                 'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w'];
+                    for (var i = 0; i < chars.length; i++) {
+                        pool.push(generateQuestion(chars[i].c, chars[i].a, allOptions, '声母'));
+                    }
+                    break;
+                    
+                case 'final': // 韵母
+                    var chars2;
+                    if (stage === 1) {
+                        chars2 = [{c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '的', a: 'e'}, {c: '你', a: 'i'}, 
+                                 {c: '不', a: 'u'}, {c: '去', a: 'ü'}, {c: '来', a: 'ai'}, {c: '北', a: 'ei'}];
+                    } else if (stage === 2) {
+                        chars2 = [{c: '水', a: 'ui'}, {c: '好', a: 'ao'}, {c: '有', a: 'ou'}, {c: '就', a: 'iu'},
+                                 {c: '写', a: 'ie'}, {c: '月', a: 'üe'}, {c: '儿', a: 'er'},
+                                 {c: '天', a: 'an'}, {c: '人', a: 'en'}, {c: '心', a: 'in'}];
+                    } else {
+                        chars2 = [{c: '问', a: 'un'}, {c: '云', a: 'ün'}, {c: '上', a: 'ang'}, 
+                                 {c: '冷', a: 'eng'}, {c: '明', a: 'ing'}, {c: '龙', a: 'ong'},
+                                 {c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '来', a: 'ai'}, {c: '水', a: 'ui'}];
+                    }
+                    allOptions = ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu', 'ie', 'üe', 'er',
+                                 'an', 'en', 'in', 'un', 'ün', 'ang', 'eng', 'ing', 'ong'];
+                    for (var j = 0; j < chars2.length; j++) {
+                        pool.push(generateQuestion(chars2[j].c, chars2[j].a, allOptions, '韵母'));
+                    }
+                    break;
+                    
+                case 'whole': // 整体认读
+                    var chars3;
+                    if (stage === 1) {
+                        chars3 = [{c: '一只', a: 'zhi'}, {c: '吃饭', a: 'chi'}, {c: '狮子', a: 'shi'}, {c: '日子', a: 'ri'},
+                                 {c: '字母', a: 'zi'}, {c: '词语', a: 'ci'}, {c: '四十', a: 'si'},
+                                 {c: '一', a: 'yi'}, {c: '五', a: 'wu'}, {c: '鱼', a: 'yu'}];
+                    } else if (stage === 2) {
+                        chars3 = [{c: '叶', a: 'ye'}, {c: '月', a: 'yue'}, {c: '元', a: 'yuan'},
+                                 {c: '音', a: 'yin'}, {c: '云', a: 'yun'}, {c: '鹰', a: 'ying'},
+                                 {c: '一只', a: 'zhi'}, {c: '吃饭', a: 'chi'}, {c: '一', a: 'yi'}, {c: '五', a: 'wu'}];
+                    } else {
+                        chars3 = [{c: '字母', a: 'zi'}, {c: '词语', a: 'ci'}, {c: '四十', a: 'si'},
+                                 {c: '鱼', a: 'yu'}, {c: '叶', a: 'ye'}, {c: '月', a: 'yue'},
+                                 {c: '元', a: 'yuan'}, {c: '音', a: 'yin'}, {c: '云', a: 'yun'}, {c: '鹰', a: 'ying'}];
+                    }
+                    allOptions = ['zhi', 'chi', 'shi', 'ri', 'zi', 'ci', 'si', 'yi', 'wu', 'yu', 'ye', 'yue', 'yuan', 'yin', 'yun', 'ying'];
+                    for (var k = 0; k < chars3.length; k++) {
+                        pool.push(generateQuestion(chars3[k].c, chars3[k].a, allOptions, '整体认读'));
+                    }
+                    break;
+                    
+                case 'tone': // 声调
+                    var toneData = [
+                        {p: 'mā', t: '1'}, {p: 'má', t: '2'}, {p: 'mǎ', t: '3'}, {p: 'mà', t: '4'},
+                        {p: 'bā', t: '1'}, {p: 'bá', t: '2'}, {p: 'bǎ', t: '3'}, {p: 'bà', t: '4'},
+                        {p: 'dā', t: '1'}, {p: 'dá', t: '2'}, {p: 'dǎ', t: '3'}, {p: 'dà', t: '4'},
+                        {p: 'tā', t: '1'}, {p: 'tá', t: '2'}, {p: 'tǎ', t: '3'}, {p: 'tà', t: '4'},
+                        {p: 'nī', t: '1'}, {p: 'ní', t: '2'}, {p: 'nǐ', t: '3'}, {p: 'nì', t: '4'}
+                    ];
+                    for (var t = 0; t < toneData.length; t++) {
+                        pool.push({
+                            q: toneData[t].p,
+                            a: toneData[t].t,
+                            options: ['1', '2', '3', '4'],
+                            type: 'tone',
+                            hint: '这是几声?'
+                        });
+                    }
+                    break;
+                    
+                case 'word': // 词语
+                    var words;
+                    if (stage === 1) {
+                        words = [{w: '爸爸', p: 'bà ba'}, {w: '妈妈', p: 'mā ma'}, {w: '哥哥', p: 'gē ge'}, 
+                                {w: '姐姐', p: 'jiě jie'}, {w: '老师', p: 'lǎo shī'}, {w: '学生', p: 'xué sheng'},
+                                {w: '你好', p: 'nǐ hǎo'}, {w: '中国', p: 'zhōng guó'}];
+                    } else if (stage === 2) {
+                        words = [{w: '小学生', p: 'xiǎo xué shēng'}, {w: '好朋友', p: 'hǎo péng you'}, 
+                                {w: '大熊猫', p: 'dà xióng māo'}, {w: '天安门', p: 'tiān ān mén'},
+                                {w: '幼儿园', p: 'yòu ér yuán'}, {w: '看电视', p: 'kàn diàn shì'}];
+                    } else {
+                        words = [{w: '我爱学习', p: 'wǒ ài xué xí'}, {w: '你好世界', p: 'nǐ hǎo shì jiè'},
+                                {w: '新年快乐', p: 'xīn nián kuài lè'}, {w: '好好学习', p: 'hǎo hǎo xué xí'}];
+                    }
+                    for (var w = 0; w < words.length; w++) {
+                        var parts = words[w].p.split(' ');
+                        var displayParts = parts.map(function(part) {
+                            return part.replace(/[āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜ]/g, function(m) {
+                                var base = {'ā':'a','á':'a','ǎ':'a','à':'a','ō':'o','ó':'o','ǒ':'o','ò':'o',
+                                           'ē':'e','é':'e','ě':'e','è':'e','ī':'i','í':'i','ǐ':'i','ì':'i',
+                                           'ū':'u','ú':'u','ǔ':'u','ù':'u','ǖ':'ü','ǘ':'ü','ǚ':'ü','ǜ':'ü'}[m];
+                                return base;
+                            });
+                        });
+                        pool.push({
+                            q: words[w].w,
+                            a: displayParts.join(' '),
+                            options: [],
+                            type: 'word',
+                            hint: '这个词语的拼音是? (用空格分开，如：ni hao)',
+                            inputType: 'text'
+                        });
+                    }
+                    break;
+            }
+            return pool;
         }
         
         // 根据关卡类型和阶段生成问题
