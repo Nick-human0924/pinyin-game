@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.2.5 - 闯关题目不重复+音频修复</title>
+    <title>拼音大冒险 v8.2.6 - 野外探险汉字答题</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -547,6 +547,50 @@
             options.sort(function() { return Math.random() - 0.5; });
             questionBank.push({ q: q, a: a, options: options });
         }
+        
+        // ========== v8.2.5 野外探险战斗题库（汉字+拼音分解）==========
+        var battleCharacters = [
+            { char: '爸', pinyin: 'bà', initial: 'b', final: 'a', tone: '4', whole: 'ba' },
+            { char: '妈', pinyin: 'mā', initial: 'm', final: 'a', tone: '1', whole: 'ma' },
+            { char: '大', pinyin: 'dà', initial: 'd', final: 'a', tone: '4', whole: 'da' },
+            { char: '小', pinyin: 'xiǎo', initial: 'x', final: 'iao', tone: '3', whole: 'xiao' },
+            { char: '我', pinyin: 'wǒ', initial: 'w', final: 'o', tone: '3', whole: 'wo' },
+            { char: '你', pinyin: 'nǐ', initial: 'n', final: 'i', tone: '3', whole: 'ni' },
+            { char: '好', pinyin: 'hǎo', initial: 'h', final: 'ao', tone: '3', whole: 'hao' },
+            { char: '中', pinyin: 'zhōng', initial: 'zh', final: 'ong', tone: '1', whole: 'zhong' },
+            { char: '国', pinyin: 'guó', initial: 'g', final: 'uo', tone: '2', whole: 'guo' },
+            { char: '天', pinyin: 'tiān', initial: 't', final: 'ian', tone: '1', whole: 'tian' },
+            { char: '水', pinyin: 'shuǐ', initial: 'sh', final: 'ui', tone: '3', whole: 'shui' },
+            { char: '火', pinyin: 'huǒ', initial: 'h', final: 'uo', tone: '3', whole: 'huo' },
+            { char: '山', pinyin: 'shān', initial: 'sh', final: 'an', tone: '1', whole: 'shan' },
+            { char: '木', pinyin: 'mù', initial: 'm', final: 'u', tone: '4', whole: 'mu' },
+            { char: '花', pinyin: 'huā', initial: 'h', final: 'ua', tone: '1', whole: 'hua' },
+            { char: '云', pinyin: 'yún', initial: 'y', final: 'un', tone: '2', whole: 'yun' },
+            { char: '月', pinyin: 'yuè', initial: 'y', final: 'ue', tone: '4', whole: 'yue' },
+            { char: '日', pinyin: 'rì', initial: 'r', final: 'i', tone: '4', whole: 'ri' },
+            { char: '人', pinyin: 'rén', initial: 'r', final: 'en', tone: '2', whole: 'ren' },
+            { char: '口', pinyin: 'kǒu', initial: 'k', final: 'ou', tone: '3', whole: 'kou' },
+            { char: '手', pinyin: 'shǒu', initial: 'sh', final: 'ou', tone: '3', whole: 'shou' },
+            { char: '心', pinyin: 'xīn', initial: 'x', final: 'in', tone: '1', whole: 'xin' },
+            { char: '爱', pinyin: 'ài', initial: '', final: 'ai', tone: '4', whole: 'ai' },
+            { char: '学', pinyin: 'xué', initial: 'x', final: 'ue', tone: '2', whole: 'xue' }
+        ];
+        
+        // 声母选项池
+        var allInitials = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 
+                          'j', 'q', 'x', 'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w', ''];
+        // 韵母选项池
+        var allFinals = ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu', 
+                        'ie', 'üe', 'er', 'an', 'en', 'in', 'un', 'ün', 
+                        'ang', 'eng', 'ing', 'ong', 'iao', 'ian', 'ua', 'uo'];
+        // 整体认读选项池
+        var allWholes = ['zhi', 'chi', 'shi', 'ri', 'zi', 'ci', 'si', 
+                        'yi', 'wu', 'yu', 'ye', 'yue', 'yuan', 'yin', 'yun', 'ying',
+                        'ba', 'ma', 'da', 'xiao', 'wo', 'ni', 'hao', 'zhong', 'guo'];
+        
+        // 当前战斗题目状态
+        var currentBattleChar = null;
+        var currentBattleMode = null; // 'initial', 'final', 'whole', 'tone'
         
         // 15关数据
         // v8.2.0 重新设计关卡系统 - 按基础教学进度进阶
@@ -2512,7 +2556,7 @@
         }
         
         // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.2.5';
+        var GAME_VERSION = 'v8.2.6';
         var GAME_BUILD_DATE = '2026-03-07';
         
         // 显示版本号
@@ -2686,16 +2730,103 @@
         }
         
         function loadBattleQuestion() {
-            currentBattleQuestion = questionBank[Math.floor(Math.random() * questionBank.length)];
-            var q = currentBattleQuestion;
-            document.getElementById('battleQDisplay').innerHTML = q.q + '<button class="voice-btn" onclick="speakCurrent()">🔊</button>';
+            // 随机选择一个汉字
+            currentBattleChar = battleCharacters[Math.floor(Math.random() * battleCharacters.length)];
+            currentBattleMode = null;
+            currentBattleQuestion = null;
             
+            // 显示汉字（大字）
+            var displayHtml = '<div style="font-size: 72px; margin: 10px 0; color: #667eea;">' + currentBattleChar.char + '</div>';
+            displayHtml += '<button class="voice-btn" onclick="speakBattleChar()">🔊</button>';
+            document.getElementById('battleQDisplay').innerHTML = displayHtml;
+            
+            // 显示4个选项类型
+            var html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 320px; margin: 0 auto;">';
+            html += '<button class="option-btn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 18px; padding: 15px;" onclick="selectBattleMode(\'initial\')">声母<br/><small style="font-size: 12px; opacity: 0.8;">b p m f...</small></button>';
+            html += '<button class="option-btn" style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; font-size: 18px; padding: 15px;" onclick="selectBattleMode(\'final\')">韵母<br/><small style="font-size: 12px; opacity: 0.8;">a o e i u...</small></button>';
+            html += '<button class="option-btn" style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; font-size: 18px; padding: 15px;" onclick="selectBattleMode(\'whole\')">整体拼音<br/><small style="font-size: 12px; opacity: 0.8;">ba ma da...</small></button>';
+            html += '<button class="option-btn" style="background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; font-size: 18px; padding: 15px;" onclick="selectBattleMode(\'tone\')">声调<br/><small style="font-size: 12px; opacity: 0.8;">1 2 3 4</small></button>';
+            html += '</div>';
+            
+            document.getElementById('battleOptions').innerHTML = html;
+            
+            // 播放汉字发音
+            setTimeout(function() { speak(currentBattleChar.char); }, 500);
+        }
+        
+        // 播放当前战斗汉字
+        function speakBattleChar() {
+            if (currentBattleChar) {
+                speak(currentBattleChar.char);
+            }
+        }
+        
+        // 选择战斗模式（声母/韵母/整体/声调）
+        function selectBattleMode(mode) {
+            currentBattleMode = mode;
+            var char = currentBattleChar;
+            var answer, options, questionType;
+            
+            switch(mode) {
+                case 'initial':
+                    answer = char.initial;
+                    questionType = '声母';
+                    options = generateBattleOptions(answer, allInitials);
+                    currentBattleQuestion = { q: char.char + ' 的声母是什么？', a: answer, type: 'initial' };
+                    break;
+                case 'final':
+                    answer = char.final;
+                    questionType = '韵母';
+                    options = generateBattleOptions(answer, allFinals);
+                    currentBattleQuestion = { q: char.char + ' 的韵母是什么？', a: answer, type: 'final' };
+                    break;
+                case 'whole':
+                    answer = char.whole;
+                    questionType = '整体拼音';
+                    options = generateBattleOptions(answer, allWholes);
+                    currentBattleQuestion = { q: char.char + ' 的拼音是什么？', a: answer, type: 'whole' };
+                    break;
+                case 'tone':
+                    answer = char.tone;
+                    questionType = '声调';
+                    options = ['1', '2', '3', '4'];
+                    currentBattleQuestion = { q: char.char + ' 是第几声？', a: answer, type: 'tone' };
+                    break;
+            }
+            
+            // 更新显示
+            var displayHtml = '<div style="font-size: 72px; margin: 5px 0; color: #667eea;">' + char.char + '</div>';
+            displayHtml += '<div style="font-size: 16px; color: #666; margin-bottom: 10px;">请选择"' + questionType + '"' + '</button>';
+            displayHtml += '<button class="voice-btn" onclick="speakBattleChar()">🔊</button>';
+            document.getElementById('battleQDisplay').innerHTML = displayHtml;
+            
+            // 显示选项
             var html = '';
-            q.options.forEach(function(opt) {
-                html += '<button class="option-btn" onclick="battleAnswer(this, \'' + opt + '\', \'' + q.a + '\')">' + opt + '</button>';
+            options.forEach(function(opt) {
+                var displayOpt = opt === '' ? '（零声母）' : opt;
+                html += '<button class="option-btn" onclick="battleAnswer(this, \'' + opt + '\', \'' + answer + '\')" style="font-size: 20px; padding: 12px;">' + displayOpt + '</button>';
             });
             document.getElementById('battleOptions').innerHTML = html;
-            setTimeout(function() { speak(q.q); }, 500);
+            
+            document.getElementById('battleLog').textContent = '遭遇 ' + currentEnemy.name + '！请回答 ' + char.char + ' 的' + questionType + '！';
+        }
+        
+        // 生成战斗选项（确保包含正确答案）
+        function generateBattleOptions(answer, pool) {
+            var opts = [answer];
+            var attempts = 0;
+            while (opts.length < 4 && attempts < 100) {
+                var r = pool[Math.floor(Math.random() * pool.length)];
+                if (opts.indexOf(r) === -1) {
+                    opts.push(r);
+                }
+                attempts++;
+            }
+            // 如果选项不够，添加空字符串作为占位（零声母情况）
+            while (opts.length < 4) {
+                opts.push(pool[Math.floor(Math.random() * pool.length)]);
+            }
+            return opts.sort(function() { return Math.random() - 0.5; });
         }
         
         function battleAnswer(btn, selected, correct) {
@@ -3557,7 +3688,7 @@
     
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; bottom: 5px; right: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v8.2.5 (2026-03-07)
+        拼音大冒险 v8.2.6 (2026-03-07)
     </div>
     
     <script>
