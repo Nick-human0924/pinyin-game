@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>拼音大冒险 v8.5.2 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v8.5.3 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -2853,7 +2853,7 @@ function showPage(pageId) {
             updateTaskProgress('task_practice', 1);
             var html = '<div style="margin-bottom: 10px; text-align: center;">';
             html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
-            html += '<button class="btn" onclick="startInitialTest()" style="width: auto; padding: 10px 20px;">📝 小测试</button>';
+            html += '<button class="btn" onclick="startRandomTest(\'initial\')" style="width: auto; padding: 10px 20px;">📝 随机测试(10题)</button>';
             html += '</div>';
             html += '<div class="pinyin-grid">';
             pinyinData.initial.forEach(function(py, i) {
@@ -2953,7 +2953,7 @@ function showPage(pageId) {
             updateTaskProgress('task_practice', 1);
             var html = '<div style="margin-bottom: 10px; text-align: center;">';
             html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
-            html += '<button class="btn" onclick="startFinalTest()" style="width: auto; padding: 10px 20px;">📝 小测试</button>';
+            html += '<button class="btn" onclick="startRandomTest(\'final\')" style="width: auto; padding: 10px 20px;">📝 随机测试(10题)</button>';
             html += '</div>';
             html += '<div class="pinyin-grid">';
             pinyinData.final.forEach(function(py, i) {
@@ -3036,7 +3036,7 @@ function showPage(pageId) {
             updateTaskProgress('task_practice', 1);
             var html = '<div style="margin-bottom: 10px; text-align: center;">';
             html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
-            html += '<button class="btn" onclick="startWholeTest()" style="width: auto; padding: 10px 20px;">📝 小测试</button>';
+            html += '<button class="btn" onclick="startRandomTest(\'whole\')" style="width: auto; padding: 10px 20px;">📝 随机测试(10题)</button>';
             html += '</div>';
             html += '<div class="pinyin-grid">';
             pinyinData.whole.forEach(function(py, i) {
@@ -3112,7 +3112,192 @@ function showPage(pageId) {
             setTimeout(showWholeQuestion, 1000);
         }
         
-        // 声调学习 - v6.5新增
+        // ===== 随机测试系统（v8.5.3新增） =====
+        var randomTestState = {
+            isActive: false,
+            testType: '', // 'initial', 'final', 'whole', 'tone'
+            questions: [],
+            currentIndex: 0,
+            score: 0,
+            totalQuestions: 10
+        };
+        
+        // 生成随机测试题（不重复）
+        function generateRandomQuestions(type, count) {
+            var allQuestions = [];
+            
+            if (type === 'initial') {
+                // 使用声母数据生成题目
+                pinyinData.initial.forEach(function(py, idx) {
+                    var correctAnswer = pinyinData.initialNames[idx];
+                    var options = [correctAnswer];
+                    // 生成3个错误选项
+                    while (options.length < 4) {
+                        var randomIdx = Math.floor(Math.random() * pinyinData.initialNames.length);
+                        var wrongAnswer = pinyinData.initialNames[randomIdx];
+                        if (options.indexOf(wrongAnswer) === -1 && wrongAnswer !== correctAnswer) {
+                            options.push(wrongAnswer);
+                        }
+                    }
+                    // 打乱选项顺序
+                    options.sort(function() { return Math.random() - 0.5; });
+                    allQuestions.push({
+                        char: py,
+                        answer: correctAnswer,
+                        options: options,
+                        display: py
+                    });
+                });
+            } else if (type === 'final') {
+                pinyinData.final.forEach(function(py, idx) {
+                    var correctAnswer = pinyinData.finalNames[idx];
+                    var options = [correctAnswer];
+                    while (options.length < 4) {
+                        var randomIdx = Math.floor(Math.random() * pinyinData.finalNames.length);
+                        var wrongAnswer = pinyinData.finalNames[randomIdx];
+                        if (options.indexOf(wrongAnswer) === -1 && wrongAnswer !== correctAnswer) {
+                            options.push(wrongAnswer);
+                        }
+                    }
+                    options.sort(function() { return Math.random() - 0.5; });
+                    allQuestions.push({
+                        char: py,
+                        answer: correctAnswer,
+                        options: options,
+                        display: py
+                    });
+                });
+            } else if (type === 'whole') {
+                pinyinData.whole.forEach(function(py, idx) {
+                    var correctAnswer = pinyinData.wholeNames[idx];
+                    var options = [correctAnswer];
+                    while (options.length < 4) {
+                        var randomIdx = Math.floor(Math.random() * pinyinData.wholeNames.length);
+                        var wrongAnswer = pinyinData.wholeNames[randomIdx];
+                        if (options.indexOf(wrongAnswer) === -1 && wrongAnswer !== correctAnswer) {
+                            options.push(wrongAnswer);
+                        }
+                    }
+                    options.sort(function() { return Math.random() - 0.5; });
+                    allQuestions.push({
+                        char: py,
+                        answer: correctAnswer,
+                        options: options,
+                        display: py
+                    });
+                });
+            } else if (type === 'tone') {
+                // 声调测试数据
+                var toneTests = [
+                    {py: 'mā', a: '妈', tone: '一声'}, {py: 'má', a: '麻', tone: '二声'}, {py: 'mǎ', a: '马', tone: '三声'}, {py: 'mà', a: '骂', tone: '四声'},
+                    {py: 'bā', a: '八', tone: '一声'}, {py: 'bá', a: '拔', tone: '二声'}, {py: 'bǎ', a: '把', tone: '三声'}, {py: 'bà', a: '爸', tone: '四声'},
+                    {py: 'fēi', a: '飞', tone: '一声'}, {py: 'féi', a: '肥', tone: '二声'}, {py: 'fěi', a: '匪', tone: '三声'}, {py: 'fèi', a: '费', tone: '四声'},
+                    {py: 'dāo', a: '刀', tone: '一声'}, {py: 'dáo', a: '捯', tone: '二声'}, {py: 'dǎo', a: '倒', tone: '三声'}, {py: 'dào', a: '到', tone: '四声'},
+                    {py: 'tāng', a: '汤', tone: '一声'}, {py: 'táng', a: '糖', tone: '二声'}, {py: 'tǎng', a: '躺', tone: '三声'}, {py: 'tàng', a: '烫', tone: '四声'},
+                    {py: 'nī', a: '妮', tone: '一声'}, {py: 'ní', a: '泥', tone: '二声'}, {py: 'nǐ', a: '你', tone: '三声'}, {py: 'nì', a: '逆', tone: '四声'},
+                    {py: 'lā', a: '拉', tone: '一声'}, {py: 'lá', a: '啦', tone: '二声'}, {py: 'lǎ', a: '喇', tone: '三声'}, {py: 'là', a: '辣', tone: '四声'},
+                    {py: 'gē', a: '歌', tone: '一声'}, {py: 'gé', a: '格', tone: '二声'}, {py: 'gě', a: '葛', tone: '三声'}, {py: 'gè', a: '个', tone: '四声'},
+                    {py: 'kū', a: '哭', tone: '一声'}, {py: 'kú', a: '跍', tone: '二声'}, {py: 'kǔ', a: '苦', tone: '三声'}, {py: 'kù', a: '裤', tone: '四声'},
+                    {py: 'hā', a: '哈', tone: '一声'}, {py: 'há', a: '蛤', tone: '二声'}, {py: 'hǎ', a: '哈', tone: '三声'}, {py: 'hà', a: '奤', tone: '四声'},
+                    {py: 'jī', a: '鸡', tone: '一声'}, {py: 'jí', a: '及', tone: '二声'}, {py: 'jǐ', a: '几', tone: '三声'}, {py: 'jì', a: '记', tone: '四声'},
+                    {py: 'qī', a: '七', tone: '一声'}, {py: 'qí', a: '齐', tone: '二声'}, {py: 'qǐ', a: '起', tone: '三声'}, {py: 'qì', a: '气', tone: '四声'},
+                    {py: 'xī', a: '西', tone: '一声'}, {py: 'xí', a: '习', tone: '二声'}, {py: 'xǐ', a: '喜', tone: '三声'}, {py: 'xì', a: '戏', tone: '四声'},
+                    {py: 'zhū', a: '猪', tone: '一声'}, {py: 'zhú', a: '竹', tone: '二声'}, {py: 'zhǔ', a: '主', tone: '三声'}, {py: 'zhù', a: '住', tone: '四声'},
+                    {py: 'chī', a: '吃', tone: '一声'}, {py: 'chí', a: '迟', tone: '二声'}, {py: 'chǐ', a: '齿', tone: '三声'}, {py: 'chì', a: '翅', tone: '四声'},
+                    {py: 'shī', a: '诗', tone: '一声'}, {py: 'shí', a: '时', tone: '二声'}, {py: 'shǐ', a: '史', tone: '三声'}, {py: 'shì', a: '是', tone: '四声'}
+                ];
+                toneTests.forEach(function(item) {
+                    var options = [item.a];
+                    while (options.length < 4) {
+                        var randomItem = toneTests[Math.floor(Math.random() * toneTests.length)];
+                        if (options.indexOf(randomItem.a) === -1) {
+                            options.push(randomItem.a);
+                        }
+                    }
+                    options.sort(function() { return Math.random() - 0.5; });
+                    allQuestions.push({
+                        char: item.py,
+                        answer: item.a,
+                        options: options,
+                        display: item.py + ' (' + item.tone + ')',
+                        tone: item.tone
+                    });
+                });
+            }
+            
+            // 随机打乱并取前count个
+            allQuestions.sort(function() { return Math.random() - 0.5; });
+            return allQuestions.slice(0, Math.min(count, allQuestions.length));
+        }
+        
+        // 开始随机测试
+        function startRandomTest(type) {
+            randomTestState.isActive = true;
+            randomTestState.testType = type;
+            randomTestState.currentIndex = 0;
+            randomTestState.score = 0;
+            randomTestState.questions = generateRandomQuestions(type, randomTestState.totalQuestions);
+            
+            showRandomTestQuestion();
+        }
+        
+        function showRandomTestQuestion() {
+            if (randomTestState.currentIndex >= randomTestState.questions.length) {
+                // 测试结束
+                var typeName = '';
+                if (randomTestState.testType === 'initial') typeName = '声母';
+                else if (randomTestState.testType === 'final') typeName = '韵母';
+                else if (randomTestState.testType === 'whole') typeName = '整体认读';
+                else if (randomTestState.testType === 'tone') typeName = '声调';
+                
+                var html = '<div style="text-align: center; padding: 40px;">';
+                html += '<h2>🎉 ' + typeName + '测试完成!</h2>';
+                html += '<p style="font-size: 20px; margin: 20px 0;">得分: ' + randomTestState.score + '/' + randomTestState.questions.length + '</p>';
+                html += '<p style="font-size: 14px; color: #666; margin-bottom: 20px;">每次测试题目都不同，继续加油!</p>';
+                html += '<button class="btn" onclick="location.reload()" style="margin-right: 10px;">再测一次</button>';
+                html += '<button class="btn btn-secondary" onclick="showMainMenu()">返回主页</button>';
+                html += '</div>';
+                document.getElementById('learningContent').innerHTML = html;
+                return;
+            }
+            
+            var q = randomTestState.questions[randomTestState.currentIndex];
+            var typeLabel = '';
+            if (randomTestState.testType === 'initial') typeLabel = '的声母是?';
+            else if (randomTestState.testType === 'final') typeLabel = '的韵母是?';
+            else if (randomTestState.testType === 'whole') typeLabel = '的读音是?';
+            else if (randomTestState.testType === 'tone') typeLabel = '对应的汉字是?';
+            
+            var html = '<div style="text-align: center; padding: 20px;">';
+            html += '<p style="margin-bottom: 10px;">📋 问题 ' + (randomTestState.currentIndex + 1) + '/' + randomTestState.questions.length + '</p>';
+            html += '<div class="progress-bar" style="margin: 10px auto; max-width: 300px;"><div class="progress-fill" style="width: ' + ((randomTestState.currentIndex + 1) / randomTestState.questions.length * 100) + '%"></div></div>';
+            html += '<h2 style="font-size: 48px; margin: 30px 0;">"' + q.char + '"' + typeLabel + '</h2>';
+            if (q.tone) {
+                html += '<p style="color: #666; margin-bottom: 20px;">声调: ' + q.tone + '</p>';
+            }
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 400px; margin: 0 auto;">';
+            q.options.forEach(function(opt) {
+                html += '<button class="btn" onclick="checkRandomTestAnswer(\'' + opt + '\')" style="font-size: 20px; padding: 20px;">' + opt + '</button>';
+            });
+            html += '</div>';
+            html += '</div>';
+            document.getElementById('learningContent').innerHTML = html;
+        }
+        
+        function checkRandomTestAnswer(answer) {
+            var q = randomTestState.questions[randomTestState.currentIndex];
+            if (answer === q.answer) {
+                randomTestState.score++;
+                addPetExp(2); // 随机测试答对获得2经验
+                showToast('✅ 正确! +2经验', 'success');
+            } else {
+                showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
+            }
+            randomTestState.currentIndex++;
+            setTimeout(showRandomTestQuestion, 1000);
+        }
+        
+        // 声调学习 - v8.5.3新增测试功能
         function showTones() {
             setTab(4);
             updateTaskProgress('task_practice', 1);
@@ -3235,12 +3420,9 @@ function showPage(pageId) {
             {pinyin: 'lǎ', tone: '3', char: '喇'}, {pinyin: 'là', tone: '4', char: '辣'}
         ];
         
-        // 开始声调测试
+        // 开始声调测试 - v8.5.3修改为随机测试
         function startToneTest() {
-            currentTestIndex = 0;
-            testScore = 0;
-            currentTestType = 'tone';
-            showToneQuestion();
+            startRandomTest('tone');
         }
         
         function showToneQuestion() {
