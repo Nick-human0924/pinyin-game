@@ -845,6 +845,10 @@
     </div>
 
     <script>
+        // 版本号（必须在最前面定义）
+        var GAME_VERSION = 'v8.5.12';
+        var GAME_BUILD_DATE = '2026-03-09';
+        
         // 完整拼音数据
         var pinyinData = {
             initial: ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'],
@@ -1833,7 +1837,7 @@
                     { type: 'question', text: '小熊猫要进入城堡，需要说出"门"的拼音', pinyin: 'men', options: ['men', 'meng', 'min', 'ming'], reward: { coins: 5, exp: 3 } },
                     { type: 'dialogue', text: '大门缓缓打开，小熊猫走进了拼音王国...' },
                     { type: 'dialogue', text: '一位老者迎面走来："年轻的勇士，你需要先学会声母才能继续前进。"' },
-                    { type: 'question', text: '老者问："b、p、m、f，哪个是'爸爸'的第一个音？"', pinyin: 'b', options: ['p', 'm', 'f', 'b'], reward: { coins: 5, exp: 3 } },
+                    { type: 'question', text: '老者问："b、p、m、f，哪个是"爸爸"的第一个音？"', pinyin: 'b', options: ['p', 'm', 'f', 'b'], reward: { coins: 5, exp: 3 } },
                     { type: 'dialogue', text: '老者满意地点头："很好！这是给你的奖励。"' },
                     { type: 'question', text: '继续前进，小熊猫看到"妈妈"两个字，它的声母是？', pinyin: 'm', options: ['b', 'p', 'm', 'f'], reward: { coins: 8, exp: 5 } }
                 ]
@@ -1847,14 +1851,14 @@
                 completed: false,
                 scenes: [
                     { type: 'dialogue', text: '小熊猫来到声母森林，这里住着b、p、m、f四位守护者...' },
-                    { type: 'question', text: 'b守护者问："'爸'的声母是什么？"', pinyin: 'b', options: ['ba', 'pa', 'ma', 'fa'], reward: { coins: 5, exp: 3 } },
+                    { type: 'question', text: 'b守护者问："爸的声母是什么？"', pinyin: 'b', options: ['ba', 'pa', 'ma', 'fa'], reward: { coins: 5, exp: 3 } },
                     { type: 'dialogue', text: 'b守护者满意地点点头，放行了小熊猫...' },
-                    { type: 'question', text: 'm守护者问："'妈'的声母是什么？"', pinyin: 'm', options: ['b', 'p', 'm', 'f'], reward: { coins: 5, exp: 3 } },
+                    { type: 'question', text: 'm守护者问："妈的声母是什么？"', pinyin: 'm', options: ['b', 'p', 'm', 'f'], reward: { coins: 5, exp: 3 } },
                     { type: 'dialogue', text: '穿过第一层，小熊猫遇到了d、t、n、l守护者...' },
-                    { type: 'question', text: 't守护者问："'特'的声母是？"', pinyin: 't', options: ['d', 't', 'n', 'l'], reward: { coins: 8, exp: 5 } },
-                    { type: 'question', text: 'n守护者问："'你'的声母是？"', pinyin: 'n', options: ['d', 't', 'n', 'l'], reward: { coins: 8, exp: 5 } },
+                    { type: 'question', text: 't守护者问："特的声母是？"', pinyin: 't', options: ['d', 't', 'n', 'l'], reward: { coins: 8, exp: 5 } },
+                    { type: 'question', text: 'n守护者问："你的声母是？"', pinyin: 'n', options: ['d', 't', 'n', 'l'], reward: { coins: 8, exp: 5 } },
                     { type: 'dialogue', text: '森林深处，小熊猫遇到了g、k、h守护者...' },
-                    { type: 'question', text: 'h守护者问："'喝'的声母是？"', pinyin: 'h', options: ['g', 'k', 'h', 'j'], reward: { coins: 10, exp: 6 } }
+                    { type: 'question', text: 'h守护者问："喝的声母是？"', pinyin: 'h', options: ['g', 'k', 'h', 'j'], reward: { coins: 10, exp: 6 } }
                 ]
             },
             {
@@ -1870,8 +1874,8 @@
                     { type: 'dialogue', text: '声音继续说道："单韵母有六个..."' },
                     { type: 'question', text: '"i、u、ü，像小鱼吐泡泡的是哪个？"', pinyin: 'ü', options: ['i', 'u', 'ü', 'e'], reward: { coins: 8, exp: 5 } },
                     { type: 'dialogue', text: '小熊猫继续深入，遇到了复韵母...' },
-                    { type: 'question', text: '"ai、ei、ui，'爱'的韵母是？"', pinyin: 'ai', options: ['ai', 'ei', 'ui', 'iu'], reward: { coins: 10, exp: 6 } },
-                    { type: 'question', text: '"ao、ou、iu，'牛'的韵母是？"', pinyin: 'iu', options: ['ao', 'ou', 'iu', 'ui'], reward: { coins: 10, exp: 6 } }
+                    { type: 'question', text: '"ai、ei、ui，爱的韵母是？"', pinyin: 'ai', options: ['ai', 'ei', 'ui', 'iu'], reward: { coins: 10, exp: 6 } },
+                    { type: 'question', text: '"ao、ou、iu，牛的韵母是？"', pinyin: 'iu', options: ['ao', 'ou', 'iu', 'ui'], reward: { coins: 10, exp: 6 } }
                 ]
             },
             {
@@ -1883,12 +1887,12 @@
                 completed: false,
                 scenes: [
                     { type: 'dialogue', text: '前方出现一座宏伟的城堡，上面写着"整体认读"四个大字...' },
-                    { type: 'question', text: '守卫问："zhi、chi、shi、ri，哪个读'知'？"', pinyin: 'zhi', options: ['zhi', 'chi', 'shi', 'ri'], reward: { coins: 8, exp: 5 } },
+                    { type: 'question', text: '守卫问："zhi、chi、shi、ri，哪个读知？"', pinyin: 'zhi', options: ['zhi', 'chi', 'shi', 'ri'], reward: { coins: 8, exp: 5 } },
                     { type: 'dialogue', text: '通过大门，小熊猫来到第一层...' },
-                    { type: 'question', text: '第一层守卫问："zi、ci、si，'四'怎么读？"', pinyin: 'si', options: ['zi', 'ci', 'si', 'zhi'], reward: { coins: 8, exp: 5 } },
+                    { type: 'question', text: '第一层守卫问："zi、ci、si，四怎么读？"', pinyin: 'si', options: ['zi', 'ci', 'si', 'zhi'], reward: { coins: 8, exp: 5 } },
                     { type: 'dialogue', text: '第二层住着yi、wu、yu...' },
-                    { type: 'question', text: '第二层守卫问："'雨'的整体认读音节是？"', pinyin: 'yu', options: ['yi', 'wu', 'yu', 'ye'], reward: { coins: 10, exp: 6 } },
-                    { type: 'question', text: '"ye、yue、yuan，'月'的整体认读是？"', pinyin: 'yue', options: ['ye', 'yue', 'yuan', 'yin'], reward: { coins: 10, exp: 6 } }
+                    { type: 'question', text: '第二层守卫问："雨的整体认读音节是？"', pinyin: 'yu', options: ['yi', 'wu', 'yu', 'ye'], reward: { coins: 10, exp: 6 } },
+                    { type: 'question', text: '"ye、yue、yuan，月的整体认读是？"', pinyin: 'yue', options: ['ye', 'yue', 'yuan', 'yin'], reward: { coins: 10, exp: 6 } }
                 ]
             },
             {
@@ -1917,7 +1921,7 @@
                 isFinal: true,
                 scenes: [
                     { type: 'dialogue', text: '小熊猫终于来到拼音宫殿，拼音大王正在等着他...' },
-                    { type: 'question', text: '拼音大王说："想要成为拼音大师，先回答我的问题。'龙'的拼音是？"', pinyin: 'lóng', options: ['lóng', 'nóng', 'róng', 'lǒng'], reward: { coins: 15, exp: 10 } },
+                    { type: 'question', text: '拼音大王说："想要成为拼音大师，先回答我的问题。龙的拼音是？"', pinyin: 'lóng', options: ['lóng', 'nóng', 'róng', 'lǒng'], reward: { coins: 15, exp: 10 } },
                     { type: 'dialogue', text: '拼音大王点点头："不错，但这只是开始。"' },
                     { type: 'question', text: '"zhōng guó，这是什么意思？"', pinyin: '中国', options: ['中国', '钟国', '中国', '中国'], reward: { coins: 20, exp: 15 } },
                     { type: 'dialogue', text: '拼音大王露出微笑："很好！最后一题！"' },
@@ -4043,15 +4047,6 @@ function showPage(pageId) {
             div.innerHTML += '<button class="btn btn-secondary" onclick="this.parentElement.remove(); showPage(\'mainMenu\');" style="margin: 20px;">返回主菜单</button>';
             document.querySelector('.game-container').appendChild(div);
             showPage(div.id);
-        }
-
-        // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.5.11';
-        var GAME_BUILD_DATE = '2026-03-09';
-
-        // 显示版本号
-        function showVersion() {
-            console.log('拼音大冒险 ' + GAME_VERSION + ' (' + GAME_BUILD_DATE + ')');
         }
 
         // 页面加载时显示版本
