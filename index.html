@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
-        body { 
+        body {
             background: linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 40%, #C8E6C9 100%) !important;
         }
         .header {
@@ -49,13 +49,13 @@
         .progress-fill {
             background: linear-gradient(90deg, #4FC3F7 0%, #81C784 100%) !important;
         }
-    
+
         /* 移动端适配 */
         @media screen and (max-width: 480px) {
             .main-menu { padding: 15px !important; }
             /* 所有Tab的卡片统一设置 */
-            .tab-panel .menu-card { 
-                min-height: 140px !important; 
+            .tab-panel .menu-card {
+                min-height: 140px !important;
                 padding: 30px 8px !important;
                 flex: 1;
             }
@@ -66,10 +66,10 @@
             #tab-stats .menu-card > div:first-child { font-size: 36px !important; }
             #tab-stats .menu-card > div:nth-child(2) { font-size: 14px !important; }
         }
-        
+
         @media screen and (min-width: 768px) {
-            .tab-panel .menu-card { 
-                min-height: 200px !important; 
+            .tab-panel .menu-card {
+                min-height: 200px !important;
                 padding: 50px 20px !important;
             }
             .tab-panel .menu-card > div:first-child { font-size: 60px !important; }
@@ -94,7 +94,7 @@
         .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px; border-radius: 25px; font-size: 16px; font-weight: bold; white-space: nowrap; cursor: pointer; width: 100%; margin: 10px 0; }
         .btn-secondary { background: #F7F9FC; color: #2C3E50; }
         .voice-btn { background: #4CAF50; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; margin-left: 10px; vertical-align: middle; }
-        
+
         /* 动画效果 */
         @keyframes attackRight { 0% { transform: translateX(0) scale(1); } 30% { transform: translateX(-20px) scale(1.1); } 50% { transform: translateX(30px) scale(1.2); } 100% { transform: translateX(0) scale(1); } }
         @keyframes attackLeft { 0% { transform: translateX(0) scale(1); } 30% { transform: translateX(20px) scale(1.1); } 50% { transform: translateX(-30px) scale(1.2); } 100% { transform: translateX(0) scale(1); } }
@@ -105,17 +105,17 @@
         @keyframes starPop { 0% { transform: scale(0) rotate(0); opacity: 0; } 50% { transform: scale(1.5) rotate(180deg); opacity: 1; } 100% { transform: scale(1) rotate(360deg); opacity: 1; } }
         @keyframes coinSpin { 0% { transform: rotateY(0) scale(1); } 50% { transform: rotateY(360deg) scale(1.5); } 100% { transform: rotateY(720deg) scale(1); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,152,0,0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255,152,0,0); } }
-        
+
         .attack-right { animation: attackRight 0.5s ease; }
         .attack-left { animation: attackLeft 0.5s ease; }
         .shake { animation: shake 0.5s ease; }
         .victory { animation: victoryBounce 1s ease; }
         .star-pop { animation: starPop 0.6s ease; }
         .coin-spin { animation: coinSpin 1.5s ease; }
-        
+
         .damage-number { position: fixed; font-size: 44px; font-weight: bold; color: #ff4444; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); animation: damageFloat 1s ease-out forwards; pointer-events: none; z-index: 1000; }
         .coin-reward { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; font-weight: bold; color: #FFD700; text-shadow: 3px 3px 6px rgba(0,0,0,0.5); animation: coinSpin 1.5s ease; z-index: 1000; pointer-events: none; }
-        
+
         /* 关卡地图 */
         .level-map { display: flex; flex-direction: column; gap: 20px; margin: 20px 0; }
         .level-row { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
@@ -125,14 +125,14 @@
         .level-node.current { background: linear-gradient(135deg, #FF9800, #F57C00); color: white; animation: pulse 2s infinite; }
         .level-node.completed { background: #4CAF50; color: white; }
         .level-node.boss { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; }
-        
+
         .learning-tabs { display: flex; gap: 10px; margin: 15px 0; overflow-x: auto; }
         .learning-tab { padding: 10px 15px; background: #F7F9FC; border-radius: 20px; cursor: pointer; }
         .learning-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .pinyin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
         .pinyin-card { padding: 15px; background: #f8f9fa; border-radius: 10px; text-align: center; font-size: 20px; font-weight: bold; color: #667eea; cursor: pointer; transition: all 0.2s; }
         .pinyin-card:active { transform: scale(0.95); background: #667eea; color: white; }
-        
+
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .progress-bar { height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; margin: 10px 0; }
         .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 5px; transition: width 0.3s; }
@@ -143,7 +143,7 @@
         .option-btn.wrong { background: linear-gradient(135deg, #f44336, #d32f2f) !important; animation: wrongShake 0.5s ease; }
         @keyframes correctPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(76, 175, 80, 0); } 100% { transform: scale(1); } }
         @keyframes wrongShake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-10px); } 80% { transform: translateX(10px); } }
-        
+
         .battle-arena { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 20px; padding: 20px; margin: 15px 0; color: white; position: relative; overflow: hidden; }
         .battle-characters { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .character { text-align: center; }
@@ -151,26 +151,26 @@
         .hp-bar { width: 100px; height: 10px; background: #333; border-radius: 5px; margin: 5px auto; overflow: hidden; }
         .hp-fill { height: 100%; background: #4CAF50; border-radius: 5px; transition: width 0.3s; }
         .battle-log { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; min-height: 80px; margin-bottom: 10px; font-size: 16px; }
-        
+
         .pet-avatar { text-align: center; font-size: 80px; margin: 10px 0; }
         .pet-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
         .pet-stat { background: #F7F9FC; padding: 15px; border-radius: 15px; text-align: center; }
         .pet-stat-value { font-size: 16px; font-weight: bold; white-space: nowrap; color: #667eea; margin-top: 5px; }
-        
+
         .map-location { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 15px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .shop-tabs { display: flex; gap: 8px; margin-bottom: 10px; overflow-x: auto; }
         .shop-tab { padding: 8px 15px; background: #F7F9FC; border-radius: 20px; cursor: pointer; }
         .shop-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .shop-item { background: #F7F9FC; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .shop-item-btn { background: #667eea; color: white; border: none; padding: 8px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; }
-        
+
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .stats-card { background: #F7F9FC; border-radius: 15px; padding: 15px; text-align: center; }
         .stats-value { font-size: 28px; font-weight: bold; color: #667eea; margin: 5px 0; }
         .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; }
         .calendar-day { aspect-ratio: 1; background: #F7F9FC; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
         .calendar-day.checked { background: #4CAF50; color: white; }
-        
+
         /* ===== v6.4 新增：成就系统 ===== */
         .achievement-card { background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 15px; padding: 15px; margin: 10px 0; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); }
         .achievement-card.locked { background: #e0e0e0; opacity: 0.7; }
@@ -181,7 +181,7 @@
         .achievement-reward { background: white; padding: 5px 15px; border-radius: 20px; font-size: 16px; font-weight: bold; white-space: nowrap; color: #FF6B35; }
         .achievement-progress { margin-top: 8px; }
         .progress-text { font-size: 12px; color: #666; text-align: right; }
-        
+
         /* ===== v6.4 新增：任务系统 ===== */
         .task-card { background: #F7F9FC; border-radius: 15px; padding: 15px; margin: 10px 0; border-left: 5px solid #667eea; }
         .task-card.completed { border-left-color: #4CAF50; background: #e8f5e9; }
@@ -193,16 +193,16 @@
         .task-progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 4px; transition: width 0.3s; }
         .task-btn { background: #4CAF50; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 16px; cursor: pointer; margin-top: 10px; }
         .task-btn:disabled { background: #ccc; }
-        
+
         .daily-tasks-title { font-size: 16px; font-weight: bold; white-space: nowrap; color: #667eea; margin: 20px 0 10px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
         .refresh-time { font-size: 12px; color: #999; text-align: center; margin-top: 10px; }
-    
+
         /* 移动端适配 */
         @media screen and (max-width: 480px) {
             .main-menu { padding: 15px !important; }
             /* 所有Tab的卡片统一设置 */
-            .tab-panel .menu-card { 
-                min-height: 140px !important; 
+            .tab-panel .menu-card {
+                min-height: 140px !important;
                 padding: 30px 8px !important;
                 flex: 1;
             }
@@ -213,10 +213,10 @@
             #tab-stats .menu-card > div:first-child { font-size: 36px !important; }
             #tab-stats .menu-card > div:nth-child(2) { font-size: 14px !important; }
         }
-        
+
         @media screen and (min-width: 768px) {
-            .tab-panel .menu-card { 
-                min-height: 200px !important; 
+            .tab-panel .menu-card {
+                min-height: 200px !important;
                 padding: 50px 20px !important;
             }
             .tab-panel .menu-card > div:first-child { font-size: 60px !important; }
@@ -254,10 +254,10 @@
 
         <!-- 主菜单 - v8.5.2 底部Tab导航 -->
         <div id="mainMenu" class="main-menu" style="padding-bottom: 120px; overflow-y: auto; height: calc(100vh - 180px);">
-            
+
             <!-- Tab内容区域 -->
             <div id="tabContent">
-                
+
                 <!-- 学习Tab：基础教学、智能学习、拼音儿歌 -->
                 <div id="tab-study" class="tab-panel" style="display: block;">
                     <div style="display: flex; flex-direction: row; gap: 12px;">
@@ -265,87 +265,87 @@
                             <div style="font-size: 44px; margin-bottom: 10px;">📖</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">基础教学</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('learningPath')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🎯</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">智能学习</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('songs')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🎵</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">拼音儿歌</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!<!-- 探险Tab：闯关地图、野外探险、故事模式 -->
                 <div id="tab-adventure" class="tab-panel" style="display: none;">
                     <div style="display: flex; flex-direction: row; gap: 12px;">
-                        
+
                         <div class="menu-card" onclick="goToLevelMap()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🗺️</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">闯关地图</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="goToMap()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🏕️</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">野外探险</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('storyMode')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">📖</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">故事模式</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!<!-- 商店Tab：商店、背包、装备 -->
                 <div id="tab-shop" class="tab-panel" style="display: none;">
                     <div style="display: flex; flex-direction: row; gap: 12px;">
-                        
+
                         <div class="menu-card" onclick="showPage('shop')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🏪</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">商店</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('inventory')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #00bcd4, #0097a7); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🎒</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">背包</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('equipment')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #795548, #5d4037); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">⚔️</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">装备</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!<!-- 统计Tab：成就、任务、统计、错题本 -->
                 <div id="tab-stats" class="tab-panel" style="display: none;">
                     <div style="display: flex; flex-direction: row; gap: 15px;">
-                        
+
                         <div class="menu-card" onclick="showPage('achievements')" style="padding: 30px 15px; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 40px; margin-bottom: 10px;">🏆</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap;">成就</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('tasks')" style="padding: 30px 15px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 40px; margin-bottom: 10px;">📋</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap;">任务</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('stats')" style="padding: 30px 15px; background: linear-gradient(135deg, #2196f3, #1976d2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 40px; margin-bottom: 10px;">📊</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap;">统计</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('errorBook')" style="padding: 30px 15px; background: linear-gradient(135deg, #f44336, #d32f2f); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 40px; margin-bottom: 10px;">📕</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap;">错题本</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!<!-- 我的Tab：用户管理、我的宠物 -->
                 <div id="tab-profile" class="tab-panel" style="display: none;">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%;">
@@ -353,12 +353,12 @@
                             <div style="font-size: 36px; margin-bottom: 8px;">👤</div>
                             <div style="font-size: 13px; font-weight: bold; white-space: nowrap;">用户管理</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('pet')" style="height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; border-radius: 16px; padding: 15px 5px;">
                             <div style="font-size: 36px; margin-bottom: 8px;">🐼</div>
                             <div style="font-size: 13px; font-weight: bold; white-space: nowrap;">我的宠物</div>
                         </div>
-                        
+
                         <div class="menu-card" onclick="showPage('adminPanel')" style="height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #e91e63, #c2185b); color: white; border-radius: 16px; padding: 15px 5px;">
                             <div style="font-size: 36px; margin-bottom: 8px;">🔧</div>
                             <div style="font-size: 13px; font-weight: bold; white-space: nowrap;">后台管理</div>
@@ -366,8 +366,8 @@
                     </div>
                 </div>            </div>
         </div>
-        
-        
+
+
         <!-- 底部Tab导航：学习、探险、商店、统计、我的 -->
         <div style="position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #eee; padding: 8px 0; z-index: 1000;">
             <div style="display: flex; justify-content: space-around; max-width: 500px; margin: 0 auto;">
@@ -429,12 +429,12 @@
                 <span style="font-size: 16px; color: #666;">关卡 <span id="currentLevel">1</span></span>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 33%"></div></div>
-            
+
             <div class="question-display" id="questionDisplay">
                 b
                 <button class="voice-btn" onclick="speakCurrent()">🔊</button>
             </div>
-            
+
             <div class="options-grid" id="optionsGrid"></div>
         </div>
 
@@ -442,22 +442,22 @@
         <div id="map" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🏕️ 野外探险</h2>
-            
+
             <div class="map-location" onclick="explore('forest')">
                 <div>🌲 神秘森林</div>
                 <div style="font-size: 12px;">⚡10 | 怪物: 40% | 奖励: 5-10💰</div>
             </div>
-            
+
             <div class="map-location" onclick="explore('desert')">
                 <div>🏜️ 炎热沙漠</div>
                 <div style="font-size: 12px;">⚡15 | 怪物: 60% | 奖励: 5-10💰</div>
             </div>
-            
+
             <div class="map-location" onclick="explore('ocean')">
                 <div>🌊 深海秘境</div>
                 <div style="font-size: 12px;">⚡20 | 怪物: 80% | 奖励: 5-10💰</div>
             </div>
-            
+
             <div class="map-location" onclick="explore('volcano')">
                 <div>🌋 烈焰火山</div>
                 <div style="font-size: 12px;">⚡30 | BOSS战 | 奖励: 5-10💰</div>
@@ -468,7 +468,7 @@
         <div id="battle" class="page hidden">
             <div class="battle-arena">
                 <h3 style="text-align: center; margin-bottom: 10px;">⚔️ 遭遇战斗！答对攻击，答错受伤</h3>
-                
+
                 <div class="battle-characters">
                     <div class="character" id="playerChar">
                         <div class="character-avatar">🐼</div>
@@ -476,9 +476,9 @@
                         <div class="hp-bar"><div class="hp-fill" id="playerHpBar" style="width: 100%"></div></div>
                         <div id="playerHpText" style="font-size: 12px;">100/100</div>
                     </div>
-                    
+
                     <div style="font-size: 30px; font-weight: bold;">VS</div>
-                    
+
                     <div class="character" id="enemyChar">
                         <div class="character-avatar" id="enemyAvatar">👹</div>
                         <div id="enemyName" style="font-size: 16px;">小怪物</div>
@@ -486,10 +486,10 @@
                         <div id="enemyHpText" style="font-size: 12px;">50/50</div>
                     </div>
                 </div>
-                
+
                 <div class="battle-log" id="battleLog">战斗开始！请回答拼音问题来攻击！</div>
             </div>
-            
+
             <div id="battleQuestion">
                 <div class="question-display" id="battleQDisplay" style="font-size: 44px; margin: 15px 0;"></div>
                 <div class="options-grid" id="battleOptions"></div>
@@ -502,7 +502,7 @@
             <h2 style="text-align: center; margin: 10px 0;">🐼 我的宠物</h2>
             <div class="pet-avatar">🐼</div>
             <div style="text-align: center; margin-bottom: 10px;"><h3>拼音小熊猫</h3></div>
-            
+
             <div class="pet-stats">
                 <div class="pet-stat"><div>⚔️ 攻击</div><div class="pet-stat-value" id="petAttack">10</div></div>
                 <div class="pet-stat"><div>🛡️ 防御</div><div class="pet-stat-value" id="petDefense">5</div></div>
@@ -515,7 +515,7 @@
         <div id="userManager" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">👤 用户管理</h2>
-            
+
             <!-- 当前用户信息 -->
             <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; margin-bottom: 20px; color: white; text-align: center;">
                 <div id="currentUserAvatar" style="font-size: 64px; margin-bottom: 10px;">🐼</div>
@@ -523,11 +523,11 @@
                 <div style="font-size: 16px; opacity: 0.9;">当前用户</div>
                 <button class="btn" onclick="showEditUserModal()" style="margin-top: 15px; width: auto; padding: 10px 20px; background: white; color: #667eea;">✏️ 编辑资料</button>
             </div>
-            
+
             <!-- 用户列表 -->
             <h3 style="margin: 20px 0 15px; color: #333;">📋 用户列表</h3>
             <div id="userList"></div>
-            
+
             <!-- 添加用户按钮 -->
             <button class="btn" onclick="showAddUserModal()" style="margin-top: 20px;">➕ 添加新用户</button>
         </div>
@@ -536,34 +536,34 @@
         <div id="adminPanel" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0; color: #e91e63;">🔧 后台管理</h2>
-            
+
             <div style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); border-radius: 15px; padding: 20px; margin-bottom: 20px; color: white;">
                 <div style="font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: center;">🎁 发送大礼包</div>
-                
+
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold;">💰 金币数量：</label>
                     <input type="number" id="adminCoins" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-1000" min="0" max="1000" value="100">
                 </div>
-                
+
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold;">⚡ 体力数量：</label>
                     <input type="number" id="adminEnergy" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-100" min="0" max="100" value="50">
                 </div>
-                
+
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold;">⭐ 经验值数量：</label>
                     <input type="number" id="adminExp" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-500" min="0" max="500" value="50">
                 </div>
-                
+
                 <button class="btn" onclick="sendAdminGift()" style="width: 100%; background: white; color: #e91e63; font-weight: bold; padding: 15px;">🎁 发送给当前账号</button>
             </div>
-            
+
             <div style="background: #f5f5f5; border-radius: 15px; padding: 15px; margin-bottom: 20px;">
                 <div style="font-size: 14px; color: #666; text-align: center;">
                     当前用户：<span id="adminCurrentUser" style="font-weight: bold; color: #333;">--</span>
                 </div>
             </div>
-            
+
             <div style="background: #fff3e0; border-radius: 15px; padding: 15px;">
                 <div style="font-size: 14px; color: #e65100;">
                     <strong>💡 使用说明：</strong><br>
@@ -578,19 +578,19 @@
         <div id="editUserModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
             <div style="background: white; border-radius: 20px; padding: 30px; max-width: 400px; width: 90%; max-height: 80vh; overflow-y: auto;">
                 <h3 style="text-align: center; margin-bottom: 20px;">✏️ 编辑用户资料</h3>
-                
+
                 <!-- 头像选择 -->
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 10px; font-weight: bold;">选择头像：</label>
                     <div id="avatarSelector" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;"></div>
                 </div>
-                
+
                 <!-- 姓名输入 -->
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 10px; font-weight: bold;">用户姓名：</label>
                     <input type="text" id="editUserNameInput" style="width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px;" placeholder="请输入姓名" maxlength="10">
                 </div>
-                
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <button class="btn btn-secondary" onclick="hideEditUserModal()">取消</button>
                     <button class="btn" onclick="saveUserEdit()">保存</button>
@@ -602,12 +602,12 @@
         <div id="achievements" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🏆 成就系统</h2>
-            
+
             <div style="text-align: center; background: linear-gradient(135deg, #FFD700, #FFA500); padding: 15px; border-radius: 15px; margin-bottom: 20px; color: white;">
                 <div style="font-size: 40px; font-weight: bold;"><span id="myAchievements">0</span> / <span id="totalAchievementsDisplay">8</span></div>
                 <div style="font-size: 16px;">已解锁成就</div>
             </div>
-            
+
             <div id="achievementsList"></div>
         </div>
 
@@ -615,14 +615,14 @@
         <div id="tasks" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">📋 每日任务</h2>
-            
+
             <div style="text-align: center; background: #F7F9FC; padding: 15px; border-radius: 15px; margin-bottom: 10px;">
                 <div style="font-size: 16px; color: #666;">完成任务获得丰厚奖励！</div>
                 <div style="font-size: 20px; font-weight: bold; color: #667eea; margin-top: 5px;">今日进度: <span id="tasksCompleted">0</span>/<span id="totalTasks">5</span></div>
             </div>
-            
+
             <div id="tasksList"></div>
-            
+
             <div class="refresh-time">🔄 任务每日0点刷新</div>
         </div>
 
@@ -631,7 +631,7 @@
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🏪 商店</h2>
             <div style="text-align: center; background: #F7F9FC; padding: 12px; border-radius: 15px; margin-bottom: 12px;"><div style="font-size: 20px; font-weight: bold; color: #667eea;">💰 <span id="shopCoins">100</span></div></div>
-            
+
             <div class="shop-tabs">
                 <div class="shop-tab active" onclick="showShopTab('pets')">🐾 宠物</div>
                 <div class="shop-tab" onclick="showShopTab('weapons')">⚔️ 武器</div>
@@ -659,7 +659,7 @@
         <div id="errorBook" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">📕 错题本</h2>
-            
+
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                 <div style="flex: 1; background: #FFEBEE; padding: 15px; border-radius: 10px; text-align: center;">
                     <div style="font-size: 16px; font-weight: bold; white-space: nowrap; color: #C62828;" id="errorCount">0</div>
@@ -670,9 +670,9 @@
                     <div style="font-size: 12px; color: #666;">已订正</div>
                 </div>
             </div>
-            
+
             <div id="errorList" style="max-height: 400px; overflow-y: auto;"></div>
-            
+
             <button class="btn" onclick="startErrorReview()" id="reviewBtn" style="margin-top: 15px;">📝 开始错题复习</button>
             <button class="btn btn-secondary" onclick="clearAllErrors()" style="margin-top: 10px;">🗑️ 清空错题</button>
         </div>
@@ -681,14 +681,14 @@
         <div id="errorReview" class="page hidden">
             <button class="btn btn-secondary" onclick="showPage('errorBook')">← 返回错题本</button>
             <h2 style="text-align: center; margin: 10px 0;">📝 错题复习</h2>
-            
+
             <div class="progress-bar" style="margin: 15px 0;">
                 <div class="progress-fill" id="reviewProgress" style="width: 0%"></div>
             </div>
             <div style="text-align: center; margin-bottom: 10px; color: #666;">
                 <span id="reviewCurrent">1</span> / <span id="reviewTotal">0</span>
             </div>
-            
+
             <div id="reviewQuestion" style="text-align: center; padding: 20px;"></div>
         </div>
 
@@ -696,7 +696,7 @@
         <div id="learningPath" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🎯 智能学习路径</h2>
-            
+
             <!-- 掌握度仪表盘 -->
             <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px;">
                 <div style="text-align: center; font-size: 16px; opacity: 0.9; margin-bottom: 10px;">拼音掌握度</div>
@@ -725,7 +725,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 薄弱点分析 -->
             <div style="background: #FFF3E0; border-radius: 15px; padding: 15px; margin-bottom: 10px;">
                 <div style="font-size: 16px; font-weight: bold; white-space: nowrap; color: #E65100; margin-bottom: 10px;">⚠️ 薄弱点分析</div>
@@ -733,14 +733,14 @@
                     <div style="text-align: center; width: 100%; color: #999; padding: 20px;">暂无薄弱点数据，多练习几次即可分析</div>
                 </div>
             </div>
-            
+
             <!-- 拼音掌握度热力图 -->
             <div style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">📊 拼音掌握度热力图</div>
                 <div style="font-size: 12px; color: #666; margin-bottom: 10px;">🟢 熟练 🟡 学习中 🔴 薄弱 ⚪ 未练习</div>
                 <div id="masteryHeatmap" style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;"></div>
             </div>
-            
+
             <!-- 遗忘曲线复习提醒 -->
             <div style="background: #E3F2FD; border-radius: 15px; padding: 15px; margin-bottom: 10px;">
                 <div style="font-size: 16px; font-weight: bold; white-space: nowrap; color: #1565C0; margin-bottom: 10px;">🧠 遗忘曲线复习</div>
@@ -748,7 +748,7 @@
                     <div style="text-align: center; color: #999; padding: 20px;">暂无需要复习的内容</div>
                 </div>
             </div>
-            
+
             <button class="btn" onclick="generatePersonalizedPlan()" style="width: 100%;">🎯 生成个性化学习计划</button>
         </div>
 
@@ -756,12 +756,12 @@
         <div id="songs" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🎵 拼音儿歌</h2>
-            
+
             <div style="background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px; text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 10px;">🎵</div>
                 <div style="font-size: 16px;">跟着儿歌学拼音，快乐又轻松！</div>
             </div>
-            
+
             <div id="songsList">
                 <!-- 儿歌列表由JavaScript生成 -->
             </div>
@@ -771,12 +771,12 @@
         <div id="storyMode" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">📖 拼音大冒险</h2>
-            
+
             <!-- 故事章节选择 -->
             <div id="storyChapters" style="display: flex; flex-direction: column; gap: 15px;">
                 <!-- 章节卡片由JavaScript生成 -->
             </div>
-            
+
             <!-- 故事剧情展示 -->
             <div id="storyScene" class="hidden" style="background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 15px; padding: 20px; color: white; min-height: 300px;">
                 <div id="storyDialogue" style="margin-bottom: 20px;">
@@ -785,7 +785,7 @@
                         <div id="storyText" style="font-size: 16px; line-height: 1.6;"></div>
                     </div>
                 </div>
-                
+
                 <div id="storyQuestion" class="hidden">
                     <div style="background: rgba(102, 126, 234, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 10px;">
                         <div style="font-size: 12px; color: #aaa; margin-bottom: 5px;">❓ 挑战</div>
@@ -793,7 +793,7 @@
                     </div>
                     <div id="storyOptions" style="display: flex; flex-direction: row; gap: 12px;"></div>
                 </div>
-                
+
                 <button id="storyContinueBtn" class="btn" onclick="continueStory()" style="width: 100%; margin-top: 15px;">继续 →</button>
             </div>
         </div>
@@ -802,12 +802,12 @@
         <div id="inventory" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">🎒 我的背包</h2>
-            
+
             <div style="display: flex; gap: 10px; margin-bottom: 10px; overflow-x: auto;">
                 <div class="shop-tab active" onclick="showInventoryTab('treasures')">💎 宝物</div>
                 <div class="shop-tab" onclick="showInventoryTab('equipments')">⚔️ 装备</div>
             </div>
-            
+
             <div id="inventoryContent"></div>
         </div>
 
@@ -815,7 +815,7 @@
         <div id="equipment" class="page hidden">
             <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">⚔️ 装备升级</h2>
-            
+
             <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px;">
                 <div style="text-align: center; font-size: 16px; opacity: 0.9; margin-bottom: 10px;">当前装备等级</div>
                 <div style="display: flex; justify-content: space-around;">
@@ -836,7 +836,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div id="equipmentContent"></div>
         </div>
     </div>
@@ -851,7 +851,7 @@
             whole: ['zhi','chi','shi','ri','zi','ci','si','yi','wu','yu','ye','yue','yuan','yin','yun','ying'],
             wholeNames: ['知','吃','诗','日','资','雌','思','衣','乌','迂','耶','约','冤','因','晕','英']
         };
-        
+
         // 生成题库
         var questionBank = [];
         for (var i = 0; i < 100; i++) {
@@ -870,7 +870,7 @@
             options.sort(function() { return Math.random() - 0.5; });
             questionBank.push({ q: q, a: a, options: options });
         }
-        
+
         // ========== v8.2.5 野外探险战斗题库（汉字+拼音分解）==========
         var battleCharacters = [
             { char: '爸', pinyin: 'bà', initial: 'b', final: 'a', tone: '4', whole: 'ba' },
@@ -898,23 +898,23 @@
             { char: '爱', pinyin: 'ài', initial: '', final: 'ai', tone: '4', whole: 'ai' },
             { char: '学', pinyin: 'xué', initial: 'x', final: 'ue', tone: '2', whole: 'xue' }
         ];
-        
+
         // 声母选项池
-        var allInitials = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 
+        var allInitials = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h',
                           'j', 'q', 'x', 'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w', ''];
         // 韵母选项池
-        var allFinals = ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu', 
-                        'ie', 'üe', 'er', 'an', 'en', 'in', 'un', 'ün', 
+        var allFinals = ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu',
+                        'ie', 'üe', 'er', 'an', 'en', 'in', 'un', 'ün',
                         'ang', 'eng', 'ing', 'ong', 'iao', 'ian', 'ua', 'uo'];
         // 整体认读选项池
-        var allWholes = ['zhi', 'chi', 'shi', 'ri', 'zi', 'ci', 'si', 
+        var allWholes = ['zhi', 'chi', 'shi', 'ri', 'zi', 'ci', 'si',
                         'yi', 'wu', 'yu', 'ye', 'yue', 'yuan', 'yin', 'yun', 'ying',
                         'ba', 'ma', 'da', 'xiao', 'wo', 'ni', 'hao', 'zhong', 'guo'];
-        
+
         // 当前战斗题目状态
         var currentBattleChar = null;
         var currentBattleMode = null; // 'initial', 'final', 'whole', 'tone'
-        
+
         // 15关数据
         // v8.2.0 重新设计关卡系统 - 按基础教学进度进阶
         var levels = [
@@ -939,7 +939,7 @@
             { id: 14, name: '词语·进阶', type: 'word', stage: 2, desc: '学习三字词语拼音', completed: false, locked: true },
             { id: 15, name: '词语·大师', type: 'word', stage: 3, desc: '挑战复杂词语和句子', isBoss: true, completed: false, locked: true }
         ];
-        
+
         // 怪物数据 - v8.1.0 增强难度
         var monsters = {
             forest: [{name: '小蘑菇', emoji: '🍄', hp: 50, attack: 12}, {name: '小树苗', emoji: '🌱', hp: 45, attack: 10}],
@@ -947,7 +947,7 @@
             ocean: [{name: '螃蟹', emoji: '🦀', hp: 100, attack: 22}, {name: '章鱼', emoji: '🐙', hp: 90, attack: 20}],
             volcano: [{name: '火蜥蜴', emoji: '🦎', hp: 150, attack: 30}, {name: '炎魔', emoji: '👺', hp: 250, attack: 45}]
         };
-        
+
         // ===== 成就系统数据 =====
         var achievements = [
             { id: 'first_win', name: '初次胜利', desc: '首次通关任意关卡', icon: '🏆', reward: 10, condition: function() { return completedLevels >= 1; }, unlocked: false },
@@ -960,7 +960,7 @@
             { id: 'perfect', name: '完美答题', desc: '一关中3题全对', icon: '💯', reward: 10, condition: function() { return perfectLevels > 0; }, unlocked: false }
         ];
         var perfectLevels = 0;
-        
+
         // ===== 任务系统数据 =====
         var dailyTasks = [
             { id: 'task_login', name: '每日登录', desc: '登录游戏即可领取', reward: 5, progress: 1, target: 1, completed: true, claimed: false },
@@ -969,7 +969,7 @@
             { id: 'task_explore', name: '野外探险', desc: '进行1次野外探险', reward: 8, progress: 0, target: 1, completed: false, claimed: false },
             { id: 'task_checkin', name: '每日打卡', desc: '完成今日打卡', reward: 10, progress: 0, target: 1, completed: false, claimed: false }
         ];
-        
+
         // 游戏数据
         var playerLevel = 1, coins = 100, hp = 100, maxHp = 100, energy = 50, exp = 0;
         var petAttack = 10, petDefense = 5, battleWins = 0, completedLevels = 0;
@@ -977,7 +977,7 @@
         var totalCorrect = 0, totalWrong = 0, streak = 0, checkedIn = false;
         var inBattle = false, currentEnemy = null, currentBattleQuestion = null;
         var ownedItems = [];
-        
+
         // ========== v8.2.0 宠物系统 ==========
         var pets = {
             current: 'panda',
@@ -991,14 +991,14 @@
                 rabbit: { id: 'rabbit', name: '迅捷小兔', emoji: '🐰', attack: 8, defense: 6, hp: 80, maxHp: 80, desc: '敏捷型宠物', price: 200, level: 1, exp: 0, expToLevel: 100 }
             }
         };
-        
+
         // ========== v8.2.0 背包系统 ==========
         var inventory = {
             treasures: [],
             materials: [],
             consumables: []
         };
-        
+
         var treasuresData = [
             { id: 'ruby', name: '红宝石', emoji: '🔴', desc: '升级武器的材料', rarity: 'common', dropRate: 0.3 },
             { id: 'sapphire', name: '蓝宝石', emoji: '🔵', desc: '升级防具的材料', rarity: 'common', dropRate: 0.3 },
@@ -1007,7 +1007,7 @@
             { id: 'gold', name: '金块', emoji: '🟨', desc: '出售获得金币', rarity: 'common', dropRate: 0.2 },
             { id: 'crystal', name: '魔法水晶', emoji: '🔮', desc: '稀有升级材料', rarity: 'epic', dropRate: 0.02 }
         ];
-        
+
         // ========== v8.2.0 装备升级系统 ==========
         // 所有可用装备
         var allEquipments = {
@@ -1033,28 +1033,28 @@
                 { id: 'dragon_ring', name: '龙魂戒', icon: '🔥', bonus: { attack: 20, defense: 20 }, level: 1, unlocked: false, unlockLevel: 10 }
             ]
         };
-        
+
         // 当前装备的装备ID
         var equipped = {
             weapon: 'wood_sword',
             armor: 'cloth_armor',
             accessory: 'copper_ring'
         };
-        
+
         // 当前装备数据（引用allEquipments中的对象）
         var equipment = {
             weapon: allEquipments.weapon[0],
             armor: allEquipments.armor[0],
             accessory: allEquipments.accessory[0]
         };
-        
+
         // 升级所需材料
         var upgradeRequirements = {
             weapon: { material: 'ruby', baseCost: 2, goldCost: 100 },
             armor: { material: 'sapphire', baseCost: 2, goldCost: 100 },
             accessory: { material: 'emerald', baseCost: 2, goldCost: 100 }
         };
-        
+
         // ========== v8.2.0 错题本系统 ==========
         var errorBook = {
             errors: [],
@@ -1063,23 +1063,23 @@
         var currentReviewErrors = [];
         var currentReviewIndex = 0;
         var reviewScore = 0;
-        
+
         // ========== v8.1.0 教学系统设置 ==========
         var showPinyinHints = true; // 默认显示拼音提示字
-        
+
         // ========== v6.7 多用户管理系统 ==========
         var currentUserId = null;
         var users = {}; // 存储所有用户数据
         var errorLog = []; // 错误记录
-        
+
         // 可选头像列表
         var avatarOptions = ['🐼', '🐯', '🦁', '🐶', '🐱', '🐰', '🦊', '🐸', '🐙', '🦄', '🐲', '👦', '👧', '🧒', '👶'];
-        
+
         // 初始化用户系统
         function initUserSystem() {
             var savedUsers = localStorage.getItem('pinyinGameUsers');
             var savedCurrentUser = localStorage.getItem('pinyinGameCurrentUser');
-            
+
             if (savedUsers) {
                 users = JSON.parse(savedUsers);
             }
@@ -1096,7 +1096,7 @@
             }
             updateUI();
         }
-        
+
         // 创建新用户
         function createUser(name, avatar) {
             var userId = 'user_' + Date.now();
@@ -1146,7 +1146,7 @@
             saveUsersData();
             return userId;
         }
-        
+
         // 切换用户
         function switchUser(userId) {
             if (users[userId]) {
@@ -1170,7 +1170,7 @@
             showToast('切换用户失败', 'error');
             return false;
         }
-        
+
         // 删除用户
         function deleteUser(userId) {
             if (users[userId]) {
@@ -1191,7 +1191,7 @@
             }
             return false;
         }
-        
+
         // 更新用户信息
         function updateUserInfo(userId, updates) {
             if (users[userId]) {
@@ -1201,12 +1201,12 @@
             }
             return false;
         }
-        
+
         // 加载用户数据到游戏变量
         function loadUserData(userId) {
             var user = users[userId];
             if (!user) return;
-            
+
             // 加载到全局变量
             playerLevel = user.playerLevel;
             coins = user.coins;
@@ -1256,7 +1256,7 @@
             achievements = user.achievements || achievements;
             tasks = user.tasks || tasks;
             errorLog = user.errorLog || [];
-            
+
             // v8.2.0 新数据加载
             if (user.pets) {
                 pets.current = user.pets.current || 'panda';
@@ -1295,7 +1295,7 @@
                 errorBook.errors = user.errorBook.errors || [];
                 errorBook.fixed = user.errorBook.fixed || 0;
             }
-            
+
             // 更新UI显示
             updateUI();
             // 更新头像
@@ -1308,7 +1308,7 @@
                 nameEl.innerHTML = user.name + ' ' + (levelMatch ? levelMatch[0] : 'Lv.<span id="playerLevel">' + playerLevel + '</span>');
             }
         }
-        
+
         // 保存当前用户数据
         function saveUserData(userId) {
             if (!users[userId]) return;
@@ -1325,7 +1325,7 @@
             // 只保存到localStorage，不调用saveUsersData避免循环
             localStorage.setItem('pinyinGameUsers', JSON.stringify(users));
         }
-        
+
         // 保存所有用户数据
         function saveUsersData() {
             localStorage.setItem('pinyinGameUsers', JSON.stringify(users));
@@ -1337,19 +1337,19 @@
                 }
             }
         }
-        
+
         // 覆盖原有的saveGameData函数
         function saveGameData() {
             if (currentUserId) {
                 saveUserData(currentUserId);
             }
         }
-        
+
         // 覆盖原有的loadGameData函数
         function loadGameData() {
             initUserSystem();
         }
-        
+
         // 记录错误（更新为多用户版本）
         function recordError(question, userAnswer, correctAnswer, errorType) {
             if (!currentUserId) return;
@@ -1363,7 +1363,7 @@
             if (errorLog.length > 50) errorLog.shift();
             saveGameData();
         }
-        
+
         // ========== v8.3.0 智能学习路径系统 ==========
         var learningData = {
             pinyinMastery: {}, // 每个拼音的掌握度数据
@@ -1371,20 +1371,20 @@
             lastPractice: {}, // 上次练习时间
             practiceHistory: [] // 练习历史
         };
-        
+
         // 拼音掌握度等级
         var MASTERY_LEVELS = {
             MASTERED: { threshold: 90, color: '#4CAF50', label: '熟练' },
             LEARNING: { threshold: 60, color: '#FFC107', label: '学习中' },
             WEAK: { threshold: 0, color: '#f44336', label: '薄弱' }
         };
-        
+
         // 分析拼音掌握度
         function analyzePinyinMastery() {
             var mastery = {};
             var initials = ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'];
             var finals = ['a','o','e','i','u','ü','ai','ei','ui','ao','ou','iu','ie','üe','er','an','en','in','un','ün','ang','eng','ing','ong'];
-            
+
             // 从错题分析
             errorLog.forEach(function(err) {
                 var pinyin = extractPinyinFromError(err);
@@ -1397,10 +1397,10 @@
                     mastery[pinyin].lastWrong = new Date(err.time);
                 }
             });
-            
+
             return mastery;
         }
-        
+
         // 从错误记录中提取拼音
         function extractPinyinFromError(err) {
             // 简化处理，返回问题中的第一个字符对应的拼音
@@ -1409,24 +1409,24 @@
             }
             return null;
         }
-        
+
         // 获取拼音掌握度
         function getPinyinMasteryLevel(pinyin) {
             var data = learningData.pinyinMastery[pinyin];
             if (!data || data.total === 0) return 'unpracticed';
-            
+
             var accuracy = (data.correct / data.total) * 100;
             if (accuracy >= MASTERY_LEVELS.MASTERED.threshold) return 'mastered';
             if (accuracy >= MASTERY_LEVELS.LEARNING.threshold) return 'learning';
             return 'weak';
         }
-        
+
         // 更新拼音掌握度
         function updatePinyinMastery(pinyin, isCorrect) {
             if (!learningData.pinyinMastery[pinyin]) {
                 learningData.pinyinMastery[pinyin] = { correct: 0, wrong: 0, total: 0 };
             }
-            
+
             var data = learningData.pinyinMastery[pinyin];
             if (isCorrect) {
                 data.correct++;
@@ -1435,14 +1435,14 @@
             }
             data.total++;
             data.lastPractice = new Date().toISOString();
-            
+
             saveGameData();
         }
-        
+
         // 生成薄弱点列表
         function generateWeakPoints() {
             var weakPoints = [];
-            
+
             for (var pinyin in learningData.pinyinMastery) {
                 var data = learningData.pinyinMastery[pinyin];
                 if (data.total >= 3) { // 至少练习3次才统计
@@ -1457,66 +1457,66 @@
                     }
                 }
             }
-            
+
             // 按错误次数排序
             weakPoints.sort(function(a, b) { return b.wrongCount - a.wrongCount; });
             return weakPoints.slice(0, 5); // 只显示前5个
         }
-        
+
         // 生成今日推荐
         function generateTodayRecommendation() {
             var weakPoints = generateWeakPoints();
-            
+
             if (weakPoints.length > 0) {
                 return '重点练习：' + weakPoints.map(function(w) { return w.pinyin; }).join('、');
             }
-            
+
             // 没有薄弱点，推荐随机拼音
             var allPinyins = ['b','p','m','f','d','t','n','l','a','o','e','i','u'];
             var random = allPinyins[Math.floor(Math.random() * allPinyins.length)];
             return '建议复习：' + random;
         }
-        
+
         // 生成掌握度热力图
         function renderMasteryHeatmap() {
             var container = document.getElementById('masteryHeatmap');
             if (!container) return;
-            
+
             var initials = ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'];
             var finals = ['a','o','e','i','u','ü','ai','ei','ui','ao','ou','iu','ie','üe','er','an','en','in','un','ün','ang','eng','ing','ong'];
-            
+
             var html = '<div style="width: 100%;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">声母</div>';
-            
+
             initials.forEach(function(py) {
                 var level = getPinyinMasteryLevel(py);
                 var color = level === 'mastered' ? '#4CAF50' : level === 'learning' ? '#FFC107' : level === 'weak' ? '#f44336' : '#e0e0e0';
                 html += '<span style="display: inline-block; width: 28px; height: 28px; line-height: 28px; text-align: center; background: ' + color + '; color: white; border-radius: 5px; margin: 2px; font-size: 12px; cursor: pointer;" onclick="speak(\'' + py + '\')">' + py + '</span>';
             });
-            
+
             html += '</div><div style="width: 100%; margin-top: 10px;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">韵母</div>';
-            
+
             finals.forEach(function(py) {
                 var level = getPinyinMasteryLevel(py);
                 var color = level === 'mastered' ? '#4CAF50' : level === 'learning' ? '#FFC107' : level === 'weak' ? '#f44336' : '#e0e0e0';
                 html += '<span style="display: inline-block; width: 28px; height: 28px; line-height: 28px; text-align: center; background: ' + color + '; color: white; border-radius: 5px; margin: 2px; font-size: 11px; cursor: pointer;" onclick="speak(\'' + py + '\')">' + py + '</span>';
             });
-            
+
             html += '</div>';
             container.innerHTML = html;
         }
-        
+
         // 渲染薄弱点列表
         function renderWeakPoints() {
             var container = document.getElementById('weakPointsList');
             if (!container) return;
-            
+
             var weakPoints = generateWeakPoints();
-            
+
             if (weakPoints.length === 0) {
                 container.innerHTML = '<div style="text-align: center; width: 100%; color: #4CAF50; padding: 20px;">🎉 暂无薄弱点，继续保持！</div>';
                 return;
             }
-            
+
             var html = '';
             weakPoints.forEach(function(point) {
                 html += '<div style="background: white; border-radius: 8px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex: 1; min-width: 200px;">';
@@ -1524,21 +1524,21 @@
                 html += '<div style="font-size: 12px; color: #f44336;">错误' + point.wrongCount + '次</div>';
                 html += '</div>';
             });
-            
+
             container.innerHTML = html;
         }
-        
+
         // 检查遗忘曲线复习
         function checkForgottenReview() {
             var now = new Date();
             var needReview = [];
-            
+
             for (var pinyin in learningData.pinyinMastery) {
                 var data = learningData.pinyinMastery[pinyin];
                 if (data.lastWrong) {
                     var lastWrong = new Date(data.lastWrong);
                     var hoursPassed = (now - lastWrong) / (1000 * 60 * 60);
-                    
+
                     // 艾宾浩斯遗忘曲线：1天、3天、7天、15天复习
                     var reviewIntervals = [24, 72, 168, 360];
                     for (var i = 0; i < reviewIntervals.length; i++) {
@@ -1554,22 +1554,22 @@
                     }
                 }
             }
-            
+
             return needReview;
         }
-        
+
         // 渲染复习提醒
         function renderReviewReminders() {
             var container = document.getElementById('reviewReminderList');
             if (!container) return;
-            
+
             var reminders = checkForgottenReview();
-            
+
             if (reminders.length === 0) {
                 container.innerHTML = '<div style="text-align: center; color: #4CAF50; padding: 20px;">✅ 暂无需要复习的内容，学得很棒！</div>';
                 return;
             }
-            
+
             var html = '';
             reminders.forEach(function(r) {
                 html += '<div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">';
@@ -1577,10 +1577,10 @@
                 html += '<button class="btn" onclick="quickPractice(\'' + r.pinyin + '\')" style="padding: 5px 10px; font-size: 12px;">复习</button>';
                 html += '</div>';
             });
-            
+
             container.innerHTML = html;
         }
-        
+
         // 渲染智能学习路径页面
         function renderLearningPath() {
             // 更新掌握度统计
@@ -1591,43 +1591,43 @@
                 else if (level === 'learning') learning++;
                 else if (level === 'weak') weak++;
             }
-            
+
             var masteredEl = document.getElementById('masteredCount');
             var learningEl = document.getElementById('learningCount');
             var weakEl = document.getElementById('weakCount');
             var recommendationEl = document.getElementById('todayRecommendation');
-            
+
             if (masteredEl) masteredEl.textContent = mastered;
             if (learningEl) learningEl.textContent = learning;
             if (weakEl) weakEl.textContent = weak;
             if (recommendationEl) recommendationEl.textContent = generateTodayRecommendation();
-            
+
             renderMasteryHeatmap();
             renderWeakPoints();
             renderReviewReminders();
         }
-        
+
         // 开始推荐练习
         function startRecommendedPractice() {
             showToast('🎯 开始个性化练习！', 'success');
             goToLearning();
         }
-        
+
         // 快速复习单个拼音
         function quickPractice(pinyin) {
             speak(pinyin);
             showToast('🔊 已播放 ' + pinyin + ' 的发音，请跟读！', 'info');
         }
-        
+
         // 生成个性化学习计划
         function generatePersonalizedPlan() {
             var weakPoints = generateWeakPoints();
-            
+
             if (weakPoints.length === 0) {
                 alert('🎉 恭喜！你目前没有薄弱点。\n\n建议：\n1. 继续闯关挑战更高难度\n2. 尝试故事模式\n3. 定期复习已学内容');
                 return;
             }
-            
+
             var plan = '📋 你的个性化学习计划\n\n';
             plan += '【薄弱点】\n';
             weakPoints.forEach(function(p, i) {
@@ -1638,7 +1638,7 @@
             plan += '2. 使用拼音儿歌加深记忆\n';
             plan += '3. 3天后会进行遗忘曲线复习\n';
             plan += '\n加油！坚持就是胜利！💪';
-            
+
             alert(plan);
         }
 
@@ -1701,15 +1701,15 @@
                 color: '#fa709a'
             }
         ];
-        
+
         var currentSong = null;
         var currentLyricIndex = 0;
-        
+
         // 渲染儿歌列表
         function renderSongsList() {
             var container = document.getElementById('songsList');
             if (!container) return;
-            
+
             var html = '';
             pinyinSongs.forEach(function(song, index) {
                 html += '<div style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;" onclick="playSong(' + index + ')" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'scale(1)\'" style="transition: transform 0.2s;">';
@@ -1723,47 +1723,47 @@
                 html += '</div>';
                 html += '</div>';
             });
-            
+
             container.innerHTML = html;
         }
-        
+
         // 播放儿歌
         function playSong(index) {
             currentSong = pinyinSongs[index];
             currentLyricIndex = 0;
-            
+
             var container = document.getElementById('songsList');
             if (!container) return;
-            
+
             var html = '<div style="background: linear-gradient(135deg, ' + currentSong.color + ', ' + adjustColor(currentSong.color, -20) + '); border-radius: 15px; padding: 20px; color: white;">';
             html += '<button class="btn" onclick="renderSongsList()" style="background: rgba(255,255,255,0.3); color: white; margin-bottom: 10px;">← 返回列表</button>';
             html += '<div style="text-align: center; margin-bottom: 20px;">';
             html += '<div style="font-size: 16px; font-weight: bold; white-space: nowrap;">' + currentSong.title + '</div>';
             html += '<div style="font-size: 16px; opacity: 0.9; margin-top: 5px;">学习目标：' + currentSong.target + '</div>';
             html += '</div>';
-            
+
             html += '<div id="songLyrics" style="background: rgba(255,255,255,0.2); border-radius: 10px; padding: 20px; margin-bottom: 10px;">';
             html += renderLyrics();
             html += '</div>';
-            
+
             html += '<div style="display: flex; gap: 10px; justify-content: center;">';
             html += '<button class="btn" onclick="prevLyric()" style="background: rgba(255,255,255,0.3); color: white;">⏮ 上一句</button>';
             html += '<button class="btn" onclick="playCurrentLyric()" style="background: white; color: ' + currentSong.color + ';">🔊 朗读</button>';
             html += '<button class="btn" onclick="nextLyric()" style="background: rgba(255,255,255,0.3); color: white;">下一句 ⏭</button>';
             html += '</div>';
-            
+
             html += '</div>';
-            
+
             container.innerHTML = html;
-            
+
             // 自动播放第一句
             setTimeout(function() { playCurrentLyric(); }, 500);
         }
-        
+
         // 渲染歌词
         function renderLyrics() {
             if (!currentSong) return '';
-            
+
             var html = '';
             currentSong.lyrics.forEach(function(line, index) {
                 var isActive = index === currentLyricIndex;
@@ -1776,40 +1776,40 @@
             });
             return html;
         }
-        
+
         // 播放当前歌词
         function playCurrentLyric() {
             if (!currentSong || !currentSong.lyrics[currentLyricIndex]) return;
-            
+
             var line = currentSong.lyrics[currentLyricIndex];
             speak(line.text);
-            
+
             // 高亮当前行
             var container = document.getElementById('songLyrics');
             if (container) {
                 container.innerHTML = renderLyrics();
             }
         }
-        
+
         // 下一句
         function nextLyric() {
             if (!currentSong) return;
             currentLyricIndex = Math.min(currentLyricIndex + 1, currentSong.lyrics.length - 1);
             playCurrentLyric();
         }
-        
+
         // 上一句
         function prevLyric() {
             currentLyricIndex = Math.max(currentLyricIndex - 1, 0);
             playCurrentLyric();
         }
-        
+
         // 跳转到指定歌词
         function jumpToLyric(index) {
             currentLyricIndex = index;
             playCurrentLyric();
         }
-        
+
         // 调整颜色亮度
         function adjustColor(color, amount) {
             return color; // 简化处理
@@ -1923,23 +1923,23 @@
                 ]
             }
         ];
-        
+
         var currentChapter = null;
         var currentSceneIndex = 0;
         var chapterRewards = { coins: 0, exp: 0, treasures: [] };
-        
+
         // 渲染故事章节
         function renderStoryChapters() {
             var container = document.getElementById('storyChapters');
             if (!container) return;
-            
+
             var html = '';
             storyChapters.forEach(function(chapter) {
                 var statusEmoji = chapter.completed ? '✅' : chapter.unlocked ? '🔓' : '🔒';
                 var opacity = chapter.unlocked ? '1' : '0.5';
-                var bg = chapter.completed ? 'linear-gradient(135deg, #4CAF50, #2E7D32)' : 
+                var bg = chapter.completed ? 'linear-gradient(135deg, #4CAF50, #2E7D32)' :
                          chapter.unlocked ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#ccc';
-                
+
                 html += '<div style="background: ' + bg + '; border-radius: 15px; padding: 15px; color: white; cursor: ' + (chapter.unlocked ? 'pointer' : 'not-allowed') + '; opacity: ' + opacity + ';" onclick="' + (chapter.unlocked ? 'startChapter(' + chapter.id + ')' : '') + '">';
                 html += '<div style="display: flex; align-items: center; gap: 15px;">';
                 html += '<div style="font-size: 44px;">' + chapter.emoji + '</div>';
@@ -1951,24 +1951,24 @@
                 html += '</div>';
                 html += '</div>';
             });
-            
+
             container.innerHTML = html;
         }
-        
+
         // 开始章节
         function startChapter(chapterId) {
             currentChapter = storyChapters.find(function(c) { return c.id === chapterId; });
             currentSceneIndex = 0;
             chapterRewards = { coins: 0, exp: 0, treasures: [] };
-            
+
             if (!currentChapter) return;
-            
+
             document.getElementById('storyChapters').classList.add('hidden');
             document.getElementById('storyScene').classList.remove('hidden');
-            
+
             showCurrentScene();
         }
-        
+
         // 显示当前场景
         function showCurrentScene() {
             if (!currentChapter || currentSceneIndex >= currentChapter.scenes.length) {
@@ -1976,13 +1976,13 @@
                 completeChapter();
                 return;
             }
-            
+
             var scene = currentChapter.scenes[currentSceneIndex];
             var storyTextEl = document.getElementById('storyText');
             var storyQuestionEl = document.getElementById('storyQuestion');
             var storyOptionsEl = document.getElementById('storyOptions');
             var continueBtn = document.getElementById('storyContinueBtn');
-            
+
             if (scene.type === 'dialogue') {
                 storyQuestionEl.classList.add('hidden');
                 storyTextEl.textContent = scene.text;
@@ -1992,30 +1992,30 @@
             } else if (scene.type === 'question') {
                 storyTextEl.textContent = scene.text;
                 document.getElementById('storyQuestionText').textContent = '';
-                
+
                 storyQuestionEl.classList.remove('hidden');
-                
+
                 var html = '';
                 scene.options.forEach(function(opt) {
                     html += '<button class="option-btn" onclick="answerStoryQuestion(\'' + opt + '\', \'' + scene.pinyin + '\', ' + (scene.reward ? JSON.stringify(scene.reward).replace(/"/g, '\'') : 'null') + ')" style="font-size: 16px; padding: 12px;">' + opt + '</button>';
                 });
                 storyOptionsEl.innerHTML = html;
-                
+
                 continueBtn.style.display = 'none';
             }
         }
-        
+
         // 继续故事
         function continueStory() {
             currentSceneIndex++;
             showCurrentScene();
         }
-        
+
         // 回答故事问题
         function answerStoryQuestion(selected, correct, reward) {
             var isCorrect = selected === correct;
             var buttons = document.querySelectorAll('#storyOptions .option-btn');
-            
+
             buttons.forEach(function(btn) {
                 btn.disabled = true;
                 if (btn.textContent === correct) {
@@ -2024,7 +2024,7 @@
                     btn.classList.add('wrong');
                 }
             });
-            
+
             if (isCorrect) {
                 // 发放答题奖励
                 if (reward) {
@@ -2037,7 +2037,7 @@
                         chapterRewards.exp += reward.exp;
                     }
                 }
-                
+
                 // 随机掉落宝物（30%概率）
                 if (Math.random() < 0.3) {
                     var treasure = dropTreasure();
@@ -2045,13 +2045,13 @@
                         chapterRewards.treasures.push(treasure);
                     }
                 }
-                
+
                 updateUI();
                 saveGameData();
-                
+
                 showToast('✅ 回答正确！+' + (reward ? reward.coins : 5) + '金币 +' + (reward ? reward.exp : 3) + '经验', 'success');
                 speak('正确！');
-                
+
                 setTimeout(function() {
                     currentSceneIndex++;
                     showCurrentScene();
@@ -2059,10 +2059,10 @@
             } else {
                 showToast('❌ 回答错误，请再试一次', 'error');
                 speak(correct);
-                
+
                 // 记录错题
                 recordError(currentChapter.scenes[currentSceneIndex].text, selected, correct, 'story');
-                
+
                 setTimeout(function() {
                     buttons.forEach(function(btn) {
                         btn.disabled = false;
@@ -2071,34 +2071,34 @@
                 }, 1500);
             }
         }
-        
+
         // 完成章节
         function completeChapter() {
             currentChapter.completed = true;
-            
+
             // 解锁下一章
             var nextChapter = storyChapters.find(function(c) { return c.id === currentChapter.id + 1; });
             if (nextChapter) {
                 nextChapter.unlocked = true;
             }
-            
+
             // 通关大礼包奖励
             var isFinal = currentChapter.isFinal;
             var baseReward = 20 + currentChapter.id * 5;
             var completionBonus = isFinal ? 100 : 30; // 最终章节额外奖励100金币
             var totalCoins = baseReward + completionBonus;
             var totalExp = 20 + currentChapter.id * 3;
-            
+
             coins += totalCoins;
             addPetExp(totalExp);
-            
+
             // 必定掉落宝物
             var treasure = dropTreasure();
             var treasureMsg = '';
             if (treasure) {
                 treasureMsg = '\n🎁 获得宝物：' + treasure.emoji + ' ' + treasure.name;
             }
-            
+
             // 最终章节额外掉落
             if (isFinal) {
                 for (var i = 0; i < 3; i++) {
@@ -2108,17 +2108,17 @@
                     }
                 }
             }
-            
+
             alert('🎉 章节完成！\n\n' + currentChapter.title + ' 已完成！\n\n' +
                   '📊 答题获得：' + chapterRewards.coins + '金币 +' + chapterRewards.exp + '经验\n' +
                   '🎁 通关奖励：' + totalCoins + '金币 +' + totalExp + '经验' +
                   (chapterRewards.treasures.length > 0 ? '\n💎 答题掉落：' + chapterRewards.treasures.length + '个宝物' : '') +
                   treasureMsg +
                   (isFinal ? '\n\n🏆 恭喜通关！你已成为拼音大师！' : ''));
-            
+
             updateUI();
             saveGameData();
-            
+
             // 返回章节列表
             document.getElementById('storyChapters').classList.remove('hidden');
             document.getElementById('storyScene').classList.add('hidden');
@@ -2127,20 +2127,20 @@
 
         // 页面加载时初始化用户系统
         initUserSystem();
-        
+
         // 定期自动保存
         setInterval(saveGameData, 30000);
-        
+
         // ========== v6.7 保留的注释 ==========
-        
+
         // 语音功能
                 // ========== v6.4.2 视觉反馈系统（替代TTS） ==========
-        
+
         // 震动反馈
         function vibrate(pattern) {
             if (navigator.vibrate) navigator.vibrate(pattern);
         }
-        
+
         // 显示通用提示
         function showToast(message, type) {
             var toast = document.createElement('div');
@@ -2149,7 +2149,7 @@
             document.body.appendChild(toast);
             setTimeout(function() { toast.remove(); }, 2000);
         }
-        
+
         // ========== v8.5.2 后台管理功能 ==========
         function updateAdminPanel() {
             var userNameEl = document.getElementById('adminCurrentUser');
@@ -2158,26 +2158,26 @@
                 userNameEl.textContent = user ? user.name : '未登录';
             }
         }
-        
+
         function sendAdminGift() {
             var coinsInput = document.getElementById('adminCoins');
             var energyInput = document.getElementById('adminEnergy');
             var expInput = document.getElementById('adminExp');
-            
+
             var giftCoins = parseInt(coinsInput.value) || 0;
             var giftEnergy = parseInt(energyInput.value) || 0;
             var giftExp = parseInt(expInput.value) || 0;
-            
+
             // 限制上限
             giftCoins = Math.min(giftCoins, 1000);
             giftEnergy = Math.min(giftEnergy, 100);
             giftExp = Math.min(giftExp, 500);
-            
+
             if (giftCoins <= 0 && giftEnergy <= 0 && giftExp <= 0) {
                 alert('请输入至少一项奖励数量！');
                 return;
             }
-            
+
             // 添加奖励
             if (giftCoins > 0) coins += giftCoins;
             if (giftEnergy > 0) energy = Math.min(energy + giftEnergy, 100);
@@ -2188,11 +2188,11 @@
                     addPetExp(giftExp);
                 }
             }
-            
+
             // 更新UI和保存
             updateUI();
             saveGameData();
-            
+
             // 显示成功消息
             var msg = '🎁 大礼包发送成功！\n\n';
             if (giftCoins > 0) msg += '💰 金币 +' + giftCoins + '\n';
@@ -2205,21 +2205,21 @@
         function showPinyinToast(py, pronunciation) {
             var old = document.querySelector('.pinyin-toast');
             if (old) old.remove();
-            
+
             var div = document.createElement('div');
             div.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:white;padding:15px 40px;border-radius:30px;font-size:28px;z-index:10000;text-align:center;';
             div.innerHTML = '<span style="font-size:36px;font-weight:bold;color:#FFD700;">' + py + '</span><br><span style="font-size:20px;color:#fff;">' + pronunciation + '</span>';
             document.body.appendChild(div);
-            
+
             vibrate(50);
-            
+
             setTimeout(function() {
                 div.style.opacity = '0';
                 div.style.transition = 'opacity 0.5s';
                 setTimeout(function() { div.remove(); }, 500);
             }, 2000);
         }
-        
+
         // 获取拼音发音
         function getPronunciation(py) {
             var map = {};
@@ -2228,36 +2228,36 @@
             pinyinData.whole.forEach(function(p, i) { map[p] = pinyinData.wholeNames[i]; });
             return map[py] || '';
         }
-        
+
         // 音频播放变量
         var currentAudio = null;
         var audioContextInitialized = false;
-        
+
         // 初始化音频上下文（解决浏览器自动播放策略）
         function initAudioContext() {
             if (audioContextInitialized) return;
             audioContextInitialized = true;
-            
+
             // 尝试播放一个无声的音频来解锁音频上下文
             var silentAudio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
             silentAudio.play().catch(function() {});
         }
-        
+
         // 主speak函数（v6.4.4 优先本地音频版）
         function speak(text) {
             // 初始化音频上下文（首次调用时）
             initAudioContext();
-            
+
             // 停止之前的音频
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio = null;
             }
-            
+
             // 优先使用本地音频文件（更可靠）
             var audio = new Audio('audio/' + text + '.mp3');
             currentAudio = audio;
-            
+
             var localAudioPlayed = false;
             audio.play().then(function() {
                 localAudioPlayed = true;
@@ -2279,20 +2279,20 @@
                 }
             });
         }
-        
+
         function speakCurrent() {
             var q = inBattle ? currentBattleQuestion : questionsInLevel[currentQuestionInLevel - 1];
             if (q) speak(q.q);
         }
-        
+
         function switchTab(tabName) {
             // 先显示主菜单（如果被隐藏）
             var mainMenu = document.getElementById('mainMenu');
             if (mainMenu) mainMenu.classList.remove('hidden');
-            
+
             // 隐藏所有子页面
             document.querySelectorAll('.page').forEach(function(el) { el.classList.add('hidden'); });
-            
+
             // 隐藏所有Tab内容
             var tabs = ['study', 'adventure', 'shop', 'stats', 'profile'];
             tabs.forEach(function(t) {
@@ -2304,7 +2304,7 @@
                     label.style.fontWeight = 'normal';
                 }
             });
-            
+
             // 显示选中的Tab
             var selectedPanel = document.getElementById('tab-' + tabName);
             var selectedLabel = document.getElementById('label-' + tabName);
@@ -2313,7 +2313,7 @@
                 selectedLabel.style.color = '#667eea';
                 selectedLabel.style.fontWeight = 'bold';
             }
-            
+
             // 切换到探险Tab时刷新关卡地图
             if (tabName === 'adventure') {
                 renderLevelMap();
@@ -2342,9 +2342,38 @@ function showPage(pageId) {
             if (pageId === 'storyMode') renderStoryChapters();
             if (pageId === 'adminPanel') updateAdminPanel();
         }
-        
-        function showMainMenu() { 
-            showPage('mainMenu'); 
+
+        // 基础教学
+        function showInitial() {
+            setTab(1);
+            updateTaskProgress('task_practice', 1);
+            var html = '<div style="margin-bottom: 10px; text-align: center;">';
+            html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
+            html += '<button class="btn" onclick="startRandomTest(\'initial\')" style="width: auto; padding: 10px 20px;">📝 随机测试(10题)</button>';
+            html += '</div>';
+            html += '<div class="pinyin-grid">';
+            pinyinData.initial.forEach(function(py, i) {
+                var hint = showPinyinHints ? '<br/><small style="color:#999">' + pinyinData.initialNames[i] + '</small>' : '';
+                html += '<div class="pinyin-card" onclick="speak(\'' + py + '\')">' + py + hint + '</div>';
+            });
+            html += '</div>';
+            document.getElementById('learningContent').innerHTML = html;
+        }
+
+        // 切换提示字显示
+        function togglePinyinHints() {
+            showPinyinHints = !showPinyinHints;
+            // 刷新当前页面
+            var activeTab = document.querySelector('.learning-tab.active');
+            if (activeTab) {
+                if (activeTab.id === 'tab1') showInitial();
+                else if (activeTab.id === 'tab2') showFinal();
+                else if (activeTab.id === 'tab3') showWhole();
+            }
+        }
+
+        function showMainMenu() {
+            showPage('mainMenu');
             inBattle = false;
             // 重置到学习Tab
             var tabs = ['study', 'adventure', 'shop', 'stats', 'profile'];
@@ -2361,12 +2390,12 @@ function showPage(pageId) {
         function goToLearning() { showPage('learning'); }
         function goToLevelMap() { showPage('levelMap'); renderLevelMap(); }
         function goToMap() { showPage('map'); }
-        
+
         // 渲染关卡地图 - v8.2.0 按阶段分组显示
         function renderLevelMap() {
             var container = document.getElementById('levelMapContainer');
             var html = '';
-            
+
             // 定义阶段信息
             var stages = [
                 { id: 1, name: '第一阶段', title: '声母', type: 'initial', color: '#4CAF50', icon: '🔤' },
@@ -2375,12 +2404,12 @@ function showPage(pageId) {
                 { id: 4, name: '第四阶段', title: '声调', type: 'tone', color: '#FF9800', icon: '🎼' },
                 { id: 5, name: '第五阶段', title: '词语', type: 'word', color: '#F44336', icon: '📝' }
             ];
-            
+
             stages.forEach(function(stage) {
                 // 获取该阶段的所有关卡
                 var stageLevels = levels.filter(function(lv) { return lv.type === stage.type; });
                 if (stageLevels.length === 0) return;
-                
+
                 // 阶段标题
                 html += '<div style="margin: 25px 0 15px; background: linear-gradient(135deg, ' + stage.color + '22, ' + stage.color + '11); border-radius: 15px; padding: 15px;">';
                 html += '<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">';
@@ -2393,7 +2422,7 @@ function showPage(pageId) {
                 html += stageLevels.filter(function(l) { return l.completed; }).length + '/' + stageLevels.length + ' 关';
                 html += '</div>';
                 html += '</div>';
-                
+
                 // 关卡节点
                 html += '<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">';
                 stageLevels.forEach(function(lv) {
@@ -2401,7 +2430,7 @@ function showPage(pageId) {
                     var icon = lv.isBoss ? '👹' : lv.completed ? '✓' : lv.locked ? '🔒' : '⭐';
                     var bgColor = lv.completed ? '#4CAF50' : lv.locked ? '#ccc' : lv.isBoss ? '#F44336' : '#FF9800';
                     var onclick = lv.locked ? '' : 'onclick="startLevel(' + lv.id + ')"';
-                    
+
                     html += '<div style="width: 80px; cursor: ' + (lv.locked ? 'not-allowed' : 'pointer') + '; opacity: ' + (lv.locked ? 0.6 : 1) + ';" ' + onclick + '>';
                     html += '<div style="width: 60px; height: 60px; border-radius: 50%; background: ' + bgColor + '; color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; margin: 0 auto 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);' + (lv.locked ? '' : ' transition: transform 0.2s;') + '">' + icon + '</div>';
                     html += '<div style="text-align: center; font-size: 11px; font-weight: bold; color: #333;">' + lv.name + '</div>';
@@ -2411,31 +2440,31 @@ function showPage(pageId) {
                 html += '</div>';
                 html += '</div>';
             });
-            
+
             container.innerHTML = html;
         }
-        
+
         // 开始关卡
         function startLevel(levelId) {
             currentLevel = levelId;
             var level = levels[currentLevel - 1];
             questionsInLevel = [];
             levelCorrectCount = 0;
-            
+
             // 根据关卡类型生成问题 - 使用不重复随机
             questionsInLevel = generateUniqueQuestions(level.type, level.stage, 10);
-            
+
             currentQuestionInLevel = 1;
             showPage('game');
             loadLevelQuestion();
         }
-        
+
         // 生成不重复的题目数组
         function generateUniqueQuestions(type, stage, count) {
             var pool = getQuestionPoolByType(type, stage);
             var used = [];
             var result = [];
-            
+
             // 如果题目池足够大，不重复选择
             if (pool.length >= count) {
                 // 洗牌算法
@@ -2451,12 +2480,12 @@ function showPage(pageId) {
                 return result;
             }
         }
-        
+
         // 根据类型获取完整题目池
         function getQuestionPoolByType(type, stage) {
             var pool = [];
             var allOptions;
-            
+
             switch(type) {
                 case 'initial': // 声母
                     var chars;
@@ -2472,24 +2501,24 @@ function showPage(pageId) {
                                 {c: '一', a: 'y'}, {c: '我', a: 'w'}, {c: '爸', a: 'b'}, {c: '妈', a: 'm'},
                                 {c: '怕', a: 'p'}, {c: '发', a: 'f'}, {c: '大', a: 'd'}, {c: '他', a: 't'}];
                     }
-                    allOptions = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x', 
+                    allOptions = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x',
                                  'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w'];
                     for (var i = 0; i < chars.length; i++) {
                         pool.push(generateQuestion(chars[i].c, chars[i].a, allOptions, '声母'));
                     }
                     break;
-                    
+
                 case 'final': // 韵母
                     var chars2;
                     if (stage === 1) {
-                        chars2 = [{c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '的', a: 'e'}, {c: '你', a: 'i'}, 
+                        chars2 = [{c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '的', a: 'e'}, {c: '你', a: 'i'},
                                  {c: '不', a: 'u'}, {c: '去', a: 'ü'}, {c: '来', a: 'ai'}, {c: '北', a: 'ei'}];
                     } else if (stage === 2) {
                         chars2 = [{c: '水', a: 'ui'}, {c: '好', a: 'ao'}, {c: '有', a: 'ou'}, {c: '就', a: 'iu'},
                                  {c: '写', a: 'ie'}, {c: '月', a: 'üe'}, {c: '儿', a: 'er'},
                                  {c: '天', a: 'an'}, {c: '人', a: 'en'}, {c: '心', a: 'in'}];
                     } else {
-                        chars2 = [{c: '问', a: 'un'}, {c: '云', a: 'ün'}, {c: '上', a: 'ang'}, 
+                        chars2 = [{c: '问', a: 'un'}, {c: '云', a: 'ün'}, {c: '上', a: 'ang'},
                                  {c: '冷', a: 'eng'}, {c: '明', a: 'ing'}, {c: '龙', a: 'ong'},
                                  {c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '来', a: 'ai'}, {c: '水', a: 'ui'}];
                     }
@@ -2499,7 +2528,7 @@ function showPage(pageId) {
                         pool.push(generateQuestion(chars2[j].c, chars2[j].a, allOptions, '韵母'));
                     }
                     break;
-                    
+
                 case 'whole': // 整体认读
                     var chars3;
                     if (stage === 1) {
@@ -2520,7 +2549,7 @@ function showPage(pageId) {
                         pool.push(generateQuestion(chars3[k].c, chars3[k].a, allOptions, '整体认读'));
                     }
                     break;
-                    
+
                 case 'tone': // 声调
                     var toneData = [
                         {p: 'mā', t: '1'}, {p: 'má', t: '2'}, {p: 'mǎ', t: '3'}, {p: 'mà', t: '4'},
@@ -2539,15 +2568,15 @@ function showPage(pageId) {
                         });
                     }
                     break;
-                    
+
                 case 'word': // 词语
                     var words;
                     if (stage === 1) {
-                        words = [{w: '爸爸', p: 'bà ba'}, {w: '妈妈', p: 'mā ma'}, {w: '哥哥', p: 'gē ge'}, 
+                        words = [{w: '爸爸', p: 'bà ba'}, {w: '妈妈', p: 'mā ma'}, {w: '哥哥', p: 'gē ge'},
                                 {w: '姐姐', p: 'jiě jie'}, {w: '老师', p: 'lǎo shī'}, {w: '学生', p: 'xué sheng'},
                                 {w: '你好', p: 'nǐ hǎo'}, {w: '中国', p: 'zhōng guó'}];
                     } else if (stage === 2) {
-                        words = [{w: '小学生', p: 'xiǎo xué shēng'}, {w: '好朋友', p: 'hǎo péng you'}, 
+                        words = [{w: '小学生', p: 'xiǎo xué shēng'}, {w: '好朋友', p: 'hǎo péng you'},
                                 {w: '大熊猫', p: 'dà xióng māo'}, {w: '天安门', p: 'tiān ān mén'},
                                 {w: '幼儿园', p: 'yòu ér yuán'}, {w: '看电视', p: 'kàn diàn shì'}];
                     } else {
@@ -2577,11 +2606,11 @@ function showPage(pageId) {
             }
             return pool;
         }
-        
+
         // 根据关卡类型和阶段生成问题
         function generateLevelQuestionByType(type, stage) {
             var q, a, options;
-            
+
             switch(type) {
                 case 'initial': // 声母
                     return generateInitialQuestion(stage);
@@ -2597,14 +2626,14 @@ function showPage(pageId) {
                     return generateInitialQuestion(1);
             }
         }
-        
+
         // 生成声母问题
         function generateInitialQuestion(stage) {
             var chars, answers;
             if (stage === 1) {
                 chars = [{c: '爸', a: 'b'}, {c: '妈', a: 'm'}, {c: '怕', a: 'p'}, {c: '发', a: 'f'}];
             } else if (stage === 2) {
-                chars = [{c: '大', a: 'd'}, {c: '他', a: 't'}, {c: '你', a: 'n'}, {c: '乐', a: 'l'}, 
+                chars = [{c: '大', a: 'd'}, {c: '他', a: 't'}, {c: '你', a: 'n'}, {c: '乐', a: 'l'},
                         {c: '哥', a: 'g'}, {c: '看', a: 'k'}, {c: '喝', a: 'h'}];
             } else {
                 chars = [{c: '鸡', a: 'j'}, {c: '七', a: 'q'}, {c: '下', a: 'x'}, {c: '知', a: 'zh'},
@@ -2612,11 +2641,11 @@ function showPage(pageId) {
                         {c: '从', a: 'c'}, {c: '三', a: 's'}, {c: '一', a: 'y'}, {c: '我', a: 'w'}];
             }
             var item = chars[Math.floor(Math.random() * chars.length)];
-            var allOptions = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x', 
+            var allOptions = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x',
                              'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w'];
             return generateQuestion(item.c, item.a, allOptions, '声母');
         }
-        
+
         // 生成韵母问题
         function generateFinalQuestion(stage) {
             var chars;
@@ -2634,7 +2663,7 @@ function showPage(pageId) {
             var item = chars[Math.floor(Math.random() * chars.length)];
             return generateQuestion(item.c, item.a, allOptions, '韵母');
         }
-        
+
         // 生成整体认读问题
         function generateWholeQuestion(stage) {
             var chars;
@@ -2651,7 +2680,7 @@ function showPage(pageId) {
             var item = chars[Math.floor(Math.random() * chars.length)];
             return generateQuestion(item.c, item.a, allOptions, '整体认读');
         }
-        
+
         // 生成声调问题
         function generateToneQuestion(stage) {
             var pinyinData = [
@@ -2668,12 +2697,12 @@ function showPage(pageId) {
                 hint: '这是几声?'
             };
         }
-        
+
         // 生成词语问题
         function generateWordQuestion(stage) {
             var words;
             if (stage === 1) {
-                words = [{w: '爸爸', p: 'bà ba'}, {w: '妈妈', p: 'mā ma'}, {w: '哥哥', p: 'gē ge'}, 
+                words = [{w: '爸爸', p: 'bà ba'}, {w: '妈妈', p: 'mā ma'}, {w: '哥哥', p: 'gē ge'},
                         {w: '姐姐', p: 'jiě jie'}, {w: '老师', p: 'lǎo shī'}, {w: '学生', p: 'xué sheng'}];
             } else if (stage === 2) {
                 words = [{w: '小学生', p: 'xiǎo xué shēng'}, {w: '好朋友', p: 'hǎo péng you'}, {w: '大熊猫', p: 'dà xióng māo'}];
@@ -2696,7 +2725,7 @@ function showPage(pageId) {
                 hint: '选择正确的拼音'
             };
         }
-        
+
         // 通用问题生成
         function generateQuestion(char, answer, allOptions, typeName) {
             var options = [answer];
@@ -2713,45 +2742,45 @@ function showPage(pageId) {
                 hint: '选择正确的' + typeName
             };
         }
-        
+
         var levelCorrectCount = 0;
         var levelAnswered = false; // 防止重复点击 - 全局变量
-        
+
         function loadLevelQuestion() {
             // 重置答题状态
             levelAnswered = false;
-            
+
             var q = questionsInLevel[currentQuestionInLevel - 1];
             if (!q) {
                 console.error('问题加载失败', currentQuestionInLevel, questionsInLevel);
                 return;
             }
-            
+
             document.getElementById('currentQ').textContent = currentQuestionInLevel;
             document.getElementById('totalQ').textContent = 10;
             document.getElementById('currentLevel').textContent = currentLevel;
             document.getElementById('progressFill').style.width = (currentQuestionInLevel / 10 * 100) + '%';
             document.getElementById('questionDisplay').innerHTML = '<div style="font-size: 44px;">' + q.q + '</div><div style="font-size: 16px; color: #666; margin-top: 5px;">' + q.hint + '</div>';
-            
+
             var html = '';
             q.options.forEach(function(opt) {
                 html += '<button class="option-btn" onclick="checkLevelAnswer(this, \'' + opt + '\', \'' + q.a + '\')" style="font-size: 16px;">' + opt + '</button>';
             });
             document.getElementById('optionsGrid').innerHTML = html;
         }
-        
+
         function checkLevelAnswer(btn, selected, correct) {
             if (levelAnswered) return; // 防止重复点击
             levelAnswered = true;
-            
+
             var isCorrect = selected === correct;
-            
+
             // 禁用所有选项按钮
             document.querySelectorAll('.option-btn').forEach(function(b) {
                 b.disabled = true;
                 b.style.pointerEvents = 'none';
             });
-            
+
             if (isCorrect) {
                 btn.classList.add('correct');
                 totalCorrect++;
@@ -2763,11 +2792,11 @@ function showPage(pageId) {
                 btn.classList.add('wrong');
                 totalWrong++;
                 showToast('❌ 错误', 'error');
-                
+
                 // 记录错题
                 var q = questionsInLevel[currentQuestionInLevel - 1];
                 recordError(q.q, selected, correct, 'level');
-                
+
                 document.querySelectorAll('.option-btn').forEach(function(b) {
                     if (b.textContent === correct) b.classList.add('correct');
                 });
@@ -2799,7 +2828,7 @@ function showPage(pageId) {
                 }
             }, isCorrect ? 800 : 1500);
         }
-        
+
         function completeLevel() {
             var lv = levels[currentLevel - 1];
             if (!lv.completed) {
@@ -2815,57 +2844,57 @@ function showPage(pageId) {
             var bossBonus = lv.isBoss ? 10 : 0;
             var reward = baseReward + levelBonus + bossBonus;
             coins += reward;
-            
+
             // 宠物获得经验（也是阶梯式）
             var baseExp = 10;
             var expBonus = (currentLevel - 1) * 2;
             var bossExpBonus = lv.isBoss ? 20 : 0;
             var expGain = baseExp + expBonus + bossExpBonus;
             addPetExp(expGain);
-            
+
             // 解锁装备
             unlockEquipmentByLevel(currentLevel);
-            
+
             checkAchievements();
             updateUI();
             saveGameData();
             alert('🎉 恭喜！第' + currentLevel + '关完美通关！\n获得通关奖励：' + reward + '金币！\n宠物获得 ' + expGain + ' 经验值！');
             goToLevelMap();
         }
-        
+
         // 宠物获得经验
         function addPetExp(amount) {
             var currentPet = pets.list[pets.current];
             currentPet.exp += amount;
-            
+
             // 检查是否升级
             while (currentPet.exp >= currentPet.expToLevel) {
                 currentPet.exp -= currentPet.expToLevel;
                 levelUpPet(currentPet);
             }
         }
-        
+
         // 宠物升级
         function levelUpPet(pet) {
             pet.level++;
             pet.expToLevel = Math.floor(pet.expToLevel * 1.2); // 每级所需经验增加20%
-            
+
             // 属性提升
             var attackGain = Math.floor(pet.attack * 0.1) + 1;
             var defenseGain = Math.floor(pet.defense * 0.1) + 1;
             var hpGain = Math.floor(pet.maxHp * 0.1) + 5;
-            
+
             pet.attack += attackGain;
             pet.defense += defenseGain;
             pet.maxHp += hpGain;
             pet.hp = pet.maxHp; // 升级后回满血
-            
+
             // 同步到战斗属性
             recalcPetStats();
-            
+
             showToast('🎉 ' + pet.name + ' 升到 Lv.' + pet.level + '!', 'success');
         }
-        
+
         // 根据通关关卡解锁装备
         function unlockEquipmentByLevel(level) {
             ['weapon', 'armor', 'accessory'].forEach(function(type) {
@@ -2877,7 +2906,7 @@ function showPage(pageId) {
                 });
             });
         }
-        
+
         // 成就系统
         function renderAchievements() {
             if (!achievements || !Array.isArray(achievements)) {
@@ -2898,7 +2927,7 @@ function showPage(pageId) {
                     alert('🏆 解锁成就：' + ach.name + '！+' + ach.reward + '金币');
                 }
                 if (ach.unlocked) unlockedCount++;
-                
+
                 var cls = ach.unlocked ? '' : 'locked';
                 var opacity = ach.unlocked ? '1' : '0.6';
                 html += '<div class="achievement-card ' + cls + '" style="opacity:' + opacity + '">' +
@@ -2914,11 +2943,11 @@ function showPage(pageId) {
             document.getElementById('myAchievements').textContent = unlockedCount;
             updateUI();
         }
-        
+
         function checkAchievements() {
             renderAchievements();
         }
-        
+
         // 任务系统
         function renderTasks() {
             var html = '';
@@ -2929,7 +2958,7 @@ function showPage(pageId) {
                 var btnText = task.claimed ? '已领取' : task.completed ? '领取奖励' : '进行中';
                 var btnDisabled = !task.completed || task.claimed ? 'disabled' : '';
                 var progressPercent = (task.progress / task.target * 100);
-                
+
                 html += '<div class="task-card ' + cls + '" id="task-' + task.id + '" onclick="claimTaskReward(\'' + task.id + '\')">' +
                     '<div class="task-header">' +
                         '<div class="task-title">' + task.name + '</div>' +
@@ -2948,7 +2977,7 @@ function showPage(pageId) {
             document.getElementById('tasksList').innerHTML = html;
             document.getElementById('tasksCompleted').textContent = completedCount;
         }
-        
+
         function updateTaskProgress(taskId, amount) {
             var task = dailyTasks.find(function(t) { return t.id === taskId; });
             if (task && !task.completed) {
@@ -2960,7 +2989,7 @@ function showPage(pageId) {
                 renderTasks();
             }
         }
-        
+
         function claimTaskReward(taskId) {
             var task = dailyTasks.find(function(t) { return t.id === taskId; });
             if (task && task.completed && !task.claimed) {
@@ -2971,36 +3000,7 @@ function showPage(pageId) {
                 alert('🎉 领取成功！+' + task.reward + '金币');
             }
         }
-        
-        // 基础教学
-        function showInitial() {
-            setTab(1);
-            updateTaskProgress('task_practice', 1);
-            var html = '<div style="margin-bottom: 10px; text-align: center;">';
-            html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
-            html += '<button class="btn" onclick="startRandomTest(\'initial\')" style="width: auto; padding: 10px 20px;">📝 随机测试(10题)</button>';
-            html += '</div>';
-            html += '<div class="pinyin-grid">';
-            pinyinData.initial.forEach(function(py, i) {
-                var hint = showPinyinHints ? '<br/><small style="color:#999">' + pinyinData.initialNames[i] + '</small>' : '';
-                html += '<div class="pinyin-card" onclick="speak(\'' + py + '\')">' + py + hint + '</div>';
-            });
-            html += '</div>';
-            document.getElementById('learningContent').innerHTML = html;
-        }
-        
-        // 切换提示字显示
-        function togglePinyinHints() {
-            showPinyinHints = !showPinyinHints;
-            // 刷新当前页面
-            var activeTab = document.querySelector('.learning-tab.active');
-            if (activeTab) {
-                if (activeTab.id === 'tab1') showInitial();
-                else if (activeTab.id === 'tab2') showFinal();
-                else if (activeTab.id === 'tab3') showWhole();
-            }
-        }
-        
+
         // 声母测试数据
         var initialTestData = [
             {char: '爸', answer: 'b', options: ['b', 'p', 'm', 'f']},
@@ -3023,11 +3023,11 @@ function showPage(pageId) {
             {char: '一', answer: 'y', options: ['z', 'c', 's', 'y']},
             {char: '我', answer: 'w', options: ['y', 'w', 'r', 'l']}
         ];
-        
+
         var currentTestIndex = 0;
         var testScore = 0;
         var currentTestType = '';
-        
+
         // 开始声母测试
         function startInitialTest() {
             currentTestIndex = 0;
@@ -3035,7 +3035,7 @@ function showPage(pageId) {
             currentTestType = 'initial';
             showInitialQuestion();
         }
-        
+
         function showInitialQuestion() {
             if (currentTestIndex >= initialTestData.length) {
                 // 测试结束
@@ -3047,7 +3047,7 @@ function showPage(pageId) {
                 document.getElementById('learningContent').innerHTML = html;
                 return;
             }
-            
+
             var q = initialTestData[currentTestIndex];
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<p>问题 ' + (currentTestIndex + 1) + '/' + initialTestData.length + '</p>';
@@ -3060,7 +3060,7 @@ function showPage(pageId) {
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         function checkInitialAnswer(answer) {
             var q = initialTestData[currentTestIndex];
             if (answer === q.answer) {
@@ -3088,7 +3088,7 @@ function showPage(pageId) {
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         // 韵母测试数据
         var finalTestData = [
             {char: '妈', answer: 'a', options: ['a', 'o', 'e', 'i']},
@@ -3111,7 +3111,7 @@ function showPage(pageId) {
             {char: '明', answer: 'ing', options: ['in', 'ing', 'eng', 'ong']},
             {char: '龙', answer: 'ong', options: ['eng', 'ing', 'ong', 'un']}
         ];
-        
+
         // 开始韵母测试
         function startFinalTest() {
             currentTestIndex = 0;
@@ -3119,7 +3119,7 @@ function showPage(pageId) {
             currentTestType = 'final';
             showFinalQuestion();
         }
-        
+
         function showFinalQuestion() {
             if (currentTestIndex >= finalTestData.length) {
                 var html = '<div style="text-align: center; padding: 40px;">';
@@ -3130,7 +3130,7 @@ function showPage(pageId) {
                 document.getElementById('learningContent').innerHTML = html;
                 return;
             }
-            
+
             var q = finalTestData[currentTestIndex];
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<p>问题 ' + (currentTestIndex + 1) + '/' + finalTestData.length + '</p>';
@@ -3143,7 +3143,7 @@ function showPage(pageId) {
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         function checkFinalAnswer(answer) {
             var q = finalTestData[currentTestIndex];
             if (answer === q.answer) {
@@ -3171,7 +3171,7 @@ function showPage(pageId) {
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         // 整体认读测试数据
         var wholeTestData = [
             {char: '一只', answer: 'zhi', options: ['zhi', 'chi', 'shi', 'ri']},
@@ -3191,7 +3191,7 @@ function showPage(pageId) {
             {char: '鹰', answer: 'ying', options: ['ying', 'yin', 'yun', 'yuan']},
             {char: '云', answer: 'yun', options: ['ying', 'yin', 'yun', 'yong']}
         ];
-        
+
         // 开始整体认读测试
         function startWholeTest() {
             currentTestIndex = 0;
@@ -3199,7 +3199,7 @@ function showPage(pageId) {
             currentTestType = 'whole';
             showWholeQuestion();
         }
-        
+
         function showWholeQuestion() {
             if (currentTestIndex >= wholeTestData.length) {
                 var html = '<div style="text-align: center; padding: 40px;">';
@@ -3210,7 +3210,7 @@ function showPage(pageId) {
                 document.getElementById('learningContent').innerHTML = html;
                 return;
             }
-            
+
             var q = wholeTestData[currentTestIndex];
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<p>问题 ' + (currentTestIndex + 1) + '/' + wholeTestData.length + '</p>';
@@ -3223,7 +3223,7 @@ function showPage(pageId) {
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         function checkWholeAnswer(answer) {
             var q = wholeTestData[currentTestIndex];
             if (answer === q.answer) {
@@ -3236,7 +3236,7 @@ function showPage(pageId) {
             currentTestIndex++;
             setTimeout(showWholeQuestion, 1000);
         }
-        
+
         // ===== 随机测试系统（v8.5.3新增） =====
         var randomTestState = {
             isActive: false,
@@ -3246,11 +3246,11 @@ function showPage(pageId) {
             score: 0,
             totalQuestions: 10
         };
-        
+
         // 生成随机测试题（不重复）
         function generateRandomQuestions(type, count) {
             var allQuestions = [];
-            
+
             if (type === 'initial') {
                 // 使用声母数据生成题目 - 修复：显示汉字，问声母是什么
                 pinyinData.initial.forEach(function(py, idx) {
@@ -3354,12 +3354,12 @@ function showPage(pageId) {
                     });
                 });
             }
-            
+
             // 随机打乱并取前count个
             allQuestions.sort(function() { return Math.random() - 0.5; });
             return allQuestions.slice(0, Math.min(count, allQuestions.length));
         }
-        
+
         // 开始随机测试
         function startRandomTest(type) {
             randomTestState.isActive = true;
@@ -3367,10 +3367,10 @@ function showPage(pageId) {
             randomTestState.currentIndex = 0;
             randomTestState.score = 0;
             randomTestState.questions = generateRandomQuestions(type, randomTestState.totalQuestions);
-            
+
             showRandomTestQuestion();
         }
-        
+
         function showRandomTestQuestion() {
             if (randomTestState.currentIndex >= randomTestState.questions.length) {
                 // 测试结束
@@ -3379,7 +3379,7 @@ function showPage(pageId) {
                 else if (randomTestState.testType === 'final') typeName = '韵母';
                 else if (randomTestState.testType === 'whole') typeName = '整体认读';
                 else if (randomTestState.testType === 'tone') typeName = '声调';
-                
+
                 var html = '<div style="text-align: center; padding: 40px;">';
                 html += '<h2>🎉 ' + typeName + '测试完成!</h2>';
                 html += '<p style="font-size: 20px; margin: 20px 0;">得分: ' + randomTestState.score + '/' + randomTestState.questions.length + '</p>';
@@ -3390,14 +3390,14 @@ function showPage(pageId) {
                 document.getElementById('learningContent').innerHTML = html;
                 return;
             }
-            
+
             var q = randomTestState.questions[randomTestState.currentIndex];
             var typeLabel = '';
             if (randomTestState.testType === 'initial') typeLabel = '的声母是?';
             else if (randomTestState.testType === 'final') typeLabel = '的韵母是?';
             else if (randomTestState.testType === 'whole') typeLabel = '的读音是?';
             else if (randomTestState.testType === 'tone') typeLabel = '对应的汉字是?';
-            
+
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<p style="margin-bottom: 10px;">📋 问题 ' + (randomTestState.currentIndex + 1) + '/' + randomTestState.questions.length + '</p>';
             html += '<div class="progress-bar" style="margin: 10px auto; max-width: 300px;"><div class="progress-fill" style="width: ' + ((randomTestState.currentIndex + 1) / randomTestState.questions.length * 100) + '%"></div></div>';
@@ -3413,7 +3413,7 @@ function showPage(pageId) {
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         function checkRandomTestAnswer(answer) {
             var q = randomTestState.questions[randomTestState.currentIndex];
             if (answer === q.answer) {
@@ -3426,12 +3426,12 @@ function showPage(pageId) {
             randomTestState.currentIndex++;
             setTimeout(showRandomTestQuestion, 1000);
         }
-        
+
         // 声调学习 - v8.5.3新增测试功能
         function showTones() {
             setTab(4);
             updateTaskProgress('task_practice', 1);
-            
+
             var toneData = [
                 {py: 'a', tones: ['ā', 'á', 'ǎ', 'à'], files: ['a1', 'a2', 'a3', 'a4']},
                 {py: 'o', tones: ['ō', 'ó', 'ǒ', 'ò'], files: ['o1', 'o2', 'o3', 'o4']},
@@ -3440,7 +3440,7 @@ function showPage(pageId) {
                 {py: 'u', tones: ['ū', 'ú', 'ǔ', 'ù'], files: ['u1', 'u2', 'u3', 'u4']},
                 {py: 'ü', tones: ['ǖ', 'ǘ', 'ǚ', 'ǜ'], files: ['v1', 'v2', 'v3', 'v4']}
             ];
-            
+
             var html = '<div style="margin-bottom: 10px; padding: 10px; background: #E3F2FD; border-radius: 10px;">';
             html += '<h3 style="color: #1565C0; margin-bottom: 10px;">🎯 声调说明</h3>';
             html += '<div style="display: flex; flex-direction: row; gap: 10px; font-size: 16px;">';
@@ -3449,7 +3449,7 @@ function showPage(pageId) {
             html += '<div>三声(上声): 降升调 ˇ 如 mǎ</div>';
             html += '<div>四声(去声): 全降调 ˋ 如 mà</div>';
             html += '</div></div>';
-            
+
             html += '<h3 style="margin: 15px 0 10px; color: #333;">单韵母声调</h3>';
             html += '<div class="pinyin-grid">';
             toneData.forEach(function(item) {
@@ -3458,7 +3458,7 @@ function showPage(pageId) {
                 });
             });
             html += '</div>';
-            
+
             // 复韵母声调
             var complexToneData = [
                 {py: 'ai', tones: ['āi', 'ái', 'ǎi', 'ài']},
@@ -3479,7 +3479,7 @@ function showPage(pageId) {
                 });
             });
             html += '</div>';
-            
+
             // 鼻韵母声调
             var nasalToneData = [
                 {py: 'an', tones: ['ān', 'án', 'ǎn', 'àn']},
@@ -3500,7 +3500,7 @@ function showPage(pageId) {
                 });
             });
             html += '</div>';
-            
+
             // 整体认读音节声调
             var wholeToneData = [
                 {py: 'zhi', tones: ['zhī', 'zhí', 'zhǐ', 'zhì']},
@@ -3528,16 +3528,16 @@ function showPage(pageId) {
                 });
             });
             html += '</div>';
-            
+
             html += '<h3 style="margin: 20px 0 10px; color: #333;">🎮 声调练习</h3>';
             html += '<div style="text-align: center; padding: 20px; background: #F5F5F5; border-radius: 15px;">';
             html += '<button class="btn btn-secondary" onclick="startToneTest()" style="width: auto; padding: 15px 30px; margin-right: 10px;">📝 声调测试</button>';
             html += '<button class="btn" onclick="startToneGame()" style="width: auto; padding: 15px 30px;">🎮 声调辨别游戏</button>';
             html += '</div>';
-            
+
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         // 声调测试数据
         var toneTestData = [
             {pinyin: 'mā', tone: '1', char: '妈'}, {pinyin: 'má', tone: '2', char: '麻'},
@@ -3549,12 +3549,12 @@ function showPage(pageId) {
             {pinyin: 'lā', tone: '1', char: '拉'}, {pinyin: 'lá', tone: '2', char: '拉'},
             {pinyin: 'lǎ', tone: '3', char: '喇'}, {pinyin: 'là', tone: '4', char: '辣'}
         ];
-        
+
         // 开始声调测试 - v8.5.3修改为随机测试
         function startToneTest() {
             startRandomTest('tone');
         }
-        
+
         function showToneQuestion() {
             if (currentTestIndex >= 10) {
                 var html = '<div style="text-align: center; padding: 40px;">';
@@ -3565,7 +3565,7 @@ function showPage(pageId) {
                 document.getElementById('learningContent').innerHTML = html;
                 return;
             }
-            
+
             var q = toneTestData[currentTestIndex];
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<p>问题 ' + (currentTestIndex + 1) + '/10</p>';
@@ -3579,7 +3579,7 @@ function showPage(pageId) {
             html += '</div>';
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         function playToneSound(pinyin) {
             // 使用Web Speech API播放
             if ('speechSynthesis' in window) {
@@ -3589,7 +3589,7 @@ function showPage(pageId) {
                 speechSynthesis.speak(utterance);
             }
         }
-        
+
         function checkToneAnswer(selected, correct) {
             if (selected === correct) {
                 testScore++;
@@ -3600,12 +3600,12 @@ function showPage(pageId) {
             currentTestIndex++;
             setTimeout(showToneQuestion, 1000);
         }
-        
+
         // 播放带声调的拼音
         function speakTone(filename) {
             // 初始化音频上下文
             initAudioContext();
-            
+
             // 尝试播放音频，如果失败则使用Web Speech API
             if (currentAudio) {
                 currentAudio.pause();
@@ -3619,7 +3619,7 @@ function showPage(pageId) {
                 // 音频文件不存在，使用Web Speech API
                 console.log('音频文件不存在，使用语音合成: ' + filename);
                 var pinyin = filename.replace(/\d/, '');
-                
+
                 if ('speechSynthesis' in window) {
                     try {
                         var utterance = new SpeechSynthesisUtterance(pinyin);
@@ -3632,15 +3632,15 @@ function showPage(pageId) {
                 }
             });
         }
-        
+
         // 声调辨别游戏
         function startToneGame() {
             var toneFiles = ['a1','a2','a3','a4','o1','o2','o3','o4','e1','e2','e3','e4'];
             var randomFile = toneFiles[Math.floor(Math.random() * toneFiles.length)];
             var correctTone = randomFile.slice(-1);
-            
+
             speakTone(randomFile);
-            
+
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<h3 style="margin-bottom: 20px;">👂 听到了哪个声调？</h3>';
             html += '<button class="btn" onclick="playCurrentTone()" style="width: auto; margin-bottom: 20px;">🔊 重播</button>';
@@ -3652,18 +3652,18 @@ function showPage(pageId) {
             html += '</div>';
             html += '<button class="btn btn-secondary" onclick="showTones()" style="margin-top: 20px;">返回声调学习</button>';
             html += '</div>';
-            
+
             document.getElementById('learningContent').innerHTML = html;
-            
+
             window.currentToneFile = randomFile;
         }
-        
+
         function playCurrentTone() {
             if (window.currentToneFile) {
                 speakTone(window.currentToneFile);
             }
         }
-        
+
         function checkToneAnswer(selected, correct) {
             if (selected === correct) {
                 coins += 5;
@@ -3676,38 +3676,38 @@ function showPage(pageId) {
                 playCurrentTone();
             }
         }
-        
+
         // ========== v6.6 拼读训练 ==========
         function showBlend() {
             setTab(5);
             updateTaskProgress('task_practice', 1);
-            
+
             var html = '<div style="margin-bottom: 10px; padding: 10px; background: #E8F5E9; border-radius: 10px;">';
             html += '<h3 style="color: #2E7D32; margin-bottom: 10px;">🎯 拼读训练</h3>';
             html += '<p style="font-size: 16px; color: #666;">点击声母和韵母，学习拼音拼读规则</p>';
             html += '</div>';
-            
+
             html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">';
             html += '<div><h4 style="margin-bottom: 10px;">声母</h4><div class="pinyin-grid" style="grid-template-columns: repeat(4, 1fr);">';
             pinyinData.initial.forEach(function(py) {
                 html += '<div class="pinyin-card" onclick="selectBlendInitial(\'' + py + '\')" id="blend-initial-' + py + '">' + py + '</div>';
             });
             html += '</div></div>';
-            
+
             html += '<div><h4 style="margin-bottom: 10px;">韵母</h4><div class="pinyin-grid" style="grid-template-columns: repeat(4, 1fr);">';
             ['a', 'o', 'e', 'i', 'u', 'v'].forEach(function(py) {
                 html += '<div class="pinyin-card" onclick="selectBlendFinal(\'' + py + '\')" id="blend-final-' + py + '">' + py + '</div>';
             });
             html += '</div></div>';
             html += '</div>';
-            
+
             html += '<div style="text-align: center; padding: 20px; background: #FFF3E0; border-radius: 15px; margin-bottom: 20px;">';
             html += '<h3 style="margin-bottom: 10px;">拼读结果</h3>';
             html += '<div id="blendResult" style="font-size: 48px; font-weight: bold; color: #E65100; margin-bottom: 10px;">?</div>';
             html += '<button class="btn" onclick="playBlend()" style="width: auto; padding: 15px 30px; margin-right: 10px;">🔊 听发音</button>';
             html += '<button class="btn btn-secondary" onclick="resetBlend()" style="width: auto; padding: 15px 30px;">重置</button>';
             html += '</div>';
-            
+
             html += '<h3 style="margin: 20px 0 10px; color: #333;">常用拼读组合</h3>';
             html += '<div class="pinyin-grid">';
             var commonBlends = ['ba', 'bi', 'bu', 'pa', 'pi', 'pu', 'ma', 'mi', 'mu', 'fa', 'fo', 'da', 'di', 'du', 'ta', 'ti', 'tu'];
@@ -3715,12 +3715,12 @@ function showPage(pageId) {
                 html += '<div class="pinyin-card" onclick="speak(\'' + blend + '\'); showBlendResult(\'' + blend + '\')">' + blend + '</div>';
             });
             html += '</div>';
-            
+
             document.getElementById('learningContent').innerHTML = html;
             window.blendInitial = '';
             window.blendFinal = '';
         }
-        
+
         function selectBlendInitial(py) {
             window.blendInitial = py;
             document.querySelectorAll('[id^="blend-initial-"]').forEach(function(el) {
@@ -3729,7 +3729,7 @@ function showPage(pageId) {
             document.getElementById('blend-initial-' + py).style.background = '#4CAF50';
             updateBlendResult();
         }
-        
+
         function selectBlendFinal(py) {
             window.blendFinal = py;
             document.querySelectorAll('[id^="blend-final-"]').forEach(function(el) {
@@ -3738,18 +3738,18 @@ function showPage(pageId) {
             document.getElementById('blend-final-' + py).style.background = '#2196F3';
             updateBlendResult();
         }
-        
+
         function updateBlendResult() {
             if (window.blendInitial && window.blendFinal) {
                 var result = window.blendInitial + window.blendFinal;
                 showBlendResult(result);
             }
         }
-        
+
         function showBlendResult(result) {
             document.getElementById('blendResult').textContent = result;
         }
-        
+
         function playBlend() {
             if (window.blendInitial && window.blendFinal) {
                 var result = window.blendInitial + window.blendFinal;
@@ -3766,7 +3766,7 @@ function showPage(pageId) {
                 alert('请先选择声母和韵母');
             }
         }
-        
+
         function resetBlend() {
             window.blendInitial = '';
             window.blendFinal = '';
@@ -3778,7 +3778,7 @@ function showPage(pageId) {
             });
             document.getElementById('blendResult').textContent = '?';
         }
-        
+
         // ========== v6.6 词语拼音 ==========
         var wordData = [
             {word: '爸爸', pinyin: 'bàba', tone: '4 0'},
@@ -3802,16 +3802,16 @@ function showPage(pageId) {
             {word: '小鸟', pinyin: 'xiǎoniǎo', tone: '3 3'},
             {word: '小猫', pinyin: 'xiǎomāo', tone: '3 1'}
         ];
-        
+
         function showWords() {
             setTab(6);
             updateTaskProgress('task_practice', 1);
-            
+
             var html = '<div style="margin-bottom: 10px; padding: 10px; background: #F3E5F5; border-radius: 10px;">';
             html += '<h3 style="color: #7B1FA2; margin-bottom: 10px;">📚 词语拼音</h3>';
             html += '<p style="font-size: 16px; color: #666;">学习常用词语的拼音和声调</p>';
             html += '</div>';
-            
+
             html += '<div class="pinyin-grid" style="grid-template-columns: repeat(2, 1fr);">';
             wordData.forEach(function(item) {
                 var pinyinParts = item.pinyin.split(/(\s+)/).filter(function(p) { return p.trim(); });
@@ -3823,15 +3823,15 @@ function showPage(pageId) {
                 html += '</div>';
             });
             html += '</div>';
-            
+
             html += '<h3 style="margin: 20px 0 10px; color: #333;">词语拼读练习</h3>';
             html += '<div style="text-align: center; padding: 20px; background: #F5F5F5; border-radius: 15px;">';
             html += '<button class="btn" onclick="startWordGame()" style="width: auto; padding: 15px 30px;">开始词语练习</button>';
             html += '</div>';
-            
+
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         function speakWord(pinyin, word) {
             // 使用Web Speech API播放整词
             if ('speechSynthesis' in window) {
@@ -3841,17 +3841,17 @@ function showPage(pageId) {
                 speechSynthesis.speak(utterance);
             }
         }
-        
+
         function startWordGame() {
             var randomWord = wordData[Math.floor(Math.random() * wordData.length)];
             window.currentWord = randomWord;
-            
+
             var html = '<div style="text-align: center; padding: 20px;">';
             html += '<h3 style="font-size: 44px; margin-bottom: 20px;">' + randomWord.word + '</h3>';
             html += '<button class="btn" onclick="speakWord(\'' + randomWord.pinyin + '\', \'' + randomWord.word + '\')" style="width: auto; margin-bottom: 20px;">🔊 听拼音</button>';
             html += '<p style="margin-bottom: 10px;">请选择正确的拼音：</p>';
             html += '<div style="display: flex; flex-direction: row; gap: 15px; max-width: 400px; margin: 0 auto;">';
-            
+
             // 生成选项（包含正确答案和3个干扰项）
             var options = [randomWord.pinyin];
             while (options.length < 4) {
@@ -3859,17 +3859,17 @@ function showPage(pageId) {
                 if (!options.includes(randomOption)) options.push(randomOption);
             }
             options.sort(function() { return Math.random() - 0.5; });
-            
+
             options.forEach(function(opt) {
                 html += '<button class="option-btn" onclick="checkWordAnswer(\'' + opt + '\', \'' + randomWord.pinyin + '\')">' + opt + '</button>';
             });
             html += '</div>';
             html += '<button class="btn btn-secondary" onclick="showWords()" style="margin-top: 20px;">返回词语学习</button>';
             html += '</div>';
-            
+
             document.getElementById('learningContent').innerHTML = html;
         }
-        
+
         function checkWordAnswer(selected, correct) {
             if (selected === correct) {
                 coins += 10;
@@ -3882,12 +3882,12 @@ function showPage(pageId) {
                 alert('❌ 正确答案应该是：' + correct);
             }
         }
-        
+
         // ========== v6.6 错误模式分析 ==========
         function showErrorAnalysis() {
             var html = '<div style="padding: 20px;">';
             html += '<h2 style="text-align: center; margin-bottom: 20px;">📊 错误模式分析</h2>';
-            
+
             if (errorLog.length === 0) {
                 html += '<div style="text-align: center; padding: 40px; background: #F5F5F5; border-radius: 15px;">';
                 html += '<p style="font-size: 16px; color: #666;">🎉 太棒了！你还没有犯过错误</p>';
@@ -3899,12 +3899,12 @@ function showPage(pageId) {
                     var type = err.errorType || 'other';
                     errorStats[type] = (errorStats[type] || 0) + 1;
                 });
-                
+
                 html += '<div style="background: #FFEBEE; border-radius: 10px; padding: 15px; margin-bottom: 20px;">';
                 html += '<h3 style="color: #C62828; margin-bottom: 10px;">错误统计</h3>';
                 html += '<p>总错误次数：' + errorLog.length + '</p>';
                 html += '</div>';
-                
+
                 html += '<h3 style="margin-bottom: 10px;">最近错误记录</h3>';
                 html += '<div style="max-height: 300px; overflow-y: auto;">';
                 errorLog.slice(-10).reverse().forEach(function(err) {
@@ -3916,7 +3916,7 @@ function showPage(pageId) {
                     html += '</div>';
                 });
                 html += '</div>';
-                
+
                 html += '<h3 style="margin: 20px 0 15px;">针对性建议</h3>';
                 html += '<div style="background: #E3F2FD; border-radius: 10px; padding: 15px;">';
                 if (errorStats['tone'] > 2) {
@@ -3930,9 +3930,9 @@ function showPage(pageId) {
                 }
                 html += '</div>';
             }
-            
+
             html += '</div>';
-            
+
             // 创建一个临时页面显示错误分析
             var div = document.createElement('div');
             div.className = 'page';
@@ -3941,26 +3941,26 @@ function showPage(pageId) {
             document.querySelector('.game-container').appendChild(div);
             showPage(div.id);
         }
-        
+
         // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.5.7';
+        var GAME_VERSION = 'v8.5.8';
         var GAME_BUILD_DATE = '2026-03-09';
-        
+
         // 显示版本号
         function showVersion() {
             console.log('拼音大冒险 ' + GAME_VERSION + ' (' + GAME_BUILD_DATE + ')');
         }
-        
+
         // 页面加载时显示版本
         document.addEventListener('DOMContentLoaded', showVersion);
-        
+
         // ========== v6.7 用户管理功能 ==========
         function showUserManager() {
             showPage('userManager');
             renderUserList();
             updateCurrentUserDisplay();
         }
-        
+
         function updateCurrentUserDisplay() {
             if (currentUserId && users[currentUserId]) {
                 var user = users[currentUserId];
@@ -3968,7 +3968,7 @@ function showPage(pageId) {
                 document.getElementById('currentUserName').textContent = user.name;
             }
         }
-        
+
         function renderUserList() {
             var html = '';
             Object.keys(users).forEach(function(userId) {
@@ -3992,29 +3992,29 @@ function showPage(pageId) {
             });
             document.getElementById('userList').innerHTML = html;
         }
-        
+
         // 显示编辑用户弹窗
         var selectedAvatar = '🐼';
         function showEditUserModal() {
             if (!currentUserId) return;
             var user = users[currentUserId];
             selectedAvatar = user.avatar;
-            
+
             // 渲染头像选择器
             var avatarHtml = '';
             avatarOptions.forEach(function(avatar) {
                 avatarHtml += '<div onclick="selectAvatar(\'' + avatar + '\')" style="cursor: pointer; font-size: 40px; padding: 10px; border-radius: 10px; border: 3px solid ' + (avatar === selectedAvatar ? '#667eea' : 'transparent') + '; background: ' + (avatar === selectedAvatar ? '#E3F2FD' : '#f8f9fa') + '; text-align: center;" id="avatar-option-' + avatar + '">' + avatar + '</div>';
             });
             document.getElementById('avatarSelector').innerHTML = avatarHtml;
-            
+
             document.getElementById('editUserNameInput').value = user.name;
             document.getElementById('editUserModal').style.display = 'flex';
         }
-        
+
         function hideEditUserModal() {
             document.getElementById('editUserModal').style.display = 'none';
         }
-        
+
         function selectAvatar(avatar) {
             selectedAvatar = avatar;
             document.querySelectorAll('#avatarSelector > div').forEach(function(el) {
@@ -4027,7 +4027,7 @@ function showPage(pageId) {
                 selectedEl.style.background = '#E3F2FD';
             }
         }
-        
+
         function saveUserEdit() {
             var newName = document.getElementById('editUserNameInput').value.trim();
             if (!newName) {
@@ -4052,7 +4052,7 @@ function showPage(pageId) {
                 alert('资料已更新！');
             }
         }
-        
+
         // 显示添加用户弹窗
         function showAddUserModal() {
             var name = prompt('请输入新用户名称：');
@@ -4067,13 +4067,13 @@ function showPage(pageId) {
                 }
             }
         }
-        
+
         function setTab(n) {
             ['tab1','tab2','tab3','tab4','tab5','tab6'].forEach(function(id, i) {
                 document.getElementById(id).className = i === n-1 ? 'learning-tab active' : 'learning-tab';
             });
         }
-        
+
         // 探险
         function explore(location) {
             // v8.1.0: 检查宠物血量
@@ -4085,18 +4085,18 @@ function showPage(pageId) {
                 alert('⚠️ 你的宠物血量很低！\n\n建议购买药水恢复后再探险，否则可能被怪物击败！');
                 // 继续执行，但警告用户
             }
-            
+
             var costs = {forest: 10, desert: 15, ocean: 20, volcano: 30};
             var encounterRates = {forest: 0.4, desert: 0.6, ocean: 0.8, volcano: 1};
             if (energy < costs[location]) { alert('体力不足！'); return; }
             energy -= costs[location];
             updateTaskProgress('task_explore', 1);
-            
+
             // 根据宠物等级调整奖励（等级越高，奖励越高）
             var currentPet = pets.list[pets.current];
             var petLevel = currentPet ? currentPet.level : 1;
             var levelBonus = Math.floor((petLevel - 1) * 0.5); // 每级增加少量奖励
-            
+
             if (Math.random() < encounterRates[location]) {
                 var mons = monsters[location];
                 currentEnemy = JSON.parse(JSON.stringify(mons[Math.floor(Math.random() * mons.length)]));
@@ -4111,7 +4111,7 @@ function showPage(pageId) {
                 alert('安全探索！获得 ' + reward + ' 金币');
             }
         }
-        
+
         // 战斗
         function startBattle() {
             inBattle = true;
@@ -4122,24 +4122,24 @@ function showPage(pageId) {
             updateBattleUI();
             loadBattleQuestion();
         }
-        
+
         function loadBattleQuestion() {
             // 随机选择一个汉字
             currentBattleChar = battleCharacters[Math.floor(Math.random() * battleCharacters.length)];
-            
+
             // 随机选择模式：0=声母, 1=韵母, 2=整体拼音, 3=声调
             var modeIdx = Math.floor(Math.random() * 4);
             var modes = ['initial', 'final', 'whole', 'tone'];
             var modeNames = ['声母', '韵母', '整体拼音', '声调'];
             var modeColors = ['#667eea', '#f5576c', '#00f2fe', '#38f9d7'];
-            
+
             currentBattleMode = modes[modeIdx];
             var modeName = modeNames[modeIdx];
             var modeColor = modeColors[modeIdx];
-            
+
             var char = currentBattleChar;
             var answer, options;
-            
+
             switch(currentBattleMode) {
                 case 'initial':
                     answer = char.initial;
@@ -4162,16 +4162,16 @@ function showPage(pageId) {
                     currentBattleQuestion = { q: char.char, a: answer, type: 'tone', modeName: modeName };
                     break;
             }
-            
+
             // 显示：汉字大字 + 提示条（选出XX）
             var displayHtml = '<div style="font-size: 72px; margin: 5px 0; color: #667eea;">' + char.char + '</div>';
             displayHtml += '<div style="font-size: 16px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
             displayHtml += '请选出 "' + char.char + '" 的' + modeName + '';
             displayHtml += '</div>';
             displayHtml += '<button class="voice-btn" onclick="speakBattleChar()" style="margin-left: 10px;">🔊</button>';
-            
+
             document.getElementById('battleQDisplay').innerHTML = displayHtml;
-            
+
             // 显示4个选项
             var html = '<div style="display: flex; flex-direction: row; gap: 12px; max-width: 300px; margin: 15px auto;">';
             options.forEach(function(opt) {
@@ -4180,14 +4180,14 @@ function showPage(pageId) {
             });
             html += '</div>';
             document.getElementById('battleOptions').innerHTML = html;
-            
+
             // 更新战斗日志
             document.getElementById('battleLog').textContent = '遭遇 ' + currentEnemy.name + '！';
-            
+
             // 播放汉字发音
             setTimeout(function() { speak(char.char); }, 300);
         }
-        
+
         // 生成战斗选项（确保包含正确答案）
         function generateBattleOptions(answer, pool) {
             var opts = [answer];
@@ -4205,7 +4205,7 @@ function showPage(pageId) {
             }
             return opts.sort(function() { return Math.random() - 0.5; });
         }
-        
+
         function battleAnswer(btn, selected, correct) {
             var isCorrect = selected === correct;
             if (isCorrect) {
@@ -4219,12 +4219,12 @@ function showPage(pageId) {
                     showDamage(enemy, Math.floor(Math.random() * 10 + 5));
                     setTimeout(function() { enemy.classList.remove('shake'); }, 500);
                 }, 300);
-                
+
                 var damage = petAttack + Math.floor(Math.random() * 5);
                 currentEnemy.hp -= damage;
                 document.getElementById('battleLog').innerHTML = '✅ 正确！造成 <span style="color:#4CAF50">' + damage + '</span> 伤害！';
                 speak('攻击！');
-                
+
                 if (currentEnemy.hp <= 0) {
                     updateBattleUI();
                     setTimeout(function() {
@@ -4232,25 +4232,25 @@ function showPage(pageId) {
                         // 阶梯式战斗奖励：根据敌人强度给予不同奖励
                         var enemyMaxHp = currentEnemy.maxHp || 50;
                         var enemyAttack = currentEnemy.attack || 10;
-                        
+
                         // 根据敌人强度计算基础奖励
                         var baseReward = 5;
                         if (enemyMaxHp >= 150) baseReward = 25; // BOSS级
                         else if (enemyMaxHp >= 100) baseReward = 18; // 高级怪
                         else if (enemyMaxHp >= 70) baseReward = 12; // 中级怪
                         else if (enemyMaxHp >= 45) baseReward = 8; // 低级怪
-                        
+
                         // 根据宠物等级给予额外奖励
                         var currentPet = pets.list[pets.current];
                         var petLevel = currentPet ? currentPet.level : 1;
                         var petBonus = Math.floor(petLevel * 0.5);
-                        
+
                         var randomBonus = Math.floor(Math.random() * 6); // 0-5随机
                         var reward = baseReward + petBonus + randomBonus;
                         showCoinReward(reward);
                         coins += reward;
                         battleWins++;
-                        
+
                         // 战斗胜利宠物获得经验（也是阶梯式）
                         var baseExp = 8;
                         if (enemyMaxHp >= 150) baseExp = 25;
@@ -4258,7 +4258,7 @@ function showPage(pageId) {
                         else if (enemyMaxHp >= 70) baseExp = 12;
                         var battleExp = baseExp + Math.floor(Math.random() * 8);
                         addPetExp(battleExp);
-                        
+
                         checkAchievements();
                         updateUI();
                         setTimeout(function() {
@@ -4274,12 +4274,12 @@ function showPage(pageId) {
                 document.querySelectorAll('#battleOptions .option-btn').forEach(function(b) {
                     if (b.textContent === correct) b.classList.add('correct');
                 });
-                
+
                 // 记录错题
                 if (currentBattleChar && currentBattleQuestion) {
                     recordError(currentBattleChar.char + '(' + currentBattleQuestion.modeName + ')', selected, correct, 'battle');
                 }
-                
+
                 var player = document.getElementById('playerChar');
                 var enemy = document.getElementById('enemyChar');
                 enemy.classList.add('attack-left');
@@ -4289,12 +4289,12 @@ function showPage(pageId) {
                     showDamage(player, Math.floor(Math.random() * 10 + 5));
                     setTimeout(function() { player.classList.remove('shake'); }, 500);
                 }, 300);
-                
+
                 var damage = Math.max(1, currentEnemy.attack - petDefense);
                 hp -= damage;
                 document.getElementById('battleLog').innerHTML = '❌ 错误！受到 <span style="color:#f44336">' + damage + '</span> 伤害！';
                 speak('受到伤害');
-                
+
                 if (hp <= 0) {
                     hp = 0; // 血量为0，不再自动恢复
                     updateUI(); updateBattleUI();
@@ -4309,7 +4309,7 @@ function showPage(pageId) {
             updateUI(); updateBattleUI();
             setTimeout(function() { loadBattleQuestion(); }, 1500);
         }
-        
+
         function showDamage(element, damage) {
             var rect = element.getBoundingClientRect();
             var num = document.createElement('div');
@@ -4320,7 +4320,7 @@ function showPage(pageId) {
             document.body.appendChild(num);
             setTimeout(function() { num.remove(); }, 1000);
         }
-        
+
         function showCoinReward(amount) {
             var coin = document.createElement('div');
             coin.className = 'coin-reward';
@@ -4328,7 +4328,7 @@ function showPage(pageId) {
             document.body.appendChild(coin);
             setTimeout(function() { coin.remove(); }, 1500);
         }
-        
+
         function playVictoryAnimation() {
             var player = document.getElementById('playerChar');
             if (player) {
@@ -4336,14 +4336,14 @@ function showPage(pageId) {
                 setTimeout(function() { player.classList.remove('victory'); }, 1000);
             }
         }
-        
+
         function updateBattleUI() {
             document.getElementById('playerHpBar').style.width = (hp / maxHp * 100) + '%';
             document.getElementById('playerHpText').textContent = hp + '/' + maxHp;
             document.getElementById('enemyHpBar').style.width = (currentEnemy.hp / currentEnemy.maxHp * 100) + '%';
             document.getElementById('enemyHpText').textContent = currentEnemy.hp + '/' + currentEnemy.maxHp;
         }
-        
+
         // 商店
         var shopItems = {
             pets: [{id:'tiger', name:'勇猛小老虎', emoji:'🐯', price:300, type:'pet', desc:'高攻击型 | 攻18 防3 血85'}, {id:'rabbit', name:'迅捷小兔', emoji:'🐰', price:200, type:'pet', desc:'敏捷型 | 攻8 防6 血80'}, {id:'lion', name:'威武小狮子', emoji:'🦁', price:500, type:'pet', desc:'攻守平衡 | 攻15 防8 血95'}, {id:'unicorn', name:'魔法独角兽', emoji:'🦄', price:600, type:'pet', desc:'高防御型 | 攻12 防15 血110'}, {id:'dragon', name:'火焰小龙', emoji:'🐲', price:800, type:'pet', desc:'强力攻击 | 攻25 防5 血90'}],
@@ -4369,13 +4369,13 @@ function showPage(pageId) {
             ],
             items: [{id:'i1',name:'小药水',icon:'🧪',price:20,hp:30},{id:'i2',name:'大药水',icon:'🧫',price:50,hp:80},{id:'i3',name:'能量饮料',icon:'🥤',price:30,energy:20}]
         };
-        
+
         function showShopTab(type) { renderShop(type); }
         function renderShop(type) {
             document.querySelectorAll('.shop-tab').forEach(function(t) { t.classList.remove('active'); });
             event.target.classList.add('active');
             var html = '';
-            
+
             if (type === 'pets') {
                 // 渲染宠物商店
                 shopItems.pets.forEach(function(item) {
@@ -4386,8 +4386,8 @@ function showPage(pageId) {
                             '<div style="font-weight: bold; font-size: 16px;">' + item.name + '</div>' +
                             '<div style="font-size: 12px; color: #666;">' + item.desc + '</div>' +
                         '</div>' +
-                        '<button class="shop-item-btn" onclick="buyPet(\'' + item.id + '\',' + item.price + ')" ' + (owned ? 'disabled style="background:#ccc;"' : '') + '>' + 
-                            (owned ? '已拥有' : item.price + '💰') + 
+                        '<button class="shop-item-btn" onclick="buyPet(\'' + item.id + '\',' + item.price + ')" ' + (owned ? 'disabled style="background:#ccc;"' : '') + '>' +
+                            (owned ? '已拥有' : item.price + '💰') +
                         '</button>' +
                     '</div>';
                 });
@@ -4402,7 +4402,7 @@ function showPage(pageId) {
             }
             document.getElementById('shopContent').innerHTML = html;
         }
-        
+
         // 购买宠物
         function buyPet(petId, price) {
             if (pets.owned.includes(petId)) {
@@ -4420,7 +4420,7 @@ function showPage(pageId) {
             renderShop('pets');
             alert('🎉 恭喜获得新宠物！请到"我的宠物"页面切换使用。');
         }
-        
+
         // 切换宠物
         function switchPet(petId) {
             if (!pets.owned.includes(petId)) {
@@ -4438,12 +4438,12 @@ function showPage(pageId) {
             updateUI();
             alert('已切换到 ' + pet.name + '！');
         }
-        
+
         // 渲染宠物页面
         function renderPetPage() {
             var currentPet = pets.list[pets.current];
             var html = '';
-            
+
             // 当前宠物信息
             html += '<button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>';
             html += '<h2 style="text-align: center; margin: 10px 0;">🐼 我的宠物</h2>';
@@ -4458,7 +4458,7 @@ function showPage(pageId) {
             html += '</div>';
             html += '<div style="font-size: 12px; margin-top: 5px;">经验: ' + currentPet.exp + '/' + currentPet.expToLevel + ' (' + expPercent + '%)</div>';
             html += '</div>';
-            
+
             // 宠物属性
             html += '<div class="pet-stats">';
             html += '<div class="pet-stat"><div>⚔️ 攻击</div><div class="pet-stat-value">' + currentPet.attack + '</div></div>';
@@ -4466,7 +4466,7 @@ function showPage(pageId) {
             html += '<div class="pet-stat"><div>❤️ 生命</div><div class="pet-stat-value">' + currentPet.maxHp + '</div></div>';
             html += '<div class="pet-stat"><div>⚡ 体力</div><div class="pet-stat-value">' + energy + '</div></div>';
             html += '</div>';
-            
+
             // 拥有的宠物列表
             html += '<h3 style="margin: 25px 0 15px;">我的宠物收藏 (' + pets.owned.length + ')</h3>';
             html += '<div style="display: flex; flex-wrap: wrap; gap: 12px;">';
@@ -4484,15 +4484,15 @@ function showPage(pageId) {
                 html += '</div>';
             });
             html += '</div>';
-            
+
             // 提示
             html += '<div style="margin-top: 20px; padding: 15px; background: #FFF3E0; border-radius: 10px; font-size: 13px; color: #E65100;">';
             html += '💡 宠物通过答题和战斗获得经验升级！升级后属性会提升。点击宠物可以切换出战。';
             html += '</div>';
-            
+
             document.getElementById('pet').innerHTML = html;
         }
-        
+
         // ========== v8.2.0 错题本功能 ==========
         function recordError(question, userAnswer, correctAnswer, errorType) {
             if (!currentUserId) return;
@@ -4510,15 +4510,15 @@ function showPage(pageId) {
             if (errorBook.errors.length > 100) errorBook.errors.pop();
             saveGameData();
         }
-        
+
         function renderErrorBook() {
             var errors = errorBook.errors.filter(function(e) { return !e.fixed; });
             document.getElementById('errorCount').textContent = errorBook.errors.length;
             document.getElementById('errorFixed').textContent = errorBook.fixed;
-            
+
             var listEl = document.getElementById('errorList');
             var reviewBtn = document.getElementById('reviewBtn');
-            
+
             if (errors.length === 0) {
                 listEl.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">' +
                     '<div style="font-size: 48px; margin-bottom: 10px;">🎉</div>' +
@@ -4527,9 +4527,9 @@ function showPage(pageId) {
                 if (reviewBtn) reviewBtn.style.display = 'none';
                 return;
             }
-            
+
             if (reviewBtn) reviewBtn.style.display = 'block';
-            
+
             var html = '';
             errors.slice(0, 10).forEach(function(err, index) {
                 var date = new Date(err.time);
@@ -4548,14 +4548,14 @@ function showPage(pageId) {
                 html += '</div>';
                 html += '</div>';
             });
-            
+
             if (errors.length > 10) {
                 html += '<div style="text-align: center; color: #666; padding: 10px;">还有 ' + (errors.length - 10) + ' 道错题...</div>';
             }
-            
+
             listEl.innerHTML = html;
         }
-        
+
         function fixError(errorId) {
             var err = errorBook.errors.find(function(e) { return e.id === errorId; });
             if (err) {
@@ -4566,7 +4566,7 @@ function showPage(pageId) {
                 showToast('已标记为掌握', 'success');
             }
         }
-        
+
         function clearAllErrors() {
             if (errorBook.errors.length === 0) {
                 alert('错题本已经是空的！');
@@ -4580,23 +4580,23 @@ function showPage(pageId) {
                 showToast('错题本已清空', 'success');
             }
         }
-        
+
         function startErrorReview() {
             var unfixedErrors = errorBook.errors.filter(function(e) { return !e.fixed; });
             if (unfixedErrors.length === 0) {
                 alert('没有需要复习的错题！');
                 return;
             }
-            
+
             currentReviewErrors = unfixedErrors.slice(0, 10);
             currentReviewIndex = 0;
             reviewScore = 0;
-            
+
             document.getElementById('reviewTotal').textContent = currentReviewErrors.length;
             showPage('errorReview');
             showReviewQuestion();
         }
-        
+
         function showReviewQuestion() {
             if (currentReviewIndex >= currentReviewErrors.length) {
                 // 复习完成
@@ -4611,11 +4611,11 @@ function showPage(pageId) {
                 document.getElementById('reviewCurrent').textContent = currentReviewErrors.length;
                 return;
             }
-            
+
             var err = currentReviewErrors[currentReviewIndex];
             document.getElementById('reviewCurrent').textContent = currentReviewIndex + 1;
             document.getElementById('reviewProgress').style.width = ((currentReviewIndex / currentReviewErrors.length) * 100) + '%';
-            
+
             // 生成选项
             var options = [err.correctAnswer];
             var allOptions = [];
@@ -4624,13 +4624,13 @@ function showPage(pageId) {
             } else {
                 allOptions = pinyinData.initialNames.concat(pinyinData.finalNames).concat(pinyinData.wholeNames);
             }
-            
+
             while (options.length < 4) {
                 var r = allOptions[Math.floor(Math.random() * allOptions.length)];
                 if (options.indexOf(r) === -1) options.push(r);
             }
             options.sort(function() { return Math.random() - 0.5; });
-            
+
             var html = '<h3 style="font-size: 44px; margin-bottom: 20px;">' + err.question + '</h3>';
             if (err.errorType === 'tone') {
                 html += '<p style="margin-bottom: 10px; color: #666;">这是几声?</p>';
@@ -4640,10 +4640,10 @@ function showPage(pageId) {
                 html += '<button class="btn" onclick="checkReviewAnswer(\'' + opt + '\', \'' + err.correctAnswer + '\', \'' + err.id + '\')" style="font-size: 20px; padding: 20px;">' + opt + '</button>';
             });
             html += '</div>';
-            
+
             document.getElementById('reviewQuestion').innerHTML = html;
         }
-        
+
         function checkReviewAnswer(selected, correct, errorId) {
             if (selected === correct) {
                 reviewScore++;
@@ -4661,15 +4661,15 @@ function showPage(pageId) {
             currentReviewIndex++;
             setTimeout(showReviewQuestion, 1000);
         }
-        
+
         // ========== v8.2.0 背包功能 ==========
         function showInventoryTab(tab) {
             document.querySelectorAll('#inventory .shop-tab').forEach(function(t) { t.classList.remove('active'); });
             event.target.classList.add('active');
-            
+
             var contentEl = document.getElementById('inventoryContent');
             var html = '';
-            
+
             if (tab === 'treasures') {
                 if (inventory.treasures.length === 0) {
                     html = '<div style="text-align: center; padding: 40px; color: #666;">' +
@@ -4683,7 +4683,7 @@ function showPage(pageId) {
                     inventory.treasures.forEach(function(t) {
                         treasureCounts[t.id] = (treasureCounts[t.id] || 0) + 1;
                     });
-                    
+
                     Object.keys(treasureCounts).forEach(function(id) {
                         var treasure = treasuresData.find(function(t) { return t.id === id; });
                         if (treasure) {
@@ -4701,19 +4701,19 @@ function showPage(pageId) {
                 // 装备升级功能
                 html = renderInventoryEquipments();
             }
-            
+
             contentEl.innerHTML = html;
         }
-        
+
         // 渲染背包中的装备（已购买的装备）
         function renderInventoryEquipments() {
             var html = '';
-            
+
             // 获取已购买的武器
             var ownedWeapons = shopItems.weapons.filter(function(w) { return ownedItems.includes(w.id); });
             // 获取已购买的防具
             var ownedArmors = shopItems.armor.filter(function(a) { return ownedItems.includes(a.id); });
-            
+
             if (ownedWeapons.length === 0 && ownedArmors.length === 0) {
                 return '<div style="text-align: center; padding: 40px; color: #666;">' +
                     '<div style="font-size: 48px; margin-bottom: 10px;">⚔️</div>' +
@@ -4721,7 +4721,7 @@ function showPage(pageId) {
                     '<div style="font-size: 12px; margin-top: 10px;">去商店购买装备吧！</div>' +
                 '</div>';
             }
-            
+
             // 显示金币和宝石数量
             html += '<div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; padding: 15px; margin-bottom: 15px; color: white; display: flex; justify-content: space-around;">';
             html += '<div style="text-align: center;"><div style="font-size: 12px; opacity: 0.8;">金币</div><div style="font-size: 20px; font-weight: bold;">💰 ' + coins + '</div></div>';
@@ -4730,25 +4730,25 @@ function showPage(pageId) {
             html += '<div style="text-align: center;"><div style="font-size: 12px; opacity: 0.8;">红宝石</div><div style="font-size: 20px; font-weight: bold;">🔴 ' + rubyCount + '</div></div>';
             html += '<div style="text-align: center;"><div style="font-size: 12px; opacity: 0.8;">蓝宝石</div><div style="font-size: 20px; font-weight: bold;">🔵 ' + sapphireCount + '</div></div>';
             html += '</div>';
-            
+
             // 武器部分
             if (ownedWeapons.length > 0) {
                 html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 15px; margin-bottom: 10px;">';
                 html += '<div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">⚔️ 武器 (' + ownedWeapons.length + '件)</div>';
-                
+
                 ownedWeapons.forEach(function(item) {
                     var isEquipped = equipped.weapon === item.id;
                     var itemLevel = getItemLevel(item.id, 'weapon');
                     var upgradeCost = calculateUpgradeCost(itemLevel);
                     var canUpgrade = coins >= upgradeCost.gold && rubyCount >= upgradeCost.ruby;
-                    
+
                     html += '<div style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
                     html += '<div style="font-size: 36px; margin-right: 12px;">' + item.icon + '</div>';
                     html += '<div style="flex: 1;">';
                     html += '<div style="font-weight: bold; font-size: 14px;">' + item.name + ' Lv.' + itemLevel + (isEquipped ? ' ✓ 已装备' : '') + '</div>';
                     html += '<div style="font-size: 12px; color: #666;">攻击 +' + (item.attack + (itemLevel - 1) * 3) + '</div>';
                     html += '</div>';
-                    
+
                     // 升级按钮
                     html += '<div style="text-align: right;">';
                     html += '<div style="font-size: 10px; color: #999; margin-bottom: 3px;">升级需:</div>';
@@ -4759,25 +4759,25 @@ function showPage(pageId) {
                 });
                 html += '</div>';
             }
-            
+
             // 防具部分
             if (ownedArmors.length > 0) {
                 html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 15px; margin-bottom: 10px;">';
                 html += '<div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">🛡️ 防具 (' + ownedArmors.length + '件)</div>';
-                
+
                 ownedArmors.forEach(function(item) {
                     var isEquipped = equipped.armor === item.id;
                     var itemLevel = getItemLevel(item.id, 'armor');
                     var upgradeCost = calculateUpgradeCost(itemLevel);
                     var canUpgrade = coins >= upgradeCost.gold && sapphireCount >= upgradeCost.sapphire;
-                    
+
                     html += '<div style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
                     html += '<div style="font-size: 36px; margin-right: 12px;">' + item.icon + '</div>';
                     html += '<div style="flex: 1;">';
                     html += '<div style="font-weight: bold; font-size: 14px;">' + item.name + ' Lv.' + itemLevel + (isEquipped ? ' ✓ 已装备' : '') + '</div>';
                     html += '<div style="font-size: 12px; color: #666;">防御 +' + (item.defense + (itemLevel - 1) * 2) + '</div>';
                     html += '</div>';
-                    
+
                     // 升级按钮
                     html += '<div style="text-align: right;">';
                     html += '<div style="font-size: 10px; color: #999; margin-bottom: 3px;">升级需:</div>';
@@ -4788,11 +4788,11 @@ function showPage(pageId) {
                 });
                 html += '</div>';
             }
-            
+
             // 装备按钮区域
             html += '<div style="background: #FFF3E0; border-radius: 10px; padding: 15px; margin-top: 15px;">';
             html += '<div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #E65100;">🔄 装备管理</div>';
-            
+
             if (ownedWeapons.length > 0) {
                 html += '<div style="margin-bottom: 10px;">';
                 html += '<div style="font-size: 12px; color: #666; margin-bottom: 5px;">选择武器:</div>';
@@ -4804,7 +4804,7 @@ function showPage(pageId) {
                 html += '</div>';
                 html += '</div>';
             }
-            
+
             if (ownedArmors.length > 0) {
                 html += '<div>';
                 html += '<div style="font-size: 12px; color: #666; margin-bottom: 5px;">选择防具:</div>';
@@ -4816,12 +4816,12 @@ function showPage(pageId) {
                 html += '</div>';
                 html += '</div>';
             }
-            
+
             html += '</div>';
-            
+
             return html;
         }
-        
+
         // 获取已购买装备的等级
         function getItemLevel(itemId, type) {
             // 从equipment对象中获取等级，如果没有则默认为1
@@ -4831,7 +4831,7 @@ function showPage(pageId) {
             // 如果装备没有记录，初始化为1级
             return 1;
         }
-        
+
         // 计算升级成本（金币+宝石）
         function calculateUpgradeCost(currentLevel) {
             return {
@@ -4840,7 +4840,7 @@ function showPage(pageId) {
                 sapphire: Math.floor(currentLevel / 2) + 1   // 蓝宝石：等级/2 + 1
             };
         }
-        
+
         // 升级已购买的装备
         function upgradeOwnedItem(itemId, type) {
             var item;
@@ -4849,19 +4849,19 @@ function showPage(pageId) {
             } else if (type === 'armor') {
                 item = shopItems.armor.find(function(a) { return a.id === itemId; });
             }
-            
+
             if (!item) {
                 alert('装备不存在！');
                 return;
             }
-            
+
             var currentLevel = getItemLevel(itemId, type);
             var cost = calculateUpgradeCost(currentLevel);
-            
+
             // 检查材料
             var rubyCount = countMaterial('ruby');
             var sapphireCount = countMaterial('sapphire');
-            
+
             if (type === 'weapon') {
                 if (rubyCount < cost.ruby) {
                     alert('红宝石不足！需要 ' + cost.ruby + ' 个');
@@ -4873,17 +4873,17 @@ function showPage(pageId) {
                     return;
                 }
             }
-            
+
             if (coins < cost.gold) {
                 alert('金币不足！需要 ' + cost.gold + ' 金币');
                 return;
             }
-            
+
             // 消耗材料
             var removed = 0;
             var materialType = type === 'weapon' ? 'ruby' : 'sapphire';
             var requiredCount = type === 'weapon' ? cost.ruby : cost.sapphire;
-            
+
             inventory.treasures = inventory.treasures.filter(function(t) {
                 if (t.id === materialType && removed < requiredCount) {
                     removed++;
@@ -4891,37 +4891,37 @@ function showPage(pageId) {
                 }
                 return true;
             });
-            
+
             coins -= cost.gold;
-            
+
             // 更新装备等级
             if (!equipment[type] || equipment[type].id !== itemId) {
                 equipment[type] = JSON.parse(JSON.stringify(item));
             }
             equipment[type].level = currentLevel + 1;
-            
+
             // 更新属性
             if (type === 'weapon') {
                 equipment[type].attack = item.attack + (equipment[type].level - 1) * 3;
             } else if (type === 'armor') {
                 equipment[type].defense = item.defense + (equipment[type].level - 1) * 2;
             }
-            
+
             // 如果当前装备着，更新宠物属性
             if (equipped[type] === itemId) {
                 recalcPetStats();
             }
-            
+
             saveGameData();
             updateUI();
             showInventoryTab('equipments');
             alert('🎉 ' + item.name + ' 升级到 Lv.' + equipment[type].level + '！');
         }
-        
+
         // 装备已购买的物品
         function equipOwnedItem(itemId, type) {
             equipped[type] = itemId;
-            
+
             // 更新equipment对象
             var item;
             if (type === 'weapon') {
@@ -4929,13 +4929,13 @@ function showPage(pageId) {
             } else if (type === 'armor') {
                 item = shopItems.armor.find(function(a) { return a.id === itemId; });
             }
-            
+
             if (item) {
                 // 保留当前等级
                 var currentLevel = getItemLevel(itemId, type);
                 equipment[type] = JSON.parse(JSON.stringify(item));
                 equipment[type].level = currentLevel;
-                
+
                 // 计算升级后的属性
                 if (type === 'weapon') {
                     equipment[type].attack = item.attack + (currentLevel - 1) * 3;
@@ -4943,19 +4943,19 @@ function showPage(pageId) {
                     equipment[type].defense = item.defense + (currentLevel - 1) * 2;
                 }
             }
-            
+
             recalcPetStats();
             saveGameData();
             showInventoryTab('equipments');
             showToast('✓ 已装备 ' + (item ? item.name : itemId), 'success');
         }
-        
+
         // 掉落宝物
         function dropTreasure() {
             var roll = Math.random();
             var cumulative = 0;
             var dropped = null;
-            
+
             for (var i = 0; i < treasuresData.length; i++) {
                 cumulative += treasuresData[i].dropRate;
                 if (roll <= cumulative) {
@@ -4963,7 +4963,7 @@ function showPage(pageId) {
                     break;
                 }
             }
-            
+
             if (dropped) {
                 inventory.treasures.push({ id: dropped.id, obtainedAt: new Date().toISOString() });
                 saveGameData();
@@ -4971,15 +4971,15 @@ function showPage(pageId) {
             }
             return null;
         }
-        
+
         // ========== v8.2.0 装备升级 ==========
         function renderEquipment() {
             var html = '';
-            
+
             // 武器部分 - 显示已解锁的武器列表
             html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 10px;">';
             html += '<div style="font-weight: bold; margin-bottom: 10px;">⚔️ 武器 (已解锁: ' + getUnlockedCount('weapon') + '/' + allEquipments.weapon.length + ')</div>';
-            
+
             // 显示所有已解锁的武器
             allEquipments.weapon.forEach(function(item) {
                 if (!item.unlocked) return;
@@ -5000,11 +5000,11 @@ function showPage(pageId) {
                 html += '</div>';
             });
             html += '</div>';
-            
+
             // 防具部分
             html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 10px;">';
             html += '<div style="font-weight: bold; margin-bottom: 10px;">🛡️ 防具 (已解锁: ' + getUnlockedCount('armor') + '/' + allEquipments.armor.length + ')</div>';
-            
+
             allEquipments.armor.forEach(function(item) {
                 if (!item.unlocked) return;
                 var isEquipped = equipped.armor === item.id;
@@ -5024,11 +5024,11 @@ function showPage(pageId) {
                 html += '</div>';
             });
             html += '</div>';
-            
+
             // 饰品部分
             html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 10px;">';
             html += '<div style="font-weight: bold; margin-bottom: 10px;">💍 饰品 (已解锁: ' + getUnlockedCount('accessory') + '/' + allEquipments.accessory.length + ')</div>';
-            
+
             allEquipments.accessory.forEach(function(item) {
                 if (!item.unlocked) return;
                 var isEquipped = equipped.accessory === item.id;
@@ -5048,18 +5048,18 @@ function showPage(pageId) {
                 html += '</div>';
             });
             html += '</div>';
-            
+
             // 解锁提示
             html += '<div style="padding: 15px; background: #FFF3E0; border-radius: 10px; font-size: 12px; color: #E65100;">';
             html += '💡 通关关卡可解锁更高级装备！</div>';
-            
+
             document.getElementById('equipmentContent').innerHTML = html;
         }
-        
+
         function getUnlockedCount(type) {
             return allEquipments[type].filter(function(item) { return item.unlocked; }).length;
         }
-        
+
         function equipItem(type, itemId) {
             equipped[type] = itemId;
             // 更新equipment对象引用
@@ -5074,26 +5074,26 @@ function showPage(pageId) {
             renderEquipment();
             showToast('✓ 已装备' + equipment[type].name, 'success');
         }
-        
+
         function recalcPetStats() {
             var currentPet = pets.list[pets.current];
             // 基础属性
             var baseAttack = currentPet.attack;
             var baseDefense = currentPet.defense;
-            
+
             // 装备加成
             petAttack = baseAttack + equipment.weapon.attack + equipment.accessory.bonus.attack;
             petDefense = baseDefense + equipment.armor.defense + equipment.accessory.bonus.defense;
         }
-        
+
         function countMaterial(materialId) {
             return inventory.treasures.filter(function(t) { return t.id === materialId; }).length;
         }
-        
+
         function upgradeEquipment(type) {
             var req = upgradeRequirements[type];
             var matCount = countMaterial(req.material);
-            
+
             if (matCount < req.baseCost) {
                 alert('材料不足！需要 ' + req.baseCost + ' 个宝石');
                 return;
@@ -5102,7 +5102,7 @@ function showPage(pageId) {
                 alert('金币不足！需要 ' + req.goldCost + ' 金币');
                 return;
             }
-            
+
             // 消耗材料
             var removed = 0;
             inventory.treasures = inventory.treasures.filter(function(t) {
@@ -5112,9 +5112,9 @@ function showPage(pageId) {
                 }
                 return true;
             });
-            
+
             coins -= req.goldCost;
-            
+
             // 升级装备
             equipment[type].level++;
             if (type === 'weapon') {
@@ -5129,13 +5129,13 @@ function showPage(pageId) {
                 petAttack += 1;
                 petDefense += 1;
             }
-            
+
             saveGameData();
             updateUI();
             renderEquipment();
             alert('🎉 ' + equipment[type].name + ' 升级成功！');
         }
-        
+
         // 购买物品函数（支持宠物、武器、防具、消耗品）
         function buyItem(itemId, price, type) {
             if (type === 'pets') {
@@ -5143,23 +5143,23 @@ function showPage(pageId) {
                 return;
             }
             if (coins < price) { alert('金币不足！'); return; }
-            
+
             // 找到购买的物品
             var item = null;
             ['weapons','armor','items'].forEach(function(t) {
                 shopItems[t].forEach(function(i) { if (i.id === itemId) item = i; });
             });
-            
+
             if (!item) {
                 alert('物品不存在！');
                 return;
             }
-            
+
             coins -= price;
-            
+
             if (type === 'weapons' || type === 'armor') {
                 ownedItems.push(itemId);
-                
+
                 // 自动装备新购买的物品（如果比当前装备好）
                 var itemType = type === 'weapons' ? 'weapon' : 'armor';
                 var currentEquip = equipment[itemType];
@@ -5167,7 +5167,7 @@ function showPage(pageId) {
                 var newItemDefense = item.defense || 0;
                 var currentAttack = currentEquip.attack || 0;
                 var currentDefense = currentEquip.defense || 0;
-                
+
                 // 如果是武器，比较攻击力；如果是防具，比较防御力
                 var shouldEquip = false;
                 if (type === 'weapons' && newItemAttack > currentAttack) {
@@ -5175,7 +5175,7 @@ function showPage(pageId) {
                 } else if (type === 'armor' && newItemDefense > currentDefense) {
                     shouldEquip = true;
                 }
-                
+
                 if (shouldEquip) {
                     // 自动装备更好的装备
                     equipped[itemType] = itemId;
@@ -5193,18 +5193,18 @@ function showPage(pageId) {
                     return;
                 }
             }
-            
+
             // 消耗品直接生效
             if (item && item.hp) hp = Math.min(hp + item.hp, maxHp);
             if (item && item.energy) energy = Math.min(energy + item.energy, 100);
-            
+
             checkAchievements();
-            updateUI(); 
+            updateUI();
             renderShop(type);
             alert('购买成功！' + (item && item.hp ? '恢复' + item.hp + '点HP' : item && item.energy ? '恢复' + item.energy + '点体力' : ''));
         }
         function updateShopCoins() { document.getElementById('shopCoins').textContent = coins; }
-        
+
         // 统计
         function renderCalendar() {
             var today = new Date().getDate();
@@ -5236,23 +5236,23 @@ function showPage(pageId) {
             document.getElementById('streak').textContent = streak;
             document.getElementById('achievementCount').textContent = achievements.filter(function(a) { return a.unlocked; }).length;
         }
-        
+
         // 初始化
         showInitial();
         updateUI();
         renderAchievements();
         renderTasks();
     </script>
-    
+
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
         拼音大冒险 v8.5.2 (2026-03-07)
     </div>
-    
+
     <script>
         // 动态更新版本号
         document.getElementById('versionDisplay').textContent = '拼音大冒险 ' + GAME_VERSION + ' (' + GAME_BUILD_DATE + ')';
     </script>
 </body>
 </html>
- 
+
