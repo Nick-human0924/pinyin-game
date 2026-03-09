@@ -846,7 +846,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v8.5.12';
+        var GAME_VERSION = 'v8.5.13';
         var GAME_BUILD_DATE = '2026-03-09';
         
         // 完整拼音数据
@@ -2419,6 +2419,32 @@
                 renderLevelMap();
             }
         }
+
+        // 商店数据（必须在 showPage 之前定义）
+        var shopItems = {
+            pets: [{id:'tiger', name:'勇猛小老虎', emoji:'🐯', price:300, type:'pet', desc:'高攻击型 | 攻18 防3 血85'}, {id:'rabbit', name:'迅捷小兔', emoji:'🐰', price:200, type:'pet', desc:'敏捷型 | 攻8 防6 血80'}, {id:'lion', name:'威武小狮子', emoji:'🦁', price:500, type:'pet', desc:'攻守平衡 | 攻15 防8 血95'}, {id:'unicorn', name:'魔法独角兽', emoji:'🦄', price:600, type:'pet', desc:'高防御型 | 攻12 防15 血110'}, {id:'dragon', name:'火焰小龙', emoji:'🐲', price:800, type:'pet', desc:'强力攻击 | 攻25 防5 血90'}],
+            weapons: [
+                {id:'w1',name:'木剑',icon:'🗡️',price:50,attack:5},
+                {id:'w2',name:'铁剑',icon:'⚔️',price:150,attack:12},
+                {id:'w3',name:'钢刀',icon:'🔪',price:300,attack:25},
+                {id:'w4',name:'银枪',icon:'🔱',price:500,attack:40},
+                {id:'w5',name:'金斧',icon:'🪓',price:800,attack:60},
+                {id:'w6',name:'魔法杖',icon:'🪄',price:1200,attack:85},
+                {id:'w7',name:'龙牙剑',icon:'🐲',price:1800,attack:120},
+                {id:'w8',name:'圣光之刃',icon:'⚡',price:2500,attack:160}
+            ],
+            armor: [
+                {id:'a1',name:'布衣',icon:'👕',price:40,defense:3},
+                {id:'a2',name:'皮甲',icon:'🦺',price:120,defense:8},
+                {id:'a3',name:'铁甲',icon:'👔',price:250,defense:15},
+                {id:'a4',name:'银鳞甲',icon:'🛡️',price:450,defense:25},
+                {id:'a5',name:'黄金甲',icon:'👑',price:750,defense:40},
+                {id:'a6',name:'魔法袍',icon:'🧥',price:1100,defense:60},
+                {id:'a7',name:'龙鳞战甲',icon:'🐉',price:1600,defense:85},
+                {id:'a8',name:'圣光护盾',icon:'✨',price:2200,defense:115}
+            ],
+            items: [{id:'i1',name:'小药水',icon:'🧪',price:20,hp:30},{id:'i2',name:'大药水',icon:'🧫',price:50,hp:80},{id:'i3',name:'能量饮料',icon:'🥤',price:30,energy:20}]
+        };
 
 function showPage(pageId) {
             // 先隐藏所有页面（包括mainMenu）
@@ -4049,6 +4075,11 @@ function showPage(pageId) {
             showPage(div.id);
         }
 
+        // 显示版本号
+        function showVersion() {
+            console.log('拼音大冒险 ' + GAME_VERSION + ' (' + GAME_BUILD_DATE + ')');
+        }
+
         // 页面加载时显示版本
         document.addEventListener('DOMContentLoaded', showVersion);
 
@@ -4435,32 +4466,6 @@ function showPage(pageId) {
             document.getElementById('enemyHpBar').style.width = (currentEnemy.hp / currentEnemy.maxHp * 100) + '%';
             document.getElementById('enemyHpText').textContent = currentEnemy.hp + '/' + currentEnemy.maxHp;
         }
-
-        // 商店
-        var shopItems = {
-            pets: [{id:'tiger', name:'勇猛小老虎', emoji:'🐯', price:300, type:'pet', desc:'高攻击型 | 攻18 防3 血85'}, {id:'rabbit', name:'迅捷小兔', emoji:'🐰', price:200, type:'pet', desc:'敏捷型 | 攻8 防6 血80'}, {id:'lion', name:'威武小狮子', emoji:'🦁', price:500, type:'pet', desc:'攻守平衡 | 攻15 防8 血95'}, {id:'unicorn', name:'魔法独角兽', emoji:'🦄', price:600, type:'pet', desc:'高防御型 | 攻12 防15 血110'}, {id:'dragon', name:'火焰小龙', emoji:'🐲', price:800, type:'pet', desc:'强力攻击 | 攻25 防5 血90'}],
-            weapons: [
-                {id:'w1',name:'木剑',icon:'🗡️',price:50,attack:5},
-                {id:'w2',name:'铁剑',icon:'⚔️',price:150,attack:12},
-                {id:'w3',name:'钢刀',icon:'🔪',price:300,attack:25},
-                {id:'w4',name:'银枪',icon:'🔱',price:500,attack:40},
-                {id:'w5',name:'金斧',icon:'🪓',price:800,attack:60},
-                {id:'w6',name:'魔法杖',icon:'🪄',price:1200,attack:85},
-                {id:'w7',name:'龙牙剑',icon:'🐲',price:1800,attack:120},
-                {id:'w8',name:'圣光之刃',icon:'⚡',price:2500,attack:160}
-            ],
-            armor: [
-                {id:'a1',name:'布衣',icon:'👕',price:40,defense:3},
-                {id:'a2',name:'皮甲',icon:'🦺',price:120,defense:8},
-                {id:'a3',name:'铁甲',icon:'👔',price:250,defense:15},
-                {id:'a4',name:'银鳞甲',icon:'🛡️',price:450,defense:25},
-                {id:'a5',name:'黄金甲',icon:'👑',price:750,defense:40},
-                {id:'a6',name:'魔法袍',icon:'🧥',price:1100,defense:60},
-                {id:'a7',name:'龙鳞战甲',icon:'🐉',price:1600,defense:85},
-                {id:'a8',name:'圣光护盾',icon:'✨',price:2200,defense:115}
-            ],
-            items: [{id:'i1',name:'小药水',icon:'🧪',price:20,hp:30},{id:'i2',name:'大药水',icon:'🧫',price:50,hp:80},{id:'i3',name:'能量饮料',icon:'🥤',price:30,energy:20}]
-        };
 
         function showShopTab(type) { renderShop(type); }
         function renderShop(type) {
