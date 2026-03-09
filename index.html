@@ -805,8 +805,7 @@
             
             <div style="display: flex; gap: 10px; margin-bottom: 10px; overflow-x: auto;">
                 <div class="shop-tab active" onclick="showInventoryTab('treasures')">💎 宝物</div>
-                <div class="shop-tab" onclick="showInventoryTab('materials')">🔧 材料</div>
-                <div class="shop-tab" onclick="showInventoryTab('consumables')">🧪 消耗品</div>
+                <div class="shop-tab" onclick="showInventoryTab('equipments')">⚔️ 装备</div>
             </div>
             
             <div id="inventoryContent"></div>
@@ -1828,8 +1827,12 @@
                 scenes: [
                     { type: 'dialogue', text: '一天，小熊猫收到一封神秘的信...' },
                     { type: 'dialogue', text: '信中写道："欢迎来到拼音王国！只有通过拼音考验的勇者，才能进入城堡。"' },
-                    { type: 'question', text: '小熊猫要进入城堡，需要说出"门"的拼音', pinyin: 'men', options: ['men', 'meng', 'min', 'ming'] },
-                    { type: 'dialogue', text: '大门缓缓打开，小熊猫走进了拼音王国...' }
+                    { type: 'question', text: '小熊猫要进入城堡，需要说出"门"的拼音', pinyin: 'men', options: ['men', 'meng', 'min', 'ming'], reward: { coins: 5, exp: 3 } },
+                    { type: 'dialogue', text: '大门缓缓打开，小熊猫走进了拼音王国...' },
+                    { type: 'dialogue', text: '一位老者迎面走来："年轻的勇士，你需要先学会声母才能继续前进。"' },
+                    { type: 'question', text: '老者问："b、p、m、f，哪个是'爸爸'的第一个音？"', pinyin: 'b', options: ['p', 'm', 'f', 'b'], reward: { coins: 5, exp: 3 } },
+                    { type: 'dialogue', text: '老者满意地点头："很好！这是给你的奖励。"' },
+                    { type: 'question', text: '继续前进，小熊猫看到"妈妈"两个字，它的声母是？', pinyin: 'm', options: ['b', 'p', 'm', 'f'], reward: { coins: 8, exp: 5 } }
                 ]
             },
             {
@@ -1841,9 +1844,14 @@
                 completed: false,
                 scenes: [
                     { type: 'dialogue', text: '小熊猫来到声母森林，这里住着b、p、m、f四位守护者...' },
-                    { type: 'question', text: 'b守护者问："爸爸的爸怎么读？"', pinyin: 'ba', options: ['ba', 'pa', 'ma', 'fa'] },
+                    { type: 'question', text: 'b守护者问："'爸'的声母是什么？"', pinyin: 'b', options: ['ba', 'pa', 'ma', 'fa'], reward: { coins: 5, exp: 3 } },
                     { type: 'dialogue', text: 'b守护者满意地点点头，放行了小熊猫...' },
-                    { type: 'question', text: 'm守护者问："妈妈的妈怎么读？"', pinyin: 'ma', options: ['ba', 'pa', 'ma', 'fa'] }
+                    { type: 'question', text: 'm守护者问："'妈'的声母是什么？"', pinyin: 'm', options: ['b', 'p', 'm', 'f'], reward: { coins: 5, exp: 3 } },
+                    { type: 'dialogue', text: '穿过第一层，小熊猫遇到了d、t、n、l守护者...' },
+                    { type: 'question', text: 't守护者问："'特'的声母是？"', pinyin: 't', options: ['d', 't', 'n', 'l'], reward: { coins: 8, exp: 5 } },
+                    { type: 'question', text: 'n守护者问："'你'的声母是？"', pinyin: 'n', options: ['d', 't', 'n', 'l'], reward: { coins: 8, exp: 5 } },
+                    { type: 'dialogue', text: '森林深处，小熊猫遇到了g、k、h守护者...' },
+                    { type: 'question', text: 'h守护者问："'喝'的声母是？"', pinyin: 'h', options: ['g', 'k', 'h', 'j'], reward: { coins: 10, exp: 6 } }
                 ]
             },
             {
@@ -1855,13 +1863,70 @@
                 completed: false,
                 scenes: [
                     { type: 'dialogue', text: '穿过森林，小熊猫来到韵母山谷...' },
-                    { type: 'question', text: '山谷里传来声音："a、o、e，哪个是公鸡的叫声？"', pinyin: 'o', options: ['a', 'o', 'e', 'i'] }
+                    { type: 'question', text: '山谷里传来声音："a、o、e，哪个是公鸡的叫声？"', pinyin: 'o', options: ['a', 'o', 'e', 'i'], reward: { coins: 5, exp: 3 } },
+                    { type: 'dialogue', text: '声音继续说道："单韵母有六个..."' },
+                    { type: 'question', text: '"i、u、ü，像小鱼吐泡泡的是哪个？"', pinyin: 'ü', options: ['i', 'u', 'ü', 'e'], reward: { coins: 8, exp: 5 } },
+                    { type: 'dialogue', text: '小熊猫继续深入，遇到了复韵母...' },
+                    { type: 'question', text: '"ai、ei、ui，'爱'的韵母是？"', pinyin: 'ai', options: ['ai', 'ei', 'ui', 'iu'], reward: { coins: 10, exp: 6 } },
+                    { type: 'question', text: '"ao、ou、iu，'牛'的韵母是？"', pinyin: 'iu', options: ['ao', 'ou', 'iu', 'ui'], reward: { coins: 10, exp: 6 } }
+                ]
+            },
+            {
+                id: 4,
+                title: '整体认读城堡',
+                emoji: '🏯',
+                desc: '攻克整体认读城堡，掌握16个整体认读音节',
+                unlocked: false,
+                completed: false,
+                scenes: [
+                    { type: 'dialogue', text: '前方出现一座宏伟的城堡，上面写着"整体认读"四个大字...' },
+                    { type: 'question', text: '守卫问："zhi、chi、shi、ri，哪个读'知'？"', pinyin: 'zhi', options: ['zhi', 'chi', 'shi', 'ri'], reward: { coins: 8, exp: 5 } },
+                    { type: 'dialogue', text: '通过大门，小熊猫来到第一层...' },
+                    { type: 'question', text: '第一层守卫问："zi、ci、si，'四'怎么读？"', pinyin: 'si', options: ['zi', 'ci', 'si', 'zhi'], reward: { coins: 8, exp: 5 } },
+                    { type: 'dialogue', text: '第二层住着yi、wu、yu...' },
+                    { type: 'question', text: '第二层守卫问："'雨'的整体认读音节是？"', pinyin: 'yu', options: ['yi', 'wu', 'yu', 'ye'], reward: { coins: 10, exp: 6 } },
+                    { type: 'question', text: '"ye、yue、yuan，'月'的整体认读是？"', pinyin: 'yue', options: ['ye', 'yue', 'yuan', 'yin'], reward: { coins: 10, exp: 6 } }
+                ]
+            },
+            {
+                id: 5,
+                title: '声调迷雾',
+                emoji: '🌫️',
+                desc: '穿越声调迷雾，掌握四个声调',
+                unlocked: false,
+                completed: false,
+                scenes: [
+                    { type: 'dialogue', text: '前方出现一片迷雾，只有正确读出声调才能通过...' },
+                    { type: 'question', text: '迷雾中传来声音："mā、má、mǎ、mà，一声平的是？"', pinyin: 'mā', options: ['mā', 'má', 'mǎ', 'mà'], reward: { coins: 8, exp: 5 } },
+                    { type: 'dialogue', text: '声音继续说道："二声扬，三声拐弯，四声降..."' },
+                    { type: 'question', text: '"bá是第几声？"', pinyin: '二声', options: ['一声', '二声', '三声', '四声'], reward: { coins: 10, exp: 6 } },
+                    { type: 'question', text: '"kǔ的声调应该怎么读？"', pinyin: '先降后升', options: ['平平的', '往上扬', '先降后升', '往下降'], reward: { coins: 12, exp: 8 } },
+                    { type: 'dialogue', text: '迷雾渐渐散去，前方隐约可见拼音宫殿...' }
+                ]
+            },
+            {
+                id: 6,
+                title: '拼音宫殿大决战',
+                emoji: '👑',
+                desc: '最终挑战，成为拼音大师',
+                unlocked: false,
+                completed: false,
+                isFinal: true,
+                scenes: [
+                    { type: 'dialogue', text: '小熊猫终于来到拼音宫殿，拼音大王正在等着他...' },
+                    { type: 'question', text: '拼音大王说："想要成为拼音大师，先回答我的问题。'龙'的拼音是？"', pinyin: 'lóng', options: ['lóng', 'nóng', 'róng', 'lǒng'], reward: { coins: 15, exp: 10 } },
+                    { type: 'dialogue', text: '拼音大王点点头："不错，但这只是开始。"' },
+                    { type: 'question', text: '"zhōng guó，这是什么意思？"', pinyin: '中国', options: ['中国', '钟国', '中国', '中国'], reward: { coins: 20, exp: 15 } },
+                    { type: 'dialogue', text: '拼音大王露出微笑："很好！最后一题！"' },
+                    { type: 'question', text: '"b-á→bá，g-u-ǒ→？"', pinyin: 'guǒ', options: ['guǒ', 'gǒu', 'gōu', 'guó'], reward: { coins: 25, exp: 20 } },
+                    { type: 'dialogue', text: '拼音大王满意地鼓掌："恭喜你，小熊猫！你已经通过了所有考验，成为拼音大师！"' }
                 ]
             }
         ];
         
         var currentChapter = null;
         var currentSceneIndex = 0;
+        var chapterRewards = { coins: 0, exp: 0, treasures: [] };
         
         // 渲染故事章节
         function renderStoryChapters() {
@@ -1894,6 +1959,7 @@
         function startChapter(chapterId) {
             currentChapter = storyChapters.find(function(c) { return c.id === chapterId; });
             currentSceneIndex = 0;
+            chapterRewards = { coins: 0, exp: 0, treasures: [] };
             
             if (!currentChapter) return;
             
@@ -1921,6 +1987,7 @@
                 storyQuestionEl.classList.add('hidden');
                 storyTextEl.textContent = scene.text;
                 continueBtn.textContent = '继续 →';
+                continueBtn.style.display = 'block';
                 continueBtn.onclick = continueStory;
             } else if (scene.type === 'question') {
                 storyTextEl.textContent = scene.text;
@@ -1930,7 +1997,7 @@
                 
                 var html = '';
                 scene.options.forEach(function(opt) {
-                    html += '<button class="option-btn" onclick="answerStoryQuestion(\'' + opt + '\', \'' + scene.pinyin + '\')" style="font-size: 16px; padding: 12px;">' + opt + '</button>';
+                    html += '<button class="option-btn" onclick="answerStoryQuestion(\'' + opt + '\', \'' + scene.pinyin + '\', ' + (scene.reward ? JSON.stringify(scene.reward).replace(/"/g, '\'') : 'null') + ')" style="font-size: 16px; padding: 12px;">' + opt + '</button>';
                 });
                 storyOptionsEl.innerHTML = html;
                 
@@ -1945,7 +2012,7 @@
         }
         
         // 回答故事问题
-        function answerStoryQuestion(selected, correct) {
+        function answerStoryQuestion(selected, correct, reward) {
             var isCorrect = selected === correct;
             var buttons = document.querySelectorAll('#storyOptions .option-btn');
             
@@ -1959,7 +2026,30 @@
             });
             
             if (isCorrect) {
-                showToast('✅ 回答正确！剧情继续...', 'success');
+                // 发放答题奖励
+                if (reward) {
+                    if (reward.coins) {
+                        coins += reward.coins;
+                        chapterRewards.coins += reward.coins;
+                    }
+                    if (reward.exp) {
+                        addPetExp(reward.exp);
+                        chapterRewards.exp += reward.exp;
+                    }
+                }
+                
+                // 随机掉落宝物（30%概率）
+                if (Math.random() < 0.3) {
+                    var treasure = dropTreasure();
+                    if (treasure) {
+                        chapterRewards.treasures.push(treasure);
+                    }
+                }
+                
+                updateUI();
+                saveGameData();
+                
+                showToast('✅ 回答正确！+' + (reward ? reward.coins : 5) + '金币 +' + (reward ? reward.exp : 3) + '经验', 'success');
                 speak('正确！');
                 
                 setTimeout(function() {
@@ -1992,11 +2082,39 @@
                 nextChapter.unlocked = true;
             }
             
-            // 奖励
-            var reward = 10 + currentChapter.id * 2;
-            coins += reward;
+            // 通关大礼包奖励
+            var isFinal = currentChapter.isFinal;
+            var baseReward = 20 + currentChapter.id * 5;
+            var completionBonus = isFinal ? 100 : 30; // 最终章节额外奖励100金币
+            var totalCoins = baseReward + completionBonus;
+            var totalExp = 20 + currentChapter.id * 3;
             
-            alert('🎉 章节完成！\n\n' + currentChapter.title + ' 已完成！\n获得 ' + reward + ' 金币奖励！');
+            coins += totalCoins;
+            addPetExp(totalExp);
+            
+            // 必定掉落宝物
+            var treasure = dropTreasure();
+            var treasureMsg = '';
+            if (treasure) {
+                treasureMsg = '\n🎁 获得宝物：' + treasure.emoji + ' ' + treasure.name;
+            }
+            
+            // 最终章节额外掉落
+            if (isFinal) {
+                for (var i = 0; i < 3; i++) {
+                    var bonusTreasure = dropTreasure();
+                    if (bonusTreasure) {
+                        treasureMsg += '\n🎁 获得宝物：' + bonusTreasure.emoji + ' ' + bonusTreasure.name;
+                    }
+                }
+            }
+            
+            alert('🎉 章节完成！\n\n' + currentChapter.title + ' 已完成！\n\n' +
+                  '📊 答题获得：' + chapterRewards.coins + '金币 +' + chapterRewards.exp + '经验\n' +
+                  '🎁 通关奖励：' + totalCoins + '金币 +' + totalExp + '经验' +
+                  (chapterRewards.treasures.length > 0 ? '\n💎 答题掉落：' + chapterRewards.treasures.length + '个宝物' : '') +
+                  treasureMsg +
+                  (isFinal ? '\n\n🏆 恭喜通关！你已成为拼音大师！' : ''));
             
             updateUI();
             saveGameData();
@@ -2690,12 +2808,19 @@ function showPage(pageId) {
                 updateTaskProgress('task_level', 1);
                 if (currentLevel < levels.length) levels[currentLevel].locked = false;
             }
-            // 通关奖励（每题已经给了2金币，这里给额外通关奖励）
-            var reward = lv.isBoss ? 15 : 8;
+            // 阶梯式通关奖励：根据关卡等级递增
+            // 基础奖励5金币，每关增加3金币，BOSS关额外奖励10金币
+            var baseReward = 5;
+            var levelBonus = (currentLevel - 1) * 3;
+            var bossBonus = lv.isBoss ? 10 : 0;
+            var reward = baseReward + levelBonus + bossBonus;
             coins += reward;
             
-            // 宠物获得经验
-            var expGain = lv.isBoss ? 30 : 15;
+            // 宠物获得经验（也是阶梯式）
+            var baseExp = 10;
+            var expBonus = (currentLevel - 1) * 2;
+            var bossExpBonus = lv.isBoss ? 20 : 0;
+            var expGain = baseExp + expBonus + bossExpBonus;
             addPetExp(expGain);
             
             // 解锁装备
@@ -3127,14 +3252,15 @@ function showPage(pageId) {
             var allQuestions = [];
             
             if (type === 'initial') {
-                // 使用声母数据生成题目
+                // 使用声母数据生成题目 - 修复：显示汉字，问声母是什么
                 pinyinData.initial.forEach(function(py, idx) {
-                    var correctAnswer = pinyinData.initialNames[idx];
+                    var charName = pinyinData.initialNames[idx]; // 汉字名称（如"玻"）
+                    var correctAnswer = py; // 声母拼音（如"b"）
                     var options = [correctAnswer];
-                    // 生成3个错误选项
+                    // 生成3个错误选项（其他声母）
                     while (options.length < 4) {
-                        var randomIdx = Math.floor(Math.random() * pinyinData.initialNames.length);
-                        var wrongAnswer = pinyinData.initialNames[randomIdx];
+                        var randomIdx = Math.floor(Math.random() * pinyinData.initial.length);
+                        var wrongAnswer = pinyinData.initial[randomIdx];
                         if (options.indexOf(wrongAnswer) === -1 && wrongAnswer !== correctAnswer) {
                             options.push(wrongAnswer);
                         }
@@ -3142,48 +3268,52 @@ function showPage(pageId) {
                     // 打乱选项顺序
                     options.sort(function() { return Math.random() - 0.5; });
                     allQuestions.push({
-                        char: py,
-                        answer: correctAnswer,
+                        char: charName,  // 显示汉字
+                        answer: correctAnswer,  // 答案是声母拼音
                         options: options,
-                        display: py
+                        display: charName
                     });
                 });
             } else if (type === 'final') {
+                // 使用韵母数据生成题目 - 修复：显示汉字，问韵母是什么
                 pinyinData.final.forEach(function(py, idx) {
-                    var correctAnswer = pinyinData.finalNames[idx];
+                    var charName = pinyinData.finalNames[idx]; // 汉字名称（如"啊"）
+                    var correctAnswer = py; // 韵母拼音（如"a"）
                     var options = [correctAnswer];
                     while (options.length < 4) {
-                        var randomIdx = Math.floor(Math.random() * pinyinData.finalNames.length);
-                        var wrongAnswer = pinyinData.finalNames[randomIdx];
+                        var randomIdx = Math.floor(Math.random() * pinyinData.final.length);
+                        var wrongAnswer = pinyinData.final[randomIdx];
                         if (options.indexOf(wrongAnswer) === -1 && wrongAnswer !== correctAnswer) {
                             options.push(wrongAnswer);
                         }
                     }
                     options.sort(function() { return Math.random() - 0.5; });
                     allQuestions.push({
-                        char: py,
-                        answer: correctAnswer,
+                        char: charName,  // 显示汉字
+                        answer: correctAnswer,  // 答案是韵母拼音
                         options: options,
-                        display: py
+                        display: charName
                     });
                 });
             } else if (type === 'whole') {
+                // 使用整体认读数据生成题目 - 修复：显示汉字，问读音是什么
                 pinyinData.whole.forEach(function(py, idx) {
-                    var correctAnswer = pinyinData.wholeNames[idx];
+                    var charName = pinyinData.wholeNames[idx]; // 汉字名称（如"知"）
+                    var correctAnswer = py; // 整体认读音节（如"zhi"）
                     var options = [correctAnswer];
                     while (options.length < 4) {
-                        var randomIdx = Math.floor(Math.random() * pinyinData.wholeNames.length);
-                        var wrongAnswer = pinyinData.wholeNames[randomIdx];
+                        var randomIdx = Math.floor(Math.random() * pinyinData.whole.length);
+                        var wrongAnswer = pinyinData.whole[randomIdx];
                         if (options.indexOf(wrongAnswer) === -1 && wrongAnswer !== correctAnswer) {
                             options.push(wrongAnswer);
                         }
                     }
                     options.sort(function() { return Math.random() - 0.5; });
                     allQuestions.push({
-                        char: py,
-                        answer: correctAnswer,
+                        char: charName,  // 显示汉字
+                        answer: correctAnswer,  // 答案是整体认读音节
                         options: options,
-                        display: py
+                        display: charName
                     });
                 });
             } else if (type === 'tone') {
@@ -3813,8 +3943,8 @@ function showPage(pageId) {
         }
         
         // ========== 游戏版本信息 ==========
-        var GAME_VERSION = 'v8.5.2';
-        var GAME_BUILD_DATE = '2026-03-07';
+        var GAME_VERSION = 'v8.5.6';
+        var GAME_BUILD_DATE = '2026-03-09';
         
         // 显示版本号
         function showVersion() {
@@ -4099,18 +4229,34 @@ function showPage(pageId) {
                     updateBattleUI();
                     setTimeout(function() {
                         playVictoryAnimation();
-                        // 根据宠物等级调整战斗奖励（等级越高，基础奖励略高，但控制上限）
+                        // 阶梯式战斗奖励：根据敌人强度给予不同奖励
+                        var enemyMaxHp = currentEnemy.maxHp || 50;
+                        var enemyAttack = currentEnemy.attack || 10;
+                        
+                        // 根据敌人强度计算基础奖励
+                        var baseReward = 5;
+                        if (enemyMaxHp >= 150) baseReward = 25; // BOSS级
+                        else if (enemyMaxHp >= 100) baseReward = 18; // 高级怪
+                        else if (enemyMaxHp >= 70) baseReward = 12; // 中级怪
+                        else if (enemyMaxHp >= 45) baseReward = 8; // 低级怪
+                        
+                        // 根据宠物等级给予额外奖励
                         var currentPet = pets.list[pets.current];
                         var petLevel = currentPet ? currentPet.level : 1;
-                        var baseReward = 5 + Math.floor((petLevel - 1) * 0.3); // 基础5金币，每级增加0.3
+                        var petBonus = Math.floor(petLevel * 0.5);
+                        
                         var randomBonus = Math.floor(Math.random() * 6); // 0-5随机
-                        var reward = baseReward + randomBonus;
+                        var reward = baseReward + petBonus + randomBonus;
                         showCoinReward(reward);
                         coins += reward;
                         battleWins++;
                         
-                        // 战斗胜利宠物获得经验
-                        var battleExp = 8 + Math.floor(Math.random() * 8);
+                        // 战斗胜利宠物获得经验（也是阶梯式）
+                        var baseExp = 8;
+                        if (enemyMaxHp >= 150) baseExp = 25;
+                        else if (enemyMaxHp >= 100) baseExp = 18;
+                        else if (enemyMaxHp >= 70) baseExp = 12;
+                        var battleExp = baseExp + Math.floor(Math.random() * 8);
                         addPetExp(battleExp);
                         
                         checkAchievements();
@@ -4201,8 +4347,26 @@ function showPage(pageId) {
         // 商店
         var shopItems = {
             pets: [{id:'tiger', name:'勇猛小老虎', emoji:'🐯', price:300, type:'pet', desc:'高攻击型 | 攻18 防3 血85'}, {id:'rabbit', name:'迅捷小兔', emoji:'🐰', price:200, type:'pet', desc:'敏捷型 | 攻8 防6 血80'}, {id:'lion', name:'威武小狮子', emoji:'🦁', price:500, type:'pet', desc:'攻守平衡 | 攻15 防8 血95'}, {id:'unicorn', name:'魔法独角兽', emoji:'🦄', price:600, type:'pet', desc:'高防御型 | 攻12 防15 血110'}, {id:'dragon', name:'火焰小龙', emoji:'🐲', price:800, type:'pet', desc:'强力攻击 | 攻25 防5 血90'}],
-            weapons: [{id:'w1',name:'木剑',icon:'🗡️',price:50,attack:5},{id:'w2',name:'铁剑',icon:'⚔️',price:150,attack:12},{id:'w3',name:'钢刀',icon:'🔪',price:300,attack:25}],
-            armor: [{id:'a1',name:'布衣',icon:'👕',price:40,defense:3},{id:'a2',name:'皮甲',icon:'🦺',price:120,defense:8},{id:'a3',name:'铁甲',icon:'👔',price:250,defense:15}],
+            weapons: [
+                {id:'w1',name:'木剑',icon:'🗡️',price:50,attack:5},
+                {id:'w2',name:'铁剑',icon:'⚔️',price:150,attack:12},
+                {id:'w3',name:'钢刀',icon:'🔪',price:300,attack:25},
+                {id:'w4',name:'银枪',icon:'🔱',price:500,attack:40},
+                {id:'w5',name:'金斧',icon:'🪓',price:800,attack:60},
+                {id:'w6',name:'魔法杖',icon:'🪄',price:1200,attack:85},
+                {id:'w7',name:'龙牙剑',icon:'🐲',price:1800,attack:120},
+                {id:'w8',name:'圣光之刃',icon:'⚡',price:2500,attack:160}
+            ],
+            armor: [
+                {id:'a1',name:'布衣',icon:'👕',price:40,defense:3},
+                {id:'a2',name:'皮甲',icon:'🦺',price:120,defense:8},
+                {id:'a3',name:'铁甲',icon:'👔',price:250,defense:15},
+                {id:'a4',name:'银鳞甲',icon:'🛡️',price:450,defense:25},
+                {id:'a5',name:'黄金甲',icon:'👑',price:750,defense:40},
+                {id:'a6',name:'魔法袍',icon:'🧥',price:1100,defense:60},
+                {id:'a7',name:'龙鳞战甲',icon:'🐉',price:1600,defense:85},
+                {id:'a8',name:'圣光护盾',icon:'✨',price:2200,defense:115}
+            ],
             items: [{id:'i1',name:'小药水',icon:'🧪',price:20,hp:30},{id:'i2',name:'大药水',icon:'🧫',price:50,hp:80},{id:'i3',name:'能量饮料',icon:'🥤',price:30,energy:20}]
         };
         
@@ -4533,19 +4697,257 @@ function showPage(pageId) {
                     });
                     html += '</div>';
                 }
-            } else if (tab === 'materials') {
-                html = '<div style="text-align: center; padding: 40px; color: #666;">' +
-                    '<div style="font-size: 48px; margin-bottom: 10px;">🔧</div>' +
-                    '<div>材料功能即将开放</div>' +
-                '</div>';
-            } else if (tab === 'consumables') {
-                html = '<div style="text-align: center; padding: 40px; color: #666;">' +
-                    '<div style="font-size: 48px; margin-bottom: 10px;">🧪</div>' +
-                    '<div>消耗品功能即将开放</div>' +
-                '</div>';
+            } else if (tab === 'equipments') {
+                // 装备升级功能
+                html = renderInventoryEquipments();
             }
             
             contentEl.innerHTML = html;
+        }
+        
+        // 渲染背包中的装备（已购买的装备）
+        function renderInventoryEquipments() {
+            var html = '';
+            
+            // 获取已购买的武器
+            var ownedWeapons = shopItems.weapons.filter(function(w) { return ownedItems.includes(w.id); });
+            // 获取已购买的防具
+            var ownedArmors = shopItems.armor.filter(function(a) { return ownedItems.includes(a.id); });
+            
+            if (ownedWeapons.length === 0 && ownedArmors.length === 0) {
+                return '<div style="text-align: center; padding: 40px; color: #666;">' +
+                    '<div style="font-size: 48px; margin-bottom: 10px;">⚔️</div>' +
+                    '<div>还没有装备</div>' +
+                    '<div style="font-size: 12px; margin-top: 10px;">去商店购买装备吧！</div>' +
+                '</div>';
+            }
+            
+            // 显示金币和宝石数量
+            html += '<div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; padding: 15px; margin-bottom: 15px; color: white; display: flex; justify-content: space-around;">';
+            html += '<div style="text-align: center;"><div style="font-size: 12px; opacity: 0.8;">金币</div><div style="font-size: 20px; font-weight: bold;">💰 ' + coins + '</div></div>';
+            var rubyCount = countMaterial('ruby');
+            var sapphireCount = countMaterial('sapphire');
+            html += '<div style="text-align: center;"><div style="font-size: 12px; opacity: 0.8;">红宝石</div><div style="font-size: 20px; font-weight: bold;">🔴 ' + rubyCount + '</div></div>';
+            html += '<div style="text-align: center;"><div style="font-size: 12px; opacity: 0.8;">蓝宝石</div><div style="font-size: 20px; font-weight: bold;">🔵 ' + sapphireCount + '</div></div>';
+            html += '</div>';
+            
+            // 武器部分
+            if (ownedWeapons.length > 0) {
+                html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 15px; margin-bottom: 10px;">';
+                html += '<div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">⚔️ 武器 (' + ownedWeapons.length + '件)</div>';
+                
+                ownedWeapons.forEach(function(item) {
+                    var isEquipped = equipped.weapon === item.id;
+                    var itemLevel = getItemLevel(item.id, 'weapon');
+                    var upgradeCost = calculateUpgradeCost(itemLevel);
+                    var canUpgrade = coins >= upgradeCost.gold && rubyCount >= upgradeCost.ruby;
+                    
+                    html += '<div style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
+                    html += '<div style="font-size: 36px; margin-right: 12px;">' + item.icon + '</div>';
+                    html += '<div style="flex: 1;">';
+                    html += '<div style="font-weight: bold; font-size: 14px;">' + item.name + ' Lv.' + itemLevel + (isEquipped ? ' ✓ 已装备' : '') + '</div>';
+                    html += '<div style="font-size: 12px; color: #666;">攻击 +' + (item.attack + (itemLevel - 1) * 3) + '</div>';
+                    html += '</div>';
+                    
+                    // 升级按钮
+                    html += '<div style="text-align: right;">';
+                    html += '<div style="font-size: 10px; color: #999; margin-bottom: 3px;">升级需:</div>';
+                    html += '<div style="font-size: 11px; margin-bottom: 3px;">💰' + upgradeCost.gold + ' 🔴' + upgradeCost.ruby + '</div>';
+                    html += '<button class="btn" onclick="upgradeOwnedItem(\'' + item.id + '\', \'weapon\')" style="width: auto; padding: 5px 10px; font-size: 11px;" ' + (canUpgrade ? '' : 'disabled') + '>' + (canUpgrade ? '升级' : '材料不足') + '</button>';
+                    html += '</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+            
+            // 防具部分
+            if (ownedArmors.length > 0) {
+                html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 15px; margin-bottom: 10px;">';
+                html += '<div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">🛡️ 防具 (' + ownedArmors.length + '件)</div>';
+                
+                ownedArmors.forEach(function(item) {
+                    var isEquipped = equipped.armor === item.id;
+                    var itemLevel = getItemLevel(item.id, 'armor');
+                    var upgradeCost = calculateUpgradeCost(itemLevel);
+                    var canUpgrade = coins >= upgradeCost.gold && sapphireCount >= upgradeCost.sapphire;
+                    
+                    html += '<div style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; background: ' + (isEquipped ? '#E3F2FD' : 'white') + '; border-radius: 10px; border: 2px solid ' + (isEquipped ? '#667eea' : '#e0e0e0') + ';">';
+                    html += '<div style="font-size: 36px; margin-right: 12px;">' + item.icon + '</div>';
+                    html += '<div style="flex: 1;">';
+                    html += '<div style="font-weight: bold; font-size: 14px;">' + item.name + ' Lv.' + itemLevel + (isEquipped ? ' ✓ 已装备' : '') + '</div>';
+                    html += '<div style="font-size: 12px; color: #666;">防御 +' + (item.defense + (itemLevel - 1) * 2) + '</div>';
+                    html += '</div>';
+                    
+                    // 升级按钮
+                    html += '<div style="text-align: right;">';
+                    html += '<div style="font-size: 10px; color: #999; margin-bottom: 3px;">升级需:</div>';
+                    html += '<div style="font-size: 11px; margin-bottom: 3px;">💰' + upgradeCost.gold + ' 🔵' + upgradeCost.sapphire + '</div>';
+                    html += '<button class="btn" onclick="upgradeOwnedItem(\'' + item.id + '\', \'armor\')" style="width: auto; padding: 5px 10px; font-size: 11px;" ' + (canUpgrade ? '' : 'disabled') + '>' + (canUpgrade ? '升级' : '材料不足') + '</button>';
+                    html += '</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+            
+            // 装备按钮区域
+            html += '<div style="background: #FFF3E0; border-radius: 10px; padding: 15px; margin-top: 15px;">';
+            html += '<div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #E65100;">🔄 装备管理</div>';
+            
+            if (ownedWeapons.length > 0) {
+                html += '<div style="margin-bottom: 10px;">';
+                html += '<div style="font-size: 12px; color: #666; margin-bottom: 5px;">选择武器:</div>';
+                html += '<div style="display: flex; gap: 8px; flex-wrap: wrap;">';
+                ownedWeapons.forEach(function(item) {
+                    var isEquipped = equipped.weapon === item.id;
+                    html += '<button onclick="equipOwnedItem(\'' + item.id + '\', \'weapon\')" style="padding: 8px 12px; border-radius: 8px; border: none; background: ' + (isEquipped ? '#667eea' : '#e0e0e0') + '; color: ' + (isEquipped ? 'white' : '#333') + '; font-size: 12px; cursor: pointer;">' + item.icon + ' ' + item.name + '</button>';
+                });
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            if (ownedArmors.length > 0) {
+                html += '<div>';
+                html += '<div style="font-size: 12px; color: #666; margin-bottom: 5px;">选择防具:</div>';
+                html += '<div style="display: flex; gap: 8px; flex-wrap: wrap;">';
+                ownedArmors.forEach(function(item) {
+                    var isEquipped = equipped.armor === item.id;
+                    html += '<button onclick="equipOwnedItem(\'' + item.id + '\', \'armor\')" style="padding: 8px 12px; border-radius: 8px; border: none; background: ' + (isEquipped ? '#667eea' : '#e0e0e0') + '; color: ' + (isEquipped ? 'white' : '#333') + '; font-size: 12px; cursor: pointer;">' + item.icon + ' ' + item.name + '</button>';
+                });
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            
+            return html;
+        }
+        
+        // 获取已购买装备的等级
+        function getItemLevel(itemId, type) {
+            // 从equipment对象中获取等级，如果没有则默认为1
+            if (equipment[type] && equipment[type].id === itemId) {
+                return equipment[type].level || 1;
+            }
+            // 如果装备没有记录，初始化为1级
+            return 1;
+        }
+        
+        // 计算升级成本（金币+宝石）
+        function calculateUpgradeCost(currentLevel) {
+            return {
+                gold: 50 * currentLevel,      // 金币：50 * 当前等级
+                ruby: Math.floor(currentLevel / 2) + 1,      // 红宝石：等级/2 + 1
+                sapphire: Math.floor(currentLevel / 2) + 1   // 蓝宝石：等级/2 + 1
+            };
+        }
+        
+        // 升级已购买的装备
+        function upgradeOwnedItem(itemId, type) {
+            var item;
+            if (type === 'weapon') {
+                item = shopItems.weapons.find(function(w) { return w.id === itemId; });
+            } else if (type === 'armor') {
+                item = shopItems.armor.find(function(a) { return a.id === itemId; });
+            }
+            
+            if (!item) {
+                alert('装备不存在！');
+                return;
+            }
+            
+            var currentLevel = getItemLevel(itemId, type);
+            var cost = calculateUpgradeCost(currentLevel);
+            
+            // 检查材料
+            var rubyCount = countMaterial('ruby');
+            var sapphireCount = countMaterial('sapphire');
+            
+            if (type === 'weapon') {
+                if (rubyCount < cost.ruby) {
+                    alert('红宝石不足！需要 ' + cost.ruby + ' 个');
+                    return;
+                }
+            } else if (type === 'armor') {
+                if (sapphireCount < cost.sapphire) {
+                    alert('蓝宝石不足！需要 ' + cost.sapphire + ' 个');
+                    return;
+                }
+            }
+            
+            if (coins < cost.gold) {
+                alert('金币不足！需要 ' + cost.gold + ' 金币');
+                return;
+            }
+            
+            // 消耗材料
+            var removed = 0;
+            var materialType = type === 'weapon' ? 'ruby' : 'sapphire';
+            var requiredCount = type === 'weapon' ? cost.ruby : cost.sapphire;
+            
+            inventory.treasures = inventory.treasures.filter(function(t) {
+                if (t.id === materialType && removed < requiredCount) {
+                    removed++;
+                    return false;
+                }
+                return true;
+            });
+            
+            coins -= cost.gold;
+            
+            // 更新装备等级
+            if (!equipment[type] || equipment[type].id !== itemId) {
+                equipment[type] = JSON.parse(JSON.stringify(item));
+            }
+            equipment[type].level = currentLevel + 1;
+            
+            // 更新属性
+            if (type === 'weapon') {
+                equipment[type].attack = item.attack + (equipment[type].level - 1) * 3;
+            } else if (type === 'armor') {
+                equipment[type].defense = item.defense + (equipment[type].level - 1) * 2;
+            }
+            
+            // 如果当前装备着，更新宠物属性
+            if (equipped[type] === itemId) {
+                recalcPetStats();
+            }
+            
+            saveGameData();
+            updateUI();
+            showInventoryTab('equipments');
+            alert('🎉 ' + item.name + ' 升级到 Lv.' + equipment[type].level + '！');
+        }
+        
+        // 装备已购买的物品
+        function equipOwnedItem(itemId, type) {
+            equipped[type] = itemId;
+            
+            // 更新equipment对象
+            var item;
+            if (type === 'weapon') {
+                item = shopItems.weapons.find(function(w) { return w.id === itemId; });
+            } else if (type === 'armor') {
+                item = shopItems.armor.find(function(a) { return a.id === itemId; });
+            }
+            
+            if (item) {
+                // 保留当前等级
+                var currentLevel = getItemLevel(itemId, type);
+                equipment[type] = JSON.parse(JSON.stringify(item));
+                equipment[type].level = currentLevel;
+                
+                // 计算升级后的属性
+                if (type === 'weapon') {
+                    equipment[type].attack = item.attack + (currentLevel - 1) * 3;
+                } else if (type === 'armor') {
+                    equipment[type].defense = item.defense + (currentLevel - 1) * 2;
+                }
+            }
+            
+            recalcPetStats();
+            saveGameData();
+            showInventoryTab('equipments');
+            showToast('✓ 已装备 ' + (item ? item.name : itemId), 'success');
         }
         
         // 掉落宝物
@@ -4886,20 +5288,64 @@ function showPage(pageId) {
                 return;
             }
             if (coins < price) { alert('金币不足！'); return; }
-            coins -= price;
-            if (type === 'weapons' || type === 'armor') {
-                ownedItems.push(itemId);
-            }
+            
+            // 找到购买的物品
             var item = null;
             ['weapons','armor','items'].forEach(function(t) {
                 shopItems[t].forEach(function(i) { if (i.id === itemId) item = i; });
             });
-            if (item && item.attack) petAttack += item.attack;
-            if (item && item.defense) petDefense += item.defense;
+            
+            if (!item) {
+                alert('物品不存在！');
+                return;
+            }
+            
+            coins -= price;
+            
+            if (type === 'weapons' || type === 'armor') {
+                ownedItems.push(itemId);
+                
+                // 自动装备新购买的物品（如果比当前装备好）
+                var itemType = type === 'weapons' ? 'weapon' : 'armor';
+                var currentEquip = equipment[itemType];
+                var newItemAttack = item.attack || 0;
+                var newItemDefense = item.defense || 0;
+                var currentAttack = currentEquip.attack || 0;
+                var currentDefense = currentEquip.defense || 0;
+                
+                // 如果是武器，比较攻击力；如果是防具，比较防御力
+                var shouldEquip = false;
+                if (type === 'weapons' && newItemAttack > currentAttack) {
+                    shouldEquip = true;
+                } else if (type === 'armor' && newItemDefense > currentDefense) {
+                    shouldEquip = true;
+                }
+                
+                if (shouldEquip) {
+                    // 自动装备更好的装备
+                    equipped[itemType] = itemId;
+                    equipment[itemType] = item;
+                    recalcPetStats();
+                    saveGameData();
+                    renderShop(type);
+                    alert('🎉 购买并装备成功！' + item.name + ' 已自动装备（属性更高）');
+                    return;
+                } else {
+                    // 只是购买，但不装备（因为不如当前装备）
+                    saveGameData();
+                    renderShop(type);
+                    alert('🎉 购买成功！' + item.name + ' 已存入背包（当前装备属性更高或相同）');
+                    return;
+                }
+            }
+            
+            // 消耗品直接生效
             if (item && item.hp) hp = Math.min(hp + item.hp, maxHp);
             if (item && item.energy) energy = Math.min(energy + item.energy, 100);
+            
             checkAchievements();
-            updateUI(); renderShop(type);
+            updateUI(); 
+            renderShop(type);
             alert('购买成功！' + (item && item.hp ? '恢复' + item.hp + '点HP' : item && item.energy ? '恢复' + item.energy + '点体力' : ''));
         }
         function updateShopCoins() { document.getElementById('shopCoins').textContent = coins; }
