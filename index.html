@@ -4781,32 +4781,6 @@ function showPage(pageId) {
             }
 
             contentEl.innerHTML = html;
-        };
-                html += '<div style="font-size: 12px; color: #666; margin-bottom: 5px;">选择武器:</div>';
-                html += '<div style="display: flex; gap: 8px; flex-wrap: wrap;">';
-                ownedWeapons.forEach(function(item) {
-                    var isEquipped = equipped.weapon === item.id;
-                    html += '<button onclick="equipOwnedItem(\'' + item.id + '\', \'weapon\')" style="padding: 8px 12px; border-radius: 8px; border: none; background: ' + (isEquipped ? '#667eea' : '#e0e0e0') + '; color: ' + (isEquipped ? 'white' : '#333') + '; font-size: 12px; cursor: pointer;">' + item.icon + ' ' + item.name + '</button>';
-                });
-                html += '</div>';
-                html += '</div>';
-            }
-
-            if (ownedArmors.length > 0) {
-                html += '<div>';
-                html += '<div style="font-size: 12px; color: #666; margin-bottom: 5px;">选择防具:</div>';
-                html += '<div style="display: flex; gap: 8px; flex-wrap: wrap;">';
-                ownedArmors.forEach(function(item) {
-                    var isEquipped = equipped.armor === item.id;
-                    html += '<button onclick="equipOwnedItem(\'' + item.id + '\', \'armor\')" style="padding: 8px 12px; border-radius: 8px; border: none; background: ' + (isEquipped ? '#667eea' : '#e0e0e0') + '; color: ' + (isEquipped ? 'white' : '#333') + '; font-size: 12px; cursor: pointer;">' + item.icon + ' ' + item.name + '</button>';
-                });
-                html += '</div>';
-                html += '</div>';
-            }
-
-            html += '</div>';
-
-            return html;
         }
 
         // 获取已购买装备的等级
