@@ -812,7 +812,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v8.5.15';
+        var GAME_VERSION = 'v8.5.16';
         var GAME_BUILD_DATE = '2026-03-11';
         
         // 完整拼音数据
@@ -4549,28 +4549,39 @@ function showPage(pageId) {
             html += '<div class="pet-stat"><div>⚡ 体力</div><div class="pet-stat-value">' + energy + '</div></div>';
             html += '</div>';
 
-            // 当前装备显示
+            // 当前装备显示（只显示已购买的）
             html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 15px; margin: 20px 0;">';
             html += '<div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">⚔️ 当前装备</div>';
             
-            if (equipment.weapon) {
-                html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px; margin-bottom: 8px;">';
-                html += '<div style="font-size: 24px; margin-right: 10px;">' + equipment.weapon.icon + '</div>';
-                html += '<div><div style="font-size: 12px; font-weight: bold;">' + equipment.weapon.name + '</div><div style="font-size: 10px; color: #666;">攻击 +' + equipment.weapon.attack + '</div></div>';
-                html += '</div>';
+            // 获取已购买的装备
+            var ownedWeapons = shopItems.weapons.filter(function(w) { return ownedItems.includes(w.id); });
+            var ownedArmors = shopItems.armor.filter(function(a) { return ownedItems.includes(a.id); });
+            
+            // 显示已装备的武器
+            if (equipped.weapon) {
+                var equippedWeapon = shopItems.weapons.find(function(w) { return w.id === equipped.weapon; });
+                if (equippedWeapon && ownedItems.includes(equippedWeapon.id)) {
+                    html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px; margin-bottom: 8px;">';
+                    html += '<div style="font-size: 24px; margin-right: 10px;">' + equippedWeapon.icon + '</div>';
+                    html += '<div><div style="font-size: 12px; font-weight: bold;">' + equippedWeapon.name + ' ✓</div><div style="font-size: 10px; color: #666;">攻击 +' + equippedWeapon.attack + '</div></div>';
+                    html += '</div>';
+                }
             }
-            if (equipment.armor) {
-                html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px; margin-bottom: 8px;">';
-                html += '<div style="font-size: 24px; margin-right: 10px;">' + equipment.armor.icon + '</div>';
-                html += '<div><div style="font-size: 12px; font-weight: bold;">' + equipment.armor.name + '</div><div style="font-size: 10px; color: #666;">防御 +' + equipment.armor.defense + '</div></div>';
-                html += '</div>';
+            // 显示已装备的防具
+            if (equipped.armor) {
+                var equippedArmor = shopItems.armor.find(function(a) { return a.id === equipped.armor; });
+                if (equippedArmor && ownedItems.includes(equippedArmor.id)) {
+                    html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px; margin-bottom: 8px;">';
+                    html += '<div style="font-size: 24px; margin-right: 10px;">' + equippedArmor.icon + '</div>';
+                    html += '<div><div style="font-size: 12px; font-weight: bold;">' + equippedArmor.name + ' ✓</div><div style="font-size: 10px; color: #666;">防御 +' + equippedArmor.defense + '</div></div>';
+                    html += '</div>';
+                }
             }
-            if (equipment.accessory) {
-                html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px;">';
-                html += '<div style="font-size: 24px; margin-right: 10px;">' + equipment.accessory.icon + '</div>';
-                html += '<div><div style="font-size: 12px; font-weight: bold;">' + equipment.accessory.name + '</div><div style="font-size: 10px; color: #666;">攻+' + equipment.accessory.bonus.attack + ' 防+' + equipment.accessory.bonus.defense + '</div></div>';
-                html += '</div>';
+            
+            if ((!equipped.weapon || !ownedItems.includes(equipped.weapon)) && (!equipped.armor || !ownedItems.includes(equipped.armor))) {
+                html += '<div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">还没有购买装备<br>去商店购买装备吧！</div>';
             }
+            
             html += '</div>';
 
             // 拥有的宠物列表
@@ -5051,7 +5062,10 @@ function showPage(pageId) {
                 buyPet(itemId, price);
                 return;
             }
-            if (coins < price) { alert('金币不足！'); return; }
+            if (coins < price) { 
+                showToast('❌ 金币不足！', 'error');
+                return; 
+            }
 
             // 找到购买的物品
             var item = null;
@@ -5060,7 +5074,7 @@ function showPage(pageId) {
             });
 
             if (!item) {
-                alert('物品不存在！');
+                showToast('❌ 物品不存在！', 'error');
                 return;
             }
 
@@ -5090,21 +5104,14 @@ function showPage(pageId) {
                     equipped[itemType] = itemId;
                     equipment[itemType] = item;
                     recalcPetStats();
-                    saveGameData();
-                    updateUI();
-                    updateShopCoins();
-                    renderShop(type);
-                    alert('🎉 购买并装备成功！' + item.name + ' 已自动装备（属性更高）');
-                    return;
-                } else {
-                    // 只是购买，但不装备（因为不如当前装备）
-                    saveGameData();
-                    updateUI();
-                    updateShopCoins();
-                    renderShop(type);
-                    alert('🎉 购买成功！' + item.name + ' 已存入背包（当前装备属性更高或相同）');
-                    return;
                 }
+                
+                saveGameData();
+                updateUI();
+                updateShopCoins();
+                renderShop(type);
+                showToast('🎉 购买成功！' + item.name + (shouldEquip ? ' 已自动装备' : ' 已存入背包'), 'success');
+                return;
             }
 
             // 消耗品直接生效
@@ -5112,12 +5119,17 @@ function showPage(pageId) {
             if (item && item.energy) energy = Math.min(energy + item.energy, 100);
 
             checkAchievements();
+            saveGameData();
             updateUI();
             updateShopCoins();
             renderShop(type);
-            alert('购买成功！' + (item && item.hp ? '恢复' + item.hp + '点HP' : item && item.energy ? '恢复' + item.energy + '点体力' : ''));
+            showToast('🎉 购买成功！' + (item && item.hp ? '恢复' + item.hp + '点HP' : item && item.energy ? '恢复' + item.energy + '点体力' : ''), 'success');
         }
-        function updateShopCoins() { document.getElementById('shopCoins').textContent = coins; }
+        
+        function updateShopCoins() { 
+            var shopCoinsEl = document.getElementById('shopCoins');
+            if (shopCoinsEl) shopCoinsEl.textContent = coins; 
+        }
 
         // 统计
         function renderCalendar() {
