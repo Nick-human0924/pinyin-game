@@ -237,10 +237,10 @@
             <div class="player-info">
                 <div class="avatar" onclick="showPage('pet')" style="background: url('images/ai_generated/panda_hero.png') center/cover no-repeat, linear-gradient(135deg, #FFD54F 0%, #FFB300 100%) !important;">🐼</div>
                 <div>
-                    <div style="font-weight: bold;">拼音小勇士 Lv.<span id="playerLevel">1</span></div>
+                    <div style="font-weight: bold;">拼音小勇士</div>
                     <div class="stats">
                         <div class="stat-item">💰 <span id="coins">100</span></div>
-                        <div class="stat-item">❤️ <span id="hp">100</span>/<span id="maxHp">100</span></div>
+                        <div class="stat-item">❤️ <span id="hp">100</span>/<span id="petMaxHp">100</span></div>
                         <div class="stat-item">⚡ <span id="energy">50</span></div>
                         <div class="stat-item">🏆 <span id="achievementCount">0</span>/<span id="totalAchievements">8</span></div>
                     </div>
@@ -767,7 +767,7 @@
 
         <!-- v8.3.0 故事模式 -->
         <div id="storyMode" class="page hidden">
-            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <button class="btn btn-secondary" onclick="returnToStoryChapters()">← 返回</button>
             <h2 style="text-align: center; margin: 10px 0;">📖 拼音大冒险</h2>
 
             <!-- 故事章节选择 -->
@@ -812,7 +812,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v8.5.14';
+        var GAME_VERSION = 'v8.5.15';
         var GAME_BUILD_DATE = '2026-03-11';
         
         // 完整拼音数据
@@ -1829,7 +1829,7 @@
                 completed: false,
                 scenes: [
                     { type: 'dialogue', text: '小熊猫来到声母森林，这里住着b、p、m、f四位守护者...' },
-                    { type: 'question', text: 'b守护者问："爸的声母是什么？"', pinyin: 'b', options: ['ba', 'pa', 'ma', 'fa'], reward: { coins: 5, exp: 3 } },
+                    { type: 'question', text: 'b守护者问："爸的声母是什么？"', pinyin: 'b', options: ['b', 'p', 'm', 'f'], reward: { coins: 5, exp: 3 } },
                     { type: 'dialogue', text: 'b守护者满意地点点头，放行了小熊猫...' },
                     { type: 'question', text: 'm守护者问："妈的声母是什么？"', pinyin: 'm', options: ['b', 'p', 'm', 'f'], reward: { coins: 5, exp: 3 } },
                     { type: 'dialogue', text: '穿过第一层，小熊猫遇到了d、t、n、l守护者...' },
@@ -2105,6 +2105,13 @@
             saveGameData();
 
             // 返回章节列表
+            document.getElementById('storyChapters').classList.remove('hidden');
+            document.getElementById('storyScene').classList.add('hidden');
+            renderStoryChapters();
+        }
+
+        // 返回到故事章节选择页面
+        function returnToStoryChapters() {
             document.getElementById('storyChapters').classList.remove('hidden');
             document.getElementById('storyScene').classList.add('hidden');
             renderStoryChapters();
@@ -2485,17 +2492,8 @@ function showPage(pageId) {
         function showMainMenu() {
             showPage('mainMenu');
             inBattle = false;
-            // 重置到学习Tab
-            var tabs = ['study', 'adventure', 'shop', 'stats', 'profile'];
-            tabs.forEach(function(t) {
-                var panel = document.getElementById('tab-' + t);
-                var label = document.getElementById('label-' + t);
-                if (panel) panel.style.display = (t === 'study') ? 'block' : 'none';
-                if (label) {
-                    label.style.color = (t === 'study') ? '#667eea' : '#999';
-                    label.style.fontWeight = (t === 'study') ? 'bold' : 'normal';
-                }
-            });
+            // 返回到之前活动的Tab
+            switchTab(currentActiveTab);
         }
         function goToLearning() { showPage('learning'); }
         function goToLevelMap() { showPage('levelMap'); renderLevelMap(); }
@@ -4490,6 +4488,7 @@ function showPage(pageId) {
             coins -= price;
             pets.owned.push(petId);
             updateUI();
+            updateShopCoins();
             saveGameData();
             renderShop('pets');
             alert('🎉 恭喜获得新宠物！请到"我的宠物"页面切换使用。');
@@ -4548,6 +4547,30 @@ function showPage(pageId) {
             html += '<div class="pet-stat"><div>🛡️ 防御</div><div class="pet-stat-value">' + totalDefense + (armorBonus + accessoryDefBonus > 0 ? '<span style="font-size:10px;color:#4CAF50">+' + (armorBonus + accessoryDefBonus) + '</span>' : '') + '</div></div>';
             html += '<div class="pet-stat"><div>❤️ 生命</div><div class="pet-stat-value">' + hp + '/' + currentPet.maxHp + '</div></div>';
             html += '<div class="pet-stat"><div>⚡ 体力</div><div class="pet-stat-value">' + energy + '</div></div>';
+            html += '</div>';
+
+            // 当前装备显示
+            html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 15px; margin: 20px 0;">';
+            html += '<div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">⚔️ 当前装备</div>';
+            
+            if (equipment.weapon) {
+                html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px; margin-bottom: 8px;">';
+                html += '<div style="font-size: 24px; margin-right: 10px;">' + equipment.weapon.icon + '</div>';
+                html += '<div><div style="font-size: 12px; font-weight: bold;">' + equipment.weapon.name + '</div><div style="font-size: 10px; color: #666;">攻击 +' + equipment.weapon.attack + '</div></div>';
+                html += '</div>';
+            }
+            if (equipment.armor) {
+                html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px; margin-bottom: 8px;">';
+                html += '<div style="font-size: 24px; margin-right: 10px;">' + equipment.armor.icon + '</div>';
+                html += '<div><div style="font-size: 12px; font-weight: bold;">' + equipment.armor.name + '</div><div style="font-size: 10px; color: #666;">防御 +' + equipment.armor.defense + '</div></div>';
+                html += '</div>';
+            }
+            if (equipment.accessory) {
+                html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px;">';
+                html += '<div style="font-size: 24px; margin-right: 10px;">' + equipment.accessory.icon + '</div>';
+                html += '<div><div style="font-size: 12px; font-weight: bold;">' + equipment.accessory.name + '</div><div style="font-size: 10px; color: #666;">攻+' + equipment.accessory.bonus.attack + ' 防+' + equipment.accessory.bonus.defense + '</div></div>';
+                html += '</div>';
+            }
             html += '</div>';
 
             // 拥有的宠物列表
@@ -5068,12 +5091,16 @@ function showPage(pageId) {
                     equipment[itemType] = item;
                     recalcPetStats();
                     saveGameData();
+                    updateUI();
+                    updateShopCoins();
                     renderShop(type);
                     alert('🎉 购买并装备成功！' + item.name + ' 已自动装备（属性更高）');
                     return;
                 } else {
                     // 只是购买，但不装备（因为不如当前装备）
                     saveGameData();
+                    updateUI();
+                    updateShopCoins();
                     renderShop(type);
                     alert('🎉 购买成功！' + item.name + ' 已存入背包（当前装备属性更高或相同）');
                     return;
@@ -5086,6 +5113,7 @@ function showPage(pageId) {
 
             checkAchievements();
             updateUI();
+            updateShopCoins();
             renderShop(type);
             alert('购买成功！' + (item && item.hp ? '恢复' + item.hp + '点HP' : item && item.energy ? '恢复' + item.energy + '点体力' : ''));
         }
@@ -5115,6 +5143,13 @@ function showPage(pageId) {
             document.getElementById('energy').textContent = energy;
             document.getElementById('petAttack').textContent = petAttack;
             document.getElementById('petDefense').textContent = petDefense;
+            
+            // 更新宠物最大生命值显示
+            var currentPet = pets.list[pets.current];
+            if (currentPet) {
+                document.getElementById('petMaxHp').textContent = currentPet.maxHp;
+            }
+            
             var total = totalCorrect + totalWrong;
             document.getElementById('accuracy').textContent = total > 0 ? Math.round(totalCorrect / total * 100) + '%' : '0%';
             document.getElementById('completedLevels').textContent = completedLevels;
