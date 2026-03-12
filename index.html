@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v8.5.20 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.0 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -815,8 +815,8 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v8.5.16';
-        var GAME_BUILD_DATE = '2026-03-11';
+        var GAME_VERSION = 'v9.0.0';
+        var GAME_BUILD_DATE = '2026-03-12';
         
         // 完整拼音数据
         var pinyinData = {
@@ -959,12 +959,12 @@
             current: 'panda',
             owned: ['panda'],
             list: {
-                panda: { id: 'panda', name: '拼音小熊猫', emoji: '🐼', attack: 10, defense: 5, hp: 100, maxHp: 100, desc: '平衡的初学者宠物', level: 1, exp: 0, expToLevel: 100 },
-                tiger: { id: 'tiger', name: '勇猛小老虎', emoji: '🐯', attack: 18, defense: 3, hp: 85, maxHp: 85, desc: '高攻击型宠物', price: 300, level: 1, exp: 0, expToLevel: 100 },
-                lion: { id: 'lion', name: '威武小狮子', emoji: '🦁', attack: 15, defense: 8, hp: 95, maxHp: 95, desc: '攻守平衡型', price: 500, level: 1, exp: 0, expToLevel: 100 },
-                dragon: { id: 'dragon', name: '火焰小龙', emoji: '🐲', attack: 25, defense: 5, hp: 90, maxHp: 90, desc: '强力攻击型', price: 800, level: 1, exp: 0, expToLevel: 100 },
-                unicorn: { id: 'unicorn', name: '魔法独角兽', emoji: '🦄', attack: 12, defense: 15, hp: 110, maxHp: 110, desc: '高防御型宠物', price: 600, level: 1, exp: 0, expToLevel: 100 },
-                rabbit: { id: 'rabbit', name: '迅捷小兔', emoji: '🐰', attack: 8, defense: 6, hp: 80, maxHp: 80, desc: '敏捷型宠物', price: 200, level: 1, exp: 0, expToLevel: 100 }
+                panda: { id: 'panda', name: '拼音小熊猫', emoji: '🐼', attack: 10, defense: 5, hp: 100, maxHp: 100, desc: '平衡的初学者宠物', level: 1, exp: 0, expToLevel: 100, skills: [] },
+                rabbit: { id: 'rabbit', name: '迅捷小兔', emoji: '🐰', attack: 8, defense: 6, hp: 80, maxHp: 80, desc: '敏捷型宠物', price: 200, level: 1, exp: 0, expToLevel: 100, skills: [{name: '幸运星', desc: '5%概率获得双倍金币', type: 'double_coins', chance: 0.05}] },
+                tiger: { id: 'tiger', name: '勇猛小老虎', emoji: '🐯', attack: 18, defense: 3, hp: 85, maxHp: 85, desc: '高攻击型宠物', price: 300, level: 1, exp: 0, expToLevel: 100, skills: [{name: '猛虎之力', desc: '10%概率获得双倍金币', type: 'double_coins', chance: 0.10}] },
+                lion: { id: 'lion', name: '威武小狮子', emoji: '🦁', attack: 15, defense: 8, hp: 95, maxHp: 95, desc: '攻守平衡型', price: 500, level: 1, exp: 0, expToLevel: 100, skills: [{name: '王者霸气', desc: '8%概率获得双倍经验', type: 'double_exp', chance: 0.08}, {name: '寻宝嗅觉', desc: '5%概率发现额外宝石', type: 'extra_gem', chance: 0.05}] },
+                unicorn: { id: 'unicorn', name: '魔法独角兽', emoji: '🦄', attack: 12, defense: 15, hp: 110, maxHp: 110, desc: '高防御型宠物', price: 600, level: 1, exp: 0, expToLevel: 100, skills: [{name: '魔法光环', desc: '12%概率获得双倍经验', type: 'double_exp', chance: 0.12}, {name: '治愈之光', desc: '战斗后恢复10%HP', type: 'heal_after_battle', chance: 1.0}] },
+                dragon: { id: 'dragon', name: '火焰小龙', emoji: '🐲', attack: 25, defense: 5, hp: 90, maxHp: 90, desc: '强力攻击型', price: 800, level: 1, exp: 0, expToLevel: 100, skills: [{name: '龙之宝藏', desc: '15%概率获得双倍金币', type: 'double_coins', chance: 0.15}, {name: '龙息洞察', desc: '10%概率发现额外宝石', type: 'extra_gem', chance: 0.10}, {name: '火焰之力', desc: '战斗伤害+20%', type: 'damage_bonus', chance: 1.0, bonus: 0.2}] }
             }
         };
 
@@ -2947,9 +2947,10 @@ function showPage(pageId) {
                 btn.classList.add('correct');
                 totalCorrect++;
                 levelCorrectCount++; // 记录本关答对
-                coins += 1; // 每题答对给1金币
+                var coinReward = triggerPetSkill('double_coins', 1); // 每题答对给1金币，应用技能加成
+                coins += coinReward;
                 addPetExp(2); // 答对题目宠物获得经验
-                showToast('✅ 正确! +2经验', 'success');
+                showToast('✅ 正确! +' + (coinReward > 1 ? coinReward : 2) + '经验', 'success');
             } else {
                 btn.classList.add('wrong');
                 totalWrong++;
@@ -3025,7 +3026,43 @@ function showPage(pageId) {
         }
 
         // 宠物获得经验
+        // 触发宠物技能
+        function triggerPetSkill(triggerType, baseValue) {
+            var currentPet = pets.list[pets.current];
+            if (!currentPet.skills || currentPet.skills.length === 0) return baseValue;
+
+            var bonus = 0;
+            var triggeredSkills = [];
+
+            currentPet.skills.forEach(function(skill) {
+                if (skill.type === triggerType && Math.random() < skill.chance) {
+                    if (triggerType === 'double_coins') {
+                        bonus += baseValue;
+                        triggeredSkills.push(skill.name + ' 触发！金币翻倍');
+                    } else if (triggerType === 'double_exp') {
+                        bonus += baseValue;
+                        triggeredSkills.push(skill.name + ' 触发！经验翻倍');
+                    } else if (triggerType === 'extra_gem') {
+                        dropTreasure();
+                        triggeredSkills.push(skill.name + ' 触发！发现额外宝石');
+                    } else if (triggerType === 'damage_bonus' && skill.bonus) {
+                        bonus = baseValue * skill.bonus;
+                        triggeredSkills.push(skill.name + ' 生效！伤害+' + (skill.bonus * 100) + '%');
+                    }
+                }
+            });
+
+            if (triggeredSkills.length > 0) {
+                showToast('✨ ' + triggeredSkills.join('\n'), 'success');
+            }
+
+            return baseValue + bonus;
+        }
+
         function addPetExp(amount) {
+            // 应用技能加成
+            amount = triggerPetSkill('double_exp', amount);
+
             var currentPet = pets.list[pets.current];
             currentPet.exp += amount;
 
@@ -3051,10 +3088,19 @@ function showPage(pageId) {
             pet.maxHp += hpGain;
             pet.hp = pet.maxHp; // 升级后回满血
 
+            // 技能概率提升
+            var skillMsg = '';
+            if (pet.skills && pet.skills.length > 0) {
+                pet.skills.forEach(function(skill) {
+                    skill.chance = Math.min(skill.chance + 0.02, 0.5); // 每级提升2%，最高50%
+                });
+                skillMsg = '\n✨ 技能触发概率提升！';
+            }
+
             // 同步到战斗属性
             recalcPetStats();
 
-            showToast('🎉 ' + pet.name + ' 升到 Lv.' + pet.level + '!', 'success');
+            showToast('🎉 ' + pet.name + ' 升到 Lv.' + pet.level + '！' + skillMsg, 'success');
         }
 
         // 根据通关关卡解锁装备
@@ -4506,11 +4552,17 @@ function showPage(pageId) {
                 // 渲染宠物商店
                 shopItems.pets.forEach(function(item) {
                     var owned = pets.owned.includes(item.id);
+                    var petData = pets.list[item.id];
+                    var skillsHtml = '';
+                    if (petData.skills && petData.skills.length > 0) {
+                        skillsHtml = '<div style="font-size: 10px; color: #e91e63; margin-top: 3px;">✨ ' + petData.skills.map(function(s) { return s.name; }).join(', ') + '</div>';
+                    }
                     html += '<div class="shop-item" style="padding: 15px;">' +
                         '<div style="font-size: 44px;">' + item.emoji + '</div>' +
                         '<div style="flex: 1; margin-left: 15px;">' +
                             '<div style="font-weight: bold; font-size: 16px;">' + item.name + '</div>' +
                             '<div style="font-size: 12px; color: #666;">' + item.desc + '</div>' +
+                            skillsHtml +
                         '</div>' +
                         '<button class="shop-item-btn" onclick="buyPet(\'' + item.id + '\',' + item.price + ')" ' + (owned ? 'disabled style="background:#ccc;"' : '') + '>' +
                             (owned ? '已拥有' : item.price + '💰') +
