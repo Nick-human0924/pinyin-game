@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v8.5.17 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v8.5.18 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -1959,17 +1959,32 @@
 
         // 显示当前场景
         function showCurrentScene() {
-            if (!currentChapter || currentSceneIndex >= currentChapter.scenes.length) {
+            console.log('showCurrentScene called, index:', currentSceneIndex, 'chapter:', currentChapter ? currentChapter.id : 'null');
+            
+            if (!currentChapter) {
+                console.error('No current chapter!');
+                return;
+            }
+            
+            if (currentSceneIndex >= currentChapter.scenes.length) {
                 // 章节完成
+                console.log('Chapter complete, calling completeChapter');
                 completeChapter();
                 return;
             }
 
             var scene = currentChapter.scenes[currentSceneIndex];
+            console.log('Current scene:', scene);
+            
             var storyTextEl = document.getElementById('storyText');
             var storyQuestionEl = document.getElementById('storyQuestion');
             var storyOptionsEl = document.getElementById('storyOptions');
             var continueBtn = document.getElementById('storyContinueBtn');
+
+            if (!storyTextEl || !storyQuestionEl || !storyOptionsEl || !continueBtn) {
+                console.error('Story elements not found!');
+                return;
+            }
 
             if (scene.type === 'dialogue') {
                 storyQuestionEl.classList.add('hidden');
@@ -1995,12 +2010,16 @@
 
         // 继续故事
         function continueStory() {
+            console.log('continueStory called, current index:', currentSceneIndex);
             currentSceneIndex++;
+            console.log('New index:', currentSceneIndex);
             showCurrentScene();
         }
 
         // 回答故事问题
         function answerStoryQuestion(selected, correct, reward) {
+            console.log('answerStoryQuestion called:', selected, correct, reward);
+            
             var isCorrect = selected === correct;
             var buttons = document.querySelectorAll('#storyOptions .option-btn');
 
@@ -2014,6 +2033,8 @@
             });
 
             if (isCorrect) {
+                console.log('Answer correct, processing reward...');
+                
                 // 发放答题奖励
                 if (reward) {
                     if (reward.coins) {
@@ -2027,11 +2048,15 @@
                 }
 
                 // 随机掉落宝物（30%概率）
-                if (Math.random() < 0.3) {
-                    var treasure = dropTreasure();
-                    if (treasure) {
-                        chapterRewards.treasures.push(treasure);
+                try {
+                    if (Math.random() < 0.3) {
+                        var treasure = dropTreasure();
+                        if (treasure) {
+                            chapterRewards.treasures.push(treasure);
+                        }
                     }
+                } catch (e) {
+                    console.error('Error dropping treasure:', e);
                 }
 
                 updateUI();
@@ -2040,8 +2065,11 @@
                 showToast('✅ 回答正确！+' + (reward ? reward.coins : 5) + '金币 +' + (reward ? reward.exp : 3) + '经验', 'success');
                 speak('正确！');
 
+                console.log('Setting timeout to advance to next scene...');
                 setTimeout(function() {
+                    console.log('Timeout fired, advancing scene...');
                     currentSceneIndex++;
+                    console.log('New scene index:', currentSceneIndex);
                     showCurrentScene();
                 }, 1000);
             } else {
@@ -2049,7 +2077,11 @@
                 speak(correct);
 
                 // 记录错题
-                recordError(currentChapter.scenes[currentSceneIndex].text, selected, correct, 'story');
+                try {
+                    recordError(currentChapter.scenes[currentSceneIndex].text, selected, correct, 'story');
+                } catch (e) {
+                    console.error('Error recording error:', e);
+                }
 
                 setTimeout(function() {
                     buttons.forEach(function(btn) {
