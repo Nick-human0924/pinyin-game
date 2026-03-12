@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v8.5.18 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v8.5.19 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -1242,6 +1242,25 @@
                 levels = defaultLevels;
             }
             achievements = user.achievements || achievements;
+            
+            // 修复：重新绑定成就condition函数（因为JSON保存会丢失函数）
+            if (user.achievements) {
+                var conditionMap = {
+                    'first_win': function() { return completedLevels >= 1; },
+                    'level_master': function() { return completedLevels >= 5; },
+                    'level_king': function() { return completedLevels >= 15; },
+                    'battle_hero': function() { return battleWins >= 5; },
+                    'rich': function() { return coins >= 500; },
+                    'streak_3': function() { return streak >= 3; },
+                    'shopaholic': function() { return ownedItems.length >= 5; },
+                    'perfect': function() { return perfectLevels > 0; }
+                };
+                achievements.forEach(function(ach) {
+                    if (ach && ach.id && conditionMap[ach.id]) {
+                        ach.condition = conditionMap[ach.id];
+                    }
+                });
+            }
             tasks = user.tasks || tasks;
             errorLog = user.errorLog || [];
 
