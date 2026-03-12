@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v8.5.19 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v8.5.20 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -5087,6 +5087,11 @@ function showPage(pageId) {
             saveGameData();
             showInventoryTab('equipments');
             showToast('✓ 已装备 ' + (item ? item.name : itemId), 'success');
+        }
+
+        // 统计材料数量
+        function countMaterial(materialId) {
+            return inventory.treasures.filter(function(t) { return t.id === materialId; }).length;
         }
 
         // 掉落宝物
