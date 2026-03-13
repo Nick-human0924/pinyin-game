@@ -653,7 +653,7 @@
                 <div class="stats-card"><div>🔥 连续</div><div class="stats-value" id="streak">0</div></div>
             </div>
             <div class="calendar" id="calendar"></div>
-            <button class="btn" onclick="checkIn()">今日打卡 +50💰</button>
+            <button class="btn" onclick="checkIn()">今日打卡 +10💰</button>
         </div>
 
         <!-- v8.2.0 错题本 -->
@@ -815,8 +815,8 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.0';
-        var GAME_BUILD_DATE = '2026-03-12';
+        var GAME_VERSION = 'v9.0.2';
+        var GAME_BUILD_DATE = '2026-03-13';
         
         // 完整拼音数据
         var pinyinData = {
@@ -1211,10 +1211,13 @@
             streak = user.streak;
             checkedIn = user.checkedIn;
             ownedItems = user.ownedItems || [];
-            levels = user.levels || levels;
-            // 确保 levels 数据兼容性（旧数据可能没有 type 属性）
-            if (levels.length > 0 && !levels[0].type) {
-                // 重新初始化 levels 以获取最新的关卡结构
+            // 修复：确保正确加载关卡进度
+            if (user.levels && user.levels.length === 15) {
+                levels = user.levels;
+                console.log('已加载关卡进度:', levels.filter(function(l) { return l.completed; }).length, '关已完成');
+            } else if (user.levels && user.levels.length > 0) {
+                // 旧数据兼容性处理：保留已完成状态
+                console.log('检测到旧版关卡数据，进行兼容性转换');
                 var defaultLevels = [
                     { id: 1, name: '声母·基础', type: 'initial', stage: 1, desc: '学习基础声母 b p m f', completed: false, locked: false },
                     { id: 2, name: '声母·进阶', type: 'initial', stage: 2, desc: '学习声母 d t n l g k h', completed: false, locked: true },
@@ -1233,7 +1236,7 @@
                     { id: 15, name: '词语·大师', type: 'word', stage: 3, desc: '挑战复杂词语和句子', isBoss: true, completed: false, locked: true }
                 ];
                 // 保留旧数据的完成状态
-                levels.forEach(function(oldLv, i) {
+                user.levels.forEach(function(oldLv, i) {
                     if (defaultLevels[i]) {
                         defaultLevels[i].completed = oldLv.completed || false;
                         defaultLevels[i].locked = oldLv.locked !== undefined ? oldLv.locked : (i > 0);
@@ -1241,8 +1244,34 @@
                 });
                 levels = defaultLevels;
             }
+            // 确保 levels 数据有效性
+            if (!levels || levels.length !== 15) {
+                console.warn('关卡数据异常，使用默认数据');
+                levels = [
+                    { id: 1, name: '声母·基础', type: 'initial', stage: 1, desc: '学习基础声母 b p m f', completed: false, locked: false },
+                    { id: 2, name: '声母·进阶', type: 'initial', stage: 2, desc: '学习声母 d t n l g k h', completed: false, locked: true },
+                    { id: 3, name: '声母·挑战', type: 'initial', stage: 3, desc: '学习声母 j q x zh ch sh r z c s y w', completed: false, locked: true },
+                    { id: 4, name: '韵母·单韵母', type: 'final', stage: 1, desc: '学习单韵母 a o e i u ü', completed: false, locked: true },
+                    { id: 5, name: '韵母·复韵母', type: 'final', stage: 2, desc: '学习复韵母 ai ei ui ao ou iu ie üe er', completed: false, locked: true },
+                    { id: 6, name: '韵母·鼻韵母', type: 'final', stage: 3, desc: '学习鼻韵母 an en in un ün ang eng ing ong', completed: false, locked: true },
+                    { id: 7, name: '整体认读·基础', type: 'whole', stage: 1, desc: '学习 zhi chi shi ri zi ci si', completed: false, locked: true },
+                    { id: 8, name: '整体认读·进阶', type: 'whole', stage: 2, desc: '学习 yi wu yu ye yue yuan', completed: false, locked: true },
+                    { id: 9, name: '整体认读·挑战', type: 'whole', stage: 3, desc: '学习 yin yun ying', completed: false, locked: true },
+                    { id: 10, name: '声调·基础', type: 'tone', stage: 1, desc: '学习单韵母声调', completed: false, locked: true },
+                    { id: 11, name: '声调·进阶', type: 'tone', stage: 2, desc: '学习复韵母声调', completed: false, locked: true },
+                    { id: 12, name: '声调·挑战', type: 'tone', stage: 3, desc: '学习鼻韵母和整体认读音节声调', completed: false, locked: true },
+                    { id: 13, name: '词语·基础', type: 'word', stage: 1, desc: '学习两字词语拼音', completed: false, locked: true },
+                    { id: 14, name: '词语·进阶', type: 'word', stage: 2, desc: '学习三字词语拼音', completed: false, locked: true },
+                    { id: 15, name: '词语·大师', type: 'word', stage: 3, desc: '挑战复杂词语和句子', isBoss: true, completed: false, locked: true }
+                ];
+            }
             achievements = user.achievements || achievements;
             
+            // 加载perfectLevels（用于完美答题成就判断）
+            if (user.perfectLevels !== undefined) {
+                perfectLevels = user.perfectLevels;
+            }
+
             // 修复：重新绑定成就condition函数（因为JSON保存会丢失函数）
             if (user.achievements) {
                 var conditionMap = {
@@ -1263,6 +1292,17 @@
             }
             tasks = user.tasks || tasks;
             errorLog = user.errorLog || [];
+
+            // 加载故事章节进度
+            if (user.storyChapters && user.storyChapters.length === storyChapters.length) {
+                user.storyChapters.forEach(function(savedChapter, i) {
+                    if (storyChapters[i]) {
+                        storyChapters[i].unlocked = savedChapter.unlocked;
+                        storyChapters[i].completed = savedChapter.completed;
+                    }
+                });
+                console.log('已加载故事进度:', storyChapters.filter(function(c) { return c.completed; }).length, '章已完成');
+            }
 
             // v8.2.0 新数据加载
             if (user.pets) {
@@ -1327,6 +1367,10 @@
                 ownedItems, levels, achievements, tasks, errorLog,
                 // v8.2.0 新数据
                 pets, inventory, equipment, errorBook,
+                // v9.0.1 新增：保存故事章节进度
+                storyChapters: storyChapters.map(function(c) { return { id: c.id, unlocked: c.unlocked, completed: c.completed }; }),
+                // v9.0.2 新增：保存perfectLevels
+                perfectLevels: perfectLevels,
                 lastSave: new Date().toISOString()
             };
             // 只保存到localStorage，不调用saveUsersData避免循环
@@ -1349,6 +1393,9 @@
         function saveGameData() {
             if (currentUserId) {
                 saveUserData(currentUserId);
+                console.log('游戏数据已保存，当前完成关卡:', levels.filter(function(l) { return l.completed; }).length);
+            } else {
+                console.warn('无法保存：没有当前用户ID');
             }
         }
 
@@ -1923,7 +1970,7 @@
                     { type: 'dialogue', text: '小熊猫终于来到拼音宫殿，拼音大王正在等着他...' },
                     { type: 'question', text: '拼音大王说："想要成为拼音大师，先回答我的问题。龙的拼音是？"', pinyin: 'lóng', options: ['lóng', 'nóng', 'róng', 'lǒng'], reward: { coins: 15, exp: 10 } },
                     { type: 'dialogue', text: '拼音大王点点头："不错，但这只是开始。"' },
-                    { type: 'question', text: '"zhōng guó，这是什么意思？"', pinyin: '中国', options: ['中国', '钟国', '中国', '中国'], reward: { coins: 20, exp: 15 } },
+                    { type: 'question', text: '"zhōng guó，这是什么意思？"', pinyin: '中国', options: ['中国', '美国', '日本', '英国'], reward: { coins: 20, exp: 15 } },
                     { type: 'dialogue', text: '拼音大王露出微笑："很好！最后一题！"' },
                     { type: 'question', text: '"b-á→bá，g-u-ǒ→？"', pinyin: 'guǒ', options: ['guǒ', 'gǒu', 'gōu', 'guó'], reward: { coins: 25, exp: 20 } },
                     { type: 'dialogue', text: '拼音大王满意地鼓掌："恭喜你，小熊猫！你已经通过了所有考验，成为拼音大师！"' }
@@ -4303,10 +4350,12 @@ function showPage(pageId) {
             } else {
                 // 安全探索奖励：根据地点和等级调整
                 var baseRewards = {forest: 3, desert: 4, ocean: 5, volcano: 6};
-                var reward = baseRewards[location] + Math.floor(Math.random() * 3) + levelBonus;
+                var minReward = baseRewards[location] + levelBonus;
+                var maxReward = minReward + 2;
+                var reward = minReward + Math.floor(Math.random() * 3);
                 coins += reward;
                 updateUI();
-                alert('安全探索！获得 ' + reward + ' 金币');
+                alert('安全探索！获得 ' + reward + ' 金币 (范围: ' + minReward + '-' + maxReward + ')');
             }
         }
 
@@ -4588,16 +4637,23 @@ function showPage(pageId) {
                 return;
             }
             if (coins < price) {
-                alert('金币不足！需要 ' + price + ' 金币');
+                alert('❌ 金币不足！需要 ' + price + ' 金币，你当前有 ' + coins + ' 金币');
                 return;
             }
+            
+            var pet = pets.list[petId];
+            var confirmBuy = confirm('确定要购买 ' + pet.name + ' 吗？\n\n价格: ' + price + ' 金币\n属性: 攻' + pet.attack + ' 防' + pet.defense + ' 血' + pet.maxHp + '\n\n购买后将立即拥有该宠物！');
+            if (!confirmBuy) {
+                return;
+            }
+            
             coins -= price;
             pets.owned.push(petId);
             updateUI();
             updateShopCoins();
             saveGameData();
             renderShop('pets');
-            alert('🎉 恭喜获得新宠物！请到"我的宠物"页面切换使用。');
+            alert('🎉 恭喜获得新宠物：' + pet.name + '！\n\n请到"我的宠物"页面查看并切换使用。');
         }
 
         // 切换宠物
@@ -4697,11 +4753,14 @@ function showPage(pageId) {
                 var pet = pets.list[petId];
                 var isCurrent = petId === pets.current;
                 var petExpPercent = (pet.exp / pet.expToLevel * 100).toFixed(0);
+                // v9.0.2 修复：显示与主区域一致的总属性（含装备加成）
+                var petTotalAttack = pet.attack + (equipment.weapon ? equipment.weapon.attack : 0) + (equipment.accessory ? equipment.accessory.bonus.attack : 0);
+                var petTotalDefense = pet.defense + (equipment.armor ? equipment.armor.defense : 0) + (equipment.accessory ? equipment.accessory.bonus.defense : 0);
                 html += '<div onclick="switchPet(\'' + petId + '\')" style="flex: 1; min-width: 100px; background: ' + (isCurrent ? '#E3F2FD' : '#f8f9fa') + '; border: 2px solid ' + (isCurrent ? '#667eea' : 'transparent') + '; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer;">';
                 html += '<div style="font-size: 44px;">' + pet.emoji + '</div>';
                 html += '<div style="font-size: 12px; font-weight: bold;">' + pet.name + '</div>';
                 html += '<div style="font-size: 11px; color: #667eea; margin: 3px 0;">Lv.' + pet.level + '</div>';
-                html += '<div style="font-size: 10px; color: #666;">⚔️' + pet.attack + ' 🛡️' + pet.defense + '</div>';
+                html += '<div style="font-size: 10px; color: #666;">⚔️' + petTotalAttack + ' 🛡️' + petTotalDefense + '</div>';
                 html += '<div style="font-size: 9px; color: #999; margin-top: 3px;">经验: ' + petExpPercent + '%</div>';
                 if (isCurrent) html += '<div style="font-size: 10px; color: #667eea; margin-top: 5px;">✓ 当前</div>';
                 html += '</div>';
@@ -5226,7 +5285,8 @@ function showPage(pageId) {
             }
 
             // 消耗品直接生效
-            if (item && item.hp) hp = Math.min(hp + item.hp, maxHp);
+            var currentPet = pets.list[pets.current];
+            if (item && item.hp) hp = Math.min(hp + item.hp, currentPet ? currentPet.maxHp : maxHp);
             if (item && item.energy) energy = Math.min(energy + item.energy, 100);
 
             checkAchievements();
