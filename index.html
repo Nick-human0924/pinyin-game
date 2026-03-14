@@ -2708,6 +2708,7 @@ function showPage(pageId) {
 
         // 开始关卡
         function startLevel(levelId) {
+            alert('DEBUG: startLevel called, levelId=' + levelId);
             currentLevel = levelId;
             var level = levels[currentLevel - 1];
             questionsInLevel = [];
@@ -2715,9 +2716,11 @@ function showPage(pageId) {
 
             // 根据关卡类型生成问题 - 使用不重复随机
             questionsInLevel = generateUniqueQuestions(level.type, level.stage, 10);
+            alert('DEBUG: generated ' + questionsInLevel.length + ' questions');
 
             currentQuestionInLevel = 1;
             showPage('game');
+            alert('DEBUG: showPage done, loading question');
             loadLevelQuestion();
         }
 
@@ -4407,9 +4410,11 @@ function showPage(pageId) {
             var levelBonus = Math.floor((petLevel - 1) * 0.5); // 每级增加少量奖励
 
             if (Math.random() < encounterRates[location]) {
+                alert('DEBUG: 遇到敌人，准备战斗');
                 var mons = monsters[location];
                 currentEnemy = JSON.parse(JSON.stringify(mons[Math.floor(Math.random() * mons.length)]));
                 currentEnemy.maxHp = currentEnemy.hp;
+                alert('DEBUG: 敌人=' + currentEnemy.name + '，调用startBattle');
                 startBattle();
             } else {
                 // 安全探索奖励：根据地点和等级调整
