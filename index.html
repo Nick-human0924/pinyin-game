@@ -4521,8 +4521,7 @@ function showPage(pageId) {
             if (Math.random() > skill.chance) return null;
             
             var skillMsg = '👹 ' + currentEnemy.name + ' 使用【' + skill.name + '】！';
-            if (skill.desc) skillMsg += '
-💡 ' + skill.desc;
+            if (skill.desc) skillMsg += '\n💡 ' + skill.desc;
             
             // 计算技能伤害
             var damage = currentEnemy.attack;
@@ -4533,8 +4532,7 @@ function showPage(pageId) {
             // 应用技能效果
             if (skill.heal) {
                 currentEnemy.hp = Math.min(currentEnemy.hp + skill.heal, currentEnemy.maxHp);
-                skillMsg += '
-💚 恢复 ' + skill.heal + ' HP';
+                skillMsg += '\n💚 恢复 ' + skill.heal + ' HP';
             }
             
             return { msg: skillMsg, damage: damage, skill: skill };
