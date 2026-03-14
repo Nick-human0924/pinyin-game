@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.19 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.20 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -815,7 +815,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.19';
+        var GAME_VERSION = 'v9.0.20';
         var GAME_BUILD_DATE = '2026-03-14 19:00';
         var GAME_BUILD_DATE = '2026-03-13';
         
@@ -984,6 +984,14 @@
         var totalCorrect = 0, totalWrong = 0, streak = 0, checkedIn = false;
         var inBattle = false, currentEnemy = null, currentBattleQuestion = null;
         var ownedItems = [];
+        
+        // v9.0.20: 答题状态管理 - 防止重复点击
+        var battleAnswered = false;      // 战斗答题状态
+        var wordAnswered = false;        // 词语游戏答题状态
+        var randomTestAnswered = false;  // 随机测试答题状态
+        var initialTestAnswered = false; // 基础教学-声母答题状态
+        var finalTestAnswered = false;   // 基础教学-韵母答题状态
+        var wholeTestAnswered = false;   // 基础教学-整体认读答题状态
 
         // ========== v8.2.0 宠物系统 ==========
         var pets = {
@@ -1379,7 +1387,7 @@
                 if (user.equipment.armor) equipment.armor = user.equipment.armor;
                 if (user.equipment.accessory) equipment.accessory = user.equipment.accessory;
             }
-            // v9.0.19: 修复装备显示 - 加载equipped对象
+            // v9.0.20: 修复装备显示 - 加载equipped对象
             if (user.equipped) {
                 if (user.equipped.weapon) equipped.weapon = user.equipped.weapon;
                 if (user.equipped.armor) equipped.armor = user.equipped.armor;
@@ -2590,6 +2598,15 @@
         };
 
 function showPage(pageId) {
+            // v9.0.20: 页面切换时重置所有答题状态，防止状态残留
+            levelAnswered = false;
+            battleAnswered = false;
+            wordAnswered = false;
+            randomTestAnswered = false;
+            initialTestAnswered = false;
+            finalTestAnswered = false;
+            wholeTestAnswered = false;
+            
             // 先隐藏所有页面（包括mainMenu）
             document.querySelectorAll('.page, #mainMenu').forEach(function(el) { el.classList.add('hidden'); });
             // 显示目标页面
@@ -3421,6 +3438,7 @@ function showPage(pageId) {
             currentTestIndex = 0;
             testScore = 0;
             currentTestType = 'initial';
+            initialTestAnswered = false; // v9.0.20: 重置答题状态
             showInitialQuestion();
         }
 
@@ -3450,6 +3468,10 @@ function showPage(pageId) {
         }
 
         function checkInitialAnswer(answer) {
+            // v9.0.20: 防止重复点击
+            if (initialTestAnswered) return;
+            initialTestAnswered = true;
+            
             var q = initialTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
@@ -3460,7 +3482,10 @@ function showPage(pageId) {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
             currentTestIndex++;
-            setTimeout(showInitialQuestion, 1000);
+            setTimeout(function() {
+                initialTestAnswered = false; // v9.0.20: 重置答题状态
+                showInitialQuestion();
+            }, 1000);
         }
         function showFinal() {
             setTab(2);
@@ -3506,6 +3531,7 @@ function showPage(pageId) {
             currentTestIndex = 0;
             testScore = 0;
             currentTestType = 'final';
+            finalTestAnswered = false; // v9.0.20: 重置答题状态
             showFinalQuestion();
         }
 
@@ -3534,6 +3560,10 @@ function showPage(pageId) {
         }
 
         function checkFinalAnswer(answer) {
+            // v9.0.20: 防止重复点击
+            if (finalTestAnswered) return;
+            finalTestAnswered = true;
+            
             var q = finalTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
@@ -3544,7 +3574,11 @@ function showPage(pageId) {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
             currentTestIndex++;
-            setTimeout(showFinalQuestion, 1000);
+            setTimeout(function() {
+                finalTestAnswered = false; // v9.0.20: 重置答题状态
+                showFinalQuestion();
+            }, 1000);
+        }
         }
         function showWhole() {
             setTab(3);
@@ -3587,6 +3621,7 @@ function showPage(pageId) {
             currentTestIndex = 0;
             testScore = 0;
             currentTestType = 'whole';
+            wholeTestAnswered = false; // v9.0.20: 重置答题状态
             showWholeQuestion();
         }
 
@@ -3615,6 +3650,10 @@ function showPage(pageId) {
         }
 
         function checkWholeAnswer(answer) {
+            // v9.0.20: 防止重复点击
+            if (wholeTestAnswered) return;
+            wholeTestAnswered = true;
+            
             var q = wholeTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
@@ -3625,7 +3664,10 @@ function showPage(pageId) {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
             currentTestIndex++;
-            setTimeout(showWholeQuestion, 1000);
+            setTimeout(function() {
+                wholeTestAnswered = false; // v9.0.20: 重置答题状态
+                showWholeQuestion();
+            }, 1000);
         }
 
         // ===== 随机测试系统（v8.5.3新增） =====
@@ -3758,6 +3800,7 @@ function showPage(pageId) {
             randomTestState.currentIndex = 0;
             randomTestState.score = 0;
             randomTestState.questions = generateRandomQuestions(type, randomTestState.totalQuestions);
+            randomTestAnswered = false; // v9.0.20: 重置答题状态
 
             showRandomTestQuestion();
         }
@@ -3806,6 +3849,10 @@ function showPage(pageId) {
         }
 
         function checkRandomTestAnswer(answer) {
+            // v9.0.20: 防止重复点击
+            if (randomTestAnswered) return;
+            randomTestAnswered = true;
+            
             var q = randomTestState.questions[randomTestState.currentIndex];
             if (answer === q.answer) {
                 randomTestState.score++;
@@ -3815,7 +3862,10 @@ function showPage(pageId) {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
             randomTestState.currentIndex++;
-            setTimeout(showRandomTestQuestion, 1000);
+            setTimeout(function() {
+                randomTestAnswered = false; // v9.0.20: 重置答题状态
+                showRandomTestQuestion();
+            }, 1000);
         }
 
         // 声调学习 - v8.5.3新增测试功能
@@ -4236,6 +4286,7 @@ function showPage(pageId) {
         }
 
         function startWordGame() {
+            wordAnswered = false; // v9.0.20: 重置答题状态
             var randomWord = wordData[Math.floor(Math.random() * wordData.length)];
             window.currentWord = randomWord;
 
@@ -4264,15 +4315,21 @@ function showPage(pageId) {
         }
 
         function checkWordAnswer(selected, correct) {
+            // v9.0.20: 防止重复点击
+            if (wordAnswered) return;
+            wordAnswered = true;
+            
             if (selected === correct) {
                 coins += 10;
                 updateUI();
                 saveGameData();
                 alert('🎉 回答正确！+10金币');
+                wordAnswered = false; // 重置状态
                 startWordGame();
             } else {
                 recordError(window.currentWord.word, selected, correct, 'word');
                 alert('❌ 正确答案应该是：' + correct);
+                wordAnswered = false; // 重置状态
             }
         }
 
@@ -4500,6 +4557,7 @@ function showPage(pageId) {
         // 战斗
         function startBattle() {
             inBattle = true;
+            battleAnswered = false; // v9.0.20: 重置答题状态
             showPage('battle');
             document.getElementById('enemyAvatar').textContent = currentEnemy.emoji;
             document.getElementById('enemyName').textContent = currentEnemy.name;
@@ -4617,6 +4675,10 @@ function showPage(pageId) {
         }
 
         function battleAnswer(btn, selected, correct) {
+            // v9.0.20: 防止重复点击
+            if (battleAnswered) return;
+            battleAnswered = true;
+            
             var isCorrect = selected === correct;
             if (isCorrect) {
                 btn.classList.add('correct');
@@ -4675,11 +4737,13 @@ function showPage(pageId) {
                             setTimeout(function() {
                                 alert('🎉 战斗胜利！获得 ' + reward + ' 金币和 ' + battleExp + ' 经验值！');
                                 inBattle = false;
+                                battleAnswered = false; // v9.0.20: 重置答题状态
                                 showMainMenu();
                             }, 1500);
                         } catch (e) {
                             alert('错误: ' + e.message);
                             inBattle = false;
+                            battleAnswered = false; // v9.0.20: 重置答题状态
                             showMainMenu();
                         }
                     }, 500);
@@ -4742,12 +4806,16 @@ function showPage(pageId) {
                     alert('💀 战斗失败！你的宠物被打败了！\n\n损失 ' + lostCoins + ' 金币\n\n请返回主菜单购买药水恢复宠物血量！');
                     coins -= lostCoins;
                     inBattle = false;
+                    battleAnswered = false; // v9.0.20: 重置答题状态
                     showMainMenu();
                     return;
                 }
             }
             updateUI(); updateBattleUI();
-            setTimeout(function() { loadBattleQuestion(); }, 1500);
+            setTimeout(function() { 
+                battleAnswered = false; // v9.0.20: 重置答题状态
+                loadBattleQuestion(); 
+            }, 1500);
         }
 
         function showDamage(element, damage) {
@@ -4914,7 +4982,7 @@ function showPage(pageId) {
             // 显示已装备的武器
             if (equipped.weapon) {
                 var equippedWeapon = shopItems.weapons.find(function(w) { return w.id === equipped.weapon; });
-                // v9.0.19: 如果没在shopItems找到，可能是默认装备，从allEquipments找
+                // v9.0.20: 如果没在shopItems找到，可能是默认装备，从allEquipments找
                 if (!equippedWeapon) {
                     equippedWeapon = allEquipments.weapon.find(function(w) { return w.id === equipped.weapon; });
                 }
@@ -4930,7 +4998,7 @@ function showPage(pageId) {
             // 显示已装备的防具
             if (equipped.armor) {
                 var equippedArmor = shopItems.armor.find(function(a) { return a.id === equipped.armor; });
-                // v9.0.19: 如果没在shopItems找到，可能是默认装备，从allEquipments找
+                // v9.0.20: 如果没在shopItems找到，可能是默认装备，从allEquipments找
                 if (!equippedArmor) {
                     equippedArmor = allEquipments.armor.find(function(a) { return a.id === equipped.armor; });
                 }
@@ -5217,7 +5285,7 @@ function showPage(pageId) {
                 return;
             }
             
-            // v9.0.19: 移除装备检查，允许直接出售已装备的物品
+            // v9.0.20: 移除装备检查，允许直接出售已装备的物品
             var isEquipped = equipment[type] && equipment[type].id === itemId;
             
             // 计算出售价格（半价回收，含升级成本）
@@ -5255,7 +5323,7 @@ function showPage(pageId) {
                 // 从拥有列表中移除
                 ownedItems = ownedItems.filter(function(id) { return id !== itemId; });
                 
-                // v9.0.19: 如果装备已装备，自动卸下
+                // v9.0.20: 如果装备已装备，自动卸下
                 if (isEquipped) {
                     equipment[type] = null;
                     equipped[type] = null;
@@ -5410,7 +5478,7 @@ function showPage(pageId) {
                     
                     // 操作按钮
                     html += '<div style="text-align: right;">';
-                    // v9.0.19: 所有装备都显示出售按钮
+                    // v9.0.20: 所有装备都显示出售按钮
                     var sellPriceWeapon = Math.floor(((item.price || 100) + (itemLevel > 1 ? (itemLevel - 1) * 50 : 0)) / 2);
                     html += '<button class="btn" onclick="sellItem(\'' + item.id + '\', \'weapon\')" style="width: auto; padding: 5px 10px; font-size: 11px; background: linear-gradient(135deg, #ff6b6b, #ee5a5a); margin-bottom: 5px;">💰 卖' + sellPriceWeapon + '</button><br>';
                     html += '<div style="font-size: 10px; color: #999; margin-bottom: 3px;">升级需:</div>';
@@ -5442,7 +5510,7 @@ function showPage(pageId) {
                     
                     // 操作按钮
                     html += '<div style="text-align: right;">';
-                    // v9.0.19: 所有装备都显示出售按钮
+                    // v9.0.20: 所有装备都显示出售按钮
                     var sellPriceArmor = Math.floor(((item.price || 100) + (itemLevel > 1 ? (itemLevel - 1) * 50 : 0)) / 2);
                     html += '<button class="btn" onclick="sellItem(\'' + item.id + '\', \'armor\')" style="width: auto; padding: 5px 10px; font-size: 11px; background: linear-gradient(135deg, #ff6b6b, #ee5a5a); margin-bottom: 5px;">💰 卖' + sellPriceArmor + '</button><br>';
                     html += '<div style="font-size: 10px; color: #999; margin-bottom: 3px;">升级需:</div>';
@@ -5743,7 +5811,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.19 (2026-03-14)
+        拼音大冒险 v9.0.20 (2026-03-14)
     </div>
 
     <script>
