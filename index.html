@@ -5097,8 +5097,10 @@ function showPage(pageId) {
             contentEl.innerHTML = html;
         }
 
-        // v9.0.8: 出售装备功能
+        // v9.0.8: 出售装备功能（调试版）
         function sellItem(itemId, type) {
+            console.log('sellItem called:', itemId, type);
+            
             var item;
             if (type === 'weapon') {
                 item = shopItems.weapons.find(function(w) { return w.id === itemId; });
@@ -5107,7 +5109,8 @@ function showPage(pageId) {
             }
             
             if (!item) {
-                alert('装备不存在！');
+                alert('❌ 装备不存在！');
+                console.error('Item not found:', itemId, type);
                 return;
             }
             
@@ -5142,7 +5145,10 @@ function showPage(pageId) {
             confirmMsg += '🏷️ 回收价格（半价）: ' + sellPrice + ' 金币\n\n';
             confirmMsg += '确定要出售吗？此操作不可撤销！';
             
+            console.log('Confirm message:', confirmMsg);
+            
             if (confirm(confirmMsg)) {
+                console.log('User confirmed sale');
                 // 从拥有列表中移除
                 ownedItems = ownedItems.filter(function(id) { return id !== itemId; });
                 
@@ -5159,9 +5165,11 @@ function showPage(pageId) {
                 updateUI();
                 
                 // 刷新背包显示
-                renderInventoryEquipments();
+                showInventoryTab('equipments');
                 
-                showToast('✅ 出售成功！获得 ' + sellPrice + ' 金币', 'success');
+                alert('✅ 出售成功！获得 ' + sellPrice + ' 金币');
+            } else {
+                console.log('User cancelled sale');
             }
         }
         
