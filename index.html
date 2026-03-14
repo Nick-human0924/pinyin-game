@@ -4583,9 +4583,13 @@ function showPage(pageId) {
                 speak('攻击！');
 
                 if (currentEnemy.hp <= 0) {
+                    alert('DEBUG: enemy hp <= 0, calling updateBattleUI');
                     updateBattleUI();
+                    alert('DEBUG: updateBattleUI done, setting timeout');
                     setTimeout(function() {
+                        alert('DEBUG: in setTimeout, calling playVictoryAnimation');
                         playVictoryAnimation();
+                        alert('DEBUG: playVictoryAnimation done');
                         // 阶梯式战斗奖励：根据敌人强度给予不同奖励
                         var enemyMaxHp = currentEnemy.maxHp || 50;
                         var enemyAttack = currentEnemy.attack || 10;
