@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.18 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.19 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -815,7 +815,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.18';
+        var GAME_VERSION = 'v9.0.19';
         var GAME_BUILD_DATE = '2026-03-14 19:00';
         var GAME_BUILD_DATE = '2026-03-13';
         
@@ -1379,7 +1379,7 @@
                 if (user.equipment.armor) equipment.armor = user.equipment.armor;
                 if (user.equipment.accessory) equipment.accessory = user.equipment.accessory;
             }
-            // v9.0.18: 修复装备显示 - 加载equipped对象
+            // v9.0.19: 修复装备显示 - 加载equipped对象
             if (user.equipped) {
                 if (user.equipped.weapon) equipped.weapon = user.equipped.weapon;
                 if (user.equipped.armor) equipped.armor = user.equipped.armor;
@@ -4914,7 +4914,7 @@ function showPage(pageId) {
             // 显示已装备的武器
             if (equipped.weapon) {
                 var equippedWeapon = shopItems.weapons.find(function(w) { return w.id === equipped.weapon; });
-                // v9.0.18: 如果没在shopItems找到，可能是默认装备，从allEquipments找
+                // v9.0.19: 如果没在shopItems找到，可能是默认装备，从allEquipments找
                 if (!equippedWeapon) {
                     equippedWeapon = allEquipments.weapon.find(function(w) { return w.id === equipped.weapon; });
                 }
@@ -4930,7 +4930,7 @@ function showPage(pageId) {
             // 显示已装备的防具
             if (equipped.armor) {
                 var equippedArmor = shopItems.armor.find(function(a) { return a.id === equipped.armor; });
-                // v9.0.18: 如果没在shopItems找到，可能是默认装备，从allEquipments找
+                // v9.0.19: 如果没在shopItems找到，可能是默认装备，从allEquipments找
                 if (!equippedArmor) {
                     equippedArmor = allEquipments.armor.find(function(a) { return a.id === equipped.armor; });
                 }
@@ -5200,7 +5200,7 @@ function showPage(pageId) {
             contentEl.innerHTML = html;
         }
 
-        // v9.0.9: 出售装备功能（调试版）
+        // v9.0.9: 出售装备功能
         function sellItem(itemId, type) {
             console.log('sellItem called:', itemId, type);
             
@@ -5217,11 +5217,8 @@ function showPage(pageId) {
                 return;
             }
             
-            // 检查是否已装备
-            if (equipment[type] && equipment[type].id === itemId) {
-                alert('⚠️ 该装备当前已装备，请先卸下！');
-                return;
-            }
+            // v9.0.19: 移除装备检查，允许直接出售已装备的物品
+            var isEquipped = equipment[type] && equipment[type].id === itemId;
             
             // 计算出售价格（半价回收，含升级成本）
             var itemLevel = getItemLevel(itemId, type);
@@ -5240,6 +5237,9 @@ function showPage(pageId) {
             // 确认对话框
             var confirmMsg = '💰 出售确认\n\n';
             confirmMsg += '装备: ' + item.name + ' Lv.' + itemLevel + '\n';
+            if (isEquipped) {
+                confirmMsg += '⚠️ 注意: 该装备当前已装备\n';
+            }
             confirmMsg += '基础价值: ' + basePrice + ' 金币\n';
             if (totalUpgradeCost > 0) {
                 confirmMsg += '升级投入: ' + totalUpgradeCost + ' 金币\n';
@@ -5255,9 +5255,10 @@ function showPage(pageId) {
                 // 从拥有列表中移除
                 ownedItems = ownedItems.filter(function(id) { return id !== itemId; });
                 
-                // 如果有装备记录，也移除
-                if (equipment[type] && equipment[type].id === itemId) {
+                // v9.0.19: 如果装备已装备，自动卸下
+                if (isEquipped) {
                     equipment[type] = null;
+                    equipped[type] = null;
                 }
                 
                 // 增加金币
@@ -5409,11 +5410,9 @@ function showPage(pageId) {
                     
                     // 操作按钮
                     html += '<div style="text-align: right;">';
-                    if (!isEquipped) {
-                        // 计算出售价格
-                        var sellPriceWeapon = Math.floor(((item.price || 100) + (itemLevel > 1 ? (itemLevel - 1) * 50 : 0)) / 2);
-                        html += '<button class="btn" onclick="sellItem(\'' + item.id + '\', \'weapon\')" style="width: auto; padding: 5px 10px; font-size: 11px; background: linear-gradient(135deg, #ff6b6b, #ee5a5a); margin-bottom: 5px;">💰 卖' + sellPriceWeapon + '</button><br>';
-                    }
+                    // v9.0.19: 所有装备都显示出售按钮
+                    var sellPriceWeapon = Math.floor(((item.price || 100) + (itemLevel > 1 ? (itemLevel - 1) * 50 : 0)) / 2);
+                    html += '<button class="btn" onclick="sellItem(\'' + item.id + '\', \'weapon\')" style="width: auto; padding: 5px 10px; font-size: 11px; background: linear-gradient(135deg, #ff6b6b, #ee5a5a); margin-bottom: 5px;">💰 卖' + sellPriceWeapon + '</button><br>';
                     html += '<div style="font-size: 10px; color: #999; margin-bottom: 3px;">升级需:</div>';
                     html += '<div style="font-size: 11px; margin-bottom: 3px;">💰' + upgradeCost.gold + ' 🔴' + upgradeCost.ruby + '</div>';
                     html += '<button class="btn" onclick="upgradeOwnedItem(\'' + item.id + '\', \'weapon\')" style="width: auto; padding: 5px 10px; font-size: 11px;" ' + (canUpgrade ? '' : 'disabled') + '>' + (canUpgrade ? '升级' : '材料不足') + '</button>';
@@ -5443,11 +5442,9 @@ function showPage(pageId) {
                     
                     // 操作按钮
                     html += '<div style="text-align: right;">';
-                    if (!isEquipped) {
-                        // 计算出售价格
-                        var sellPriceArmor = Math.floor(((item.price || 100) + (itemLevel > 1 ? (itemLevel - 1) * 50 : 0)) / 2);
-                        html += '<button class="btn" onclick="sellItem(\'' + item.id + '\', \'armor\')" style="width: auto; padding: 5px 10px; font-size: 11px; background: linear-gradient(135deg, #ff6b6b, #ee5a5a); margin-bottom: 5px;">💰 卖' + sellPriceArmor + '</button><br>';
-                    }
+                    // v9.0.19: 所有装备都显示出售按钮
+                    var sellPriceArmor = Math.floor(((item.price || 100) + (itemLevel > 1 ? (itemLevel - 1) * 50 : 0)) / 2);
+                    html += '<button class="btn" onclick="sellItem(\'' + item.id + '\', \'armor\')" style="width: auto; padding: 5px 10px; font-size: 11px; background: linear-gradient(135deg, #ff6b6b, #ee5a5a); margin-bottom: 5px;">💰 卖' + sellPriceArmor + '</button><br>';
                     html += '<div style="font-size: 10px; color: #999; margin-bottom: 3px;">升级需:</div>';
                     html += '<div style="font-size: 11px; margin-bottom: 3px;">💰' + upgradeCost.gold + ' 🔵' + upgradeCost.sapphire + '</div>';
                     html += '<button class="btn" onclick="upgradeOwnedItem(\'' + item.id + '\', \'armor\')" style="width: auto; padding: 5px 10px; font-size: 11px;" ' + (canUpgrade ? '' : 'disabled') + '>' + (canUpgrade ? '升级' : '材料不足') + '</button>';
@@ -5746,7 +5743,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.18 (2026-03-14)
+        拼音大冒险 v9.0.19 (2026-03-14)
     </div>
 
     <script>
