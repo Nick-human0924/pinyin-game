@@ -4590,6 +4590,7 @@ function showPage(pageId) {
                         alert('DEBUG: in setTimeout, calling playVictoryAnimation');
                         playVictoryAnimation();
                         alert('DEBUG: playVictoryAnimation done');
+                        alert('DEBUG: starting reward calculation');
                         // 阶梯式战斗奖励：根据敌人强度给予不同奖励
                         var enemyMaxHp = currentEnemy.maxHp || 50;
                         var enemyAttack = currentEnemy.attack || 10;
@@ -4608,7 +4609,9 @@ function showPage(pageId) {
 
                         var randomBonus = Math.floor(Math.random() * 6); // 0-5随机
                         var reward = baseReward + petBonus + randomBonus;
+                        alert('DEBUG: reward=' + reward + ', calling showCoinReward');
                         showCoinReward(reward);
+                        alert('DEBUG: showCoinReward done');
                         coins += reward;
                         battleWins++;
 
@@ -4618,10 +4621,16 @@ function showPage(pageId) {
                         else if (enemyMaxHp >= 100) baseExp = 18;
                         else if (enemyMaxHp >= 70) baseExp = 12;
                         var battleExp = baseExp + Math.floor(Math.random() * 8);
+                        alert('DEBUG: battleExp=' + battleExp + ', calling addPetExp');
                         addPetExp(battleExp);
+                        alert('DEBUG: addPetExp done');
 
+                        alert('DEBUG: calling checkAchievements');
                         checkAchievements();
+                        alert('DEBUG: checkAchievements done');
+                        alert('DEBUG: calling updateUI');
                         updateUI();
+                        alert('DEBUG: updateUI done');
                         setTimeout(function() {
                             alert('🎉 战斗胜利！获得 ' + reward + ' 金币和 ' + battleExp + ' 经验值！');
                             inBattle = false;
