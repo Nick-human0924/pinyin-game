@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.14 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.15 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -815,7 +815,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.14';
+        var GAME_VERSION = 'v9.0.15';
         var GAME_BUILD_DATE = '2026-03-14 19:00';
         var GAME_BUILD_DATE = '2026-03-13';
         
@@ -4622,41 +4622,41 @@ function showPage(pageId) {
 
                 var player = document.getElementById('playerChar');
                 var enemy = document.getElementById('enemyChar');
-                enemy.classList.add('attack-left');
-                setTimeout(function() {
-                    enemy.classList.remove('attack-left');
-                    player.classList.add('shake');
-                    showDamage(player, Math.floor(Math.random() * 10 + 5));
-                    setTimeout(function() { player.classList.remove('shake'); }, 500);
-                }, 300);
-
-                // v9.0.6: 计算包含装备加成的总防御力
+                
+                // v9.0.6: 先计算实际伤害
                 var totalDefense = petDefense + (equipment.armor ? equipment.armor.defense : 0) + (equipment.accessory ? equipment.accessory.bonus.defense : 0);
-                var damage = Math.max(1, currentEnemy.attack - totalDefense);
+                var actualDamage = Math.max(1, currentEnemy.attack - totalDefense);
                 
                 // v9.0.5: 敌人使用技能
+                var skillTriggered = false;
                 if (currentEnemy.skills && currentEnemy.skills.length > 0) {
                     var skill = currentEnemy.skills[0];
                     if (Math.random() < skill.chance) {
-                        // 触发技能
+                        skillTriggered = true;
                         var skillMsg = '👹 ' + currentEnemy.name + ' 使用【' + skill.name + '】！';
-                        
                         if (skill.damage) {
-                            damage = Math.floor(damage * skill.damage);
-                            skillMsg += ' 造成 ' + damage + ' 伤害！';
+                            actualDamage = Math.floor(actualDamage * skill.damage);
+                            skillMsg += ' 造成 ' + actualDamage + ' 伤害！';
                         }
                         if (skill.heal) {
                             currentEnemy.hp = Math.min(currentEnemy.hp + skill.heal, currentEnemy.maxHp);
                             skillMsg += ' 💚 恢复 ' + skill.heal + ' HP';
                         }
-                        
                         document.getElementById('battleLog').innerHTML = '<span style="color:#ff9800">' + skillMsg + '</span>';
-                        showToast(skillMsg, 'warning');
                     }
                 }
                 
-                hp -= damage;
-                document.getElementById('battleLog').innerHTML = '❌ 错误！受到 <span style="color:#f44336">' + damage + '</span> 伤害！';
+                enemy.classList.add('attack-left');
+                setTimeout(function() {
+                    enemy.classList.remove('attack-left');
+                    player.classList.add('shake');
+                    showDamage(player, actualDamage); // 显示实际伤害
+                    setTimeout(function() { player.classList.remove('shake'); }, 500);
+                }, 300);
+
+                // 应用伤害
+                hp -= actualDamage;
+                document.getElementById('battleLog').innerHTML = '❌ 错误！受到 <span style="color:#f44336">' + actualDamage + '</span> 伤害！';
                 speak('受到伤害');
 
                 if (hp <= 0) {
@@ -5649,7 +5649,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.14 (2026-03-14)
+        拼音大冒险 v9.0.15 (2026-03-14)
     </div>
 
     <script>
