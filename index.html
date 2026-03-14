@@ -3012,12 +3012,15 @@ function showPage(pageId) {
         var levelAnswered = false; // 防止重复点击 - 全局变量
 
         function loadLevelQuestion() {
+            alert('DEBUG: loadLevelQuestion start');
             // 重置答题状态
             levelAnswered = false;
 
             var q = questionsInLevel[currentQuestionInLevel - 1];
+            alert('DEBUG: question=' + (q ? q.q : 'null'));
             if (!q) {
                 console.error('问题加载失败', currentQuestionInLevel, questionsInLevel);
+                alert('DEBUG: question is null!');
                 return;
             }
 
@@ -3025,6 +3028,7 @@ function showPage(pageId) {
             document.getElementById('totalQ').textContent = 10;
             document.getElementById('currentLevel').textContent = currentLevel;
             document.getElementById('progressFill').style.width = (currentQuestionInLevel / 10 * 100) + '%';
+            alert('DEBUG: setting questionDisplay');
             document.getElementById('questionDisplay').innerHTML = '<div style="font-size: 44px;">' + q.q + '</div><div style="font-size: 16px; color: #666; margin-top: 5px;">' + q.hint + '</div>';
 
             var html = '';
@@ -4715,10 +4719,14 @@ function showPage(pageId) {
         }
 
         function updateBattleUI() {
+            alert('DEBUG: updateBattleUI start');
+            var currentPet = pets.list[pets.current];
+            alert('DEBUG: currentPet=' + (currentPet ? currentPet.name : 'null'));
             document.getElementById('playerHpBar').style.width = (hp / maxHp * 100) + '%';
-            document.getElementById('playerHpText').textContent = hp + '/' + currentPet.maxHp;
+            document.getElementById('playerHpText').textContent = hp + '/' + (currentPet ? currentPet.maxHp : maxHp);
             document.getElementById('enemyHpBar').style.width = (currentEnemy.hp / currentEnemy.maxHp * 100) + '%';
             document.getElementById('enemyHpText').textContent = currentEnemy.hp + '/' + currentEnemy.maxHp;
+            alert('DEBUG: updateBattleUI done');
         }
 
         function showShopTab(type) { renderShop(type); }
