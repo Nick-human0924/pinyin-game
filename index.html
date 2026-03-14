@@ -4583,59 +4583,49 @@ function showPage(pageId) {
                 speak('攻击！');
 
                 if (currentEnemy.hp <= 0) {
-                    alert('DEBUG: enemy hp <= 0, calling updateBattleUI');
                     updateBattleUI();
-                    alert('DEBUG: updateBattleUI done, setting timeout');
                     setTimeout(function() {
-                        alert('DEBUG: in setTimeout, calling playVictoryAnimation');
-                        playVictoryAnimation();
-                        alert('DEBUG: playVictoryAnimation done');
-                        alert('DEBUG: starting reward calculation');
-                        // 阶梯式战斗奖励：根据敌人强度给予不同奖励
-                        var enemyMaxHp = currentEnemy.maxHp || 50;
-                        var enemyAttack = currentEnemy.attack || 10;
-
-                        // 根据敌人强度计算基础奖励
-                        var baseReward = 5;
-                        if (enemyMaxHp >= 150) baseReward = 25; // BOSS级
-                        else if (enemyMaxHp >= 100) baseReward = 18; // 高级怪
-                        else if (enemyMaxHp >= 70) baseReward = 12; // 中级怪
-                        else if (enemyMaxHp >= 45) baseReward = 8; // 低级怪
-
-                        // 根据宠物等级给予额外奖励
-                        var currentPet = pets.list[pets.current];
-                        var petLevel = currentPet ? currentPet.level : 1;
-                        var petBonus = Math.floor(petLevel * 0.5);
-
-                        var randomBonus = Math.floor(Math.random() * 6); // 0-5随机
-                        var reward = baseReward + petBonus + randomBonus;
-                        alert('DEBUG: reward=' + reward + ', calling showCoinReward');
-                        showCoinReward(reward);
-                        alert('DEBUG: showCoinReward done');
-                        coins += reward;
-                        battleWins++;
-
-                        // 战斗胜利宠物获得经验（也是阶梯式）
-                        var baseExp = 8;
-                        if (enemyMaxHp >= 150) baseExp = 25;
-                        else if (enemyMaxHp >= 100) baseExp = 18;
-                        else if (enemyMaxHp >= 70) baseExp = 12;
-                        var battleExp = baseExp + Math.floor(Math.random() * 8);
-                        alert('DEBUG: battleExp=' + battleExp + ', calling addPetExp');
-                        addPetExp(battleExp);
-                        alert('DEBUG: addPetExp done');
-
-                        alert('DEBUG: calling checkAchievements');
-                        checkAchievements();
-                        alert('DEBUG: checkAchievements done');
-                        alert('DEBUG: calling updateUI');
-                        updateUI();
-                        alert('DEBUG: updateUI done');
-                        setTimeout(function() {
-                            alert('🎉 战斗胜利！获得 ' + reward + ' 金币和 ' + battleExp + ' 经验值！');
+                        try {
+                            playVictoryAnimation();
+                            
+                            // 阶梯式战斗奖励
+                            var enemyMaxHp = currentEnemy.maxHp || 50;
+                            var baseReward = 5;
+                            if (enemyMaxHp >= 150) baseReward = 25;
+                            else if (enemyMaxHp >= 100) baseReward = 18;
+                            else if (enemyMaxHp >= 70) baseReward = 12;
+                            else if (enemyMaxHp >= 45) baseReward = 8;
+                            
+                            var currentPet = pets.list[pets.current];
+                            var petLevel = currentPet ? currentPet.level : 1;
+                            var petBonus = Math.floor(petLevel * 0.5);
+                            var randomBonus = Math.floor(Math.random() * 6);
+                            var reward = baseReward + petBonus + randomBonus;
+                            
+                            showCoinReward(reward);
+                            coins += reward;
+                            battleWins++;
+                            
+                            var baseExp = 8;
+                            if (enemyMaxHp >= 150) baseExp = 25;
+                            else if (enemyMaxHp >= 100) baseExp = 18;
+                            else if (enemyMaxHp >= 70) baseExp = 12;
+                            var battleExp = baseExp + Math.floor(Math.random() * 8);
+                            addPetExp(battleExp);
+                            
+                            checkAchievements();
+                            updateUI();
+                            
+                            setTimeout(function() {
+                                alert('🎉 战斗胜利！获得 ' + reward + ' 金币和 ' + battleExp + ' 经验值！');
+                                inBattle = false;
+                                showMainMenu();
+                            }, 1500);
+                        } catch (e) {
+                            alert('错误: ' + e.message);
                             inBattle = false;
                             showMainMenu();
-                        }, 1500);
+                        }
                     }, 500);
                     return;
                 }
