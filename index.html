@@ -4432,6 +4432,7 @@ function showPage(pageId) {
         }
 
         function loadBattleQuestion() {
+            alert('DEBUG: loadBattleQuestion called');
             // 随机选择一个汉字
             currentBattleChar = battleCharacters[Math.floor(Math.random() * battleCharacters.length)];
 
@@ -5098,8 +5099,9 @@ function showPage(pageId) {
             contentEl.innerHTML = html;
         }
 
-        // v9.0.8: 出售装备功能（调试版）
+        // v9.0.9: 出售装备功能（调试版）
         function sellItem(itemId, type) {
+            alert('DEBUG: sellItem called with ' + itemId + ', ' + type);
             console.log('sellItem called:', itemId, type);
             
             var item;
