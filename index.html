@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.16 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.17 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -815,7 +815,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.16';
+        var GAME_VERSION = 'v9.0.17';
         var GAME_BUILD_DATE = '2026-03-14 19:00';
         var GAME_BUILD_DATE = '2026-03-13';
         
@@ -3447,8 +3447,9 @@ function showPage(pageId) {
             var q = initialTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
-                addPetExp(1); // 基础教学答对获得1经验
-                showToast('✅ 正确! +1经验', 'success');
+                addPetExp(2); // 基础教学答对获得2经验
+                coins += 2; // 基础教学答对获得2金币
+                showToast('✅ 正确! +2经验 +2金币', 'success');
             } else {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
@@ -3530,8 +3531,9 @@ function showPage(pageId) {
             var q = finalTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
-                addPetExp(1);
-                showToast('✅ 正确! +1经验', 'success');
+                addPetExp(2); // 基础教学答对获得2经验
+                coins += 2; // 基础教学答对获得2金币
+                showToast('✅ 正确! +2经验 +2金币', 'success');
             } else {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
@@ -3610,8 +3612,9 @@ function showPage(pageId) {
             var q = wholeTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
-                addPetExp(1);
-                showToast('✅ 正确! +1经验', 'success');
+                addPetExp(2); // 基础教学答对获得2经验
+                coins += 2; // 基础教学答对获得2金币
+                showToast('✅ 正确! +2经验 +2金币', 'success');
             } else {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
@@ -3975,7 +3978,9 @@ function showPage(pageId) {
         function checkToneAnswer(selected, correct) {
             if (selected === correct) {
                 testScore++;
-                showToast('✅ 正确!', 'success');
+                addPetExp(2); // 基础教学答对获得2经验
+                coins += 2; // 基础教学答对获得2金币
+                showToast('✅ 正确! +2经验 +2金币', 'success');
             } else {
                 showToast('❌ 错误! 正确答案是: ' + correct + '声', 'error');
             }
@@ -5714,7 +5719,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.16 (2026-03-14)
+        拼音大冒险 v9.0.17 (2026-03-14)
     </div>
 
     <script>
