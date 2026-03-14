@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.15 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.16 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -815,7 +815,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.15';
+        var GAME_VERSION = 'v9.0.16';
         var GAME_BUILD_DATE = '2026-03-14 19:00';
         var GAME_BUILD_DATE = '2026-03-13';
         
@@ -3023,9 +3023,18 @@ function showPage(pageId) {
             document.getElementById('questionDisplay').innerHTML = '<div style="font-size: 44px;">' + q.q + '</div><div style="font-size: 16px; color: #666; margin-top: 5px;">' + q.hint + '</div>';
 
             var html = '';
-            q.options.forEach(function(opt) {
-                html += '<button class="option-btn" onclick="checkLevelAnswer(this, \'' + opt + '\', \'' + q.a + '\')" style="font-size: 16px;">' + opt + '</button>';
-            });
+            if (q.inputType === 'text') {
+                // 文本输入类型（词语关卡）
+                html += '<div style="margin: 20px 0;">';
+                html += '<input type="text" id="levelTextInput" placeholder="请输入拼音（空格分隔）" style="padding: 15px; font-size: 18px; border: 2px solid #4CAF50; border-radius: 10px; width: 80%; max-width: 300px; text-align: center;">';
+                html += '</div>';
+                html += '<button class="option-btn" onclick="checkLevelTextAnswer()" style="font-size: 18px; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white;">提交答案</button>';
+            } else {
+                // 选择题类型
+                q.options.forEach(function(opt) {
+                    html += '<button class="option-btn" onclick="checkLevelAnswer(this, \'' + opt + '\', \'' + q.a + '\')" style="font-size: 16px;">' + opt + '</button>';
+                });
+            }
             document.getElementById('optionsGrid').innerHTML = html;
         }
 
@@ -3088,6 +3097,62 @@ function showPage(pageId) {
                     }
                 }
             }, isCorrect ? 800 : 1500);
+        }
+
+        // 检查文本输入答案（用于词语关卡）
+        function checkLevelTextAnswer() {
+            if (levelAnswered) return;
+            
+            var input = document.getElementById('levelTextInput');
+            if (!input) return;
+            
+            var selected = input.value.trim().toLowerCase();
+            var q = questionsInLevel[currentQuestionInLevel - 1];
+            var correct = q.a.toLowerCase();
+            
+            levelAnswered = true;
+            var isCorrect = selected === correct;
+            
+            if (isCorrect) {
+                input.style.borderColor = '#4CAF50';
+                input.style.backgroundColor = '#e8f5e9';
+                totalCorrect++;
+                levelCorrectCount++;
+                var coinReward = triggerPetSkill('double_coins', 1);
+                coins += coinReward;
+                addPetExp(2);
+                showToast('✅ 正确! +' + (coinReward > 1 ? coinReward : 2) + '经验', 'success');
+            } else {
+                input.style.borderColor = '#f44336';
+                input.style.backgroundColor = '#ffebee';
+                totalWrong++;
+                showToast('❌ 错误，正确答案是: ' + q.a, 'error');
+                recordError(q.q, selected, correct, 'level');
+            }
+            updateUI();
+            saveGameData();
+            checkAchievements();
+            
+            setTimeout(function() {
+                currentQuestionInLevel++;
+                levelAnswered = false;
+                if (currentQuestionInLevel <= 10) {
+                    loadLevelQuestion();
+                } else {
+                    if (levelCorrectCount === 10) {
+                        perfectLevels++;
+                        checkAchievements();
+                        completeLevel();
+                    } else {
+                        var failMsg = '❌ 第' + currentLevel + '关未通过！\n\n';
+                        failMsg += '你答对了 ' + levelCorrectCount + '/10 题\n';
+                        failMsg += '需要全部答对才能通关\n\n';
+                        failMsg += '请重新挑战！';
+                        alert(failMsg);
+                        goToLevelMap();
+                    }
+                }
+            }, isCorrect ? 800 : 2000);
         }
 
         function completeLevel() {
@@ -5649,7 +5714,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.15 (2026-03-14)
+        拼音大冒险 v9.0.16 (2026-03-14)
     </div>
 
     <script>
