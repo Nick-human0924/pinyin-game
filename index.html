@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.17 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.18 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -815,7 +815,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.17';
+        var GAME_VERSION = 'v9.0.18';
         var GAME_BUILD_DATE = '2026-03-14 19:00';
         var GAME_BUILD_DATE = '2026-03-13';
         
@@ -1379,6 +1379,12 @@
                 if (user.equipment.armor) equipment.armor = user.equipment.armor;
                 if (user.equipment.accessory) equipment.accessory = user.equipment.accessory;
             }
+            // v9.0.18: 修复装备显示 - 加载equipped对象
+            if (user.equipped) {
+                if (user.equipped.weapon) equipped.weapon = user.equipped.weapon;
+                if (user.equipped.armor) equipped.armor = user.equipped.armor;
+                if (user.equipped.accessory) equipped.accessory = user.equipped.accessory;
+            }
             if (user.errorBook) {
                 errorBook.errors = user.errorBook.errors || [];
                 errorBook.fixed = user.errorBook.fixed || 0;
@@ -1407,7 +1413,7 @@
                 totalCorrect, totalWrong, streak, checkedIn,
                 ownedItems, levels, achievements, tasks, errorLog,
                 // v8.2.0 新数据
-                pets, inventory, equipment, errorBook,
+                pets, inventory, equipment, equipped, errorBook,
                 // v9.0.1 新增：保存故事章节进度
                 storyChapters: storyChapters.map(function(c) { return { id: c.id, unlocked: c.unlocked, completed: c.completed }; }),
                 // v9.0.2 新增：保存perfectLevels
@@ -4899,37 +4905,58 @@ function showPage(pageId) {
             html += '<div class="pet-stat"><div>⚡ 体力</div><div class="pet-stat-value">' + energy + '</div></div>';
             html += '</div>';
 
-            // 当前装备显示（只显示已购买的）
+            // 当前装备显示
             html += '<div style="background: #f8f9fa; border-radius: 15px; padding: 15px; margin: 20px 0;">';
             html += '<div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">⚔️ 当前装备</div>';
             
-            // 获取已购买的装备
-            var ownedWeapons = shopItems.weapons.filter(function(w) { return ownedItems.includes(w.id); });
-            var ownedArmors = shopItems.armor.filter(function(a) { return ownedItems.includes(a.id); });
+            var hasEquippedItem = false;
             
             // 显示已装备的武器
             if (equipped.weapon) {
                 var equippedWeapon = shopItems.weapons.find(function(w) { return w.id === equipped.weapon; });
-                if (equippedWeapon && ownedItems.includes(equippedWeapon.id)) {
+                // v9.0.18: 如果没在shopItems找到，可能是默认装备，从allEquipments找
+                if (!equippedWeapon) {
+                    equippedWeapon = allEquipments.weapon.find(function(w) { return w.id === equipped.weapon; });
+                }
+                if (equippedWeapon) {
+                    hasEquippedItem = true;
+                    var isOwned = ownedItems.includes(equipped.weapon);
                     html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px; margin-bottom: 8px;">';
                     html += '<div style="font-size: 24px; margin-right: 10px;">' + equippedWeapon.icon + '</div>';
-                    html += '<div><div style="font-size: 12px; font-weight: bold;">' + equippedWeapon.name + ' ✓</div><div style="font-size: 10px; color: #666;">攻击 +' + equippedWeapon.attack + '</div></div>';
+                    html += '<div><div style="font-size: 12px; font-weight: bold;">' + equippedWeapon.name + (isOwned ? ' ✓' : ' (默认)') + '</div><div style="font-size: 10px; color: #666;">攻击 +' + equippedWeapon.attack + '</div></div>';
                     html += '</div>';
                 }
             }
             // 显示已装备的防具
             if (equipped.armor) {
                 var equippedArmor = shopItems.armor.find(function(a) { return a.id === equipped.armor; });
-                if (equippedArmor && ownedItems.includes(equippedArmor.id)) {
+                // v9.0.18: 如果没在shopItems找到，可能是默认装备，从allEquipments找
+                if (!equippedArmor) {
+                    equippedArmor = allEquipments.armor.find(function(a) { return a.id === equipped.armor; });
+                }
+                if (equippedArmor) {
+                    hasEquippedItem = true;
+                    var isOwned2 = ownedItems.includes(equipped.armor);
                     html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px; margin-bottom: 8px;">';
                     html += '<div style="font-size: 24px; margin-right: 10px;">' + equippedArmor.icon + '</div>';
-                    html += '<div><div style="font-size: 12px; font-weight: bold;">' + equippedArmor.name + ' ✓</div><div style="font-size: 10px; color: #666;">防御 +' + equippedArmor.defense + '</div></div>';
+                    html += '<div><div style="font-size: 12px; font-weight: bold;">' + equippedArmor.name + (isOwned2 ? ' ✓' : ' (默认)') + '</div><div style="font-size: 10px; color: #666;">防御 +' + equippedArmor.defense + '</div></div>';
+                    html += '</div>';
+                }
+            }
+            // 显示已装备的饰品
+            if (equipped.accessory) {
+                var equippedAccessory = allEquipments.accessory.find(function(a) { return a.id === equipped.accessory; });
+                if (equippedAccessory) {
+                    hasEquippedItem = true;
+                    html += '<div style="display: flex; align-items: center; padding: 8px; background: white; border-radius: 8px; margin-bottom: 8px;">';
+                    html += '<div style="font-size: 24px; margin-right: 10px;">' + equippedAccessory.icon + '</div>';
+                    html += '<div><div style="font-size: 12px; font-weight: bold;">' + equippedAccessory.name + '</div><div style="font-size: 10px; color: #666;">攻击 +' + equippedAccessory.bonus.attack + ' 防御 +' + equippedAccessory.bonus.defense + '</div></div>';
                     html += '</div>';
                 }
             }
             
-            if ((!equipped.weapon || !ownedItems.includes(equipped.weapon)) && (!equipped.armor || !ownedItems.includes(equipped.armor))) {
-                html += '<div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">还没有购买装备<br>去商店购买装备吧！</div>';
+            if (!hasEquippedItem) {
+                html += '<div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">还没有装备<br>去商店购买装备吧！</div>';
             }
             
             html += '</div>';
@@ -5719,7 +5746,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.17 (2026-03-14)
+        拼音大冒险 v9.0.18 (2026-03-14)
     </div>
 
     <script>
