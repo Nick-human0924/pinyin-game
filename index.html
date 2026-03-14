@@ -243,7 +243,7 @@
                     <div style="font-weight: bold;">拼音小勇士</div>
                     <div class="stats">
                         <div class="stat-item">💰 <span id="coins">100</span></div>
-                        <div class="stat-item">❤️ <span id="hp">100</span>/<span id="petMaxHp">100</span></div>
+                        <div class="stat-item">❤️ <span id="hp">200</span>/<span id="petMaxHp">200</span></div>
                         <div class="stat-item">⚡ <span id="energy">50</span></div>
                         <div class="stat-item">🏆 <span id="achievementCount">0</span>/<span id="totalAchievements">8</span></div>
                     </div>
@@ -475,7 +475,7 @@
                         <div class="character-avatar">🐼</div>
                         <div style="font-size: 16px;">拼音小熊猫</div>
                         <div class="hp-bar"><div class="hp-fill" id="playerHpBar" style="width: 100%"></div></div>
-                        <div id="playerHpText" style="font-size: 12px;">100/100</div>
+                        <div id="playerHpText" style="font-size: 12px;">200/200</div>
                     </div>
 
                     <div style="font-size: 30px; font-weight: bold;">VS</div>
@@ -507,7 +507,7 @@
             <div class="pet-stats">
                 <div class="pet-stat"><div>⚔️ 攻击</div><div class="pet-stat-value" id="petAttack">10</div></div>
                 <div class="pet-stat"><div>🛡️ 防御</div><div class="pet-stat-value" id="petDefense">5</div></div>
-                <div class="pet-stat"><div>❤️ 生命</div><div class="pet-stat-value" id="petHP">100</div></div>
+                <div class="pet-stat"><div>❤️ 生命</div><div class="pet-stat-value" id="petHP">200</div></div>
                 <div class="pet-stat"><div>⚡ 体力</div><div class="pet-stat-value" id="petEnergy">50</div></div>
             </div>
         </div>
@@ -4544,7 +4544,10 @@ function showPage(pageId) {
                     setTimeout(function() { enemy.classList.remove('shake'); }, 500);
                 }, 300);
 
-                var damage = petAttack + Math.floor(Math.random() * 5);
+                // v9.0.6: 计算包含装备加成的总攻击力
+                var currentPet = pets.list[pets.current];
+                var totalAttack = petAttack + (equipment.weapon ? equipment.weapon.attack : 0) + (equipment.accessory ? equipment.accessory.bonus.attack : 0);
+                var damage = totalAttack + Math.floor(Math.random() * 5);
                 currentEnemy.hp -= damage;
                 document.getElementById('battleLog').innerHTML = '✅ 正确！造成 <span style="color:#4CAF50">' + damage + '</span> 伤害！';
                 speak('攻击！');
@@ -4614,7 +4617,9 @@ function showPage(pageId) {
                     setTimeout(function() { player.classList.remove('shake'); }, 500);
                 }, 300);
 
-                var damage = Math.max(1, currentEnemy.attack - petDefense);
+                // v9.0.6: 计算包含装备加成的总防御力
+                var totalDefense = petDefense + (equipment.armor ? equipment.armor.defense : 0) + (equipment.accessory ? equipment.accessory.bonus.defense : 0);
+                var damage = Math.max(1, currentEnemy.attack - totalDefense);
                 
                 // v9.0.5: 敌人使用技能
                 if (currentEnemy.skills && currentEnemy.skills.length > 0) {
@@ -5423,13 +5428,21 @@ function showPage(pageId) {
             document.getElementById('coins').textContent = coins;
             document.getElementById('hp').textContent = hp;
             document.getElementById('energy').textContent = energy;
-            document.getElementById('petAttack').textContent = petAttack;
-            document.getElementById('petDefense').textContent = petDefense;
+            document.getElementById('petEnergy').textContent = energy;
             
-            // 更新宠物最大生命值显示
+            // v9.0.6: 显示包含装备加成的总攻击/防御
             var currentPet = pets.list[pets.current];
             if (currentPet) {
+                var totalAttack = petAttack + (equipment.weapon ? equipment.weapon.attack : 0) + (equipment.accessory ? equipment.accessory.bonus.attack : 0);
+                var totalDefense = petDefense + (equipment.armor ? equipment.armor.defense : 0) + (equipment.accessory ? equipment.accessory.bonus.defense : 0);
+                document.getElementById('petAttack').textContent = totalAttack;
+                document.getElementById('petDefense').textContent = totalDefense;
                 document.getElementById('petMaxHp').textContent = currentPet.maxHp;
+                document.getElementById('petHP').textContent = hp;
+            } else {
+                document.getElementById('petAttack').textContent = petAttack;
+                document.getElementById('petDefense').textContent = petDefense;
+                document.getElementById('petHP').textContent = hp;
             }
             
             var total = totalCorrect + totalWrong;
