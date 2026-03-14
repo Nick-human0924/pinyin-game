@@ -4427,12 +4427,19 @@ function showPage(pageId) {
         function startBattle() {
             alert('DEBUG: startBattle called');
             inBattle = true;
+            alert('DEBUG: step 1 - inBattle=true');
             showPage('battle');
+            alert('DEBUG: step 2 - showPage done');
             document.getElementById('enemyAvatar').textContent = currentEnemy.emoji;
+            alert('DEBUG: step 3 - enemyAvatar set');
             document.getElementById('enemyName').textContent = currentEnemy.name;
+            alert('DEBUG: step 4 - enemyName set');
             document.getElementById('battleLog').textContent = '遭遇 ' + currentEnemy.name + '！答对攻击，答错受伤！';
+            alert('DEBUG: step 5 - battleLog set');
             updateBattleUI();
+            alert('DEBUG: step 6 - updateBattleUI done');
             loadBattleQuestion();
+            alert('DEBUG: step 7 - loadBattleQuestion done');
         }
 
         function loadBattleQuestion() {
