@@ -2303,6 +2303,7 @@
         }
 
         function sendAdminGift() {
+            alert('DEBUG: sendAdminGift called');
             var coinsInput = document.getElementById('adminCoins');
             var energyInput = document.getElementById('adminEnergy');
             var expInput = document.getElementById('adminExp');
@@ -2310,6 +2311,8 @@
             var giftCoins = parseInt(coinsInput.value) || 0;
             var giftEnergy = parseInt(energyInput.value) || 0;
             var giftExp = parseInt(expInput.value) || 0;
+
+            alert('DEBUG: coins=' + giftCoins + ', energy=' + giftEnergy + ', exp=' + giftExp);
 
             // 限制上限
             giftCoins = Math.min(giftCoins, 1000);
@@ -4422,6 +4425,7 @@ function showPage(pageId) {
 
         // 战斗
         function startBattle() {
+            alert('DEBUG: startBattle called');
             inBattle = true;
             showPage('battle');
             document.getElementById('enemyAvatar').textContent = currentEnemy.emoji;
