@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>拼音大冒险 - 多实例部署</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; margin: 0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        .subtitle { color: #666; margin-bottom: 40px; }
+        .instances { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .instance-card { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 30px; border-radius: 15px; text-decoration: none; color: #333; transition: transform 0.3s, box-shadow 0.3s; }
+        .instance-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .instance-icon { font-size: 60px; margin-bottom: 15px; }
+        .instance-name { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        .instance-desc { font-size: 14px; color: #666; }
+        .badge { display: inline-block; background: #667eea; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 拼音大冒险</h1>
+        <p class="subtitle">完全隔离的多实例部署</p>
+        
+        <div class="instances">
+            <a href="alpha.html" class="instance-card">
+                <div class="instance-icon">🥇</div>
+                <div class="instance-name">实例 α</div>
+                <div class="instance-desc">完全独立的数据存储<br>独立的进度和存档</div>
+                <span class="badge">Alpha</span>
+            </a>
+            
+            <a href="beta.html" class="instance-card">
+                <div class="instance-icon">🥈</div>
+                <div class="instance-name">实例 β</div>
+                <div class="instance-desc">完全独立的数据存储<br>独立的进度和存档</div>
+                <span class="badge">Beta</span>
+            </a>
+            
+            <a href="gamma.html" class="instance-card">
+                <div class="instance-icon">🥉</div>
+                <div class="instance-name">实例 γ</div>
+                <div class="instance-desc">完全独立的数据存储<br>独立的进度和存档</div>
+                <span class="badge">Gamma</span>
+            </a>
+        </div>
+        
+        <p style="margin-top: 40px; color: #999; font-size: 12px;">
+            每个实例使用独立的localStorage键，数据完全隔离
+        </p>
+    </div>
+</body>
+</html>
