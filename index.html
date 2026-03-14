@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.12 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.13 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -815,7 +815,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.12';
+        var GAME_VERSION = 'v9.0.13';
         var GAME_BUILD_DATE = '2026-03-14 19:00';
         var GAME_BUILD_DATE = '2026-03-13';
         
@@ -2303,7 +2303,6 @@
         }
 
         function sendAdminGift() {
-            alert('DEBUG: sendAdminGift called');
             var coinsInput = document.getElementById('adminCoins');
             var energyInput = document.getElementById('adminEnergy');
             var expInput = document.getElementById('adminExp');
@@ -2312,7 +2311,6 @@
             var giftEnergy = parseInt(energyInput.value) || 0;
             var giftExp = parseInt(expInput.value) || 0;
 
-            alert('DEBUG: coins=' + giftCoins + ', energy=' + giftEnergy + ', exp=' + giftExp);
 
             // 限制上限
             giftCoins = Math.min(giftCoins, 1000);
@@ -2708,7 +2706,6 @@ function showPage(pageId) {
 
         // 开始关卡
         function startLevel(levelId) {
-            alert('DEBUG: startLevel called, levelId=' + levelId);
             currentLevel = levelId;
             var level = levels[currentLevel - 1];
             questionsInLevel = [];
@@ -2716,11 +2713,9 @@ function showPage(pageId) {
 
             // 根据关卡类型生成问题 - 使用不重复随机
             questionsInLevel = generateUniqueQuestions(level.type, level.stage, 10);
-            alert('DEBUG: generated ' + questionsInLevel.length + ' questions');
 
             currentQuestionInLevel = 1;
             showPage('game');
-            alert('DEBUG: showPage done, loading question');
             loadLevelQuestion();
         }
 
@@ -3012,15 +3007,12 @@ function showPage(pageId) {
         var levelAnswered = false; // 防止重复点击 - 全局变量
 
         function loadLevelQuestion() {
-            alert('DEBUG: loadLevelQuestion start');
             // 重置答题状态
             levelAnswered = false;
 
             var q = questionsInLevel[currentQuestionInLevel - 1];
-            alert('DEBUG: question=' + (q ? q.q : 'null'));
             if (!q) {
                 console.error('问题加载失败', currentQuestionInLevel, questionsInLevel);
-                alert('DEBUG: question is null!');
                 return;
             }
 
@@ -3028,7 +3020,6 @@ function showPage(pageId) {
             document.getElementById('totalQ').textContent = 10;
             document.getElementById('currentLevel').textContent = currentLevel;
             document.getElementById('progressFill').style.width = (currentQuestionInLevel / 10 * 100) + '%';
-            alert('DEBUG: setting questionDisplay');
             document.getElementById('questionDisplay').innerHTML = '<div style="font-size: 44px;">' + q.q + '</div><div style="font-size: 16px; color: #666; margin-top: 5px;">' + q.hint + '</div>';
 
             var html = '';
@@ -4414,11 +4405,9 @@ function showPage(pageId) {
             var levelBonus = Math.floor((petLevel - 1) * 0.5); // 每级增加少量奖励
 
             if (Math.random() < encounterRates[location]) {
-                alert('DEBUG: 遇到敌人，准备战斗');
                 var mons = monsters[location];
                 currentEnemy = JSON.parse(JSON.stringify(mons[Math.floor(Math.random() * mons.length)]));
                 currentEnemy.maxHp = currentEnemy.hp;
-                alert('DEBUG: 敌人=' + currentEnemy.name + '，调用startBattle');
                 startBattle();
             } else {
                 // 安全探索奖励：根据地点和等级调整
@@ -4434,25 +4423,16 @@ function showPage(pageId) {
 
         // 战斗
         function startBattle() {
-            alert('DEBUG: startBattle called');
             inBattle = true;
-            alert('DEBUG: step 1 - inBattle=true');
             showPage('battle');
-            alert('DEBUG: step 2 - showPage done');
             document.getElementById('enemyAvatar').textContent = currentEnemy.emoji;
-            alert('DEBUG: step 3 - enemyAvatar set');
             document.getElementById('enemyName').textContent = currentEnemy.name;
-            alert('DEBUG: step 4 - enemyName set');
             document.getElementById('battleLog').textContent = '遭遇 ' + currentEnemy.name + '！答对攻击，答错受伤！';
-            alert('DEBUG: step 5 - battleLog set');
             updateBattleUI();
-            alert('DEBUG: step 6 - updateBattleUI done');
             loadBattleQuestion();
-            alert('DEBUG: step 7 - loadBattleQuestion done');
         }
 
         function loadBattleQuestion() {
-            alert('DEBUG: loadBattleQuestion called');
             // 随机选择一个汉字
             currentBattleChar = battleCharacters[Math.floor(Math.random() * battleCharacters.length)];
 
@@ -4722,14 +4702,11 @@ function showPage(pageId) {
         }
 
         function updateBattleUI() {
-            alert('DEBUG: updateBattleUI start');
             var currentPet = pets.list[pets.current];
-            alert('DEBUG: currentPet=' + (currentPet ? currentPet.name : 'null'));
             document.getElementById('playerHpBar').style.width = (hp / maxHp * 100) + '%';
             document.getElementById('playerHpText').textContent = hp + '/' + (currentPet ? currentPet.maxHp : maxHp);
             document.getElementById('enemyHpBar').style.width = (currentEnemy.hp / currentEnemy.maxHp * 100) + '%';
             document.getElementById('enemyHpText').textContent = currentEnemy.hp + '/' + currentEnemy.maxHp;
-            alert('DEBUG: updateBattleUI done');
         }
 
         function showShopTab(type) { renderShop(type); }
@@ -5128,7 +5105,6 @@ function showPage(pageId) {
 
         // v9.0.9: 出售装备功能（调试版）
         function sellItem(itemId, type) {
-            alert('DEBUG: sellItem called with ' + itemId + ', ' + type);
             console.log('sellItem called:', itemId, type);
             
             var item;
@@ -5673,7 +5649,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.12 (2026-03-14)
+        拼音大冒险 v9.0.13 (2026-03-14)
     </div>
 
     <script>
