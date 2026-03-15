@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.20 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.22 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -817,8 +817,8 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.21';
-        var GAME_BUILD_DATE = '2026-03-15 09:30';
+        var GAME_VERSION = 'v9.0.22';
+        var GAME_BUILD_DATE = '2026-03-15 15:35';
         
         // 完整拼音数据
         var pinyinData = {
@@ -849,7 +849,8 @@
             questionBank.push({ q: q, a: a, options: options });
         }
 
-        // ========== v8.2.5 野外探险战斗题库（汉字+拼音分解）==========
+        // ========== v9.0.22 野外探险战斗题库（汉字+拼音分解+词语）==========
+        // 单字题库 - 60个
         var battleCharacters = [
             { char: '爸', pinyin: 'bà', initial: 'b', final: 'a', tone: '4', whole: 'ba' },
             { char: '妈', pinyin: 'mā', initial: 'm', final: 'a', tone: '1', whole: 'ma' },
@@ -874,7 +875,124 @@
             { char: '手', pinyin: 'shǒu', initial: 'sh', final: 'ou', tone: '3', whole: 'shou' },
             { char: '心', pinyin: 'xīn', initial: 'x', final: 'in', tone: '1', whole: 'xin' },
             { char: '爱', pinyin: 'ài', initial: '', final: 'ai', tone: '4', whole: 'ai' },
-            { char: '学', pinyin: 'xué', initial: 'x', final: 'ue', tone: '2', whole: 'xue' }
+            { char: '学', pinyin: 'xué', initial: 'x', final: 'ue', tone: '2', whole: 'xue' },
+            { char: '生', pinyin: 'shēng', initial: 'sh', final: 'eng', tone: '1', whole: 'sheng' },
+            { char: '上', pinyin: 'shàng', initial: 'sh', final: 'ang', tone: '4', whole: 'shang' },
+            { char: '下', pinyin: 'xià', initial: 'x', final: 'ia', tone: '4', whole: 'xia' },
+            { char: '左', pinyin: 'zuǒ', initial: 'z', final: 'uo', tone: '3', whole: 'zuo' },
+            { char: '右', pinyin: 'yòu', initial: 'y', final: 'ou', tone: '4', whole: 'you' },
+            { char: '东', pinyin: 'dōng', initial: 'd', final: 'ong', tone: '1', whole: 'dong' },
+            { char: '西', pinyin: 'xī', initial: 'x', final: 'i', tone: '1', whole: 'xi' },
+            { char: '南', pinyin: 'nán', initial: 'n', final: 'an', tone: '2', whole: 'nan' },
+            { char: '北', pinyin: 'běi', initial: 'b', final: 'ei', tone: '3', whole: 'bei' },
+            { char: '春', pinyin: 'chūn', initial: 'ch', final: 'un', tone: '1', whole: 'chun' },
+            { char: '夏', pinyin: 'xià', initial: 'x', final: 'ia', tone: '4', whole: 'xia' },
+            { char: '秋', pinyin: 'qiū', initial: 'q', final: 'iu', tone: '1', whole: 'qiu' },
+            { char: '冬', pinyin: 'dōng', initial: 'd', final: 'ong', tone: '1', whole: 'dong' },
+            { char: '风', pinyin: 'fēng', initial: 'f', final: 'eng', tone: '1', whole: 'feng' },
+            { char: '雨', pinyin: 'yǔ', initial: 'y', final: 'u', tone: '3', whole: 'yu' },
+            { char: '雪', pinyin: 'xuě', initial: 'x', final: 'ue', tone: '3', whole: 'xue' },
+            { char: '雷', pinyin: 'léi', initial: 'l', final: 'ei', tone: '2', whole: 'lei' },
+            { char: '电', pinyin: 'diàn', initial: 'd', final: 'ian', tone: '4', whole: 'dian' },
+            { char: '米', pinyin: 'mǐ', initial: 'm', final: 'i', tone: '3', whole: 'mi' },
+            { char: '饭', pinyin: 'fàn', initial: 'f', final: 'an', tone: '4', whole: 'fan' },
+            { char: '面', pinyin: 'miàn', initial: 'm', final: 'ian', tone: '4', whole: 'mian' },
+            { char: '果', pinyin: 'guǒ', initial: 'g', final: 'uo', tone: '3', whole: 'guo' },
+            { char: '瓜', pinyin: 'guā', initial: 'g', final: 'ua', tone: '1', whole: 'gua' },
+            { char: '头', pinyin: 'tóu', initial: 't', final: 'ou', tone: '2', whole: 'tou' },
+            { char: '眼', pinyin: 'yǎn', initial: 'y', final: 'an', tone: '3', whole: 'yan' },
+            { char: '耳', pinyin: 'ěr', initial: '', final: 'er', tone: '3', whole: 'er' },
+            { char: '牙', pinyin: 'yá', initial: 'y', final: 'a', tone: '2', whole: 'ya' },
+            { char: '马', pinyin: 'mǎ', initial: 'm', final: 'a', tone: '3', whole: 'ma' },
+            { char: '牛', pinyin: 'niú', initial: 'n', final: 'iu', tone: '2', whole: 'niu' },
+            { char: '羊', pinyin: 'yáng', initial: 'y', final: 'ang', tone: '2', whole: 'yang' },
+            { char: '鸟', pinyin: 'niǎo', initial: 'n', final: 'iao', tone: '3', whole: 'niao' },
+            { char: '鱼', pinyin: 'yú', initial: 'y', final: 'u', tone: '2', whole: 'yu' },
+            { char: '虫', pinyin: 'chóng', initial: 'ch', final: 'ong', tone: '2', whole: 'chong' },
+            { char: '叶', pinyin: 'yè', initial: 'y', final: 'e', tone: '4', whole: 'ye' },
+            { char: '草', pinyin: 'cǎo', initial: 'c', final: 'ao', tone: '3', whole: 'cao' },
+            { char: '树', pinyin: 'shù', initial: 'sh', final: 'u', tone: '4', whole: 'shu' },
+            { char: '竹', pinyin: 'zhú', initial: 'zh', final: 'u', tone: '2', whole: 'zhu' }
+        ];
+
+        // 简单词语题库（两字词）- 50个
+        var battleWordsEasy = [
+            { word: '爸爸', pinyin: 'bà ba', chars: [{char: '爸', pinyin: 'bà', initial: 'b', final: 'a', tone: '4', whole: 'ba'}, {char: '爸', pinyin: 'ba', initial: 'b', final: 'a', tone: '0', whole: 'ba'}] },
+            { word: '妈妈', pinyin: 'mā ma', chars: [{char: '妈', pinyin: 'mā', initial: 'm', final: 'a', tone: '1', whole: 'ma'}, {char: '妈', pinyin: 'ma', initial: 'm', final: 'a', tone: '0', whole: 'ma'}] },
+            { word: '哥哥', pinyin: 'gē ge', chars: [{char: '哥', pinyin: 'gē', initial: 'g', final: 'e', tone: '1', whole: 'ge'}, {char: '哥', pinyin: 'ge', initial: 'g', final: 'e', tone: '0', whole: 'ge'}] },
+            { word: '姐姐', pinyin: 'jiě jie', chars: [{char: '姐', pinyin: 'jiě', initial: 'j', final: 'ie', tone: '3', whole: 'jie'}, {char: '姐', pinyin: 'jie', initial: 'j', final: 'ie', tone: '0', whole: 'jie'}] },
+            { word: '弟弟', pinyin: 'dì di', chars: [{char: '弟', pinyin: 'dì', initial: 'd', final: 'i', tone: '4', whole: 'di'}, {char: '弟', pinyin: 'di', initial: 'd', final: 'i', tone: '0', whole: 'di'}] },
+            { word: '妹妹', pinyin: 'mèi mei', chars: [{char: '妹', pinyin: 'mèi', initial: 'm', final: 'ei', tone: '4', whole: 'mei'}, {char: '妹', pinyin: 'mei', initial: 'm', final: 'ei', tone: '0', whole: 'mei'}] },
+            { word: '爷爷', pinyin: 'yé ye', chars: [{char: '爷', pinyin: 'yé', initial: 'y', final: 'e', tone: '2', whole: 'ye'}, {char: '爷', pinyin: 'ye', initial: 'y', final: 'e', tone: '0', whole: 'ye'}] },
+            { word: '奶奶', pinyin: 'nǎi nai', chars: [{char: '奶', pinyin: 'nǎi', initial: 'n', final: 'ai', tone: '3', whole: 'nai'}, {char: '奶', pinyin: 'nai', initial: 'n', final: 'ai', tone: '0', whole: 'nai'}] },
+            { word: '小猫', pinyin: 'xiǎo māo', chars: [{char: '小', pinyin: 'xiǎo', initial: 'x', final: 'iao', tone: '3', whole: 'xiao'}, {char: '猫', pinyin: 'māo', initial: 'm', final: 'ao', tone: '1', whole: 'mao'}] },
+            { word: '小狗', pinyin: 'xiǎo gǒu', chars: [{char: '小', pinyin: 'xiǎo', initial: 'x', final: 'iao', tone: '3', whole: 'xiao'}, {char: '狗', pinyin: 'gǒu', initial: 'g', final: 'ou', tone: '3', whole: 'gou'}] },
+            { word: '小鸟', pinyin: 'xiǎo niǎo', chars: [{char: '小', pinyin: 'xiǎo', initial: 'x', final: 'iao', tone: '3', whole: 'xiao'}, {char: '鸟', pinyin: 'niǎo', initial: 'n', final: 'iao', tone: '3', whole: 'niao'}] },
+            { word: '小鱼', pinyin: 'xiǎo yú', chars: [{char: '小', pinyin: 'xiǎo', initial: 'x', final: 'iao', tone: '3', whole: 'xiao'}, {char: '鱼', pinyin: 'yú', initial: 'y', final: 'u', tone: '2', whole: 'yu'}] },
+            { word: '苹果', pinyin: 'píng guǒ', chars: [{char: '苹', pinyin: 'píng', initial: 'p', final: 'ing', tone: '2', whole: 'ping'}, {char: '果', pinyin: 'guǒ', initial: 'g', final: 'uo', tone: '3', whole: 'guo'}] },
+            { word: '香蕉', pinyin: 'xiāng jiāo', chars: [{char: '香', pinyin: 'xiāng', initial: 'x', final: 'iang', tone: '1', whole: 'xiang'}, {char: '蕉', pinyin: 'jiāo', initial: 'j', final: 'iao', tone: '1', whole: 'jiao'}] },
+            { word: '西瓜', pinyin: 'xī guā', chars: [{char: '西', pinyin: 'xī', initial: 'x', final: 'i', tone: '1', whole: 'xi'}, {char: '瓜', pinyin: 'guā', initial: 'g', final: 'ua', tone: '1', whole: 'gua'}] },
+            { word: '米饭', pinyin: 'mǐ fàn', chars: [{char: '米', pinyin: 'mǐ', initial: 'm', final: 'i', tone: '3', whole: 'mi'}, {char: '饭', pinyin: 'fàn', initial: 'f', final: 'an', tone: '4', whole: 'fan'}] },
+            { word: '面条', pinyin: 'miàn tiáo', chars: [{char: '面', pinyin: 'miàn', initial: 'm', final: 'ian', tone: '4', whole: 'mian'}, {char: '条', pinyin: 'tiáo', initial: 't', final: 'iao', tone: '2', whole: 'tiao'}] },
+            { word: '包子', pinyin: 'bāo zi', chars: [{char: '包', pinyin: 'bāo', initial: 'b', final: 'ao', tone: '1', whole: 'bao'}, {char: '子', pinyin: 'zi', initial: 'z', final: 'i', tone: '0', whole: 'zi'}] },
+            { word: '饺子', pinyin: 'jiǎo zi', chars: [{char: '饺', pinyin: 'jiǎo', initial: 'j', final: 'iao', tone: '3', whole: 'jiao'}, {char: '子', pinyin: 'zi', initial: 'z', final: 'i', tone: '0', whole: 'zi'}] },
+            { word: '鸡蛋', pinyin: 'jī dàn', chars: [{char: '鸡', pinyin: 'jī', initial: 'j', final: 'i', tone: '1', whole: 'ji'}, {char: '蛋', pinyin: 'dàn', initial: 'd', final: 'an', tone: '4', whole: 'dan'}] },
+            { word: '牛奶', pinyin: 'niú nǎi', chars: [{char: '牛', pinyin: 'niú', initial: 'n', final: 'iu', tone: '2', whole: 'niu'}, {char: '奶', pinyin: 'nǎi', initial: 'n', final: 'ai', tone: '3', whole: 'nai'}] },
+            { word: '老师', pinyin: 'lǎo shī', chars: [{char: '老', pinyin: 'lǎo', initial: 'l', final: 'ao', tone: '3', whole: 'lao'}, {char: '师', pinyin: 'shī', initial: 'sh', final: 'i', tone: '1', whole: 'shi'}] },
+            { word: '学生', pinyin: 'xué sheng', chars: [{char: '学', pinyin: 'xué', initial: 'x', final: 'ue', tone: '2', whole: 'xue'}, {char: '生', pinyin: 'sheng', initial: 'sh', final: 'eng', tone: '1', whole: 'sheng'}] },
+            { word: '学校', pinyin: 'xué xiào', chars: [{char: '学', pinyin: 'xué', initial: 'x', final: 'ue', tone: '2', whole: 'xue'}, {char: '校', pinyin: 'xiào', initial: 'x', final: 'iao', tone: '4', whole: 'xiao'}] },
+            { word: '太阳', pinyin: 'tài yáng', chars: [{char: '太', pinyin: 'tài', initial: 't', final: 'ai', tone: '4', whole: 'tai'}, {char: '阳', pinyin: 'yáng', initial: 'y', final: 'ang', tone: '2', whole: 'yang'}] },
+            { word: '月亮', pinyin: 'yuè liang', chars: [{char: '月', pinyin: 'yuè', initial: 'y', final: 'ue', tone: '4', whole: 'yue'}, {char: '亮', pinyin: 'liang', initial: 'l', final: 'iang', tone: '0', whole: 'liang'}] },
+            { word: '星星', pinyin: 'xīng xing', chars: [{char: '星', pinyin: 'xīng', initial: 'x', final: 'ing', tone: '1', whole: 'xing'}, {char: '星', pinyin: 'xing', initial: 'x', final: 'ing', tone: '0', whole: 'xing'}] },
+            { word: '天空', pinyin: 'tiān kōng', chars: [{char: '天', pinyin: 'tiān', initial: 't', final: 'ian', tone: '1', whole: 'tian'}, {char: '空', pinyin: 'kōng', initial: 'k', final: 'ong', tone: '1', whole: 'kong'}] },
+            { word: '大地', pinyin: 'dà dì', chars: [{char: '大', pinyin: 'dà', initial: 'd', final: 'a', tone: '4', whole: 'da'}, {char: '地', pinyin: 'dì', initial: 'd', final: 'i', tone: '4', whole: 'di'}] },
+            { word: '桌子', pinyin: 'zhuō zi', chars: [{char: '桌', pinyin: 'zhuō', initial: 'zh', final: 'uo', tone: '1', whole: 'zhuo'}, {char: '子', pinyin: 'zi', initial: 'z', final: 'i', tone: '0', whole: 'zi'}] },
+            { word: '椅子', pinyin: 'yǐ zi', chars: [{char: '椅', pinyin: 'yǐ', initial: 'y', final: 'i', tone: '3', whole: 'yi'}, {char: '子', pinyin: 'zi', initial: 'z', final: 'i', tone: '0', whole: 'zi'}] },
+            { word: '书本', pinyin: 'shū běn', chars: [{char: '书', pinyin: 'shū', initial: 'sh', final: 'u', tone: '1', whole: 'shu'}, {char: '本', pinyin: 'běn', initial: 'b', final: 'en', tone: '3', whole: 'ben'}] },
+            { word: '铅笔', pinyin: 'qiān bǐ', chars: [{char: '铅', pinyin: 'qiān', initial: 'q', final: 'ian', tone: '1', whole: 'qian'}, {char: '笔', pinyin: 'bǐ', initial: 'b', final: 'i', tone: '3', whole: 'bi'}] },
+            { word: '走路', pinyin: 'zǒu lù', chars: [{char: '走', pinyin: 'zǒu', initial: 'z', final: 'ou', tone: '3', whole: 'zou'}, {char: '路', pinyin: 'lù', initial: 'l', final: 'u', tone: '4', whole: 'lu'}] },
+            { word: '跑步', pinyin: 'pǎo bù', chars: [{char: '跑', pinyin: 'pǎo', initial: 'p', final: 'ao', tone: '3', whole: 'pao'}, {char: '步', pinyin: 'bù', initial: 'b', final: 'u', tone: '4', whole: 'bu'}] },
+            { word: '吃饭', pinyin: 'chī fàn', chars: [{char: '吃', pinyin: 'chī', initial: 'ch', final: 'i', tone: '1', whole: 'chi'}, {char: '饭', pinyin: 'fàn', initial: 'f', final: 'an', tone: '4', whole: 'fan'}] },
+            { word: '喝水', pinyin: 'hē shuǐ', chars: [{char: '喝', pinyin: 'hē', initial: 'h', final: 'e', tone: '1', whole: 'he'}, {char: '水', pinyin: 'shuǐ', initial: 'sh', final: 'ui', tone: '3', whole: 'shui'}] },
+            { word: '睡觉', pinyin: 'shuì jiào', chars: [{char: '睡', pinyin: 'shuì', initial: 'sh', final: 'ui', tone: '4', whole: 'shui'}, {char: '觉', pinyin: 'jiào', initial: 'j', final: 'iao', tone: '4', whole: 'jiao'}] },
+            { word: '起床', pinyin: 'qǐ chuáng', chars: [{char: '起', pinyin: 'qǐ', initial: 'q', final: 'i', tone: '3', whole: 'qi'}, {char: '床', pinyin: 'chuáng', initial: 'ch', final: 'uang', tone: '2', whole: 'chuang'}] },
+            { word: '唱歌', pinyin: 'chàng gē', chars: [{char: '唱', pinyin: 'chàng', initial: 'ch', final: 'ang', tone: '4', whole: 'chang'}, {char: '歌', pinyin: 'gē', initial: 'g', final: 'e', tone: '1', whole: 'ge'}] },
+            { word: '跳舞', pinyin: 'tiào wǔ', chars: [{char: '跳', pinyin: 'tiào', initial: 't', final: 'iao', tone: '4', whole: 'tiao'}, {char: '舞', pinyin: 'wǔ', initial: 'w', final: 'u', tone: '3', whole: 'wu'}] },
+            { word: '看书', pinyin: 'kàn shū', chars: [{char: '看', pinyin: 'kàn', initial: 'k', final: 'an', tone: '4', whole: 'kan'}, {char: '书', pinyin: 'shū', initial: 'sh', final: 'u', tone: '1', whole: 'shu'}] },
+            { word: '写字', pinyin: 'xiě zì', chars: [{char: '写', pinyin: 'xiě', initial: 'x', final: 'ie', tone: '3', whole: 'xie'}, {char: '字', pinyin: 'zì', initial: 'z', final: 'i', tone: '4', whole: 'zi'}] },
+            { word: '画画', pinyin: 'huà huà', chars: [{char: '画', pinyin: 'huà', initial: 'h', final: 'ua', tone: '4', whole: 'hua'}, {char: '画', pinyin: 'huà', initial: 'h', final: 'ua', tone: '4', whole: 'hua'}] },
+            { word: '红色', pinyin: 'hóng sè', chars: [{char: '红', pinyin: 'hóng', initial: 'h', final: 'ong', tone: '2', whole: 'hong'}, {char: '色', pinyin: 'sè', initial: 's', final: 'e', tone: '4', whole: 'se'}] },
+            { word: '黄色', pinyin: 'huáng sè', chars: [{char: '黄', pinyin: 'huáng', initial: 'h', final: 'uang', tone: '2', whole: 'huang'}, {char: '色', pinyin: 'sè', initial: 's', final: 'e', tone: '4', whole: 'se'}] },
+            { word: '蓝色', pinyin: 'lán sè', chars: [{char: '蓝', pinyin: 'lán', initial: 'l', final: 'an', tone: '2', whole: 'lan'}, {char: '色', pinyin: 'sè', initial: 's', final: 'e', tone: '4', whole: 'se'}] },
+            { word: '绿色', pinyin: 'lǜ sè', chars: [{char: '绿', pinyin: 'lǜ', initial: 'l', final: 'u', tone: '4', whole: 'lu'}, {char: '色', pinyin: 'sè', initial: 's', final: 'e', tone: '4', whole: 'se'}] }
+        ];
+
+        // 中等词语题库（三字词）- 10个
+        var battleWordsMedium = [
+            { word: '巧克力', pinyin: 'qiǎo kè lì', chars: [{char: '巧', pinyin: 'qiǎo', initial: 'q', final: 'iao', tone: '3', whole: 'qiao'}, {char: '克', pinyin: 'kè', initial: 'k', final: 'e', tone: '4', whole: 'ke'}, {char: '力', pinyin: 'lì', initial: 'l', final: 'i', tone: '4', whole: 'li'}] },
+            { word: '冰淇淋', pinyin: 'bīng qí lín', chars: [{char: '冰', pinyin: 'bīng', initial: 'b', final: 'ing', tone: '1', whole: 'bing'}, {char: '淇', pinyin: 'qí', initial: 'q', final: 'i', tone: '2', whole: 'qi'}, {char: '淋', pinyin: 'lín', initial: 'l', final: 'in', tone: '2', whole: 'lin'}] },
+            { word: '洗衣机', pinyin: 'xǐ yī jī', chars: [{char: '洗', pinyin: 'xǐ', initial: 'x', final: 'i', tone: '3', whole: 'xi'}, {char: '衣', pinyin: 'yī', initial: 'y', final: 'i', tone: '1', whole: 'yi'}, {char: '机', pinyin: 'jī', initial: 'j', final: 'i', tone: '1', whole: 'ji'}] },
+            { word: '电视机', pinyin: 'diàn shì jī', chars: [{char: '电', pinyin: 'diàn', initial: 'd', final: 'ian', tone: '4', whole: 'dian'}, {char: '视', pinyin: 'shì', initial: 'sh', final: 'i', tone: '4', whole: 'shi'}, {char: '机', pinyin: 'jī', initial: 'j', final: 'i', tone: '1', whole: 'ji'}] },
+            { word: '动物园', pinyin: 'dòng wù yuán', chars: [{char: '动', pinyin: 'dòng', initial: 'd', final: 'ong', tone: '4', whole: 'dong'}, {char: '物', pinyin: 'wù', initial: 'w', final: 'u', tone: '4', whole: 'wu'}, {char: '园', pinyin: 'yuán', initial: 'y', final: 'uan', tone: '2', whole: 'yuan'}] },
+            { word: '图书馆', pinyin: 'tú shū guǎn', chars: [{char: '图', pinyin: 'tú', initial: 't', final: 'u', tone: '2', whole: 'tu'}, {char: '书', pinyin: 'shū', initial: 'sh', final: 'u', tone: '1', whole: 'shu'}, {char: '馆', pinyin: 'guǎn', initial: 'g', final: 'uan', tone: '3', whole: 'guan'}] },
+            { word: '游乐场', pinyin: 'yóu lè chǎng', chars: [{char: '游', pinyin: 'yóu', initial: 'y', final: 'ou', tone: '2', whole: 'you'}, {char: '乐', pinyin: 'lè', initial: 'l', final: 'e', tone: '4', whole: 'le'}, {char: '场', pinyin: 'chǎng', initial: 'ch', final: 'ang', tone: '3', whole: 'chang'}] },
+            { word: '运动会', pinyin: 'yùn dòng huì', chars: [{char: '运', pinyin: 'yùn', initial: 'y', final: 'un', tone: '4', whole: 'yun'}, {char: '动', pinyin: 'dòng', initial: 'd', final: 'ong', tone: '4', whole: 'dong'}, {char: '会', pinyin: 'huì', initial: 'h', final: 'ui', tone: '4', whole: 'hui'}] },
+            { word: '电影院', pinyin: 'diàn yǐng yuàn', chars: [{char: '电', pinyin: 'diàn', initial: 'd', final: 'ian', tone: '4', whole: 'dian'}, {char: '影', pinyin: 'yǐng', initial: 'y', final: 'ing', tone: '3', whole: 'ying'}, {char: '院', pinyin: 'yuàn', initial: 'y', final: 'uan', tone: '4', whole: 'yuan'}] },
+            { word: '博物馆', pinyin: 'bó wù guǎn', chars: [{char: '博', pinyin: 'bó', initial: 'b', final: 'o', tone: '2', whole: 'bo'}, {char: '物', pinyin: 'wù', initial: 'w', final: 'u', tone: '4', whole: 'wu'}, {char: '馆', pinyin: 'guǎn', initial: 'g', final: 'uan', tone: '3', whole: 'guan'}] }
+        ];
+
+        // 困难词语题库（四字成语）- 10个
+        var battleWordsHard = [
+            { word: '一心一意', pinyin: 'yī xīn yī yì', chars: [{char: '一', pinyin: 'yī', initial: 'y', final: 'i', tone: '1', whole: 'yi'}, {char: '心', pinyin: 'xīn', initial: 'x', final: 'in', tone: '1', whole: 'xin'}, {char: '一', pinyin: 'yī', initial: 'y', final: 'i', tone: '1', whole: 'yi'}, {char: '意', pinyin: 'yì', initial: 'y', final: 'i', tone: '4', whole: 'yi'}] },
+            { word: '三心二意', pinyin: 'sān xīn èr yì', chars: [{char: '三', pinyin: 'sān', initial: 's', final: 'an', tone: '1', whole: 'san'}, {char: '心', pinyin: 'xīn', initial: 'x', final: 'in', tone: '1', whole: 'xin'}, {char: '二', pinyin: 'èr', initial: '', final: 'er', tone: '4', whole: 'er'}, {char: '意', pinyin: 'yì', initial: 'y', final: 'i', tone: '4', whole: 'yi'}] },
+            { word: '五颜六色', pinyin: 'wǔ yán liù sè', chars: [{char: '五', pinyin: 'wǔ', initial: 'w', final: 'u', tone: '3', whole: 'wu'}, {char: '颜', pinyin: 'yán', initial: 'y', final: 'an', tone: '2', whole: 'yan'}, {char: '六', pinyin: 'liù', initial: 'l', final: 'iu', tone: '4', whole: 'liu'}, {char: '色', pinyin: 'sè', initial: 's', final: 'e', tone: '4', whole: 'se'}] },
+            { word: '七上八下', pinyin: 'qī shàng bā xià', chars: [{char: '七', pinyin: 'qī', initial: 'q', final: 'i', tone: '1', whole: 'qi'}, {char: '上', pinyin: 'shàng', initial: 'sh', final: 'ang', tone: '4', whole: 'shang'}, {char: '八', pinyin: 'bā', initial: 'b', final: 'a', tone: '1', whole: 'ba'}, {char: '下', pinyin: 'xià', initial: 'x', final: 'ia', tone: '4', whole: 'xia'}] },
+            { word: '九牛一毛', pinyin: 'jiǔ niú yī máo', chars: [{char: '九', pinyin: 'jiǔ', initial: 'j', final: 'iu', tone: '3', whole: 'jiu'}, {char: '牛', pinyin: 'niú', initial: 'n', final: 'iu', tone: '2', whole: 'niu'}, {char: '一', pinyin: 'yī', initial: 'y', final: 'i', tone: '1', whole: 'yi'}, {char: '毛', pinyin: 'máo', initial: 'm', final: 'ao', tone: '2', whole: 'mao'}] },
+            { word: '十全十美', pinyin: 'shí quán shí měi', chars: [{char: '十', pinyin: 'shí', initial: 'sh', final: 'i', tone: '2', whole: 'shi'}, {char: '全', pinyin: 'quán', initial: 'q', final: 'uan', tone: '2', whole: 'quan'}, {char: '十', pinyin: 'shí', initial: 'sh', final: 'i', tone: '2', whole: 'shi'}, {char: '美', pinyin: 'měi', initial: 'm', final: 'ei', tone: '3', whole: 'mei'}] },
+            { word: '龙飞凤舞', pinyin: 'lóng fēi fèng wǔ', chars: [{char: '龙', pinyin: 'lóng', initial: 'l', final: 'ong', tone: '2', whole: 'long'}, {char: '飞', pinyin: 'fēi', initial: 'f', final: 'ei', tone: '1', whole: 'fei'}, {char: '凤', pinyin: 'fèng', initial: 'f', final: 'eng', tone: '4', whole: 'feng'}, {char: '舞', pinyin: 'wǔ', initial: 'w', final: 'u', tone: '3', whole: 'wu'}] },
+            { word: '马到成功', pinyin: 'mǎ dào chéng gōng', chars: [{char: '马', pinyin: 'mǎ', initial: 'm', final: 'a', tone: '3', whole: 'ma'}, {char: '到', pinyin: 'dào', initial: 'd', final: 'ao', tone: '4', whole: 'dao'}, {char: '成', pinyin: 'chéng', initial: 'ch', final: 'eng', tone: '2', whole: 'cheng'}, {char: '功', pinyin: 'gōng', initial: 'g', final: 'ong', tone: '1', whole: 'gong'}] },
+            { word: '虎头蛇尾', pinyin: 'hǔ tóu shé wěi', chars: [{char: '虎', pinyin: 'hǔ', initial: 'h', final: 'u', tone: '3', whole: 'hu'}, {char: '头', pinyin: 'tóu', initial: 't', final: 'ou', tone: '2', whole: 'tou'}, {char: '蛇', pinyin: 'shé', initial: 'sh', final: 'e', tone: '2', whole: 'she'}, {char: '尾', pinyin: 'wěi', initial: 'w', final: 'ei', tone: '3', whole: 'wei'}] },
+            { word: '一心一意', pinyin: 'yī xīn yī yì', chars: [{char: '一', pinyin: 'yī', initial: 'y', final: 'i', tone: '1', whole: 'yi'}, {char: '心', pinyin: 'xīn', initial: 'x', final: 'in', tone: '1', whole: 'xin'}, {char: '一', pinyin: 'yī', initial: 'y', final: 'i', tone: '1', whole: 'yi'}, {char: '意', pinyin: 'yì', initial: 'y', final: 'i', tone: '4', whole: 'yi'}] }
         ];
 
         // 声母选项池
@@ -883,15 +1001,23 @@
         // 韵母选项池
         var allFinals = ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu',
                         'ie', 'üe', 'er', 'an', 'en', 'in', 'un', 'ün',
-                        'ang', 'eng', 'ing', 'ong', 'iao', 'ian', 'ua', 'uo'];
-        // 整体认读选项池
+                        'ang', 'eng', 'ing', 'ong', 'iao', 'ian', 'ua', 'uo', 'uang', 'iang'];
+        // 整体认读选项池（扩展）
         var allWholes = ['zhi', 'chi', 'shi', 'ri', 'zi', 'ci', 'si',
                         'yi', 'wu', 'yu', 'ye', 'yue', 'yuan', 'yin', 'yun', 'ying',
-                        'ba', 'ma', 'da', 'xiao', 'wo', 'ni', 'hao', 'zhong', 'guo'];
+                        'ba', 'ma', 'da', 'xiao', 'wo', 'ni', 'hao', 'zhong', 'guo', 'tian',
+                        'shui', 'huo', 'shan', 'mu', 'hua', 'yun', 'yue', 'ri', 'ren', 'kou',
+                        'shou', 'xin', 'ai', 'xue', 'sheng', 'shang', 'xia', 'zuo', 'you',
+                        'dong', 'xi', 'nan', 'bei', 'feng', 'yu', 'lei', 'dian', 'mi', 'fan',
+                        'mian', 'guo', 'gua', 'tou', 'yan', 'er', 'ya', 'ma', 'niu', 'yang',
+                        'niao', 'yu', 'chong', 'ye', 'cao', 'shu', 'zhu'];
+        // 声调选项池
+        var allTones = ['1', '2', '3', '4'];
 
         // 当前战斗题目状态
         var currentBattleChar = null;
-        var currentBattleMode = null; // 'initial', 'final', 'whole', 'tone'
+        var currentBattleWord = null; // 新增：当前词语题目
+        var currentBattleMode = null; // 'initial', 'final', 'whole', 'tone', 'word'
 
         // 15关数据
         // v8.2.0 重新设计关卡系统 - 按基础教学进度进阶
@@ -4571,51 +4697,130 @@ function showPage(pageId) {
         }
 
         function loadBattleQuestion() {
-            // 随机选择一个汉字
-            currentBattleChar = battleCharacters[Math.floor(Math.random() * battleCharacters.length)];
-
-            // 随机选择模式：0=声母, 1=韵母, 2=整体拼音, 3=声调
-            var modeIdx = Math.floor(Math.random() * 4);
-            var modes = ['initial', 'final', 'whole', 'tone'];
-            var modeNames = ['声母', '韵母', '整体拼音', '声调'];
-            var modeColors = ['#667eea', '#f5576c', '#00f2fe', '#38f9d7'];
-
+            // v9.0.22: 根据怪物血量/难度调整题型概率
+            // 血量100(森林): 声母40% 韵母35% 整体20% 词语0% 声调5%
+            // 血量150(沙漠): 声母30% 韵母30% 整体25% 词语10% 声调5%
+            // 血量200(海洋): 声母20% 韵母25% 整体30% 词语20% 声调5%
+            // 血量300(火山): 声母15% 韵母20% 整体30% 词语30% 声调5%
+            
+            var enemyHp = currentEnemy.maxHp || currentEnemy.hp;
+            var rand = Math.random();
+            var modeIdx, questionType;
+            
+            if (enemyHp <= 100) {
+                // 简单难度 - 森林
+                if (rand < 0.40) modeIdx = 0; // 声母 40%
+                else if (rand < 0.75) modeIdx = 1; // 韵母 35%
+                else if (rand < 0.95) modeIdx = 2; // 整体 20%
+                else modeIdx = 3; // 声调 5%
+                questionType = 'char'; // 单字题
+            } else if (enemyHp <= 150) {
+                // 中等难度 - 沙漠
+                if (rand < 0.30) modeIdx = 0; // 声母 30%
+                else if (rand < 0.60) modeIdx = 1; // 韵母 30%
+                else if (rand < 0.85) modeIdx = 2; // 整体 25%
+                else if (rand < 0.95) { modeIdx = 4; questionType = 'word'; } // 词语 10%
+                else modeIdx = 3; // 声调 5%
+            } else if (enemyHp <= 200) {
+                // 困难难度 - 海洋
+                if (rand < 0.20) modeIdx = 0; // 声母 20%
+                else if (rand < 0.45) modeIdx = 1; // 韵母 25%
+                else if (rand < 0.75) modeIdx = 2; // 整体 30%
+                else if (rand < 0.95) { modeIdx = 4; questionType = 'word'; } // 词语 20%
+                else modeIdx = 3; // 声调 5%
+            } else {
+                // 极难难度 - 火山
+                if (rand < 0.15) modeIdx = 0; // 声母 15%
+                else if (rand < 0.35) modeIdx = 1; // 韵母 20%
+                else if (rand < 0.65) modeIdx = 2; // 整体 30%
+                else if (rand < 0.95) { modeIdx = 4; questionType = 'word'; } // 词语 30%
+                else modeIdx = 3; // 声调 5%
+            }
+            
+            // 如果是词语题但怪不属于高难区域，降级为单字题
+            if (questionType === 'word' && enemyHp <= 100) {
+                questionType = 'char';
+                modeIdx = Math.floor(Math.random() * 3); // 声母/韵母/整体
+            }
+            
+            var modes = ['initial', 'final', 'whole', 'tone', 'word'];
+            var modeNames = ['声母', '韵母', '整体拼音', '声调', '词语拼音'];
+            var modeColors = ['#667eea', '#f5576c', '#00f2fe', '#38f9d7', '#f093fb'];
+            
             currentBattleMode = modes[modeIdx];
             var modeName = modeNames[modeIdx];
             var modeColor = modeColors[modeIdx];
-
-            var char = currentBattleChar;
-            var answer, options;
-
-            switch(currentBattleMode) {
-                case 'initial':
-                    answer = char.initial;
-                    options = generateBattleOptions(answer, allInitials);
-                    currentBattleQuestion = { q: char.char, a: answer, type: 'initial', modeName: modeName };
-                    break;
-                case 'final':
-                    answer = char.final;
-                    options = generateBattleOptions(answer, allFinals);
-                    currentBattleQuestion = { q: char.char, a: answer, type: 'final', modeName: modeName };
-                    break;
-                case 'whole':
-                    answer = char.whole;
-                    options = generateBattleOptions(answer, allWholes);
-                    currentBattleQuestion = { q: char.char, a: answer, type: 'whole', modeName: modeName };
-                    break;
-                case 'tone':
-                    answer = char.tone;
-                    options = ['1', '2', '3', '4'];
-                    currentBattleQuestion = { q: char.char, a: answer, type: 'tone', modeName: modeName };
-                    break;
+            
+            var answer, options, displayText, displayHtml;
+            
+            if (questionType === 'word' || currentBattleMode === 'word') {
+                // 词语题目
+                currentBattleMode = 'word';
+                // 根据难度选择词语库
+                var wordPool;
+                if (enemyHp <= 150) {
+                    wordPool = battleWordsEasy;
+                } else if (enemyHp <= 200) {
+                    // 50%概率中等，50%简单
+                    wordPool = Math.random() < 0.5 ? battleWordsMedium : battleWordsEasy;
+                } else {
+                    // 火山：40%困难，40%中等，20%简单
+                    var r = Math.random();
+                    if (r < 0.4) wordPool = battleWordsHard;
+                    else if (r < 0.8) wordPool = battleWordsMedium;
+                    else wordPool = battleWordsEasy;
+                }
+                
+                currentBattleWord = wordPool[Math.floor(Math.random() * wordPool.length)];
+                // 随机选择词语中的一个字来提问
+                var charIdx = Math.floor(Math.random() * currentBattleWord.chars.length);
+                var targetChar = currentBattleWord.chars[charIdx];
+                
+                // 词语题只问整体拼音
+                answer = targetChar.whole;
+                options = generateBattleOptions(answer, allWholes);
+                
+                displayText = currentBattleWord.word;
+                displayHtml = '<div style="font-size: 48px; margin: 5px 0; color: #667eea;">' + displayText + '</div>';
+                displayHtml += '<div style="font-size: 16px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
+                displayHtml += '请选出 "' + targetChar.char + '" 的' + modeName + '';
+                displayHtml += '</div>';
+                displayHtml += '<button class="voice-btn" onclick="speakBattleChar()" style="margin-left: 10px;">🔊</button>';
+                
+                currentBattleQuestion = { q: displayText, a: answer, type: 'word', modeName: modeName, targetChar: targetChar };
+            } else {
+                // 单字题目
+                currentBattleWord = null;
+                currentBattleChar = battleCharacters[Math.floor(Math.random() * battleCharacters.length)];
+                var char = currentBattleChar;
+                
+                switch(currentBattleMode) {
+                    case 'initial':
+                        answer = char.initial;
+                        options = generateBattleOptions(answer, allInitials);
+                        break;
+                    case 'final':
+                        answer = char.final;
+                        options = generateBattleOptions(answer, allFinals);
+                        break;
+                    case 'whole':
+                        answer = char.whole;
+                        options = generateBattleOptions(answer, allWholes);
+                        break;
+                    case 'tone':
+                        answer = char.tone;
+                        options = ['1', '2', '3', '4'];
+                        break;
+                }
+                
+                displayHtml = '<div style="font-size: 72px; margin: 5px 0; color: #667eea;">' + char.char + '</div>';
+                displayHtml += '<div style="font-size: 16px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
+                displayHtml += '请选出 "' + char.char + '" 的' + modeName + '';
+                displayHtml += '</div>';
+                displayHtml += '<button class="voice-btn" onclick="speakBattleChar()" style="margin-left: 10px;">🔊</button>';
+                
+                currentBattleQuestion = { q: char.char, a: answer, type: currentBattleMode, modeName: modeName };
             }
-
-            // 显示：汉字大字 + 提示条（选出XX）
-            var displayHtml = '<div style="font-size: 72px; margin: 5px 0; color: #667eea;">' + char.char + '</div>';
-            displayHtml += '<div style="font-size: 16px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
-            displayHtml += '请选出 "' + char.char + '" 的' + modeName + '';
-            displayHtml += '</div>';
-            displayHtml += '<button class="voice-btn" onclick="speakBattleChar()" style="margin-left: 10px;">🔊</button>';
 
             document.getElementById('battleQDisplay').innerHTML = displayHtml;
 
@@ -4631,8 +4836,14 @@ function showPage(pageId) {
             // 更新战斗日志
             document.getElementById('battleLog').textContent = '遭遇 ' + currentEnemy.name + '！';
 
-            // 播放汉字发音
-            setTimeout(function() { speak(char.char); }, 300);
+            // 播放发音
+            setTimeout(function() { 
+                if (currentBattleWord) {
+                    speak(currentBattleWord.word);
+                } else {
+                    speak(currentBattleChar.char); 
+                }
+            }, 300);
         }
 
         // 生成战斗选项（确保包含正确答案）
@@ -5827,7 +6038,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.21 (2026-03-15)
+        拼音大冒险 v9.0.22 (2026-03-15)
     </div>
 
     <script>
