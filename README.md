@@ -26,3 +26,4 @@ pinyin-game/
 - HTML5 + CSS3 + JavaScript
 - 通义万相API（视觉资源）
 - 讯飞/百度语音API（语音识别）
+# Force rebuild Sun Mar 15 11:24:10 AM CST 2026
