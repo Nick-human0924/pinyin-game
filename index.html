@@ -815,7 +815,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.20';
+        var GAME_VERSION = 'v9.0.21';
         var GAME_BUILD_DATE = '2026-03-14 19:00';
         var GAME_BUILD_DATE = '2026-03-13';
         
@@ -4916,6 +4916,18 @@ function showPage(pageId) {
             saveGameData();
             renderShop('pets');
             alert('🎉 恭喜获得新宠物：' + pet.name + '！\n\n请到"我的宠物"页面查看并切换使用。');
+        }
+
+        // 重新计算宠物战斗属性（同步当前宠物属性到战斗变量）
+        function recalcPetStats() {
+            var currentPet = pets.list[pets.current];
+            if (currentPet) {
+                petAttack = currentPet.attack;
+                petDefense = currentPet.defense;
+                maxHp = currentPet.maxHp;
+                // 保持当前血量不超过新的最大血量
+                hp = Math.min(hp, maxHp);
+            }
         }
 
         // 切换宠物
