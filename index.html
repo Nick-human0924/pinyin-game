@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.23 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.24 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -817,8 +817,8 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.23';
-        var GAME_BUILD_DATE = '2026-03-15 15:50';
+        var GAME_VERSION = 'v9.0.24';
+        var GAME_BUILD_DATE = '2026-03-15 16:25';
         
         // 完整拼音数据
         var pinyinData = {
@@ -2912,19 +2912,44 @@ function showPage(pageId) {
             var allOptions;
 
             switch(type) {
-                case 'initial': // 声母
+                case 'initial': // 声母 - v9.0.24: 扩展题目池防止重复
                     var chars;
                     if (stage === 1) {
-                        chars = [{c: '爸', a: 'b'}, {c: '妈', a: 'm'}, {c: '怕', a: 'p'}, {c: '发', a: 'f'},
-                                {c: '大', a: 'd'}, {c: '他', a: 't'}, {c: '你', a: 'n'}, {c: '乐', a: 'l'}];
+                        chars = [
+                            {c: '爸', a: 'b'}, {c: '妈', a: 'm'}, {c: '怕', a: 'p'}, {c: '发', a: 'f'},
+                            {c: '大', a: 'd'}, {c: '他', a: 't'}, {c: '你', a: 'n'}, {c: '乐', a: 'l'},
+                            {c: '不', a: 'b'}, {c: '买', a: 'm'}, {c: '跑', a: 'p'}, {c: '飞', a: 'f'},
+                            {c: '到', a: 'd'}, {c: '听', a: 't'}, {c: '牛', a: 'n'}, {c: '来', a: 'l'},
+                            {c: '白', a: 'b'}, {c: '猫', a: 'm'}, {c: '皮', a: 'p'}, {c: '风', a: 'f'},
+                            {c: '多', a: 'd'}, {c: '天', a: 't'}, {c: '年', a: 'n'}, {c: '蓝', a: 'l'},
+                            {c: '把', a: 'b'}, {c: '门', a: 'm'}, {c: '朋', a: 'p'}, {c: '饭', a: 'f'},
+                            {c: '弟', a: 'd'}, {c: '同', a: 't'}, {c: '女', a: 'n'}, {c: '老', a: 'l'}
+                        ];
                     } else if (stage === 2) {
-                        chars = [{c: '哥', a: 'g'}, {c: '看', a: 'k'}, {c: '喝', a: 'h'},
-                                {c: '鸡', a: 'j'}, {c: '七', a: 'q'}, {c: '下', a: 'x'},
-                                {c: '知', a: 'zh'}, {c: '吃', a: 'ch'}, {c: '十', a: 'sh'}, {c: '日', a: 'r'}];
+                        chars = [
+                            {c: '哥', a: 'g'}, {c: '看', a: 'k'}, {c: '喝', a: 'h'},
+                            {c: '鸡', a: 'j'}, {c: '七', a: 'q'}, {c: '下', a: 'x'},
+                            {c: '知', a: 'zh'}, {c: '吃', a: 'ch'}, {c: '十', a: 'sh'}, {c: '日', a: 'r'},
+                            {c: '狗', a: 'g'}, {c: '开', a: 'k'}, {c: '好', a: 'h'},
+                            {c: '家', a: 'j'}, {c: '去', a: 'q'}, {c: '小', a: 'x'},
+                            {c: '中', a: 'zh'}, {c: '出', a: 'ch'}, {c: '上', a: 'sh'}, {c: '人', a: 'r'},
+                            {c: '给', a: 'g'}, {c: '看', a: 'k'}, {c: '花', a: 'h'},
+                            {c: '就', a: 'j'}, {c: '前', a: 'q'}, {c: '学', a: 'x'},
+                            {c: '这', a: 'zh'}, {c: '春', a: 'ch'}, {c: '水', a: 'sh'}, {c: '热', a: 'r'},
+                            {c: '国', a: 'g'}, {c: '快', a: 'k'}, {c: '回', a: 'h'}
+                        ];
                     } else {
-                        chars = [{c: '在', a: 'z'}, {c: '从', a: 'c'}, {c: '三', a: 's'},
-                                {c: '一', a: 'y'}, {c: '我', a: 'w'}, {c: '爸', a: 'b'}, {c: '妈', a: 'm'},
-                                {c: '怕', a: 'p'}, {c: '发', a: 'f'}, {c: '大', a: 'd'}, {c: '他', a: 't'}];
+                        chars = [
+                            {c: '在', a: 'z'}, {c: '从', a: 'c'}, {c: '三', a: 's'},
+                            {c: '一', a: 'y'}, {c: '我', a: 'w'}, {c: '爸', a: 'b'}, {c: '妈', a: 'm'},
+                            {c: '怕', a: 'p'}, {c: '发', a: 'f'}, {c: '大', a: 'd'}, {c: '他', a: 't'},
+                            {c: '坐', a: 'z'}, {c: '草', a: 'c'}, {c: '色', a: 's'},
+                            {c: '有', a: 'y'}, {c: '问', a: 'w'}, {c: '不', a: 'b'}, {c: '买', a: 'm'},
+                            {c: '跑', a: 'p'}, {c: '飞', a: 'f'}, {c: '到', a: 'd'}, {c: '听', a: 't'},
+                            {c: '再', a: 'z'}, {c: '次', a: 'c'}, {c: '四', a: 's'},
+                            {c: '要', a: 'y'}, {c: '外', a: 'w'}, {c: '白', a: 'b'}, {c: '猫', a: 'm'},
+                            {c: '皮', a: 'p'}, {c: '风', a: 'f'}, {c: '多', a: 'd'}, {c: '天', a: 't'}
+                        ];
                     }
                     allOptions = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x',
                                  'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w'];
@@ -2933,19 +2958,43 @@ function showPage(pageId) {
                     }
                     break;
 
-                case 'final': // 韵母
+                case 'final': // 韵母 - v9.0.24: 扩展题目池防止重复
                     var chars2;
                     if (stage === 1) {
-                        chars2 = [{c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '的', a: 'e'}, {c: '你', a: 'i'},
-                                 {c: '不', a: 'u'}, {c: '去', a: 'ü'}, {c: '来', a: 'ai'}, {c: '北', a: 'ei'}];
+                        chars2 = [
+                            {c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '的', a: 'e'}, {c: '你', a: 'i'},
+                            {c: '不', a: 'u'}, {c: '去', a: 'ü'}, {c: '来', a: 'ai'}, {c: '北', a: 'ei'},
+                            {c: '他', a: 'a'}, {c: '波', a: 'o'}, {c: '个', a: 'e'}, {c: '一', a: 'i'},
+                            {c: '路', a: 'u'}, {c: '句', a: 'ü'}, {c: '开', a: 'ai'}, {c: '被', a: 'ei'},
+                            {c: '大', a: 'a'}, {c: '摸', a: 'o'}, {c: '热', a: 'e'}, {c: '七', a: 'i'},
+                            {c: '出', a: 'u'}, {c: '雨', a: 'ü'}, {c: '海', a: 'ai'}, {c: '给', a: 'ei'},
+                            {c: '家', a: 'a'}, {c: '多', a: 'o'}, {c: '和', a: 'e'}, {c: '衣', a: 'i'},
+                            {c: '书', a: 'u'}, {c: '鱼', a: 'ü'}, {c: '白', a: 'ai'}, {c: '妹', a: 'ei'}
+                        ];
                     } else if (stage === 2) {
-                        chars2 = [{c: '水', a: 'ui'}, {c: '好', a: 'ao'}, {c: '有', a: 'ou'}, {c: '就', a: 'iu'},
-                                 {c: '写', a: 'ie'}, {c: '月', a: 'üe'}, {c: '儿', a: 'er'},
-                                 {c: '天', a: 'an'}, {c: '人', a: 'en'}, {c: '心', a: 'in'}];
+                        chars2 = [
+                            {c: '水', a: 'ui'}, {c: '好', a: 'ao'}, {c: '有', a: 'ou'}, {c: '就', a: 'iu'},
+                            {c: '写', a: 'ie'}, {c: '月', a: 'üe'}, {c: '儿', a: 'er'},
+                            {c: '天', a: 'an'}, {c: '人', a: 'en'}, {c: '心', a: 'in'},
+                            {c: '回', a: 'ui'}, {c: '小', a: 'ao'}, {c: '走', a: 'ou'}, {c: '六', a: 'iu'},
+                            {c: '姐', a: 'ie'}, {c: '学', a: 'üe'}, {c: '耳', a: 'er'},
+                            {c: '看', a: 'an'}, {c: '门', a: 'en'}, {c: '今', a: 'in'},
+                            {c: '对', a: 'ui'}, {c: '少', a: 'ao'}, {c: '手', a: 'ou'}, {c: '九', a: 'iu'},
+                            {c: '别', a: 'ie'}, {c: '雪', a: 'üe'}, {c: '二', a: 'er'},
+                            {c: '三', a: 'an'}, {c: '很', a: 'en'}, {c: '进', a: 'in'}
+                        ];
                     } else {
-                        chars2 = [{c: '问', a: 'un'}, {c: '云', a: 'ün'}, {c: '上', a: 'ang'},
-                                 {c: '冷', a: 'eng'}, {c: '明', a: 'ing'}, {c: '龙', a: 'ong'},
-                                 {c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '来', a: 'ai'}, {c: '水', a: 'ui'}];
+                        chars2 = [
+                            {c: '问', a: 'un'}, {c: '云', a: 'ün'}, {c: '上', a: 'ang'},
+                            {c: '冷', a: 'eng'}, {c: '明', a: 'ing'}, {c: '龙', a: 'ong'},
+                            {c: '妈', a: 'a'}, {c: '我', a: 'o'}, {c: '来', a: 'ai'}, {c: '水', a: 'ui'},
+                            {c: '春', a: 'un'}, {c: '群', a: 'ün'}, {c: '方', a: 'ang'},
+                            {c: '生', a: 'eng'}, {c: '听', a: 'ing'}, {c: '东', a: 'ong'},
+                            {c: '文', a: 'un'}, {c: '军', a: 'ün'}, {c: '长', a: 'ang'},
+                            {c: '能', a: 'eng'}, {c: '星', a: 'ing'}, {c: '空', a: 'ong'},
+                            {c: '村', a: 'un'}, {c: '运', a: 'ün'}, {c: '狼', a: 'ang'},
+                            {c: '等', a: 'eng'}, {c: '京', a: 'ing'}, {c: '红', a: 'ong'}
+                        ];
                     }
                     allOptions = ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu', 'ie', 'üe', 'er',
                                  'an', 'en', 'in', 'un', 'ün', 'ang', 'eng', 'ing', 'ong'];
@@ -2954,20 +3003,44 @@ function showPage(pageId) {
                     }
                     break;
 
-                case 'whole': // 整体认读
+                case 'whole': // 整体认读 - v9.0.24: 扩展题目池防止重复
                     var chars3;
                     if (stage === 1) {
-                        chars3 = [{c: '一只', a: 'zhi'}, {c: '吃饭', a: 'chi'}, {c: '狮子', a: 'shi'}, {c: '日子', a: 'ri'},
-                                 {c: '字母', a: 'zi'}, {c: '词语', a: 'ci'}, {c: '四十', a: 'si'},
-                                 {c: '一', a: 'yi'}, {c: '五', a: 'wu'}, {c: '鱼', a: 'yu'}];
+                        chars3 = [
+                            {c: '一只', a: 'zhi'}, {c: '吃饭', a: 'chi'}, {c: '狮子', a: 'shi'}, {c: '日子', a: 'ri'},
+                            {c: '字母', a: 'zi'}, {c: '词语', a: 'ci'}, {c: '四十', a: 'si'},
+                            {c: '一', a: 'yi'}, {c: '五', a: 'wu'}, {c: '鱼', a: 'yu'},
+                            {c: '知道', a: 'zhi'}, {c: '迟到', a: 'chi'}, {c: '老师', a: 'shi'}, {c: '日出', a: 'ri'},
+                            {c: '写字', a: 'zi'}, {c: '一次', a: 'ci'}, {c: '四次', a: 'si'},
+                            {c: '一起', a: 'yi'}, {c: '我们', a: 'wu'}, {c: '金鱼', a: 'yu'},
+                            {c: '只是', a: 'zhi'}, {c: '吃苹果', a: 'chi'}, {c: '石头', a: 'shi'}, {c: '日月', a: 'ri'},
+                            {c: '日子', a: 'zi'}, {c: '词语', a: 'ci'}, {c: '丝线', a: 'si'},
+                            {c: '一个', a: 'yi'}, {c: '乌云', a: 'wu'}, {c: '小鱼', a: 'yu'}
+                        ];
                     } else if (stage === 2) {
-                        chars3 = [{c: '叶', a: 'ye'}, {c: '月', a: 'yue'}, {c: '元', a: 'yuan'},
-                                 {c: '音', a: 'yin'}, {c: '云', a: 'yun'}, {c: '鹰', a: 'ying'},
-                                 {c: '一只', a: 'zhi'}, {c: '吃饭', a: 'chi'}, {c: '一', a: 'yi'}, {c: '五', a: 'wu'}];
+                        chars3 = [
+                            {c: '叶', a: 'ye'}, {c: '月', a: 'yue'}, {c: '元', a: 'yuan'},
+                            {c: '音', a: 'yin'}, {c: '云', a: 'yun'}, {c: '鹰', a: 'ying'},
+                            {c: '一只', a: 'zhi'}, {c: '吃饭', a: 'chi'}, {c: '一', a: 'yi'}, {c: '五', a: 'wu'},
+                            {c: '叶子', a: 'ye'}, {c: '月亮', a: 'yue'}, {c: '一元', a: 'yuan'},
+                            {c: '音乐', a: 'yin'}, {c: '白云', a: 'yun'}, {c: '老鹰', a: 'ying'},
+                            {c: '知道', a: 'zhi'}, {c: '迟到', a: 'chi'}, {c: '一起', a: 'yi'}, {c: '我们', a: 'wu'},
+                            {c: '树叶', a: 'ye'}, {c: '明月', a: 'yue'}, {c: '公园', a: 'yuan'},
+                            {c: '声音', a: 'yin'}, {c: '云朵', a: 'yun'}, {c: '猫头鹰', a: 'ying'},
+                            {c: '只是', a: 'zhi'}, {c: '吃苹果', a: 'chi'}, {c: '一个', a: 'yi'}, {c: '乌云', a: 'wu'}
+                        ];
                     } else {
-                        chars3 = [{c: '字母', a: 'zi'}, {c: '词语', a: 'ci'}, {c: '四十', a: 'si'},
-                                 {c: '鱼', a: 'yu'}, {c: '叶', a: 'ye'}, {c: '月', a: 'yue'},
-                                 {c: '元', a: 'yuan'}, {c: '音', a: 'yin'}, {c: '云', a: 'yun'}, {c: '鹰', a: 'ying'}];
+                        chars3 = [
+                            {c: '字母', a: 'zi'}, {c: '词语', a: 'ci'}, {c: '四十', a: 'si'},
+                            {c: '鱼', a: 'yu'}, {c: '叶', a: 'ye'}, {c: '月', a: 'yue'},
+                            {c: '元', a: 'yuan'}, {c: '音', a: 'yin'}, {c: '云', a: 'yun'}, {c: '鹰', a: 'ying'},
+                            {c: '写字', a: 'zi'}, {c: '一次', a: 'ci'}, {c: '四次', a: 'si'},
+                            {c: '金鱼', a: 'yu'}, {c: '叶子', a: 'ye'}, {c: '月亮', a: 'yue'},
+                            {c: '一元', a: 'yuan'}, {c: '音乐', a: 'yin'}, {c: '白云', a: 'yun'}, {c: '老鹰', a: 'ying'},
+                            {c: '日子', a: 'zi'}, {c: '丝线', a: 'si'}, {c: '小鱼', a: 'yu'},
+                            {c: '树叶', a: 'ye'}, {c: '明月', a: 'yue'}, {c: '公园', a: 'yuan'},
+                            {c: '声音', a: 'yin'}, {c: '云朵', a: 'yun'}, {c: '猫头鹰', a: 'ying'}
+                        ];
                     }
                     allOptions = ['zhi', 'chi', 'shi', 'ri', 'zi', 'ci', 'si', 'yi', 'wu', 'yu', 'ye', 'yue', 'yuan', 'yin', 'yun', 'ying'];
                     for (var k = 0; k < chars3.length; k++) {
@@ -2975,13 +3048,20 @@ function showPage(pageId) {
                     }
                     break;
 
-                case 'tone': // 声调
+                case 'tone': // 声调 - v9.0.24: 扩展题目池防止重复
                     var toneData = [
                         {p: 'mā', t: '1'}, {p: 'má', t: '2'}, {p: 'mǎ', t: '3'}, {p: 'mà', t: '4'},
                         {p: 'bā', t: '1'}, {p: 'bá', t: '2'}, {p: 'bǎ', t: '3'}, {p: 'bà', t: '4'},
                         {p: 'dā', t: '1'}, {p: 'dá', t: '2'}, {p: 'dǎ', t: '3'}, {p: 'dà', t: '4'},
                         {p: 'tā', t: '1'}, {p: 'tá', t: '2'}, {p: 'tǎ', t: '3'}, {p: 'tà', t: '4'},
-                        {p: 'nī', t: '1'}, {p: 'ní', t: '2'}, {p: 'nǐ', t: '3'}, {p: 'nì', t: '4'}
+                        {p: 'nī', t: '1'}, {p: 'ní', t: '2'}, {p: 'nǐ', t: '3'}, {p: 'nì', t: '4'},
+                        {p: 'lā', t: '1'}, {p: 'lá', t: '2'}, {p: 'lǎ', t: '3'}, {p: 'là', t: '4'},
+                        {p: 'gē', t: '1'}, {p: 'gé', t: '2'}, {p: 'gě', t: '3'}, {p: 'gè', t: '4'},
+                        {p: 'kā', t: '1'}, {p: 'ká', t: '2'}, {p: 'kǎ', t: '3'}, {p: 'kà', t: '4'},
+                        {p: 'hē', t: '1'}, {p: 'hé', t: '2'}, {p: 'hě', t: '3'}, {p: 'hè', t: '4'},
+                        {p: 'jī', t: '1'}, {p: 'jí', t: '2'}, {p: 'jǐ', t: '3'}, {p: 'jì', t: '4'},
+                        {p: 'qī', t: '1'}, {p: 'qí', t: '2'}, {p: 'qǐ', t: '3'}, {p: 'qì', t: '4'},
+                        {p: 'xī', t: '1'}, {p: 'xí', t: '2'}, {p: 'xǐ', t: '3'}, {p: 'xì', t: '4'}
                     ];
                     for (var t = 0; t < toneData.length; t++) {
                         pool.push({
@@ -2994,19 +3074,47 @@ function showPage(pageId) {
                     }
                     break;
 
-                case 'word': // 词语
+                case 'word': // 词语 - v9.0.24: 扩展题目池防止重复
                     var words;
                     if (stage === 1) {
-                        words = [{w: '爸爸', p: 'bà ba'}, {w: '妈妈', p: 'mā ma'}, {w: '哥哥', p: 'gē ge'},
-                                {w: '姐姐', p: 'jiě jie'}, {w: '老师', p: 'lǎo shī'}, {w: '学生', p: 'xué sheng'},
-                                {w: '你好', p: 'nǐ hǎo'}, {w: '中国', p: 'zhōng guó'}];
+                        words = [
+                            {w: '爸爸', p: 'bà ba'}, {w: '妈妈', p: 'mā ma'}, {w: '哥哥', p: 'gē ge'},
+                            {w: '姐姐', p: 'jiě jie'}, {w: '老师', p: 'lǎo shī'}, {w: '学生', p: 'xué sheng'},
+                            {w: '你好', p: 'nǐ hǎo'}, {w: '中国', p: 'zhōng guó'},
+                            {w: '我们', p: 'wǒ men'}, {w: '他们', p: 'tā men'}, {w: '大家', p: 'dà jiā'},
+                            {w: '朋友', p: 'péng you'}, {w: '同学', p: 'tóng xué'}, {w: '学校', p: 'xué xiào'},
+                            {w: '教室', p: 'jiào shì'}, {w: '书本', p: 'shū běn'}, {w: '铅笔', p: 'qiān bǐ'},
+                            {w: '桌子', p: 'zhuō zi'}, {w: '椅子', p: 'yǐ zi'}, {w: '大门', p: 'dà mén'},
+                            {w: '太阳', p: 'tài yáng'}, {w: '月亮', p: 'yuè liang'}, {w: '星星', p: 'xīng xing'},
+                            {w: '天空', p: 'tiān kōng'}, {w: '大地', p: 'dà dì'}, {w: '白云', p: 'bái yún'},
+                            {w: '苹果', p: 'píng guǒ'}, {w: '香蕉', p: 'xiāng jiāo'}, {w: '西瓜', p: 'xī guā'},
+                            {w: '小猫', p: 'xiǎo māo'}, {w: '小狗', p: 'xiǎo gǒu'}, {w: '小鸟', p: 'xiǎo niǎo'}
+                        ];
                     } else if (stage === 2) {
-                        words = [{w: '小学生', p: 'xiǎo xué shēng'}, {w: '好朋友', p: 'hǎo péng you'},
-                                {w: '大熊猫', p: 'dà xióng māo'}, {w: '天安门', p: 'tiān ān mén'},
-                                {w: '幼儿园', p: 'yòu ér yuán'}, {w: '看电视', p: 'kàn diàn shì'}];
+                        words = [
+                            {w: '小学生', p: 'xiǎo xué shēng'}, {w: '好朋友', p: 'hǎo péng you'},
+                            {w: '大熊猫', p: 'dà xióng māo'}, {w: '天安门', p: 'tiān ān mén'},
+                            {w: '幼儿园', p: 'yòu ér yuán'}, {w: '看电视', p: 'kàn diàn shì'},
+                            {w: '洗衣服', p: 'xǐ yī fu'}, {w: '做作业', p: 'zuò zuò yè'},
+                            {w: '吃午饭', p: 'chī wǔ fàn'}, {w: '早上好', p: 'zǎo shang hǎo'},
+                            {w: '明天见', p: 'míng tiān jiàn'}, {w: '对不起', p: 'duì bu qǐ'},
+                            {w: '没关系', p: 'méi guān xi'}, {w: '谢谢你', p: 'xiè xie nǐ'},
+                            {w: '不客气', p: 'bú kè qi'}, {w: '多少钱', p: 'duō shao qián'},
+                            {w: '我喜欢', p: 'wǒ xǐ huan'}, {w: '一起玩', p: 'yì qǐ wán'},
+                            {w: '春天来', p: 'chūn tiān lái'}, {w: '花儿开', p: 'huā er kāi'}
+                        ];
                     } else {
-                        words = [{w: '我爱学习', p: 'wǒ ài xué xí'}, {w: '你好世界', p: 'nǐ hǎo shì jiè'},
-                                {w: '新年快乐', p: 'xīn nián kuài lè'}, {w: '好好学习', p: 'hǎo hǎo xué xí'}];
+                        words = [
+                            {w: '我爱学习', p: 'wǒ ài xué xí'}, {w: '你好世界', p: 'nǐ hǎo shì jiè'},
+                            {w: '新年快乐', p: 'xīn nián kuài lè'}, {w: '好好学习', p: 'hǎo hǎo xué xí'},
+                            {w: '天天向上', p: 'tiān tiān xiàng shàng'}, {w: '一年之计', p: 'yì nián zhī jì'},
+                            {w: '在于春', p: 'zài yú chūn'}, {w: '一日之计', p: 'yí rì zhī jì'},
+                            {w: '在于晨', p: 'zài yú chén'}, {w: '我们是', p: 'wǒ men shì'},
+                            {w: '好朋友', p: 'hǎo péng you'}, {w: '一起上学', p: 'yì qǐ shàng xué'},
+                            {w: '一起玩耍', p: 'yì qǐ wán shuǎ'}, {w: '互相帮助', p: 'hù xiāng bāng zhù'},
+                            {w: '共同进步', p: 'gòng tóng jìn bù'}, {w: '我爱我的', p: 'wǒ ài wǒ de'},
+                            {w: '爸爸妈妈', p: 'bà ba mā ma'}, {w: '老师同学', p: 'lǎo shī tóng xué'}
+                        ];
                     }
                     for (var w = 0; w < words.length; w++) {
                         var parts = words[w].p.split(' ');
@@ -3181,10 +3289,13 @@ function showPage(pageId) {
                 return;
             }
 
+            // v9.0.24: 修复显示错误 - 使用实际总题数
+            var totalQuestions = questionsInLevel.length;
+            
             document.getElementById('currentQ').textContent = currentQuestionInLevel;
-            document.getElementById('totalQ').textContent = 10;
+            document.getElementById('totalQ').textContent = totalQuestions;
             document.getElementById('currentLevel').textContent = currentLevel;
-            document.getElementById('progressFill').style.width = (currentQuestionInLevel / 10 * 100) + '%';
+            document.getElementById('progressFill').style.width = (currentQuestionInLevel / totalQuestions * 100) + '%';
             document.getElementById('questionDisplay').innerHTML = '<div style="font-size: 44px;">' + q.q + '</div><div style="font-size: 16px; color: #666; margin-top: 5px;">' + q.hint + '</div>';
 
             var html = '';
@@ -6136,7 +6247,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.23 (2026-03-15)
+        拼音大冒险 v9.0.24 (2026-03-15)
     </div>
 
     <script>
