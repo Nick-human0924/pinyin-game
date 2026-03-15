@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.22 - 智能学习+儿歌+故事模式</title>
+    <title>拼音大冒险 v9.0.23 - 智能学习+儿歌+故事模式</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -817,8 +817,8 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.22';
-        var GAME_BUILD_DATE = '2026-03-15 15:35';
+        var GAME_VERSION = 'v9.0.23';
+        var GAME_BUILD_DATE = '2026-03-15 15:50';
         
         // 完整拼音数据
         var pinyinData = {
@@ -2858,15 +2858,26 @@ function showPage(pageId) {
             container.innerHTML = html;
         }
 
-        // 开始关卡
+        // 开始关卡 - v9.0.23: 增加题目数量，每关15-25题
         function startLevel(levelId) {
             currentLevel = levelId;
             var level = levels[currentLevel - 1];
             questionsInLevel = [];
             levelCorrectCount = 0;
+            
+            // 根据关卡难度决定题目数量
+            // 1-5关: 15题, 6-10关: 20题, 11-15关: 25题
+            var questionCount;
+            if (currentLevel <= 5) {
+                questionCount = 15;
+            } else if (currentLevel <= 10) {
+                questionCount = 20;
+            } else {
+                questionCount = 25;
+            }
 
             // 根据关卡类型生成问题 - 使用不重复随机
-            questionsInLevel = generateUniqueQuestions(level.type, level.stage, 10);
+            questionsInLevel = generateUniqueQuestions(level.type, level.stage, questionCount);
 
             currentQuestionInLevel = 1;
             showPage('game');
@@ -3208,10 +3219,25 @@ function showPage(pageId) {
                 btn.classList.add('correct');
                 totalCorrect++;
                 levelCorrectCount++; // 记录本关答对
-                var coinReward = triggerPetSkill('double_coins', 1); // 每题答对给1金币，应用技能加成
-                coins += coinReward;
-                addPetExp(2); // 答对题目宠物获得经验
-                showToast('✅ 正确! +' + (coinReward > 1 ? coinReward : 2) + '经验', 'success');
+                
+                // v9.0.23: 每题答对立即奖励 2金币 + 1经验
+                var coinReward = 2;
+                var expReward = 1;
+                
+                // 应用宠物技能加成
+                var skillCoinBonus = triggerPetSkill('double_coins', coinReward);
+                var skillExpBonus = triggerPetSkill('double_exp', expReward);
+                
+                var finalCoinReward = skillCoinBonus > coinReward ? skillCoinBonus : coinReward;
+                var finalExpReward = skillExpBonus > expReward ? skillExpBonus : expReward;
+                
+                coins += finalCoinReward;
+                addPetExp(finalExpReward);
+                
+                var bonusMsg = '';
+                if (finalCoinReward > coinReward) bonusMsg += ' (技能加成!)';
+                
+                showToast('✅ 正确! +' + finalCoinReward + '金币 +' + finalExpReward + '经验' + bonusMsg, 'success');
             } else {
                 btn.classList.add('wrong');
                 totalWrong++;
@@ -3228,32 +3254,23 @@ function showPage(pageId) {
             updateUI();
             saveGameData();
             checkAchievements();
+            
+            // 获取总题数
+            var totalQuestions = questionsInLevel.length;
+            
             setTimeout(function() {
                 currentQuestionInLevel++;
                 levelAnswered = false;
-                if (currentQuestionInLevel <= 10) {
+                if (currentQuestionInLevel <= totalQuestions) {
                     loadLevelQuestion();
                 } else {
-                    // 关卡结束，判断是否全对通关
-                    if (levelCorrectCount === 10) {
-                        // 全对通关
-                        perfectLevels++;
-                        checkAchievements();
-                        completeLevel();
-                    } else {
-                        // 未全对，通关失败
-                        var failMsg = '❌ 第' + currentLevel + '关未通过！\n\n';
-                        failMsg += '你答对了 ' + levelCorrectCount + '/10 题\n';
-                        failMsg += '需要全部答对才能通关\n\n';
-                        failMsg += '请重新挑战！';
-                        alert(failMsg);
-                        goToLevelMap();
-                    }
+                    // v9.0.23: 关卡结束，根据答对题数给予奖励
+                    completeLevelWithRewards(levelCorrectCount, totalQuestions);
                 }
             }, isCorrect ? 800 : 1500);
         }
 
-        // 检查文本输入答案（用于词语关卡）
+        // 检查文本输入答案（用于词语关卡）- v9.0.23: 每题奖励2金币1经验
         function checkLevelTextAnswer() {
             if (levelAnswered) return;
             
@@ -3267,15 +3284,33 @@ function showPage(pageId) {
             levelAnswered = true;
             var isCorrect = selected === correct;
             
+            // 获取总题数
+            var totalQuestions = questionsInLevel.length;
+            
             if (isCorrect) {
                 input.style.borderColor = '#4CAF50';
                 input.style.backgroundColor = '#e8f5e9';
                 totalCorrect++;
                 levelCorrectCount++;
-                var coinReward = triggerPetSkill('double_coins', 1);
-                coins += coinReward;
-                addPetExp(2);
-                showToast('✅ 正确! +' + (coinReward > 1 ? coinReward : 2) + '经验', 'success');
+                
+                // v9.0.23: 每题答对立即奖励 2金币 + 1经验
+                var coinReward = 2;
+                var expReward = 1;
+                
+                // 应用宠物技能加成
+                var skillCoinBonus = triggerPetSkill('double_coins', coinReward);
+                var skillExpBonus = triggerPetSkill('double_exp', expReward);
+                
+                var finalCoinReward = skillCoinBonus > coinReward ? skillCoinBonus : coinReward;
+                var finalExpReward = skillExpBonus > expReward ? skillExpBonus : expReward;
+                
+                coins += finalCoinReward;
+                addPetExp(finalExpReward);
+                
+                var bonusMsg = '';
+                if (finalCoinReward > coinReward) bonusMsg += ' (技能加成!)';
+                
+                showToast('✅ 正确! +' + finalCoinReward + '金币 +' + finalExpReward + '经验' + bonusMsg, 'success');
             } else {
                 input.style.borderColor = '#f44336';
                 input.style.backgroundColor = '#ffebee';
@@ -3290,56 +3325,119 @@ function showPage(pageId) {
             setTimeout(function() {
                 currentQuestionInLevel++;
                 levelAnswered = false;
-                if (currentQuestionInLevel <= 10) {
+                if (currentQuestionInLevel <= totalQuestions) {
                     loadLevelQuestion();
                 } else {
-                    if (levelCorrectCount === 10) {
-                        perfectLevels++;
-                        checkAchievements();
-                        completeLevel();
-                    } else {
-                        var failMsg = '❌ 第' + currentLevel + '关未通过！\n\n';
-                        failMsg += '你答对了 ' + levelCorrectCount + '/10 题\n';
-                        failMsg += '需要全部答对才能通关\n\n';
-                        failMsg += '请重新挑战！';
-                        alert(failMsg);
-                        goToLevelMap();
-                    }
+                    // v9.0.23: 关卡结束，根据答对题数给予奖励
+                    completeLevelWithRewards(levelCorrectCount, totalQuestions);
                 }
             }, isCorrect ? 800 : 2000);
         }
 
-        function completeLevel() {
+        // v9.0.23: 新的关卡完成奖励系统
+        function completeLevelWithRewards(correctCount, totalQuestions) {
             var lv = levels[currentLevel - 1];
+            var accuracy = correctCount / totalQuestions;
+            var isPerfect = correctCount === totalQuestions;
+            
+            // 标记关卡完成（不再要求全对）
             if (!lv.completed) {
                 lv.completed = true;
                 completedLevels++;
                 updateTaskProgress('task_level', 1);
                 if (currentLevel < levels.length) levels[currentLevel].locked = false;
             }
-            // 阶梯式通关奖励：根据关卡等级递增
-            // 基础奖励5金币，每关增加3金币，BOSS关额外奖励10金币
-            var baseReward = 5;
-            var levelBonus = (currentLevel - 1) * 3;
-            var bossBonus = lv.isBoss ? 10 : 0;
-            var reward = baseReward + levelBonus + bossBonus;
-            coins += reward;
-
-            // 宠物获得经验（也是阶梯式）
-            var baseExp = 10;
-            var expBonus = (currentLevel - 1) * 2;
-            var bossExpBonus = lv.isBoss ? 20 : 0;
-            var expGain = baseExp + expBonus + bossExpBonus;
-            addPetExp(expGain);
-
+            
+            // 基础通关奖励（根据准确率）
+            var baseCompletionReward = Math.floor(5 * accuracy);
+            var levelBonus = Math.floor((currentLevel - 1) * 2 * accuracy);
+            var bossBonus = (lv.isBoss && accuracy >= 0.8) ? 10 : 0;
+            var completionCoins = baseCompletionReward + levelBonus + bossBonus;
+            
+            // 全对额外奖励
+            var perfectBonusCoins = 0;
+            var perfectBonusExp = 0;
+            var gemReward = null;
+            
+            if (isPerfect) {
+                perfectLevels++;
+                perfectBonusCoins = 10 + (currentLevel * 2); // 全对额外金币
+                perfectBonusExp = 5 + currentLevel; // 全对额外经验
+                
+                // 随机宝石奖励（50%概率）
+                if (Math.random() < 0.5) {
+                    var gems = [
+                        {name: '红宝石', icon: '🔴', desc: '增加攻击力'},
+                        {name: '蓝宝石', icon: '🔵', desc: '增加防御力'},
+                        {name: '绿宝石', icon: '🟢', desc: '增加生命值'},
+                        {name: '黄宝石', icon: '🟡', desc: '增加金币获取'},
+                        {name: '紫宝石', icon: '🟣', desc: '增加经验获取'}
+                    ];
+                    gemReward = gems[Math.floor(Math.random() * gems.length)];
+                    
+                    // 将宝石加入背包
+                    if (!inventory.treasures) inventory.treasures = [];
+                    inventory.treasures.push({
+                        id: 'gem_' + Date.now(),
+                        name: gemReward.name,
+                        icon: gemReward.icon,
+                        desc: gemReward.desc,
+                        type: 'gem',
+                        obtained: new Date().toLocaleDateString()
+                    });
+                }
+            }
+            
+            // 发放奖励
+            coins += completionCoins;
+            addPetExp(Math.floor(5 * accuracy)); // 基础通关经验
+            
+            if (isPerfect) {
+                coins += perfectBonusCoins;
+                addPetExp(perfectBonusExp);
+            }
+            
             // 解锁装备
-            unlockEquipmentByLevel(currentLevel);
-
+            if (accuracy >= 0.6) { // 60%以上准确率才能解锁装备
+                unlockEquipmentByLevel(currentLevel);
+            }
+            
             checkAchievements();
             updateUI();
             saveGameData();
-            alert('🎉 恭喜！第' + currentLevel + '关完美通关！\n获得通关奖励：' + reward + '金币！\n宠物获得 ' + expGain + ' 经验值！');
+            
+            // 构建奖励消息
+            var msg = '';
+            if (isPerfect) {
+                msg += '🎉 恭喜！第' + currentLevel + '关完美通关！\n\n';
+            } else if (accuracy >= 0.8) {
+                msg += '👍 第' + currentLevel + '关通关！表现优秀！\n\n';
+            } else if (accuracy >= 0.6) {
+                msg += '✅ 第' + currentLevel + '关通关！\n\n';
+            } else {
+                msg += '⚠️ 第' + currentLevel + '关勉强通关，继续努力！\n\n';
+            }
+            
+            msg += '📊 答题情况：' + correctCount + '/' + totalQuestions + ' 正确 (' + Math.floor(accuracy * 100) + '%)\n\n';
+            msg += '🎁 通关奖励：' + completionCoins + '金币\n';
+            
+            if (isPerfect) {
+                msg += '⭐ 完美通关 bonus：' + perfectBonusCoins + '金币 +' + perfectBonusExp + '经验\n';
+                if (gemReward) {
+                    msg += '💎 幸运奖励：获得' + gemReward.icon + gemReward.name + '！\n';
+                }
+            }
+            
+            msg += '\n💡 提示：每题答对可获得2金币+1经验';
+            
+            alert(msg);
             goToLevelMap();
+        }
+
+        // 旧的completeLevel函数保留兼容（不再使用）
+        function completeLevel() {
+            // 此函数已被completeLevelWithRewards取代
+            console.log('completeLevel已弃用，请使用completeLevelWithRewards');
         }
 
         // 宠物获得经验
@@ -6038,7 +6136,7 @@ function showPage(pageId) {
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.22 (2026-03-15)
+        拼音大冒险 v9.0.23 (2026-03-15)
     </div>
 
     <script>
