@@ -1203,14 +1203,14 @@
         var equipped = {
             weapon: 'wood_sword',
             armor: 'cloth_armor',
-            accessory: 'copper_ring'
+            accessory: null
         };
 
         // 当前装备数据（引用allEquipments中的对象）
         var equipment = {
             weapon: allEquipments.weapon[0],
             armor: allEquipments.armor[0],
-            accessory: allEquipments.accessory[0]
+            accessory: null
         };
 
         // 升级所需材料
@@ -1300,7 +1300,7 @@
                 equipment: {
                     weapon: { level: 1, name: '木剑', icon: '🗡️', attack: 5 },
                     armor: { level: 1, name: '布衣', icon: '👕', defense: 3 },
-                    accessory: { level: 1, name: '铜戒指', icon: '💍', bonus: { attack: 2, defense: 2 } }
+                    accessory: null
                 },
                 errorBook: {
                     errors: [],
