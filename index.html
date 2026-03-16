@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.26 - 修复装备显示一致性</title>
+    <title>拼音大冒险 v9.0.27 - 修复宠物属性数据</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -817,7 +817,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.26';
+        var GAME_VERSION = 'v9.0.27';
         var GAME_BUILD_DATE = '2026-03-15 16:25';
         
         // 完整拼音数据
@@ -1146,6 +1146,50 @@
         
         // 初始化宠物属性
         initPetStats();
+
+        // v9.0.27: 修正宠物基础属性数据（修复旧版本错误的攻击值bug）
+        function fixPetBaseStats(pet, petId) {
+            // 定义各宠物1级基础属性
+            var baseStats = {
+                panda: { attack: 10, defense: 5, hp: 200 },
+                rabbit: { attack: 8, defense: 6, hp: 160 },
+                tiger: { attack: 18, defense: 3, hp: 170 },
+                lion: { attack: 15, defense: 8, hp: 190 },
+                unicorn: { attack: 12, defense: 15, hp: 220 },
+                dragon: { attack: 25, defense: 5, hp: 180 }
+            };
+            
+            var base = baseStats[petId];
+            if (!base) return; // 未知宠物不处理
+            
+            // 根据等级计算正确的基础属性
+            var correctAttack = base.attack;
+            var correctDefense = base.defense;
+            var correctHp = base.hp;
+            
+            // 模拟升级过程计算正确值
+            for (var i = 1; i < pet.level; i++) {
+                correctAttack += Math.floor(correctAttack * 0.1) + 1;
+                correctDefense += Math.floor(correctDefense * 0.1) + 1;
+                correctHp += Math.floor(correctHp * 0.1) + 5;
+            }
+            
+            // 如果当前值与正确值偏差超过10%，则修正
+            if (Math.abs(pet.attack - correctAttack) > correctAttack * 0.1) {
+                console.log('修正宠物 ' + petId + ' 攻击值: ' + pet.attack + ' -> ' + correctAttack);
+                pet.attack = correctAttack;
+            }
+            if (Math.abs(pet.defense - correctDefense) > correctDefense * 0.1) {
+                console.log('修正宠物 ' + petId + ' 防御值: ' + pet.defense + ' -> ' + correctDefense);
+                pet.defense = correctDefense;
+            }
+            if (Math.abs(pet.maxHp - correctHp) > correctHp * 0.1) {
+                console.log('修正宠物 ' + petId + ' 生命值: ' + pet.maxHp + ' -> ' + correctHp);
+                pet.maxHp = correctHp;
+                // 同时修正当前hp（不超过maxHp）
+                pet.hp = Math.min(pet.hp, pet.maxHp);
+            }
+        }
 
         // ========== v8.2.0 背包系统 ==========
 // v9.0.8: 宝石回收价格
@@ -1497,6 +1541,9 @@
                             if (user.pets.list[petId].defense) pets.list[petId].defense = user.pets.list[petId].defense;
                             if (user.pets.list[petId].hp) pets.list[petId].hp = user.pets.list[petId].hp;
                             if (user.pets.list[petId].maxHp) pets.list[petId].maxHp = user.pets.list[petId].maxHp;
+                            
+                            // v9.0.27: 修正宠物属性数据（修复旧版本错误的攻击值）
+                            fixPetBaseStats(pets.list[petId], petId);
                         }
                     }
                 }
