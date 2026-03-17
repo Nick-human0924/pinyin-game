@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.30 - 修复背包宝石系统</title>
+    <title>拼音大冒险 v9.0.31 - 优化学习测试</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -833,7 +833,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.30';
+        var GAME_VERSION = 'v9.0.31';
         var GAME_BUILD_DATE = '2026-03-15 16:25';
         
         // 完整拼音数据
@@ -1216,7 +1216,7 @@
             topaz: 50,      // 黄宝石 = 50金币
             amethyst: 40,   // 紫水晶 = 40金币
             diamond: 150,   // 钻石 = 150金币
-            gold: 50,       // 金块 = 50金币
+            gold: 150,       // 金块 = 150金币
             crystal: 200    // 魔法水晶 = 200金币
         };
 
@@ -2848,7 +2848,7 @@ function showPage(pageId) {
             updateTaskProgress('task_practice', 1);
             var html = '<div style="margin-bottom: 10px; text-align: center;">';
             html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
-            html += '<button class="btn" onclick="startRandomTest(\'initial\')" style="width: auto; padding: 10px 20px;">📝 随机测试(10题)</button>';
+            html += '<button class="btn" onclick="startRandomTest(\'initial\')" style="width: auto; padding: 10px 20px;">📝 测试(15题)</button>';
             html += '</div>';
             html += '<div class="pinyin-grid">';
             pinyinData.initial.forEach(function(py, i) {
@@ -3925,7 +3925,7 @@ function showPage(pageId) {
             updateTaskProgress('task_practice', 1);
             var html = '<div style="margin-bottom: 10px; text-align: center;">';
             html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
-            html += '<button class="btn" onclick="startRandomTest(\'final\')" style="width: auto; padding: 10px 20px;">📝 随机测试(10题)</button>';
+            html += '<button class="btn" onclick="startRandomTest(\'final\')" style="width: auto; padding: 10px 20px;">📝 测试(15题)</button>';
             html += '</div>';
             html += '<div class="pinyin-grid">';
             pinyinData.final.forEach(function(py, i) {
@@ -4017,7 +4017,7 @@ function showPage(pageId) {
             updateTaskProgress('task_practice', 1);
             var html = '<div style="margin-bottom: 10px; text-align: center;">';
             html += '<button class="btn btn-secondary" onclick="togglePinyinHints()" style="width: auto; padding: 10px 20px; margin-right: 10px;">' + (showPinyinHints ? '隐藏' : '显示') + '提示字</button>';
-            html += '<button class="btn" onclick="startRandomTest(\'whole\')" style="width: auto; padding: 10px 20px;">📝 随机测试(10题)</button>';
+            html += '<button class="btn" onclick="startRandomTest(\'whole\')" style="width: auto; padding: 10px 20px;">📝 测试(15题)</button>';
             html += '</div>';
             html += '<div class="pinyin-grid">';
             pinyinData.whole.forEach(function(py, i) {
@@ -4109,7 +4109,7 @@ function showPage(pageId) {
             questions: [],
             currentIndex: 0,
             score: 0,
-            totalQuestions: 10
+            totalQuestions: 15  // 从10题改为15题
         };
 
         // 生成随机测试题（不重复）
@@ -4130,8 +4130,8 @@ function showPage(pageId) {
                             options.push(wrongAnswer);
                         }
                     }
-                    // 打乱选项顺序
-                    options.sort(function() { return Math.random() - 0.5; });
+                    // 固定选项顺序（不随机打乱）
+                    // options.sort(function() { return Math.random() - 0.5; });
                     allQuestions.push({
                         char: charName,  // 显示汉字
                         answer: correctAnswer,  // 答案是声母拼音
@@ -4152,7 +4152,8 @@ function showPage(pageId) {
                             options.push(wrongAnswer);
                         }
                     }
-                    options.sort(function() { return Math.random() - 0.5; });
+                    // 固定选项顺序（不随机打乱）
+                    // options.sort(function() { return Math.random() - 0.5; });
                     allQuestions.push({
                         char: charName,  // 显示汉字
                         answer: correctAnswer,  // 答案是韵母拼音
@@ -4173,7 +4174,8 @@ function showPage(pageId) {
                             options.push(wrongAnswer);
                         }
                     }
-                    options.sort(function() { return Math.random() - 0.5; });
+                    // 固定选项顺序（不随机打乱）
+                    // options.sort(function() { return Math.random() - 0.5; });
                     allQuestions.push({
                         char: charName,  // 显示汉字
                         answer: correctAnswer,  // 答案是整体认读音节
@@ -4209,7 +4211,8 @@ function showPage(pageId) {
                             options.push(randomItem.a);
                         }
                     }
-                    options.sort(function() { return Math.random() - 0.5; });
+                    // 固定选项顺序（不随机打乱）
+                    // options.sort(function() { return Math.random() - 0.5; });
                     allQuestions.push({
                         char: item.py,
                         answer: item.a,
@@ -4220,8 +4223,7 @@ function showPage(pageId) {
                 });
             }
 
-            // 随机打乱并取前count个
-            allQuestions.sort(function() { return Math.random() - 0.5; });
+            // 按顺序取前count个（不随机打乱）
             return allQuestions.slice(0, Math.min(count, allQuestions.length));
         }
 
