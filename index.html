@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.33 - 强制修正宠物属性</title>
+    <title>拼音大冒险 v9.0.34 - 调整答题奖励</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -833,7 +833,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.33';
+        var GAME_VERSION = 'v9.0.34';
         var GAME_BUILD_DATE = '2026-03-15 16:25';
         
         // 完整拼音数据
@@ -3457,9 +3457,19 @@ function showPage(pageId) {
                 totalCorrect++;
                 levelCorrectCount++; // 记录本关答对
                 
-                // v9.0.23: 每题答对立即奖励 2金币 + 1经验
-                var coinReward = 2;
-                var expReward = 1;
+                // 根据关卡阶段设置奖励
+                var coinReward, expReward;
+                if (currentLevel <= 3) {           // 第一阶段：声母
+                    coinReward = 2; expReward = 1;
+                } else if (currentLevel <= 6) {    // 第二阶段：韵母
+                    coinReward = 4; expReward = 2;
+                } else if (currentLevel <= 9) {    // 第三阶段：整体认读
+                    coinReward = 6; expReward = 4;
+                } else if (currentLevel <= 12) {   // 第四阶段：声调
+                    coinReward = 8; expReward = 6;
+                } else {                            // 第五阶段：词语
+                    coinReward = 10; expReward = 8;
+                }
                 
                 // 应用宠物技能加成
                 var skillCoinBonus = triggerPetSkill('double_coins', coinReward);
@@ -3530,9 +3540,19 @@ function showPage(pageId) {
                 totalCorrect++;
                 levelCorrectCount++;
                 
-                // v9.0.23: 每题答对立即奖励 2金币 + 1经验
-                var coinReward = 2;
-                var expReward = 1;
+                // 根据关卡阶段设置奖励
+                var coinReward, expReward;
+                if (currentLevel <= 3) {           // 第一阶段：声母
+                    coinReward = 2; expReward = 1;
+                } else if (currentLevel <= 6) {    // 第二阶段：韵母
+                    coinReward = 4; expReward = 2;
+                } else if (currentLevel <= 9) {    // 第三阶段：整体认读
+                    coinReward = 6; expReward = 4;
+                } else if (currentLevel <= 12) {   // 第四阶段：声调
+                    coinReward = 8; expReward = 6;
+                } else {                            // 第五阶段：词语
+                    coinReward = 10; expReward = 8;
+                }
                 
                 // 应用宠物技能加成
                 var skillCoinBonus = triggerPetSkill('double_coins', coinReward);
@@ -4139,9 +4159,9 @@ function showPage(pageId) {
             var q = wholeTestData[currentTestIndex];
             if (answer === q.answer) {
                 testScore++;
-                addPetExp(2); // 基础教学答对获得2经验
-                coins += 2; // 基础教学答对获得2金币
-                showToast('✅ 正确! +2经验 +2金币', 'success');
+                addPetExp(5); // 整体认读答对获得5经验
+                coins += 5; // 整体认读答对获得5金币
+                showToast('✅ 正确! +5经验 +5金币', 'success');
             } else {
                 showToast('❌ 错误! 正确答案是: ' + q.answer, 'error');
             }
