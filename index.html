@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.27 - 回退稳定版</title>
+    <title>拼音大冒险 v9.0.28 - 修复宠物数值成长</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -817,7 +817,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.27';
+        var GAME_VERSION = 'v9.0.28';
         var GAME_BUILD_DATE = '2026-03-15 16:25';
         
         // 完整拼音数据
@@ -3662,10 +3662,10 @@ function showPage(pageId) {
             pet.level++;
             pet.expToLevel = Math.floor(pet.expToLevel * 1.2); // 每级所需经验增加20%
 
-            // 属性提升
-            var attackGain = Math.floor(pet.attack * 0.1) + 1;
-            var defenseGain = Math.floor(pet.defense * 0.1) + 1;
-            var hpGain = Math.floor(pet.maxHp * 0.1) + 5;
+            // 属性提升（线性增长，防止数值膨胀）
+            var attackGain = 2;  // 每级固定+2攻击
+            var defenseGain = 1;  // 每级固定+1防御
+            var hpGain = 10;      // 每级固定+10生命
 
             pet.attack += attackGain;
             pet.defense += defenseGain;
@@ -5435,7 +5435,7 @@ function showPage(pageId) {
 
             // 当前宠物信息
             html += '<button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>';
-            html += '<h2 style="text-align: center; margin: 10px 0;">🐼 我的宠物</h2>';
+            html += '<h2 style="text-align: center; margin: 10px 0;">' + currentPet.emoji + ' 我的宠物</h2>';
             html += '<div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; text-align: center;">';
             html += '<div style="font-size: 80px; margin-bottom: 10px;">' + currentPet.emoji + '</div>';
             html += '<div style="font-size: 16px; font-weight: bold; white-space: nowrap;">' + currentPet.name + '</div>';
