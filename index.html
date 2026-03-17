@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.31 - 优化学习测试</title>
+    <title>拼音大冒险 v9.0.32 - 修复宠物数值修正</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -833,7 +833,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.31';
+        var GAME_VERSION = 'v9.0.32';
         var GAME_BUILD_DATE = '2026-03-15 16:25';
         
         // 完整拼音数据
@@ -1183,11 +1183,21 @@
             var correctDefense = base.defense;
             var correctHp = base.hp;
             
-            // 模拟升级过程计算正确值
+            // 模拟升级过程计算正确值（使用新的线性增长公式）
+            var price = pet.price || 0;
             for (var i = 1; i < pet.level; i++) {
-                correctAttack += Math.floor(correctAttack * 0.1) + 1;
-                correctDefense += Math.floor(correctDefense * 0.1) + 1;
-                correctHp += Math.floor(correctHp * 0.1) + 5;
+                // 攻击/防御线性增长
+                var atkGain, defGain;
+                if (price >= 800) { atkGain = 5; defGain = 2; }
+                else if (price >= 600) { atkGain = 4; defGain = 2; }
+                else if (price >= 500) { atkGain = 3; defGain = 2; }
+                else if (price >= 300) { atkGain = 3; defGain = 1; }
+                else { atkGain = 2; defGain = 1; }
+                
+                correctAttack += atkGain;
+                correctDefense += defGain;
+                // 生命5%复利（保底+5）
+                correctHp += Math.max(Math.floor(correctHp * 0.05), 5);
             }
             
             // 如果当前值与正确值偏差超过10%，则修正
