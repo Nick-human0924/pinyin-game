@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.29 - 优化宠物成长曲线</title>
+    <title>拼音大冒险 v9.0.30 - 修复背包宝石系统</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -558,6 +558,22 @@
                     <input type="number" id="adminExp" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-500" min="0" max="500" value="50">
                 </div>
 
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">💎 宝石（格式: 类型x数量，如 ruby x5）：</label>
+                    <select id="adminGemType" style="width: 48%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; display: inline-block; margin-right: 4%;">
+                        <option value="">--选择宝石--</option>
+                        <option value="ruby">🔴 红宝石</option>
+                        <option value="sapphire">🔵 蓝宝石</option>
+                        <option value="emerald">🟢 绿宝石</option>
+                        <option value="topaz">🟡 黄宝石</option>
+                        <option value="amethyst">🟣 紫水晶</option>
+                        <option value="diamond">💎 钻石</option>
+                        <option value="gold">🟨 金块</option>
+                        <option value="crystal">🔮 魔法水晶</option>
+                    </select>
+                    <input type="number" id="adminGemCount" style="width: 48%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; display: inline-block;" placeholder="数量" min="1" max="50" value="1">
+                </div>
+
                 <button class="btn" onclick="sendAdminGift()" style="width: 100%; background: white; color: #e91e63; font-weight: bold; padding: 15px;">🎁 发送给当前账号</button>
             </div>
 
@@ -817,7 +833,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.29';
+        var GAME_VERSION = 'v9.0.30';
         var GAME_BUILD_DATE = '2026-03-15 16:25';
         
         // 完整拼音数据
@@ -1199,7 +1215,9 @@
             emerald: 60,    // 绿宝石 = 60金币
             topaz: 50,      // 黄宝石 = 50金币
             amethyst: 40,   // 紫水晶 = 40金币
-            diamond: 150    // 钻石 = 150金币
+            diamond: 150,   // 钻石 = 150金币
+            gold: 50,       // 金块 = 50金币
+            crystal: 200    // 魔法水晶 = 200金币
         };
 
         var inventory = {
@@ -2499,14 +2517,16 @@
             var giftCoins = parseInt(coinsInput.value) || 0;
             var giftEnergy = parseInt(energyInput.value) || 0;
             var giftExp = parseInt(expInput.value) || 0;
-
+            var giftGemType = document.getElementById('adminGemType').value;
+            var giftGemCount = parseInt(document.getElementById('adminGemCount').value) || 0;
 
             // 限制上限
             giftCoins = Math.min(giftCoins, 1000);
             giftEnergy = Math.min(giftEnergy, 100);
             giftExp = Math.min(giftExp, 500);
+            giftGemCount = Math.min(giftGemCount, 50);
 
-            if (giftCoins <= 0 && giftEnergy <= 0 && giftExp <= 0) {
+            if (giftCoins <= 0 && giftEnergy <= 0 && giftExp <= 0 && (!giftGemType || giftGemCount <= 0)) {
                 alert('请输入至少一项奖励数量！');
                 return;
             }
@@ -2521,16 +2541,25 @@
                     addPetExp(giftExp);
                 }
             }
+            // 添加宝石
+            if (giftGemType && giftGemCount > 0) {
+                for (var i = 0; i < giftGemCount; i++) {
+                    inventory.treasures.push({ id: giftGemType, obtainedAt: new Date().toISOString() });
+                }
+            }
 
             // 更新UI和保存
             updateUI();
             saveGameData();
 
             // 显示成功消息
+            var gemEmoji = { ruby: '🔴', sapphire: '🔵', emerald: '🟢', topaz: '🟡', amethyst: '🟣', diamond: '💎', gold: '🟨', crystal: '🔮' };
+            var gemNames = { ruby: '红宝石', sapphire: '蓝宝石', emerald: '绿宝石', topaz: '黄宝石', amethyst: '紫水晶', diamond: '钻石', gold: '金块', crystal: '魔法水晶' };
             var msg = '🎁 大礼包发送成功！\n\n';
             if (giftCoins > 0) msg += '💰 金币 +' + giftCoins + '\n';
             if (giftEnergy > 0) msg += '⚡ 体力 +' + giftEnergy + '\n';
             if (giftExp > 0) msg += '⭐ 经验 +' + giftExp + '\n';
+            if (giftGemType && giftGemCount > 0) msg += gemEmoji[giftGemType] + ' ' + gemNames[giftGemType] + ' +' + giftGemCount + '\n';
             alert(msg);
         }
 
@@ -5862,6 +5891,8 @@ function showPage(pageId) {
                 case 'topaz': gemName = '黄宝石'; gemEmoji = '🟡'; break;
                 case 'amethyst': gemName = '紫水晶'; gemEmoji = '🟣'; break;
                 case 'diamond': gemName = '钻石'; gemEmoji = '💎'; break;
+                case 'gold': gemName = '金块'; gemEmoji = '🟨'; break;
+                case 'crystal': gemName = '魔法水晶'; gemEmoji = '🔮'; break;
                 default: gemName = '宝石'; gemEmoji = '💎';
             }
             
@@ -5882,9 +5913,9 @@ function showPage(pageId) {
             confirmMsg += '确定要出售吗？';
             
             if (confirm(confirmMsg)) {
-                // 移除宝石
+                // 移除宝石 - 修复：从 treasures 中移除，不是 materials
                 var removed = 0;
-                inventory.materials = inventory.materials.filter(function(m) {
+                inventory.treasures = inventory.treasures.filter(function(m) {
                     if (m.id === gemType && removed < count) {
                         removed++;
                         return false;
