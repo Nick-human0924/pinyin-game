@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.40-fix2 - 修复版</title>
+    <title>拼音大冒险 v9.0.40-fix3 - 修复版</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -934,7 +934,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.40-fix2';
+        var GAME_VERSION = 'v9.0.40-fix3';
         var GAME_BUILD_DATE = '2026-03-18 16:10';
         
         // 完整拼音数据
@@ -2468,7 +2468,8 @@
 
                 var html = '';
                 scene.options.forEach(function(opt) {
-                    html += '<button class="option-btn" onclick="answerStoryQuestion(\'' + opt + '\', \'' + scene.pinyin + '\', ' + (scene.reward ? JSON.stringify(scene.reward).replace(/"/g, '\'') : 'null') + ')" style="font-size: 16px; padding: 12px;">' + opt + '</button>';
+                    var rewardParam = scene.reward ? JSON.stringify(scene.reward).replace(/"/g, '&quot;') : 'null';
+                    html += '<button class="option-btn" onclick="answerStoryQuestion(\'' + opt + '\', \'' + scene.pinyin + '\', ' + rewardParam + ')" style="font-size: 16px; padding: 12px;">' + opt + '</button>';
                 });
                 storyOptionsEl.innerHTML = html;
 
@@ -7084,7 +7085,7 @@
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.40-fix2 (2026-03-18)
+        拼音大冒险 v9.0.40-fix3 (2026-03-18)
     </div>
 
     <script>
