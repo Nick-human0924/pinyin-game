@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.36 - 修复版</title>
+    <title>拼音大冒险 v9.0.37 - 修复版</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -830,8 +830,8 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.36';
-        var GAME_BUILD_DATE = '2026-03-18��09:55';
+        var GAME_VERSION = 'v9.0.37';
+        var GAME_BUILD_DATE = '2026-03-18 16:10';
         
         // 完整拼音数据
         var pinyinData = {
@@ -2771,6 +2771,10 @@
                 task.progress = Math.min(task.progress + amount, task.target);
                 if (task.progress >= task.target) {
                     task.completed = true;
+                    // v9.0.37: 任务完成时弹出提示
+                    setTimeout(function() {
+                        alert('🎉 任务完成！"' + task.name + '" 可以领取 ' + task.reward + ' 金币啦！');
+                    }, 100);
                 }
                 renderTasks();
             }
@@ -5504,6 +5508,55 @@ function showPage(pageId) {
             alert('🎉 恭喜获得新宠物：' + pet.name + '！\n\n请到"我的宠物"页面查看并切换使用。');
         }
 
+        // v9.0.37: 出售宠物功能 (5-7折)
+        function sellPet(petId) {
+            if (petId === pets.current) {
+                alert('⚠️ 当前出战的宠物不能出售！');
+                return;
+            }
+            
+            if (!pets.owned.includes(petId)) {
+                alert('❌ 你没有这只宠物！');
+                return;
+            }
+            
+            if (pets.owned.length <= 1) {
+                alert('⚠️ 至少需要保留一只宠物！');
+                return;
+            }
+            
+            var pet = pets.list[petId];
+            var basePrice = pet.price || 100;
+            
+            // 计算出售价格: 基础价格 * (0.5 + 等级 * 0.05)，最高0.7
+            var sellPrice = Math.floor(basePrice * (0.5 + pet.level * 0.05));
+            sellPrice = Math.min(sellPrice, Math.floor(basePrice * 0.7));
+            
+            var confirmMsg = '🐾 出售宠物确认\n\n';
+            confirmMsg += '宠物: ' + pet.emoji + ' ' + pet.name + '\n';
+            confirmMsg += '等级: Lv.' + pet.level + '\n';
+            confirmMsg += '属性: ⚔️' + pet.attack + ' 🛡️' + pet.defense + ' ❤️' + pet.maxHp + '\n';
+            confirmMsg += '购买价: ' + basePrice + ' 金币\n';
+            confirmMsg += '==================\n';
+            confirmMsg += '🏷️ 回收价格 (5-7折): ' + sellPrice + ' 金币\n\n';
+            confirmMsg += '⚠️ 出售后无法恢复！确定要出售吗？';
+            
+            if (confirm(confirmMsg)) {
+                // 从拥有列表中移除
+                pets.owned = pets.owned.filter(function(id) { return id !== petId; });
+                
+                // 增加金币
+                coins += sellPrice;
+                
+                // 保存和更新
+                saveGameData();
+                updateUI();
+                renderPetPage();
+                
+                alert('✅ 出售成功！获得 ' + sellPrice + ' 金币');
+            }
+        }
+
         // 重新计算宠物战斗属性（同步当前宠物属性到战斗变量）
         function recalcPetStats() {
             var currentPet = pets.list[pets.current];
@@ -5638,13 +5691,24 @@ function showPage(pageId) {
                 // v9.0.2 修复：显示与主区域一致的总属性（含装备加成）
                 var petTotalAttack = pet.attack + (equipment.weapon ? equipment.weapon.attack : 0) + (equipment.accessory ? equipment.accessory.bonus.attack : 0);
                 var petTotalDefense = pet.defense + (equipment.armor ? equipment.armor.defense : 0) + (equipment.accessory ? equipment.accessory.bonus.defense : 0);
-                html += '<div onclick="switchPet(\'' + petId + '\')" style="flex: 1; min-width: 100px; background: ' + (isCurrent ? '#E3F2FD' : '#f8f9fa') + '; border: 2px solid ' + (isCurrent ? '#667eea' : 'transparent') + '; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer;">';
+                
+                // v9.0.37: 计算宠物出售价格 (5-7折，根据等级)
+                var basePrice = pet.price || 100;
+                var sellPrice = Math.floor(basePrice * (0.5 + pet.level * 0.05)); // 5折基础 + 每级5%
+                sellPrice = Math.min(sellPrice, Math.floor(basePrice * 0.7)); // 最高7折
+                
+                html += '<div style="flex: 1; min-width: 100px; background: ' + (isCurrent ? '#E3F2FD' : '#f8f9fa') + '; border: 2px solid ' + (isCurrent ? '#667eea' : 'transparent') + '; border-radius: 15px; padding: 15px; text-align: center;">';
                 html += '<div style="font-size: 44px;">' + pet.emoji + '</div>';
                 html += '<div style="font-size: 12px; font-weight: bold;">' + pet.name + '</div>';
                 html += '<div style="font-size: 11px; color: #667eea; margin: 3px 0;">Lv.' + pet.level + '</div>';
                 html += '<div style="font-size: 10px; color: #666;">⚔️' + petTotalAttack + ' 🛡️' + petTotalDefense + '</div>';
                 html += '<div style="font-size: 9px; color: #999; margin-top: 3px;">经验: ' + petExpPercent + '%</div>';
-                if (isCurrent) html += '<div style="font-size: 10px; color: #667eea; margin-top: 5px;">✓ 当前</div>';
+                if (isCurrent) {
+                    html += '<div style="font-size: 10px; color: #667eea; margin-top: 5px;">✓ 当前出战</div>';
+                } else if (pets.owned.length > 1) {
+                    // v9.0.37: 非当前宠物且拥有超过1个时可出售
+                    html += '<button class="btn" onclick="event.stopPropagation(); sellPet(\'' + petId + '\');" style="width: auto; padding: 3px 8px; font-size: 10px; background: linear-gradient(135deg, #ff6b6b, #ee5a5a); margin-top: 5px;">💰 卖' + sellPrice + '</button>';
+                }
                 html += '</div>';
             });
             html += '</div>';
@@ -5780,19 +5844,57 @@ function showPage(pageId) {
             document.getElementById('reviewCurrent').textContent = currentReviewIndex + 1;
             document.getElementById('reviewProgress').style.width = ((currentReviewIndex / currentReviewErrors.length) * 100) + '%';
 
-            // 生成选项
+            // v9.0.37: 生成更合理的干扰项
             var options = [err.correctAnswer];
-            var allOptions = [];
+            var distractorPool = [];
+            
             if (err.errorType === 'tone') {
-                allOptions = ['1', '2', '3', '4'];
+                // 声调题目：选项是1-4
+                distractorPool = ['1', '2', '3', '4'];
+            } else if (err.errorType === 'initial') {
+                // 声母题目：从声母中选择干扰项
+                distractorPool = pinyinData.initialNames;
+            } else if (err.errorType === 'final') {
+                // 韵母题目：从韵母中选择干扰项
+                distractorPool = pinyinData.finalNames;
+            } else if (err.errorType === 'whole') {
+                // 整体认读：从整体认读中选择干扰项
+                distractorPool = pinyinData.wholeNames;
             } else {
-                allOptions = pinyinData.initialNames.concat(pinyinData.finalNames).concat(pinyinData.wholeNames);
+                // 默认：根据正确答案判断类型
+                if (pinyinData.initialNames.includes(err.correctAnswer)) {
+                    distractorPool = pinyinData.initialNames;
+                } else if (pinyinData.finalNames.includes(err.correctAnswer)) {
+                    distractorPool = pinyinData.finalNames;
+                } else if (pinyinData.wholeNames.includes(err.correctAnswer)) {
+                    distractorPool = pinyinData.wholeNames;
+                } else {
+                    // 如果无法判断，混合使用所有选项
+                    distractorPool = pinyinData.initialNames.concat(pinyinData.finalNames).concat(pinyinData.wholeNames);
+                }
             }
-
-            while (options.length < 4) {
-                var r = allOptions[Math.floor(Math.random() * allOptions.length)];
-                if (options.indexOf(r) === -1) options.push(r);
+            
+            // 从干扰项池中选择3个不同的选项
+            var attempts = 0;
+            while (options.length < 4 && attempts < 100) {
+                var r = distractorPool[Math.floor(Math.random() * distractorPool.length)];
+                if (options.indexOf(r) === -1) {
+                    options.push(r);
+                }
+                attempts++;
             }
+            
+            // 如果干扰项不足，从其他类型补充
+            if (options.length < 4) {
+                var allOptions = pinyinData.initialNames.concat(pinyinData.finalNames).concat(pinyinData.wholeNames);
+                while (options.length < 4) {
+                    var r = allOptions[Math.floor(Math.random() * allOptions.length)];
+                    if (options.indexOf(r) === -1) {
+                        options.push(r);
+                    }
+                }
+            }
+            
             options.sort(function() { return Math.random() - 0.5; });
 
             var html = '<h3 style="font-size: 44px; margin-bottom: 20px;">' + err.question + '</h3>';
@@ -5844,7 +5946,7 @@ function showPage(pageId) {
                     '<div style="font-size: 12px; margin-top: 10px;">去野外探险打怪可以获得宝物！</div>' +
                 '</div>';
             } else {
-                html += '<div style="display: flex; flex-direction: row; gap: 12px;">';
+                html += '<div style="display: flex; flex-direction: row; gap: 12px; flex-wrap: wrap;">';
                 var treasureCounts = {};
                 inventory.treasures.forEach(function(t) {
                     treasureCounts[t.id] = (treasureCounts[t.id] || 0) + 1;
@@ -5853,11 +5955,14 @@ function showPage(pageId) {
                 Object.keys(treasureCounts).forEach(function(id) {
                     var treasure = treasuresData.find(function(t) { return t.id === id; });
                     if (treasure) {
-                        html += '<div style="background: #f8f9fa; border-radius: 10px; padding: 15px; text-align: center;">';
+                        var sellPrice = Math.floor((gemPrices[id] || 50) * 0.5); // 半价出售
+                        html += '<div style="background: #f8f9fa; border-radius: 10px; padding: 15px; text-align: center; position: relative;">';
                         html += '<div style="font-size: 40px;">' + treasure.emoji + '</div>';
                         html += '<div style="font-size: 12px; font-weight: bold; margin: 5px 0;">' + treasure.name + '</div>';
                         html += '<div style="font-size: 10px; color: #666;">' + treasure.desc + '</div>';
                         html += '<div style="font-size: 16px; color: #667eea; font-weight: bold; margin-top: 5px;">x' + treasureCounts[id] + '</div>';
+                        // v9.0.37: 添加出售按钮
+                        html += '<button class="btn" onclick="sellTreasure(\'' + id + '\', 1)" style="width: auto; padding: 5px 10px; font-size: 11px; background: linear-gradient(135deg, #ff6b6b, #ee5a5a); margin-top: 8px;">💰 卖' + sellPrice + '</button>';
                         html += '</div>';
                     }
                 });
@@ -6003,6 +6108,59 @@ function showPage(pageId) {
                 showInventoryTab('equipments');
                 
                 showToast('✅ 出售成功！获得 ' + totalPrice + ' 金币', 'success');
+            }
+        }
+
+        // v9.0.37: 出售宝物功能
+        function sellTreasure(treasureId, count) {
+            var treasure = treasuresData.find(function(t) { return t.id === treasureId; });
+            if (!treasure) {
+                alert('❌ 宝物不存在！');
+                return;
+            }
+            
+            var currentCount = 0;
+            inventory.treasures.forEach(function(t) {
+                if (t.id === treasureId) currentCount++;
+            });
+            
+            if (currentCount < count) {
+                alert('⚠️ ' + treasure.name + ' 数量不足！当前拥有: ' + currentCount);
+                return;
+            }
+            
+            var unitPrice = gemPrices[treasureId] || 50;
+            var totalPrice = Math.floor(unitPrice * count / 2); // 半价回收
+            
+            var confirmMsg = '💎 出售宝物确认\n\n';
+            confirmMsg += '宝物: ' + treasure.emoji + ' ' + treasure.name + ' x' + count + '\n';
+            confirmMsg += '单价: ' + unitPrice + ' 金币\n';
+            confirmMsg += '==================\n';
+            confirmMsg += '🏷️ 回收总价（半价）: ' + totalPrice + ' 金币\n\n';
+            confirmMsg += '确定要出售吗？';
+            
+            if (confirm(confirmMsg)) {
+                // 移除宝物
+                var removed = 0;
+                inventory.treasures = inventory.treasures.filter(function(t) {
+                    if (t.id === treasureId && removed < count) {
+                        removed++;
+                        return false;
+                    }
+                    return true;
+                });
+                
+                // 增加金币
+                coins += totalPrice;
+                
+                // 保存和更新
+                saveGameData();
+                updateUI();
+                
+                // 刷新背包显示
+                showInventoryTab('treasures');
+                
+                alert('✅ 出售成功！获得 ' + totalPrice + ' 金币');
             }
         }
 
