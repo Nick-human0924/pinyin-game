@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.39 - 修复版</title>
+    <title>拼音大冒险 v9.0.40 - 修复版</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -531,6 +531,14 @@
                         <div id="reciteRewardsInfo"></div>
                     </div>
                 </div>
+
+                <!-- v9.0.40: 背诵挑战榜单 -->
+                <div id="reciteLeaderboard" style="margin-top: 25px; padding: 15px; background: linear-gradient(135deg, #FFF8E1, #FFECB3); border-radius: 15px; border: 2px solid #FFC107;">
+                    <div style="font-size: 16px; font-weight: bold; color: #FF8F00; margin-bottom: 12px;">🏆 背诵挑战榜单</div>
+                    <div style="max-height: 200px; overflow-y: auto;" id="reciteLeaderboardContent">
+                        <div style="color: #999; font-size: 14px; padding: 10px;">暂无挑战记录</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -926,7 +934,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.39';
+        var GAME_VERSION = 'v9.0.40';
         var GAME_BUILD_DATE = '2026-03-18 16:10';
         
         // 完整拼音数据
@@ -1470,7 +1478,10 @@
                 errorBook: {
                     errors: [],
                     fixed: 0
-                }
+                },
+                // v9.0.40: 背诵挑战记录
+                reciteRecords: []
+            };
             };
             users[userId] = userData;
             saveUsersData();
@@ -5720,13 +5731,6 @@ function showPage(pageId) {
             final: { '10': 0, '12': 0, '15': 0 }
         };
         
-        function startReciteChallenge() {
-            reciteMode = null;
-            document.getElementById('reciteModeSelect').style.display = 'block';
-            document.getElementById('reciteGameArea').style.display = 'none';
-            showPage('reciteChallenge');
-        }
-        
         function startReciteMode(mode) {
             reciteMode = mode;
             document.getElementById('reciteModeSelect').style.display = 'none';
@@ -5848,6 +5852,109 @@ function showPage(pageId) {
             
             document.getElementById('reciteResult').innerHTML = resultHtml;
             updateReciteRewardsInfo();
+            
+            // v9.0.40: 保存挑战记录
+            saveReciteRecord(reciteMode, time, reward > 0);
+        }
+        
+        // v9.0.40: 保存背诵挑战记录
+        function saveReciteRecord(mode, time, gotReward) {
+            var currentUser = users[currentUserId];
+            if (!currentUser) return;
+            
+            if (!currentUser.reciteRecords) {
+                currentUser.reciteRecords = [];
+            }
+            
+            var record = {
+                mode: mode, // 'initial' 或 'final'
+                modeName: mode === 'initial' ? '声母' : '韵母',
+                time: parseFloat(time.toFixed(2)),
+                date: new Date().toISOString(),
+                dateStr: new Date().toLocaleString('zh-CN'),
+                userName: currentUser.name,
+                userAvatar: currentUser.avatar,
+                gotReward: gotReward
+            };
+            
+            currentUser.reciteRecords.unshift(record); // 新记录放前面
+            
+            // 只保留最近50条记录
+            if (currentUser.reciteRecords.length > 50) {
+                currentUser.reciteRecords = currentUser.reciteRecords.slice(0, 50);
+            }
+            
+            saveUsersData();
+            renderReciteLeaderboard();
+        }
+        
+        // v9.0.40: 渲染背诵挑战榜单
+        function renderReciteLeaderboard() {
+            var container = document.getElementById('reciteLeaderboardContent');
+            if (!container) return;
+            
+            // 收集所有用户的记录
+            var allRecords = [];
+            for (var userId in users) {
+                var user = users[userId];
+                if (user.reciteRecords && user.reciteRecords.length > 0) {
+                    user.reciteRecords.forEach(function(record) {
+                        allRecords.push({
+                            userName: record.userName || user.name,
+                            userAvatar: record.userAvatar || user.avatar,
+                            modeName: record.modeName,
+                            time: record.time,
+                            dateStr: record.dateStr,
+                            gotReward: record.gotReward,
+                            timestamp: new Date(record.date).getTime()
+                        });
+                    });
+                }
+            }
+            
+            // 按时间倒序排序
+            allRecords.sort(function(a, b) {
+                return b.timestamp - a.timestamp;
+            });
+            
+            // 只显示最近20条
+            allRecords = allRecords.slice(0, 20);
+            
+            if (allRecords.length === 0) {
+                container.innerHTML = '<div style="color: #999; font-size: 14px; padding: 10px;">暂无挑战记录</div>';
+                return;
+            }
+            
+            var html = '<table style="width: 100%; font-size: 13px; border-collapse: collapse;">';
+            html += '<tr style="background: #FFE082; color: #E65100;">';
+            html += '<th style="padding: 8px; text-align: left;">用户</th>';
+            html += '<th style="padding: 8px; text-align: center;">类型</th>';
+            html += '<th style="padding: 8px; text-align: center;">用时</th>';
+            html += '<th style="padding: 8px; text-align: right;">时间</th>';
+            html += '</tr>';
+            
+            allRecords.forEach(function(record, index) {
+                var bgColor = index % 2 === 0 ? '#FFFDE7' : '#FFF8E1';
+                var rewardIcon = record.gotReward ? '🏆' : '';
+                html += '<tr style="background: ' + bgColor + ';">';
+                html += '<td style="padding: 8px; text-align: left;">' + record.userAvatar + ' ' + record.userName + '</td>';
+                html += '<td style="padding: 8px; text-align: center;">' + record.modeName + '</td>';
+                html += '<td style="padding: 8px; text-align: center; font-weight: bold; color: #FF6F00;">' + rewardIcon + record.time + '秒</td>';
+                html += '<td style="padding: 8px; text-align: right; font-size: 11px; color: #666;">' + record.dateStr + '</td>';
+                html += '</tr>';
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+        
+        // v9.0.40: 显示背诵挑战页面时加载榜单
+        function startReciteChallenge() {
+            reciteMode = null;
+            document.getElementById('reciteModeSelect').style.display = 'block';
+            document.getElementById('reciteGameArea').style.display = 'none';
+            renderReciteLeaderboard();
+            showPage('reciteChallenge');
         }
         
         function showShopTab(type) { renderShop(type); }
