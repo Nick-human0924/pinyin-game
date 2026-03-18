@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.37 - 修复版</title>
+    <title>拼音大冒险 v9.0.38 - 修复版</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -830,7 +830,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.37';
+        var GAME_VERSION = 'v9.0.38';
         var GAME_BUILD_DATE = '2026-03-18 16:10';
         
         // 完整拼音数据
@@ -5072,44 +5072,44 @@ function showPage(pageId) {
         }
 
         function loadBattleQuestion() {
-            // v9.0.22: 根据怪物血量/难度调整题型概率
-            // 血量100(森林): 声母40% 韵母35% 整体20% 词语0% 声调5%
-            // 血量150(沙漠): 声母30% 韵母30% 整体25% 词语10% 声调5%
-            // 血量200(海洋): 声母20% 韵母25% 整体30% 词语20% 声调5%
-            // 血量300(火山): 声母15% 韵母20% 整体30% 词语30% 声调5%
+            // v9.0.38: 根据怪物血量/难度调整题型概率
+            // 血量100(森林): 整体认读50% 声母25% 韵母20% 声调5%
+            // 血量150(沙漠): 整体认读60% 声母15% 韵母15% 词语5% 声调5%
+            // 血量200(海洋): 整体认读80% 声母5% 韵母5% 词语5% 声调5%
+            // 血量300(火山): 整体认读100%
             
             var enemyHp = currentEnemy.maxHp || currentEnemy.hp;
             var rand = Math.random();
             var modeIdx, questionType;
             
+            // v9.0.38: 检测是否为BOSS怪物（炎魔、黑龙）
+            var isBossMonster = currentEnemy.name === '炎魔' || currentEnemy.name === '黑龙';
+            
             if (enemyHp <= 100) {
-                // 简单难度 - 森林
-                if (rand < 0.40) modeIdx = 0; // 声母 40%
-                else if (rand < 0.75) modeIdx = 1; // 韵母 35%
-                else if (rand < 0.95) modeIdx = 2; // 整体 20%
+                // 简单难度 - 森林: 整体认读50%
+                if (rand < 0.50) modeIdx = 2; // 整体认读 50%
+                else if (rand < 0.75) modeIdx = 0; // 声母 25%
+                else if (rand < 0.95) modeIdx = 1; // 韵母 20%
                 else modeIdx = 3; // 声调 5%
                 questionType = 'char'; // 单字题
             } else if (enemyHp <= 150) {
-                // 中等难度 - 沙漠
-                if (rand < 0.30) modeIdx = 0; // 声母 30%
-                else if (rand < 0.60) modeIdx = 1; // 韵母 30%
-                else if (rand < 0.85) modeIdx = 2; // 整体 25%
-                else if (rand < 0.95) { modeIdx = 4; questionType = 'word'; } // 词语 10%
+                // 中等难度 - 沙漠: 整体认读60%
+                if (rand < 0.60) modeIdx = 2; // 整体认读 60%
+                else if (rand < 0.75) modeIdx = 0; // 声母 15%
+                else if (rand < 0.90) modeIdx = 1; // 韵母 15%
+                else if (rand < 0.95) { modeIdx = 4; questionType = 'word'; } // 词语 5%
                 else modeIdx = 3; // 声调 5%
             } else if (enemyHp <= 200) {
-                // 困难难度 - 海洋
-                if (rand < 0.20) modeIdx = 0; // 声母 20%
-                else if (rand < 0.45) modeIdx = 1; // 韵母 25%
-                else if (rand < 0.75) modeIdx = 2; // 整体 30%
-                else if (rand < 0.95) { modeIdx = 4; questionType = 'word'; } // 词语 20%
+                // 困难难度 - 海洋: 整体认读80%
+                if (rand < 0.80) modeIdx = 2; // 整体认读 80%
+                else if (rand < 0.85) modeIdx = 0; // 声母 5%
+                else if (rand < 0.90) modeIdx = 1; // 韵母 5%
+                else if (rand < 0.95) { modeIdx = 4; questionType = 'word'; } // 词语 5%
                 else modeIdx = 3; // 声调 5%
             } else {
-                // 极难难度 - 火山
-                if (rand < 0.15) modeIdx = 0; // 声母 15%
-                else if (rand < 0.35) modeIdx = 1; // 韵母 20%
-                else if (rand < 0.65) modeIdx = 2; // 整体 30%
-                else if (rand < 0.95) { modeIdx = 4; questionType = 'word'; } // 词语 30%
-                else modeIdx = 3; // 声调 5%
+                // 极难难度 - 火山: 整体认读100%
+                modeIdx = 2; // 整体认读 100%
+                questionType = 'char';
             }
             
             // 如果是词语题但怪不属于高难区域，降级为单字题
@@ -5164,37 +5164,62 @@ function showPage(pageId) {
                 
                 currentBattleQuestion = { q: displayText, a: answer, type: 'word', modeName: modeName, targetChar: targetChar };
             } else {
-                // 单字题目
+                // v9.0.38: 单字题目 - 根据是否为BOSS调整难度
                 currentBattleWord = null;
-                currentBattleChar = battleCharacters[Math.floor(Math.random() * battleCharacters.length)];
-                var char = currentBattleChar;
                 
-                switch(currentBattleMode) {
-                    case 'initial':
-                        answer = char.initial;
-                        options = generateBattleOptions(answer, allInitials);
-                        break;
-                    case 'final':
-                        answer = char.final;
-                        options = generateBattleOptions(answer, allFinals);
-                        break;
-                    case 'whole':
-                        answer = char.whole;
-                        options = generateBattleOptions(answer, allWholes);
-                        break;
-                    case 'tone':
-                        answer = char.tone;
-                        options = ['1', '2', '3', '4'];
-                        break;
+                // v9.0.38: BOSS关使用更难的题库
+                if (currentBattleMode === 'whole' && isBossMonster) {
+                    // BOSS关：使用更难的扩展整体认读音节
+                    var hardWholes = ['yuan', 'ying', 'yue', 'yun', 'ye', 'yu', 'shi', 'chi', 'zhi'];
+                    answer = hardWholes[Math.floor(Math.random() * hardWholes.length)];
+                    options = generateBattleOptions(answer, hardWholes);
+                    
+                    // BOSS关显示更难的字符
+                    var hardCharMap = {
+                        'yuan': '冤', 'ying': '英', 'yue': '约', 'yun': '晕',
+                        'ye': '耶', 'yu': '迂', 'shi': '诗', 'chi': '吃', 'zhi': '知'
+                    };
+                    var displayChar = hardCharMap[answer] || '字';
+                    
+                    displayHtml = '<div style="font-size: 72px; margin: 5px 0; color: #f44336;">' + displayChar + '</div>';
+                    displayHtml += '<div style="font-size: 16px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
+                    displayHtml += '【BOSS挑战】请选出 "' + displayChar + '" 的整体认读音节';
+                    displayHtml += '</div>';
+                    displayHtml += '<button class="voice-btn" onclick="speakBattleChar()" style="margin-left: 10px;">🔊</button>';
+                    
+                    currentBattleQuestion = { q: displayChar, a: answer, type: currentBattleMode, modeName: modeName };
+                } else {
+                    // 普通关卡：正常题库
+                    currentBattleChar = battleCharacters[Math.floor(Math.random() * battleCharacters.length)];
+                    var char = currentBattleChar;
+                    
+                    switch(currentBattleMode) {
+                        case 'initial':
+                            answer = char.initial;
+                            options = generateBattleOptions(answer, allInitials);
+                            break;
+                        case 'final':
+                            answer = char.final;
+                            options = generateBattleOptions(answer, allFinals);
+                            break;
+                        case 'whole':
+                            answer = char.whole;
+                            options = generateBattleOptions(answer, allWholes);
+                            break;
+                        case 'tone':
+                            answer = char.tone;
+                            options = ['1', '2', '3', '4'];
+                            break;
+                    }
+                    
+                    displayHtml = '<div style="font-size: 72px; margin: 5px 0; color: #667eea;">' + char.char + '</div>';
+                    displayHtml += '<div style="font-size: 16px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
+                    displayHtml += '请选出 "' + char.char + '" 的' + modeName + '';
+                    displayHtml += '</div>';
+                    displayHtml += '<button class="voice-btn" onclick="speakBattleChar()" style="margin-left: 10px;">🔊</button>';
+                    
+                    currentBattleQuestion = { q: char.char, a: answer, type: currentBattleMode, modeName: modeName };
                 }
-                
-                displayHtml = '<div style="font-size: 72px; margin: 5px 0; color: #667eea;">' + char.char + '</div>';
-                displayHtml += '<div style="font-size: 16px; color: #fff; background: ' + modeColor + '; padding: 8px 20px; border-radius: 20px; display: inline-block; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">';
-                displayHtml += '请选出 "' + char.char + '" 的' + modeName + '';
-                displayHtml += '</div>';
-                displayHtml += '<button class="voice-btn" onclick="speakBattleChar()" style="margin-left: 10px;">🔊</button>';
-                
-                currentBattleQuestion = { q: char.char, a: answer, type: currentBattleMode, modeName: modeName };
             }
 
             document.getElementById('battleQDisplay').innerHTML = displayHtml;
