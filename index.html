@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.40-fix5 - 修复版</title>
+    <title>拼音大冒险 v9.0.41 - 修复版</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -522,6 +522,7 @@
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                         <button class="btn" id="reciteStartBtn" onclick="startReciteTimer()" style="background: #4CAF50; font-size: 16px; padding: 12px 30px;">开始背诵</button>
                         <button class="btn" id="reciteStopBtn" onclick="stopReciteTimer()" style="background: #f44336; font-size: 16px; padding: 12px 30px; display: none;">完成</button>
+                        <button class="btn" id="reciteResetBtn" onclick="resetReciteTimer()" style="background: #FF9800; font-size: 16px; padding: 12px 30px; display: none;">停止/重置</button>
                     </div>
 
                     <div id="reciteResult" style="margin-top: 20px; font-size: 16px;"></div>
@@ -934,7 +935,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.40-fix5';
+        var GAME_VERSION = 'v9.0.41';
         var GAME_BUILD_DATE = '2026-03-18 16:10';
         
         // 完整拼音数据
@@ -5727,11 +5728,12 @@
         var reciteTimerInterval = null;
         var reciteElapsedTime = 0;
         
-        // 背诵奖励记录（每个档位限2次）
+        // 背诵奖励记录（每个档位限2次，每周一刷新）
         var reciteRewards = {
-            initial: { '5': 0, '6': 0, '7': 0, '8': 0 }, // 时间档位(秒): 已奖励次数
-            final: { '10': 0, '12': 0, '15': 0 }
+            initial: { '4': 0, '5': 0, '6': 0, '7': 0, '8': 0 }, // 时间档位(秒): 已奖励次数
+            final: { '5': 0, '6': 0, '8': 0, '10': 0, '12': 0, '15': 0 }
         };
+        var reciteLastResetWeek = 0; // 上次重置的周数
         
         function startReciteMode(mode) {
             reciteMode = mode;
@@ -5756,18 +5758,25 @@
         }
         
         function updateReciteRewardsInfo() {
+            // v9.0.41: 检查是否需要每周重置
+            checkWeeklyReciteReset();
+            
             var html = '';
             if (reciteMode === 'initial') {
-                html += '<div style="margin: 5px 0;">🔤 声母背诵奖励：</div>';
+                html += '<div style="margin: 5px 0;">🔤 声母背诵奖励（每周一刷新）：</div>';
                 html += '<div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">';
+                html += '<span style="background: ' + (reciteRewards.initial['4'] < 2 ? '#E91E63' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤4秒: 40金币 (' + reciteRewards.initial['4'] + '/2)</span>';
                 html += '<span style="background: ' + (reciteRewards.initial['5'] < 2 ? '#4CAF50' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤5秒: 30金币 (' + reciteRewards.initial['5'] + '/2)</span>';
                 html += '<span style="background: ' + (reciteRewards.initial['6'] < 2 ? '#8BC34A' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤6秒: 20金币 (' + reciteRewards.initial['6'] + '/2)</span>';
                 html += '<span style="background: ' + (reciteRewards.initial['7'] < 2 ? '#FFC107' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤7秒: 15金币 (' + reciteRewards.initial['7'] + '/2)</span>';
                 html += '<span style="background: ' + (reciteRewards.initial['8'] < 2 ? '#FF9800' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤8秒: 10金币 (' + reciteRewards.initial['8'] + '/2)</span>';
                 html += '</div>';
             } else {
-                html += '<div style="margin: 5px 0;">🎵 韵母背诵奖励：</div>';
+                html += '<div style="margin: 5px 0;">🎵 韵母背诵奖励（每周一刷新）：</div>';
                 html += '<div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">';
+                html += '<span style="background: ' + (reciteRewards.final['5'] < 2 ? '#C2185B' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤5秒: 80金币 (' + reciteRewards.final['5'] + '/2)</span>';
+                html += '<span style="background: ' + (reciteRewards.final['6'] < 2 ? '#E91E63' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤6秒: 70金币 (' + reciteRewards.final['6'] + '/2)</span>';
+                html += '<span style="background: ' + (reciteRewards.final['8'] < 2 ? '#9C27B0' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤8秒: 50金币 (' + reciteRewards.final['8'] + '/2)</span>';
                 html += '<span style="background: ' + (reciteRewards.final['10'] < 2 ? '#4CAF50' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤10秒: 40金币 (' + reciteRewards.final['10'] + '/2)</span>';
                 html += '<span style="background: ' + (reciteRewards.final['12'] < 2 ? '#8BC34A' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤12秒: 25金币 (' + reciteRewards.final['12'] + '/2)</span>';
                 html += '<span style="background: ' + (reciteRewards.final['15'] < 2 ? '#FF9800' : '#ccc') + '; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px;">≤15秒: 15金币 (' + reciteRewards.final['15'] + '/2)</span>';
@@ -5776,11 +5785,36 @@
             document.getElementById('reciteRewardsInfo').innerHTML = html;
         }
         
+        // v9.0.41: 检查每周重置
+        function checkWeeklyReciteReset() {
+            var now = new Date();
+            var currentWeek = getWeekNumber(now);
+            if (currentWeek !== reciteLastResetWeek) {
+                // 重置所有档位
+                reciteRewards = {
+                    initial: { '4': 0, '5': 0, '6': 0, '7': 0, '8': 0 },
+                    final: { '5': 0, '6': 0, '8': 0, '10': 0, '12': 0, '15': 0 }
+                };
+                reciteLastResetWeek = currentWeek;
+                console.log('背诵挑战奖励已重置（新的一周）');
+            }
+        }
+        
+        // v9.0.41: 获取当前周数
+        function getWeekNumber(date) {
+            var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            var dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+        
         function startReciteTimer() {
             reciteStartTime = Date.now();
             reciteElapsedTime = 0;
             document.getElementById('reciteStartBtn').style.display = 'none';
             document.getElementById('reciteStopBtn').style.display = 'inline-block';
+            document.getElementById('reciteResetBtn').style.display = 'inline-block';
             
             reciteTimerInterval = setInterval(function() {
                 reciteElapsedTime = (Date.now() - reciteStartTime) / 1000;
@@ -5798,16 +5832,20 @@
             }
             
             document.getElementById('reciteStopBtn').style.display = 'none';
+            document.getElementById('reciteResetBtn').style.display = 'none';
             document.getElementById('reciteStartBtn').style.display = 'inline-block';
             document.getElementById('reciteStartBtn').textContent = '重新挑战';
             
-            // 计算奖励
+            // v9.0.41: 新奖励计算逻辑（新增高档位）
             var time = reciteElapsedTime;
             var reward = 0;
             var rewardLevel = '';
             
             if (reciteMode === 'initial') {
-                if (time <= 5 && reciteRewards.initial['5'] < 2) {
+                if (time <= 4 && reciteRewards.initial['4'] < 2) {
+                    reward = 40;
+                    rewardLevel = '4';
+                } else if (time <= 5 && reciteRewards.initial['5'] < 2) {
                     reward = 30;
                     rewardLevel = '5';
                 } else if (time <= 6 && reciteRewards.initial['6'] < 2) {
@@ -5821,7 +5859,16 @@
                     rewardLevel = '8';
                 }
             } else {
-                if (time <= 10 && reciteRewards.final['10'] < 2) {
+                if (time <= 5 && reciteRewards.final['5'] < 2) {
+                    reward = 80;
+                    rewardLevel = '5';
+                } else if (time <= 6 && reciteRewards.final['6'] < 2) {
+                    reward = 70;
+                    rewardLevel = '6';
+                } else if (time <= 8 && reciteRewards.final['8'] < 2) {
+                    reward = 50;
+                    rewardLevel = '8';
+                } else if (time <= 10 && reciteRewards.final['10'] < 2) {
                     reward = 40;
                     rewardLevel = '10';
                 } else if (time <= 12 && reciteRewards.final['12'] < 2) {
@@ -5854,6 +5901,22 @@
             
             document.getElementById('reciteResult').innerHTML = resultHtml;
             updateReciteRewardsInfo();
+        // v9.0.41: 重置计时器（停止并归零）
+        function resetReciteTimer() {
+            if (reciteTimerInterval) {
+                clearInterval(reciteTimerInterval);
+                reciteTimerInterval = null;
+            }
+            
+            reciteElapsedTime = 0;
+            document.getElementById('reciteTimer').textContent = '0.00秒';
+            document.getElementById('reciteResult').innerHTML = '';
+            document.getElementById('reciteStopBtn').style.display = 'none';
+            document.getElementById('reciteResetBtn').style.display = 'none';
+            document.getElementById('reciteStartBtn').style.display = 'inline-block';
+            document.getElementById('reciteStartBtn').textContent = '开始背诵';
+        }
+
             
             // v9.0.40: 保存挑战记录
             saveReciteRecord(reciteMode, time, reward > 0);
@@ -5890,18 +5953,20 @@
             renderReciteLeaderboard();
         }
         
-        // v9.0.40: 渲染背诵挑战榜单
+        // v9.0.41: 渲染背诵挑战榜单（声母韵母分开，按时间升序排列）
         function renderReciteLeaderboard() {
             var container = document.getElementById('reciteLeaderboardContent');
             if (!container) return;
             
             // 收集所有用户的记录
-            var allRecords = [];
+            var initialRecords = [];
+            var finalRecords = [];
+            
             for (var userId in users) {
                 var user = users[userId];
                 if (user.reciteRecords && user.reciteRecords.length > 0) {
                     user.reciteRecords.forEach(function(record) {
-                        allRecords.push({
+                        var r = {
                             userName: record.userName || user.name,
                             userAvatar: record.userAvatar || user.avatar,
                             modeName: record.modeName,
@@ -5909,45 +5974,74 @@
                             dateStr: record.dateStr,
                             gotReward: record.gotReward,
                             timestamp: new Date(record.date).getTime()
-                        });
+                        };
+                        if (record.mode === 'initial') {
+                            initialRecords.push(r);
+                        } else {
+                            finalRecords.push(r);
+                        }
                     });
                 }
             }
             
-            // 按时间倒序排序
-            allRecords.sort(function(a, b) {
-                return b.timestamp - a.timestamp;
-            });
+            // 按时间升序排列（越快排名越前）
+            initialRecords.sort(function(a, b) { return a.time - b.time; });
+            finalRecords.sort(function(a, b) { return a.time - b.time; });
             
-            // 只显示最近20条
-            allRecords = allRecords.slice(0, 20);
+            // 只显示前10名
+            initialRecords = initialRecords.slice(0, 10);
+            finalRecords = finalRecords.slice(0, 10);
             
-            if (allRecords.length === 0) {
+            if (initialRecords.length === 0 && finalRecords.length === 0) {
                 container.innerHTML = '<div style="color: #999; font-size: 14px; padding: 10px;">暂无挑战记录</div>';
                 return;
             }
             
+            var html = '';
+            
+            // 声母榜单
+            if (initialRecords.length > 0) {
+                html += '<div style="margin-bottom: 15px;">';
+                html += '<div style="font-size: 14px; font-weight: bold; color: #2196F3; margin-bottom: 8px;">🔤 声母榜单（按用时排序）</div>';
+                html += renderReciteTable(initialRecords);
+                html += '</div>';
+            }
+            
+            // 韵母榜单
+            if (finalRecords.length > 0) {
+                html += '<div>';
+                html += '<div style="font-size: 14px; font-weight: bold; color: #4CAF50; margin-bottom: 8px;">🎵 韵母榜单（按用时排序）</div>';
+                html += renderReciteTable(finalRecords);
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        // v9.0.41: 渲染榜单表格
+        function renderReciteTable(records) {
             var html = '<table style="width: 100%; font-size: 13px; border-collapse: collapse;">';
             html += '<tr style="background: #FFE082; color: #E65100;">';
-            html += '<th style="padding: 8px; text-align: left;">用户</th>';
-            html += '<th style="padding: 8px; text-align: center;">类型</th>';
-            html += '<th style="padding: 8px; text-align: center;">用时</th>';
-            html += '<th style="padding: 8px; text-align: right;">时间</th>';
+            html += '<th style="padding: 6px; text-align: center; width: 40px;">排名</th>';
+            html += '<th style="padding: 6px; text-align: left;">用户</th>';
+            html += '<th style="padding: 6px; text-align: center;">用时</th>';
+            html += '<th style="padding: 6px; text-align: right;">时间</th>';
             html += '</tr>';
             
-            allRecords.forEach(function(record, index) {
+            records.forEach(function(record, index) {
                 var bgColor = index % 2 === 0 ? '#FFFDE7' : '#FFF8E1';
+                var rankIcon = index < 3 ? ['🥇', '🥈', '🥉'][index] : (index + 1);
                 var rewardIcon = record.gotReward ? '🏆' : '';
                 html += '<tr style="background: ' + bgColor + ';">';
-                html += '<td style="padding: 8px; text-align: left;">' + record.userAvatar + ' ' + record.userName + '</td>';
-                html += '<td style="padding: 8px; text-align: center;">' + record.modeName + '</td>';
-                html += '<td style="padding: 8px; text-align: center; font-weight: bold; color: #FF6F00;">' + rewardIcon + record.time + '秒</td>';
-                html += '<td style="padding: 8px; text-align: right; font-size: 11px; color: #666;">' + record.dateStr + '</td>';
+                html += '<td style="padding: 6px; text-align: center; font-weight: bold;">' + rankIcon + '</td>';
+                html += '<td style="padding: 6px; text-align: left;">' + record.userAvatar + ' ' + record.userName + '</td>';
+                html += '<td style="padding: 6px; text-align: center; font-weight: bold; color: #FF6F00;">' + rewardIcon + record.time + '秒</td>';
+                html += '<td style="padding: 6px; text-align: right; font-size: 11px; color: #666;">' + record.dateStr + '</td>';
                 html += '</tr>';
             });
             
             html += '</table>';
-            container.innerHTML = html;
+            return html;
         }
         
         // v9.0.40: 显示背诵挑战页面时加载榜单
@@ -7086,7 +7180,7 @@
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.40-fix5 (2026-03-18)
+        拼音大冒险 v9.0.41 (2026-03-18)
     </div>
 
     <script>
