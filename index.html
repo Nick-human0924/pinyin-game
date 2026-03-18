@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.40-fix4 - 修复版</title>
+    <title>拼音大冒险 v9.0.40-fix5 - 修复版</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -934,7 +934,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.40-fix4';
+        var GAME_VERSION = 'v9.0.40-fix5';
         var GAME_BUILD_DATE = '2026-03-18 16:10';
         
         // 完整拼音数据
@@ -5404,20 +5404,22 @@
             var isCorrect = selected === correct;
             if (isCorrect) {
                 btn.classList.add('correct');
+                
+                // v9.0.6: 先计算包含装备加成的总攻击力和实际伤害
+                var currentPet = pets.list[pets.current];
+                var totalAttack = petAttack + (equipment.weapon ? equipment.weapon.attack : 0) + (equipment.accessory ? equipment.accessory.bonus.attack : 0);
+                var damage = totalAttack + Math.floor(Math.random() * 5);
+                
                 var player = document.getElementById('playerChar');
                 var enemy = document.getElementById('enemyChar');
                 player.classList.add('attack-right');
                 setTimeout(function() {
                     player.classList.remove('attack-right');
                     enemy.classList.add('shake');
-                    showDamage(enemy, Math.floor(Math.random() * 10 + 5));
+                    showDamage(enemy, damage); // 显示实际计算的伤害
                     setTimeout(function() { enemy.classList.remove('shake'); }, 500);
                 }, 300);
 
-                // v9.0.6: 计算包含装备加成的总攻击力
-                var currentPet = pets.list[pets.current];
-                var totalAttack = petAttack + (equipment.weapon ? equipment.weapon.attack : 0) + (equipment.accessory ? equipment.accessory.bonus.attack : 0);
-                var damage = totalAttack + Math.floor(Math.random() * 5);
                 currentEnemy.hp -= damage;
                 document.getElementById('battleLog').innerHTML = '✅ 正确！造成 <span style="color:#4CAF50">' + damage + '</span> 伤害！';
                 speak('攻击！');
@@ -7084,7 +7086,7 @@
 
     <!-- 版本号显示 -->
     <div id="versionDisplay" style="position: fixed; top: 5px; left: 10px; font-size: 11px; color: #999; z-index: 9999; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px;">
-        拼音大冒险 v9.0.40-fix4 (2026-03-18)
+        拼音大冒险 v9.0.40-fix5 (2026-03-18)
     </div>
 
     <script>
