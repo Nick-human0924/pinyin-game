@@ -555,17 +555,17 @@
 
             <div class="map-location" onclick="explore('desert')">
                 <div>🏜️ 炎热沙漠</div>
-                <div style="font-size: 12px;">⚡15 | 怪物: 60% | 奖励: 5-10💰</div>
+                <div style="font-size: 12px;">⚡15 | 怪物: 60% | 奖励: 11-15💰</div>
             </div>
 
             <div class="map-location" onclick="explore('ocean')">
                 <div>🌊 深海秘境</div>
-                <div style="font-size: 12px;">⚡20 | 怪物: 80% | 奖励: 5-10💰</div>
+                <div style="font-size: 12px;">⚡20 | 怪物: 80% | 奖励: 16-20💰</div>
             </div>
 
             <div class="map-location" onclick="explore('volcano')">
                 <div>🌋 烈焰火山</div>
-                <div style="font-size: 12px;">⚡30 | BOSS战 | 奖励: 5-10💰</div>
+                <div style="font-size: 12px;">⚡30 | BOSS战 | 奖励: 21-25💰</div>
             </div>
         </div>
 
@@ -685,13 +685,51 @@
                 </div>
             </div>
 
-            <div style="background: #fff3e0; border-radius: 15px; padding: 15px;">
+            <div style="background: #fff3e0; border-radius: 15px; padding: 15px; margin-bottom: 20px;">
                 <div style="font-size: 14px; color: #e65100;">
                     <strong>💡 使用说明：</strong><br>
                     1. 输入要发送的金币、体力、经验值<br>
                     2. 点击"发送给当前账号"按钮<br>
                     3. 奖励将立即添加到当前登录的用户
                 </div>
+            </div>
+            
+            <!-- v9.0.44: 处罚功能 -->
+            <div style="background: linear-gradient(135deg, #424242, #212121); border-radius: 15px; padding: 20px; margin-bottom: 20px; color: white;">
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: center;">💣 释放炸弹（处罚）</div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">💰 扣除金币：</label>
+                    <input type="number" id="punishCoins" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-9999" min="0" max="9999" value="0">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">⚡ 扣除体力：</label>
+                    <input type="number" id="punishEnergy" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-100" min="0" max="100" value="0">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">⭐ 扣除经验：</label>
+                    <input type="number" id="punishExp" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-9999" min="0" max="9999" value="0">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">💎 扣除宝石数量：</label>
+                    <select id="punishGemType" style="width: 48%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; display: inline-block; margin-right: 4%;">
+                        <option value="">--选择宝石--</option>
+                        <option value="ruby">🔴 红宝石</option>
+                        <option value="sapphire">🔵 蓝宝石</option>
+                        <option value="emerald">🟢 绿宝石</option>
+                        <option value="topaz">🟡 黄宝石</option>
+                        <option value="amethyst">🟣 紫水晶</option>
+                        <option value="diamond">💎 钻石</option>
+                        <option value="gold">🟨 金块</option>
+                        <option value="crystal">🔮 魔法水晶</option>
+                    </select>
+                    <input type="number" id="punishGemCount" style="width: 48%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; display: inline-block;" placeholder="数量" min="1" max="50" value="1">
+                </div>
+                
+                <button class="btn" onclick="releasePunishBomb()" style="width: 100%; background: linear-gradient(135deg, #f44336, #d32f2f); color: white; font-weight: bold; padding: 15px;">💣 释放炸弹（执行处罚）</button>
             </div>
         </div>
 
@@ -927,6 +965,7 @@
             <div style="display: flex; gap: 10px; margin-bottom: 10px; overflow-x: auto;">
                 <div class="shop-tab active" onclick="showInventoryTab('treasures')">💎 宝物</div>
                 <div class="shop-tab" onclick="showInventoryTab('equipments')">⚔️ 装备</div>
+                <div class="shop-tab" onclick="showInventoryTab('pets')">🐾 宠物</div>
             </div>
 
             <div id="inventoryContent"></div>
@@ -935,8 +974,8 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.41';
-        var GAME_BUILD_DATE = '2026-03-18 16:10';
+        var GAME_VERSION = 'v9.0.44';
+        var GAME_BUILD_DATE = '2026-03-19 09:45';
         
         // 完整拼音数据
         var pinyinData = {
@@ -2716,6 +2755,91 @@
             if (giftExp > 0) msg += '⭐ 经验 +' + giftExp + '\n';
             if (giftGemType && giftGemCount > 0) msg += gemEmoji[giftGemType] + ' ' + gemNames[giftGemType] + ' +' + giftGemCount + '\n';
             alert(msg);
+        }
+        
+        // v9.0.44: 释放炸弹（处罚功能）
+        function releasePunishBomb() {
+            var coinsInput = document.getElementById('punishCoins');
+            var energyInput = document.getElementById('punishEnergy');
+            var expInput = document.getElementById('punishExp');
+            var gemTypeInput = document.getElementById('punishGemType');
+            var gemCountInput = document.getElementById('punishGemCount');
+
+            var punishCoins = parseInt(coinsInput.value) || 0;
+            var punishEnergy = parseInt(energyInput.value) || 0;
+            var punishExp = parseInt(expInput.value) || 0;
+            var punishGemType = gemTypeInput.value;
+            var punishGemCount = parseInt(gemCountInput.value) || 0;
+
+            if (punishCoins <= 0 && punishEnergy <= 0 && punishExp <= 0 && (!punishGemType || punishGemCount <= 0)) {
+                alert('请输入至少一项处罚数量！');
+                return;
+            }
+
+            // 确认处罚
+            var confirmMsg = '💣 处罚确认\n\n';
+            if (punishCoins > 0) confirmMsg += '💰 扣除金币: ' + punishCoins + '\n';
+            if (punishEnergy > 0) confirmMsg += '⚡ 扣除体力: ' + punishEnergy + '\n';
+            if (punishExp > 0) confirmMsg += '⭐ 扣除经验: ' + punishExp + '\n';
+            if (punishGemType && punishGemCount > 0) {
+                var gemNames = { ruby: '红宝石', sapphire: '蓝宝石', emerald: '绿宝石', topaz: '黄宝石', amethyst: '紫水晶', diamond: '钻石', gold: '金块', crystal: '魔法水晶' };
+                confirmMsg += '💎 扣除' + gemNames[punishGemType] + ': ' + punishGemCount + '个\n';
+            }
+            confirmMsg += '\n⚠️ 确定要执行处罚吗？';
+
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
+            // 执行处罚
+            var actualDeducted = [];
+            
+            if (punishCoins > 0) {
+                var actualCoins = Math.min(punishCoins, coins);
+                coins -= actualCoins;
+                if (actualCoins > 0) actualDeducted.push('💰 金币 -' + actualCoins);
+            }
+            
+            if (punishEnergy > 0) {
+                var actualEnergy = Math.min(punishEnergy, energy);
+                energy -= actualEnergy;
+                if (actualEnergy > 0) actualDeducted.push('⚡ 体力 -' + actualEnergy);
+            }
+            
+            if (punishExp > 0) {
+                var currentPet = pets.list[pets.current];
+                if (currentPet && currentPet.exp > 0) {
+                    var actualExp = Math.min(punishExp, currentPet.exp);
+                    currentPet.exp -= actualExp;
+                    if (actualExp > 0) actualDeducted.push('⭐ 经验 -' + actualExp);
+                }
+            }
+            
+            if (punishGemType && punishGemCount > 0) {
+                var removed = 0;
+                inventory.treasures = inventory.treasures.filter(function(t) {
+                    if (t.id === punishGemType && removed < punishGemCount) {
+                        removed++;
+                        return false;
+                    }
+                    return true;
+                });
+                if (removed > 0) {
+                    var gemNames = { ruby: '红宝石', sapphire: '蓝宝石', emerald: '绿宝石', topaz: '黄宝石', amethyst: '紫水晶', diamond: '钻石', gold: '金块', crystal: '魔法水晶' };
+                    actualDeducted.push('💎 ' + gemNames[punishGemType] + ' -' + removed + '个');
+                }
+            }
+
+            // 更新UI和保存
+            updateUI();
+            saveGameData();
+
+            // 显示处罚结果
+            if (actualDeducted.length > 0) {
+                alert('💣 炸弹已释放！\n\n' + actualDeducted.join('\n') + '\n\n😈 处罚执行完毕！');
+            } else {
+                alert('💣 炸弹释放失败！\n\n目标没有足够的资源可扣除。');
+            }
         }
 
         // 显示拼音提示
@@ -5431,29 +5555,42 @@
                         try {
                             playVictoryAnimation();
                             
-                            // 阶梯式战斗奖励
+                            // 阶梯式战斗奖励 - v9.0.42: 按区域调整奖励
                             var enemyMaxHp = currentEnemy.maxHp || 50;
-                            var baseReward = 5;
-                            if (enemyMaxHp >= 150) baseReward = 25;
-                            else if (enemyMaxHp >= 100) baseReward = 18;
-                            else if (enemyMaxHp >= 70) baseReward = 12;
-                            else if (enemyMaxHp >= 45) baseReward = 8;
+                            var baseReward = 5; // 默认最低
                             
-                            var currentPet = pets.list[pets.current];
-                            var petLevel = currentPet ? currentPet.level : 1;
-                            var petBonus = Math.floor(petLevel * 0.5);
-                            var randomBonus = Math.floor(Math.random() * 6);
-                            var reward = baseReward + petBonus + randomBonus;
+                            // 根据怪物血量确定区域奖励
+                            if (enemyMaxHp >= 300) baseReward = 21;      // 烈焰火山: 21-25
+                            else if (enemyMaxHp >= 200) baseReward = 16; // 深海秘境: 16-20
+                            else if (enemyMaxHp >= 150) baseReward = 11; // 炎热沙漠: 11-15
+                            else if (enemyMaxHp >= 100) baseReward = 5;  // 神秘森林: 5-10
+                            
+                            var randomBonus = Math.floor(Math.random() * 6); // 0-5随机
+                            var reward = baseReward + randomBonus;
+                            
+                            // 确保不超过上限
+                            if (enemyMaxHp >= 300) reward = Math.min(reward, 25);
+                            else if (enemyMaxHp >= 200) reward = Math.min(reward, 20);
+                            else if (enemyMaxHp >= 150) reward = Math.min(reward, 15);
+                            else if (enemyMaxHp >= 100) reward = Math.min(reward, 10);
                             
                             showCoinReward(reward);
                             coins += reward;
                             battleWins++;
                             
-                            var baseExp = 8;
-                            if (enemyMaxHp >= 150) baseExp = 25;
-                            else if (enemyMaxHp >= 100) baseExp = 18;
-                            else if (enemyMaxHp >= 70) baseExp = 12;
-                            var battleExp = baseExp + Math.floor(Math.random() * 8);
+                            var baseExp = 5;
+                            if (enemyMaxHp >= 300) baseExp = 21;      // 烈焰火山
+                            else if (enemyMaxHp >= 200) baseExp = 16; // 深海秘境
+                            else if (enemyMaxHp >= 150) baseExp = 11; // 炎热沙漠
+                            else if (enemyMaxHp >= 100) baseExp = 5;  // 神秘森林
+                            var battleExp = baseExp + Math.floor(Math.random() * 5); // +0-4随机
+                            
+                            // 经验上限
+                            if (enemyMaxHp >= 300) battleExp = Math.min(battleExp, 25);
+                            else if (enemyMaxHp >= 200) battleExp = Math.min(battleExp, 20);
+                            else if (enemyMaxHp >= 150) battleExp = Math.min(battleExp, 15);
+                            else if (enemyMaxHp >= 100) battleExp = Math.min(battleExp, 10);
+                            
                             addPetExp(battleExp);
                             
                             checkAchievements();
@@ -5655,12 +5792,15 @@
             
             if (answer === correct) {
                 fbScore++;
-                feedback.textContent = '✅ 正确！+' + 5 + '金币 +' + 5 + '经验';
+                feedback.textContent = '✅ 正确！';
                 feedback.style.color = '#4CAF50';
                 
                 coins += 5;
                 addPetExp(5);
                 updateUI();
+                
+                // 弹出奖励提示（与其他模块一致）
+                showRewardPopup('🎉 回答正确！', '+5 金币', '+5 经验值');
                 
                 // 播放正确音效
                 try { playAudio('correct'); } catch(e) {}
@@ -5684,6 +5824,31 @@
                     endFillBlankChallenge();
                 }
             }, 1500);
+        }
+        
+        // v9.0.42: 奖励弹窗函数
+        function showRewardPopup(title, reward1, reward2) {
+            // 创建弹窗元素
+            var popup = document.createElement('div');
+            popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px 40px;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.3);z-index:10000;text-align:center;animation:popupShow 0.3s ease;';
+            popup.innerHTML = '<div style="font-size:24px;font-weight:bold;margin-bottom:15px;">' + title + '</div>' +
+                '<div style="font-size:20px;margin:10px 0;">💰 ' + reward1 + '</div>' +
+                '<div style="font-size:20px;margin:10px 0;">⭐ ' + reward2 + '</div>';
+            
+            // 添加动画样式
+            var style = document.createElement('style');
+            style.textContent = '@keyframes popupShow{0%{transform:translate(-50%,-50%) scale(0);opacity:0;}50%{transform:translate(-50%,-50%) scale(1.1);}100%{transform:translate(-50%,-50%) scale(1);opacity:1;}}@keyframes popupHide{0%{transform:translate(-50%,-50%) scale(1);opacity:1;}100%{transform:translate(-50%,-50%) scale(0);opacity:0;}}';
+            document.head.appendChild(style);
+            
+            document.body.appendChild(popup);
+            
+            // 1.5秒后自动关闭
+            setTimeout(function() {
+                popup.style.animation = 'popupHide 0.3s ease forwards';
+                setTimeout(function() {
+                    popup.remove();
+                }, 300);
+            }, 1200);
         }
         
         function endFillBlankChallenge() {
@@ -5918,12 +6083,20 @@
         }
 
             
-            // v9.0.40: 保存挑战记录
-            saveReciteRecord(reciteMode, time, reward > 0);
+            // v9.0.42: 保存挑战记录（允许用户输入名字）
+            var currentUser = users[currentUserId];
+            var defaultName = currentUser ? currentUser.name : '小熊猫';
+            var customName = prompt('🎤 背诵挑战完成！\n\n请输入记录显示的名字：', defaultName);
+            if (customName && customName.trim() !== '') {
+                customName = customName.trim().substring(0, 10);
+            } else {
+                customName = defaultName;
+            }
+            saveReciteRecord(reciteMode, time, reward > 0, customName);
         }
         
-        // v9.0.40: 保存背诵挑战记录
-        function saveReciteRecord(mode, time, gotReward) {
+        // v9.0.42: 保存背诵挑战记录（支持自定义名字）
+        function saveReciteRecord(mode, time, gotReward, customName) {
             var currentUser = users[currentUserId];
             if (!currentUser) return;
             
@@ -5931,15 +6104,19 @@
                 currentUser.reciteRecords = [];
             }
             
+            // 使用自定义名字或当前用户名字
+            var displayName = customName || currentUser.name;
+            
             var record = {
                 mode: mode, // 'initial' 或 'final'
                 modeName: mode === 'initial' ? '声母' : '韵母',
                 time: parseFloat(time.toFixed(2)),
                 date: new Date().toISOString(),
                 dateStr: new Date().toLocaleString('zh-CN'),
-                userName: currentUser.name,
+                userName: displayName,
                 userAvatar: currentUser.avatar,
-                gotReward: gotReward
+                gotReward: gotReward,
+                isEditable: true // 标记为可编辑
             };
             
             currentUser.reciteRecords.unshift(record); // 新记录放前面
@@ -5953,19 +6130,47 @@
             renderReciteLeaderboard();
         }
         
+        // v9.0.42: 删除背诵挑战记录
+        function deleteReciteRecord(index) {
+            var currentUser = users[currentUserId];
+            if (!currentUser || !currentUser.reciteRecords) return;
+            
+            if (confirm('确定要删除这条记录吗？')) {
+                currentUser.reciteRecords.splice(index, 1);
+                saveUsersData();
+                renderReciteLeaderboard();
+            }
+        }
+        
+        // v9.0.42: 编辑背诵挑战记录名字
+        function editReciteRecordName(index) {
+            var currentUser = users[currentUserId];
+            if (!currentUser || !currentUser.reciteRecords || !currentUser.reciteRecords[index]) return;
+            
+            var record = currentUser.reciteRecords[index];
+            var newName = prompt('请输入新的名字：', record.userName);
+            
+            if (newName && newName.trim() !== '') {
+                newName = newName.trim().substring(0, 10); // 限制10个字符
+                currentUser.reciteRecords[index].userName = newName;
+                saveUsersData();
+                renderReciteLeaderboard();
+            }
+        }
+        
         // v9.0.41: 渲染背诵挑战榜单（声母韵母分开，按时间升序排列）
         function renderReciteLeaderboard() {
             var container = document.getElementById('reciteLeaderboardContent');
             if (!container) return;
             
-            // 收集所有用户的记录
+            // v9.0.42: 收集所有用户的记录，保留原始索引用于删除
             var initialRecords = [];
             var finalRecords = [];
             
             for (var userId in users) {
                 var user = users[userId];
                 if (user.reciteRecords && user.reciteRecords.length > 0) {
-                    user.reciteRecords.forEach(function(record) {
+                    user.reciteRecords.forEach(function(record, idx) {
                         var r = {
                             userName: record.userName || user.name,
                             userAvatar: record.userAvatar || user.avatar,
@@ -5973,7 +6178,9 @@
                             time: record.time,
                             dateStr: record.dateStr,
                             gotReward: record.gotReward,
-                            timestamp: new Date(record.date).getTime()
+                            timestamp: new Date(record.date).getTime(),
+                            isCurrentUser: userId === currentUserId,
+                            originalIndex: idx // 原始索引，用于删除
                         };
                         if (record.mode === 'initial') {
                             initialRecords.push(r);
@@ -6018,25 +6225,33 @@
             container.innerHTML = html;
         }
         
-        // v9.0.41: 渲染榜单表格
+        // v9.0.42: 渲染榜单表格（带删除和编辑功能）
         function renderReciteTable(records) {
             var html = '<table style="width: 100%; font-size: 13px; border-collapse: collapse;">';
             html += '<tr style="background: #FFE082; color: #E65100;">';
             html += '<th style="padding: 6px; text-align: center; width: 40px;">排名</th>';
             html += '<th style="padding: 6px; text-align: left;">用户</th>';
             html += '<th style="padding: 6px; text-align: center;">用时</th>';
-            html += '<th style="padding: 6px; text-align: right;">时间</th>';
+            html += '<th style="padding: 6px; text-align: right; width: 80px;">操作</th>';
             html += '</tr>';
             
             records.forEach(function(record, index) {
                 var bgColor = index % 2 === 0 ? '#FFFDE7' : '#FFF8E1';
                 var rankIcon = index < 3 ? ['🥇', '🥈', '🥉'][index] : (index + 1);
                 var rewardIcon = record.gotReward ? '🏆' : '';
+                
+                // v9.0.42: 当前用户的记录显示操作按钮
+                var actionButtons = '';
+                if (record.isCurrentUser) {
+                    actionButtons = '<span style="cursor: pointer; margin-left: 5px;" onclick="editReciteRecordName(' + record.originalIndex + ')" title="修改名字">✏️</span>' +
+                                   '<span style="cursor: pointer; margin-left: 5px;" onclick="deleteReciteRecord(' + record.originalIndex + ')" title="删除记录">🗑️</span>';
+                }
+                
                 html += '<tr style="background: ' + bgColor + ';">';
                 html += '<td style="padding: 6px; text-align: center; font-weight: bold;">' + rankIcon + '</td>';
                 html += '<td style="padding: 6px; text-align: left;">' + record.userAvatar + ' ' + record.userName + '</td>';
                 html += '<td style="padding: 6px; text-align: center; font-weight: bold; color: #FF6F00;">' + rewardIcon + record.time + '秒</td>';
-                html += '<td style="padding: 6px; text-align: right; font-size: 11px; color: #666;">' + record.dateStr + '</td>';
+                html += '<td style="padding: 6px; text-align: right; font-size: 11px; white-space: nowrap;">' + record.dateStr + actionButtons + '</td>';
                 html += '</tr>';
             });
             
@@ -6454,75 +6669,53 @@
             document.getElementById('reviewCurrent').textContent = currentReviewIndex + 1;
             document.getElementById('reviewProgress').style.width = ((currentReviewIndex / currentReviewErrors.length) * 100) + '%';
 
-            // v9.0.37: 生成更合理的干扰项
-            var options = [err.correctAnswer];
-            var distractorPool = [];
-            
-            if (err.errorType === 'tone') {
-                // 声调题目：选项是1-4
-                distractorPool = ['1', '2', '3', '4'];
-            } else if (err.errorType === 'initial') {
-                // 声母题目：从声母中选择干扰项
-                distractorPool = pinyinData.initialNames;
-            } else if (err.errorType === 'final') {
-                // 韵母题目：从韵母中选择干扰项
-                distractorPool = pinyinData.finalNames;
-            } else if (err.errorType === 'whole') {
-                // 整体认读：从整体认读中选择干扰项
-                distractorPool = pinyinData.wholeNames;
-            } else {
-                // 默认：根据正确答案判断类型
-                if (pinyinData.initialNames.includes(err.correctAnswer)) {
-                    distractorPool = pinyinData.initialNames;
-                } else if (pinyinData.finalNames.includes(err.correctAnswer)) {
-                    distractorPool = pinyinData.finalNames;
-                } else if (pinyinData.wholeNames.includes(err.correctAnswer)) {
-                    distractorPool = pinyinData.wholeNames;
-                } else {
-                    // 如果无法判断，混合使用所有选项
-                    distractorPool = pinyinData.initialNames.concat(pinyinData.finalNames).concat(pinyinData.wholeNames);
-                }
-            }
-            
-            // 从干扰项池中选择3个不同的选项
-            var attempts = 0;
-            while (options.length < 4 && attempts < 100) {
-                var r = distractorPool[Math.floor(Math.random() * distractorPool.length)];
-                if (options.indexOf(r) === -1) {
-                    options.push(r);
-                }
-                attempts++;
-            }
-            
-            // 如果干扰项不足，从其他类型补充
-            if (options.length < 4) {
-                var allOptions = pinyinData.initialNames.concat(pinyinData.finalNames).concat(pinyinData.wholeNames);
-                while (options.length < 4) {
-                    var r = allOptions[Math.floor(Math.random() * allOptions.length)];
-                    if (options.indexOf(r) === -1) {
-                        options.push(r);
-                    }
-                }
-            }
-            
-            options.sort(function() { return Math.random() - 0.5; });
-
+            // v9.0.42: 改为填空模式
             var html = '<h3 style="font-size: 44px; margin-bottom: 20px;">' + err.question + '</h3>';
             if (err.errorType === 'tone') {
-                html += '<p style="margin-bottom: 10px; color: #666;">这是几声?</p>';
+                html += '<p style="margin-bottom: 10px; color: #666;">这是几声? (输入 1-4)</p>';
+            } else {
+                html += '<p style="margin-bottom: 10px; color: #666;">请输入拼音：</p>';
             }
-            html += '<div style="display: flex; flex-direction: row; gap: 15px; max-width: 300px; margin: 0 auto;">';
-            options.forEach(function(opt) {
-                html += '<button class="btn" onclick="checkReviewAnswer(\'' + opt + '\', \'' + err.correctAnswer + '\', \'' + err.id + '\')" style="font-size: 20px; padding: 20px;">' + opt + '</button>';
-            });
+            
+            html += '<div style="max-width: 300px; margin: 0 auto;">';
+            html += '<input type="text" id="reviewAnswerInput" style="width: 100%; padding: 15px; font-size: 24px; text-align: center; border: 3px solid #667eea; border-radius: 15px; margin-bottom: 15px; outline: none;" placeholder="输入答案..." autocomplete="off">';
+            html += '<button class="btn" onclick="submitReviewAnswer(\'' + err.correctAnswer + '\', \'' + err.id + '\')" style="font-size: 18px; padding: 15px;">提交答案</button>';
             html += '</div>';
+            html += '<div id="reviewFeedback" style="margin-top: 15px; font-size: 16px; min-height: 24px;"></div>';
 
             document.getElementById('reviewQuestion').innerHTML = html;
+            
+            // 自动聚焦输入框
+            setTimeout(function() {
+                var input = document.getElementById('reviewAnswerInput');
+                if (input) input.focus();
+            }, 100);
         }
-
-        function checkReviewAnswer(selected, correct, errorId) {
-            if (selected === correct) {
+        
+        // v9.0.42: 提交错题复习答案（填空模式）
+        function submitReviewAnswer(correct, errorId) {
+            var input = document.getElementById('reviewAnswerInput');
+            var answer = input ? input.value.trim().toLowerCase() : '';
+            var feedback = document.getElementById('reviewFeedback');
+            
+            if (!answer) {
+                if (feedback) {
+                    feedback.textContent = '请输入答案！';
+                    feedback.style.color = '#f44336';
+                }
+                return;
+            }
+            
+            // 标准化答案（处理声调输入）
+            var normalizedAnswer = answer;
+            var normalizedCorrect = correct.toLowerCase();
+            
+            if (answer === normalizedCorrect) {
                 reviewScore++;
+                if (feedback) {
+                    feedback.textContent = '✅ 正确！';
+                    feedback.style.color = '#4CAF50';
+                }
                 showToast('✅ 正确！', 'success');
                 // 标记为已掌握
                 var err = errorBook.errors.find(function(e) { return e.id === errorId; });
@@ -6531,11 +6724,22 @@
                     errorBook.fixed++;
                 }
             } else {
+                if (feedback) {
+                    feedback.textContent = '❌ 错误，答案是: ' + correct;
+                    feedback.style.color = '#f44336';
+                }
                 showToast('❌ 错误，答案是: ' + correct, 'error');
             }
+            
             saveGameData();
             currentReviewIndex++;
-            setTimeout(showReviewQuestion, 1000);
+            setTimeout(showReviewQuestion, 1500);
+        }
+
+        // v9.0.37: 旧的选项模式已废弃，保留函数名兼容
+        function checkReviewAnswer(selected, correct, errorId) {
+            // 兼容旧代码，直接调用新的填空模式
+            submitReviewAnswer(correct, errorId);
         }
 
         // ========== v8.2.0 背包功能 ==========
@@ -6547,7 +6751,10 @@
             var contentEl = document.getElementById('inventoryContent');
             var html = '';
 
-            if (tab === 'equipments') {
+            // v9.0.42: 添加宠物标签处理
+            if (tab === 'pets') {
+                html = renderInventoryPets();
+            } else if (tab === 'equipments') {
                 html = renderInventoryEquipments();
             } else if (inventory.treasures.length === 0) {
                 html = '<div style="text-align: center; padding: 40px; color: #666;">' +
@@ -6774,6 +6981,119 @@
             }
         }
 
+        // v9.0.42: 渲染背包中的宠物（带出售功能）
+        function renderInventoryPets() {
+            var html = '';
+            
+            // 显示当前金币
+            html += '<div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; padding: 15px; margin-bottom: 15px; color: white; text-align: center;">';
+            html += '<div style="font-size: 14px; opacity: 0.8;">当前金币</div>';
+            html += '<div style="font-size: 28px; font-weight: bold;">💰 ' + coins + '</div>';
+            html += '</div>';
+            
+            // 获取拥有的宠物
+            var ownedPetIds = pets.owned || [];
+            
+            if (ownedPetIds.length === 0) {
+                return html + '<div style="text-align: center; padding: 40px; color: #666;">' +
+                    '<div style="font-size: 48px; margin-bottom: 10px;">🐾</div>' +
+                    '<div>还没有宠物</div>' +
+                    '<div style="font-size: 12px; margin-top: 10px;">去商店购买宠物吧！</div>' +
+                '</div>';
+            }
+            
+            html += '<div style="font-size: 14px; color: #666; margin-bottom: 15px; text-align: center;">';
+            html += '拥有 ' + ownedPetIds.length + ' 只宠物（点击出售可半价回收）';
+            html += '</div>';
+            
+            // 显示所有宠物
+            html += '<div style="display: flex; flex-direction: column; gap: 12px;">';
+            
+            ownedPetIds.forEach(function(petId) {
+                var pet = pets.list[petId];
+                if (!pet) return;
+                
+                var isCurrent = pets.current === petId;
+                var basePrice = pet.price || 100;
+                var sellPrice = Math.floor(basePrice * (0.5 + pet.level * 0.05));
+                sellPrice = Math.min(sellPrice, Math.floor(basePrice * 0.7));
+                
+                html += '<div style="background: ' + (isCurrent ? '#E8F5E9' : '#f8f9fa') + '; border-radius: 15px; padding: 15px; border: 2px solid ' + (isCurrent ? '#4CAF50' : '#e0e0e0') + ';">';
+                html += '<div style="display: flex; align-items: center; gap: 15px;">';
+                html += '<div style="font-size: 50px;">' + pet.emoji + '</div>';
+                html += '<div style="flex: 1;">';
+                html += '<div style="font-weight: bold; font-size: 16px;">' + pet.name + (isCurrent ? ' <span style="color: #4CAF50;">(当前出战)</span>' : '') + '</div>';
+                html += '<div style="font-size: 12px; color: #666; margin-top: 3px;">Lv.' + pet.level + ' | ' + pet.desc + '</div>';
+                html += '<div style="font-size: 12px; margin-top: 5px;">⚔️' + pet.attack + ' 🛡️' + pet.defense + ' ❤️' + pet.maxHp + '</div>';
+                html += '</div>';
+                html += '</div>';
+                
+                // 操作按钮
+                html += '<div style="display: flex; gap: 10px; margin-top: 12px;">';
+                if (!isCurrent) {
+                    html += '<button class="btn" onclick="switchPet(\'' + petId + '\')" style="flex: 1; padding: 10px; font-size: 13px;">切换使用</button>';
+                    html += '<button class="btn" onclick="sellPetFromInventory(\'' + petId + '\')" style="flex: 1; padding: 10px; font-size: 13px; background: linear-gradient(135deg, #ff6b6b, #ee5a5a);">💰 出售 (' + sellPrice + ')</button>';
+                } else {
+                    html += '<div style="flex: 1; text-align: center; padding: 10px; color: #4CAF50; font-size: 13px;">当前出战中，无法出售</div>';
+                }
+                html += '</div>';
+                
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        // v9.0.42: 从背包页面出售宠物
+        function sellPetFromInventory(petId) {
+            if (petId === pets.current) {
+                alert('⚠️ 当前出战的宠物不能出售！');
+                return;
+            }
+            
+            if (!pets.owned.includes(petId)) {
+                alert('❌ 你没有这只宠物！');
+                return;
+            }
+            
+            if (pets.owned.length <= 1) {
+                alert('⚠️ 至少需要保留一只宠物！');
+                return;
+            }
+            
+            var pet = pets.list[petId];
+            var basePrice = pet.price || 100;
+            var sellPrice = Math.floor(basePrice * (0.5 + pet.level * 0.05));
+            sellPrice = Math.min(sellPrice, Math.floor(basePrice * 0.7));
+            
+            var confirmMsg = '🐾 出售宠物确认\n\n';
+            confirmMsg += '宠物: ' + pet.emoji + ' ' + pet.name + '\n';
+            confirmMsg += '等级: Lv.' + pet.level + '\n';
+            confirmMsg += '属性: ⚔️' + pet.attack + ' 🛡️' + pet.defense + ' ❤️' + pet.maxHp + '\n';
+            confirmMsg += '购买价: ' + basePrice + ' 金币\n';
+            confirmMsg += '==================\n';
+            confirmMsg += '🏷️ 回收价格 (5-7折): ' + sellPrice + ' 金币\n\n';
+            confirmMsg += '⚠️ 出售后无法恢复！确定要出售吗？';
+            
+            if (confirm(confirmMsg)) {
+                // 从拥有列表中移除
+                pets.owned = pets.owned.filter(function(id) { return id !== petId; });
+                
+                // 增加金币
+                coins += sellPrice;
+                
+                // 保存和更新
+                saveGameData();
+                updateUI();
+                
+                // 刷新宠物背包显示
+                showInventoryTab('pets');
+                
+                alert('✅ 出售成功！获得 ' + sellPrice + ' 金币');
+            }
+        }
+
         // 渲染背包中的装备
         function renderInventoryEquipments() {
             var html = '';
@@ -6800,32 +7120,7 @@
             html += '<div style="text-align: center;"><div style="font-size: 12px; opacity: 0.8;">蓝宝石</div><div style="font-size: 20px; font-weight: bold;">🔵 ' + sapphireCount + '</div></div>';
             html += '</div>';
             
-            // v9.0.8: 宝石出售区域
-            html += '<div style="background: linear-gradient(135deg, #ff6b6b, #feca57); border-radius: 15px; padding: 15px; margin-bottom: 15px; color: white;">';
-            html += '<div style="font-weight: bold; margin-bottom: 10px; text-align: center;">💎 出售宝石（半价回收）</div>';
-            html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">';
-            
-            var gemTypes = [
-                {id: 'ruby', name: '红宝石', emoji: '🔴', price: 100},
-                {id: 'sapphire', name: '蓝宝石', emoji: '🔵', price: 80},
-                {id: 'emerald', name: '绿宝石', emoji: '🟢', price: 60}
-            ];
-            
-            gemTypes.forEach(function(gem) {
-                var gemCount = countMaterial(gem.id);
-                var sellTotal = Math.floor(gem.price / 2);
-                if (gemCount > 0) {
-                    html += '<div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; text-align: center; cursor: pointer;" onclick="sellGem(\'' + gem.id + '\', 1)">';
-                    html += '<div style="font-size: 24px;">' + gem.emoji + '</div>';
-                    html += '<div style="font-size: 11px;">' + gem.name + '</div>';
-                    html += '<div style="font-size: 10px;">拥有: ' + gemCount + '</div>';
-                    html += '<div style="font-size: 10px; font-weight: bold;">💰' + sellTotal + '/个</div>';
-                    html += '</div>';
-                }
-            });
-            
-            html += '</div>';
-            html += '</div>';
+            // v9.0.42: 装备页面只显示装备，不显示卖宝石部分
             
             // 武器部分
             if (ownedWeapons.length > 0) {
@@ -7126,20 +7421,76 @@
 
         // 统计
         function renderCalendar() {
-            var today = new Date().getDate();
+            var today = new Date();
+            var todayDate = today.getDate();
+            var currentMonth = today.getMonth();
+            var currentYear = today.getFullYear();
+            
             var html = '';
-            for (var i = 1; i <= 28; i++) {
-                html += '<div class="calendar-day ' + (i === today ? 'today' : '') + '">' + i + '</div>';
+            
+            // 显示月份标题
+            html += '<div style="grid-column: 1 / -1; text-align: center; font-weight: bold; margin-bottom: 5px; color: #667eea;">';
+            html += currentYear + '年' + (currentMonth + 1) + '月';
+            html += '</div>';
+            
+            // 星期标题
+            var weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            weekdays.forEach(function(day) {
+                html += '<div style="text-align: center; font-size: 11px; color: #999; padding: 5px;">' + day + '</div>';
+            });
+            
+            // 获取当月第一天是星期几
+            var firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            var daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // 获取打卡记录
+            var checkInDates = [];
+            if (currentUserId && users[currentUserId] && users[currentUserId].checkInHistory) {
+                users[currentUserId].checkInHistory.forEach(function(dateStr) {
+                    var d = new Date(dateStr);
+                    if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+                        checkInDates.push(d.getDate());
+                    }
+                });
             }
+            
+            // 空白填充
+            for (var i = 0; i < firstDay; i++) {
+                html += '<div></div>';
+            }
+            
+            // 日期
+            for (var day = 1; day <= daysInMonth; day++) {
+                var isToday = day === todayDate;
+                var isChecked = checkInDates.includes(day);
+                var bgColor = isChecked ? '#4CAF50' : (isToday ? '#667eea' : '#F7F9FC');
+                var textColor = isChecked || isToday ? 'white' : '#333';
+                var mark = isChecked ? '✓' : day;
+                
+                html += '<div class="calendar-day" style="background: ' + bgColor + '; color: ' + textColor + '; font-weight: ' + (isToday ? 'bold' : 'normal') + ';">' + mark + '</div>';
+            }
+            
             document.getElementById('calendar').innerHTML = html;
         }
         function checkIn() {
             if (checkedIn) { alert('今天已打卡！'); return; }
             checkedIn = true; streak++; coins += 10;
             updateTaskProgress('task_checkin', 1);
-            document.querySelector('.calendar-day.today').classList.add('checked');
+            
+            // v9.0.44: 保存打卡记录
+            var currentUser = users[currentUserId];
+            if (currentUser) {
+                if (!currentUser.checkInHistory) currentUser.checkInHistory = [];
+                currentUser.checkInHistory.push(new Date().toISOString());
+                // 只保留最近3个月的记录
+                if (currentUser.checkInHistory.length > 90) {
+                    currentUser.checkInHistory = currentUser.checkInHistory.slice(-90);
+                }
+            }
+            
             checkAchievements();
             updateUI();
+            renderCalendar(); // 重新渲染日历显示打卡标记
             alert('打卡成功！连续' + streak + '天，+10金币');
         }
         function updateUI() {
