@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.1.1 - 拼音组合挑战显示全部选项</title>
+    <title>拼音大冒险 v9.1.2 - 恢复炸弹处罚功能</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -596,6 +596,44 @@
                     3. 奖励将立即添加到当前登录的用户
                 </div>
             </div>
+
+            <!-- v9.0.44: 处罚功能 -->
+            <div style="background: linear-gradient(135deg, #424242, #212121); border-radius: 15px; padding: 20px; margin-top: 20px; color: white;">
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: center;">💣 释放炸弹（处罚）</div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">💰 扣除金币：</label>
+                    <input type="number" id="punishCoins" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-9999" min="0" max="9999" value="0">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">⚡ 扣除体力：</label>
+                    <input type="number" id="punishEnergy" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-100" min="0" max="100" value="0">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">⭐ 扣除经验：</label>
+                    <input type="number" id="punishExp" style="width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px;" placeholder="0-9999" min="0" max="9999" value="0">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">💎 扣除宝石数量：</label>
+                    <select id="punishGemType" style="width: 48%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; display: inline-block; margin-right: 4%;">
+                        <option value="">--选择宝石--</option>
+                        <option value="ruby">🔴 红宝石</option>
+                        <option value="sapphire">🔵 蓝宝石</option>
+                        <option value="emerald">🟢 绿宝石</option>
+                        <option value="topaz">🟡 黄宝石</option>
+                        <option value="amethyst">🟣 紫水晶</option>
+                        <option value="diamond">💎 钻石</option>
+                        <option value="gold">🟨 金块</option>
+                        <option value="crystal">🔮 魔法水晶</option>
+                    </select>
+                    <input type="number" id="punishGemCount" style="width: 48%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; display: inline-block;" placeholder="数量" min="1" max="50" value="1">
+                </div>
+                
+                <button class="btn" onclick="releasePunishBomb()" style="width: 100%; background: linear-gradient(135deg, #f44336, #d32f2f); color: white; font-weight: bold; padding: 15px;">💣 释放炸弹（执行处罚）</button>
+            </div>
         </div>
 
         <!-- 编辑用户弹窗 -->
@@ -947,7 +985,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.1.1';
+        var GAME_VERSION = 'v9.1.2';
         var GAME_BUILD_DATE = '2026-03-20 20:50';
         
         // 完整拼音数据
@@ -3073,6 +3111,91 @@
             if (giftExp > 0) msg += '⭐ 经验 +' + giftExp + '\n';
             if (giftGemType && giftGemCount > 0) msg += gemEmoji[giftGemType] + ' ' + gemNames[giftGemType] + ' +' + giftGemCount + '\n';
             alert(msg);
+        }
+
+        // v9.0.44: 释放炸弹（处罚功能）
+        function releasePunishBomb() {
+            var coinsInput = document.getElementById('punishCoins');
+            var energyInput = document.getElementById('punishEnergy');
+            var expInput = document.getElementById('punishExp');
+            var gemTypeInput = document.getElementById('punishGemType');
+            var gemCountInput = document.getElementById('punishGemCount');
+
+            var punishCoins = parseInt(coinsInput.value) || 0;
+            var punishEnergy = parseInt(energyInput.value) || 0;
+            var punishExp = parseInt(expInput.value) || 0;
+            var punishGemType = gemTypeInput.value;
+            var punishGemCount = parseInt(gemCountInput.value) || 0;
+
+            if (punishCoins <= 0 && punishEnergy <= 0 && punishExp <= 0 && (!punishGemType || punishGemCount <= 0)) {
+                alert('请输入至少一项处罚数量！');
+                return;
+            }
+
+            // 确认处罚
+            var confirmMsg = '💣 处罚确认\n\n';
+            if (punishCoins > 0) confirmMsg += '💰 扣除金币: ' + punishCoins + '\n';
+            if (punishEnergy > 0) confirmMsg += '⚡ 扣除体力: ' + punishEnergy + '\n';
+            if (punishExp > 0) confirmMsg += '⭐ 扣除经验: ' + punishExp + '\n';
+            if (punishGemType && punishGemCount > 0) {
+                var gemNames = { ruby: '红宝石', sapphire: '蓝宝石', emerald: '绿宝石', topaz: '黄宝石', amethyst: '紫水晶', diamond: '钻石', gold: '金块', crystal: '魔法水晶' };
+                confirmMsg += '💎 扣除' + gemNames[punishGemType] + ': ' + punishGemCount + '个\n';
+            }
+            confirmMsg += '\n⚠️ 确定要执行处罚吗？';
+
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
+            // 执行处罚
+            var actualDeducted = [];
+            
+            if (punishCoins > 0) {
+                var actualCoins = Math.min(punishCoins, coins);
+                coins -= actualCoins;
+                if (actualCoins > 0) actualDeducted.push('💰 金币 -' + actualCoins);
+            }
+            
+            if (punishEnergy > 0) {
+                var actualEnergy = Math.min(punishEnergy, energy);
+                energy -= actualEnergy;
+                if (actualEnergy > 0) actualDeducted.push('⚡ 体力 -' + actualEnergy);
+            }
+            
+            if (punishExp > 0) {
+                var currentPet = pets.list[pets.current];
+                if (currentPet && currentPet.exp > 0) {
+                    var actualExp = Math.min(punishExp, currentPet.exp);
+                    currentPet.exp -= actualExp;
+                    if (actualExp > 0) actualDeducted.push('⭐ 经验 -' + actualExp);
+                }
+            }
+            
+            if (punishGemType && punishGemCount > 0) {
+                var removed = 0;
+                inventory.treasures = inventory.treasures.filter(function(t) {
+                    if (t.id === punishGemType && removed < punishGemCount) {
+                        removed++;
+                        return false;
+                    }
+                    return true;
+                });
+                if (removed > 0) {
+                    var gemNames = { ruby: '红宝石', sapphire: '蓝宝石', emerald: '绿宝石', topaz: '黄宝石', amethyst: '紫水晶', diamond: '钻石', gold: '金块', crystal: '魔法水晶' };
+                    actualDeducted.push('💎 ' + gemNames[punishGemType] + ' -' + removed + '个');
+                }
+            }
+
+            // 更新UI和保存
+            updateUI();
+            saveGameData();
+
+            // 显示处罚结果
+            if (actualDeducted.length > 0) {
+                alert('💣 炸弹已释放！\n\n' + actualDeducted.join('\n') + '\n\n😈 处罚执行完毕！');
+            } else {
+                alert('💣 炸弹释放失败！\n\n目标没有足够的资源可扣除。');
+            }
         }
 
         // 显示拼音提示
