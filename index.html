@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.1.0 - 新增拼音组合挑战</title>
+    <title>拼音大冒险 v9.1.1 - 拼音组合挑战显示全部选项</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -947,7 +947,7 @@
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.1.0';
+        var GAME_VERSION = 'v9.1.1';
         var GAME_BUILD_DATE = '2026-03-20 20:50';
         
         // 完整拼音数据
@@ -1288,52 +1288,34 @@
             document.getElementById('combinedPinyin').textContent = combined;
         }
 
-        // 生成声母选择器
+        // 生成声母选择器 - 显示全部选项
         function renderInitialSelector(correctInitial) {
             var initials = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h',
                            'j', 'q', 'x', 'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w', ''];
             
-            // 确保正确答案在选项中
-            var options = [correctInitial];
-            var pool = initials.filter(function(i) { return i !== correctInitial; });
-            
-            // 随机选取7个干扰项
-            pool.sort(function() { return Math.random() - 0.5; });
-            options = options.concat(pool.slice(0, 7));
-            options.sort(function() { return Math.random() - 0.5; });
-
             var html = '';
-            options.forEach(function(initial) {
+            initials.forEach(function(initial) {
                 var display = initial || '无';
                 var isSelected = comboChallengeState.selectedInitial === initial ? 
-                    'background: linear-gradient(135deg, #667eea, #764ba2); color: white;' : 
-                    'background: #f5f5f5; color: #333;';
-                html += '<button onclick="selectComboInitial(\'' + initial + '\')" style="' + isSelected + ' border: none; padding: 12px 15px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; min-width: 50px;" class="combo-btn">' + display + '</button>';
+                    'background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-color: #667eea;' : 
+                    'background: #f5f5f5; color: #333; border-color: #ddd;';
+                html += '<button onclick="selectComboInitial(\'' + initial + '\')" style="' + isSelected + ' border: 2px solid; padding: 10px 8px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; min-width: 40px;" class="combo-btn">' + display + '</button>';
             });
             document.getElementById('initialSelector').innerHTML = html;
         }
 
-        // 生成韵母选择器
+        // 生成韵母选择器 - 显示全部选项
         function renderFinalSelector(correctFinal) {
             var finals = ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu',
                          'ie', 'üe', 'er', 'an', 'en', 'in', 'un', 'ün',
                          'ang', 'eng', 'ing', 'ong', 'iao', 'ian', 'ua', 'uo', 'uang', 'iang'];
             
-            // 确保正确答案在选项中
-            var options = [correctFinal];
-            var pool = finals.filter(function(f) { return f !== correctFinal; });
-            
-            // 随机选取7个干扰项
-            pool.sort(function() { return Math.random() - 0.5; });
-            options = options.concat(pool.slice(0, 7));
-            options.sort(function() { return Math.random() - 0.5; });
-
             var html = '';
-            options.forEach(function(final) {
+            finals.forEach(function(final) {
                 var isSelected = comboChallengeState.selectedFinal === final ? 
-                    'background: linear-gradient(135deg, #f5576c, #d32f2f); color: white;' : 
-                    'background: #f5f5f5; color: #333;';
-                html += '<button onclick="selectComboFinal(\'' + final + '\')" style="' + isSelected + ' border: none; padding: 12px 15px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; min-width: 50px;" class="combo-btn">' + final + '</button>';
+                    'background: linear-gradient(135deg, #f5576c, #d32f2f); color: white; border-color: #f5576c;' : 
+                    'background: #f5f5f5; color: #333; border-color: #ddd;';
+                html += '<button onclick="selectComboFinal(\'' + final + '\')" style="' + isSelected + ' border: 2px solid; padding: 10px 8px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; min-width: 40px;" class="combo-btn">' + final + '</button>';
             });
             document.getElementById('finalSelector').innerHTML = html;
         }
