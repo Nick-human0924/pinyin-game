@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.0.35 - 修复宝石出售刷新</title>
+    <title>拼音大冒险 v9.1.0 - 新增拼音组合挑战</title>
     <link rel="stylesheet" href="v8-styles.css">
     <style>
         /* v7.0 强制覆盖样式 */
@@ -284,23 +284,28 @@
                     </div>
                 </div>
 
-                <!-- 探险Tab：闯关地图、野外探险、故事模式 -->
+                <!-- 探险Tab：闯关地图、野外探险、故事模式、拼音组合 -->
                 <div id="tab-adventure" class="tab-panel" style="display: none;">
-                    <div style="display: flex; flex-direction: row; gap: 12px;">
+                    <div style="display: flex; flex-direction: row; gap: 12px; flex-wrap: wrap;">
 
-                        <div class="menu-card" onclick="goToLevelMap()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
+                        <div class="menu-card" onclick="goToLevelMap()" style="flex: 1; min-width: 100px; padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #ff9800, #f57c00); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🗺️</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">闯关地图</div>
                         </div>
 
-                        <div class="menu-card" onclick="goToMap()" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
+                        <div class="menu-card" onclick="goToMap()" style="flex: 1; min-width: 100px; padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">🏕️</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">野外探险</div>
                         </div>
 
-                        <div class="menu-card" onclick="showPage('storyMode')" style="padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
+                        <div class="menu-card" onclick="showPage('storyMode')" style="flex: 1; min-width: 100px; padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; text-align: center; border-radius: 20px;">
                             <div style="font-size: 44px; margin-bottom: 10px;">📖</div>
                             <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">故事模式</div>
+                        </div>
+
+                        <div class="menu-card" onclick="startPinyinComboChallenge()" style="flex: 1; min-width: 100px; padding: 25px 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #00bcd4, #0097a7); color: white; text-align: center; border-radius: 20px;">
+                            <div style="font-size: 44px; margin-bottom: 10px;">🧩</div>
+                            <div style="font-size: 16px; font-weight: bold; white-space: nowrap; margin-bottom: 10px;">拼音组合</div>
                         </div>
                     </div>
                 </div>
@@ -829,12 +834,121 @@
 
             <div id="inventoryContent"></div>
         </div>
+
+        <!-- v9.1.0 拼音组合挑战 -->
+        <div id="pinyinComboChallenge" class="page hidden">
+            <button class="btn btn-secondary" onclick="showMainMenu()">← 返回</button>
+            <h2 style="text-align: center; margin: 10px 0;">🧩 拼音组合挑战</h2>
+
+            <!-- 游戏开始界面 -->
+            <div id="comboChallengeStart">
+                <div style="background: linear-gradient(135deg, #00bcd4, #0097a7); border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px; text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">🧩</div>
+                    <div style="font-size: 16px; margin-bottom: 10px;">选择声母和韵母，组合成正确拼音！</div>
+                    <div style="font-size: 14px; opacity: 0.9;">共10道题 | 正确+10金币 +5经验 | 全对额外奖励随机宝石</div>
+                </div>
+
+                <div style="background: #E3F2FD; border-radius: 15px; padding: 15px; margin-bottom: 20px;">
+                    <div style="font-size: 14px; color: #1565C0; margin-bottom: 10px;">📚 题目难度：小学三年级到六年级</div>
+                    <div style="font-size: 12px; color: #666;">
+                        三年级：藏(cang)、遍(bian)、戴(dai)...<br>
+                        四年级：鼎(ding)、穗(sui)、巢(chao)...<br>
+                        五年级：璧(bi)、臣(chen)、蔺(lin)...<br>
+                        六年级：邀(yao)、俯(fu)、瀑(pu)...
+                    </div>
+                </div>
+
+                <button class="btn" onclick="startComboGame()" style="width: 100%; padding: 18px; font-size: 18px;">开始挑战</button>
+            </div>
+
+            <!-- 游戏进行界面 -->
+            <div id="comboChallengeGame" style="display: none;">
+                <div class="progress-bar" style="margin: 15px 0;">
+                    <div class="progress-fill" id="comboProgress" style="width: 0%"></div>
+                </div>
+                <div style="text-align: center; margin-bottom: 10px; color: #666;">
+                    第 <span id="comboCurrent">1</span> / 10 题
+                </div>
+
+                <!-- 汉字显示区 -->
+                <div style="text-align: center; margin: 20px 0;">
+                    <div id="comboChar" style="font-size: 80px; font-weight: bold; color: #0097a7; margin-bottom: 10px;">?</div>
+                    <div style="font-size: 14px; color: #666;">请为上面的汉字选择正确的声母和韵母</div>
+                </div>
+
+                <!-- 拼音组合显示区 -->
+                <div style="background: #f5f5f5; border-radius: 15px; padding: 20px; margin: 20px 0; text-align: center;">
+                    <div style="font-size: 14px; color: #666; margin-bottom: 10px;">你的选择：</div>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                        <div id="selectedInitial" style="font-size: 36px; font-weight: bold; color: #667eea; min-width: 60px;">?</div>
+                        <div style="font-size: 24px; color: #999;">+</div>
+                        <div id="selectedFinal" style="font-size: 36px; font-weight: bold; color: #f5576c; min-width: 60px;">?</div>
+                        <div style="font-size: 24px; color: #999;">=</div>
+                        <div id="combinedPinyin" style="font-size: 36px; font-weight: bold; color: #0097a7; min-width: 80px;">?</div>
+                    </div>
+                </div>
+
+                <!-- 声母选择器 -->
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 14px; color: #666; margin-bottom: 8px;">👆 选择声母：</div>
+                    <div id="initialSelector" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;"></div>
+                </div>
+
+                <!-- 韵母选择器 -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; color: #666; margin-bottom: 8px;">👆 选择韵母：</div>
+                    <div id="finalSelector" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;"></div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="resetComboSelection()" style="flex: 1;">重置</button>
+                    <button class="btn" onclick="submitComboAnswer()" style="flex: 2;">确认答案</button>
+                </div>
+            </div>
+
+            <!-- 答题结果反馈 -->
+            <div id="comboFeedback" style="display: none; text-align: center; padding: 30px;">
+                <div id="comboFeedbackIcon" style="font-size: 60px; margin-bottom: 15px;"></div>
+                <div id="comboFeedbackText" style="font-size: 20px; font-weight: bold; margin-bottom: 10px;"></div>
+                <div id="comboFeedbackDetail" style="font-size: 16px; color: #666; margin-bottom: 20px;"></div>
+                <button class="btn" onclick="nextComboQuestion()" id="comboNextBtn">下一题</button>
+            </div>
+
+            <!-- 游戏结束界面 -->
+            <div id="comboChallengeEnd" style="display: none;">
+                <div style="text-align: center; padding: 30px;">
+                    <div style="font-size: 60px; margin-bottom: 15px;">🎉</div>
+                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">挑战完成！</div>
+                    <div style="font-size: 48px; font-weight: bold; color: #0097a7; margin: 20px 0;">
+                        <span id="comboScore">0</span> / 10
+                    </div>
+                    
+                    <div id="comboPerfectReward" style="display: none; background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 15px; padding: 20px; margin: 20px 0; color: white;">
+                        <div style="font-size: 36px; margin-bottom: 10px;">🏆 全对奖励</div>
+                        <div style="font-size: 18px;">获得随机宝石：<span id="comboGemReward"></span></div>
+                    </div>
+
+                    <div style="background: #f5f5f5; border-radius: 15px; padding: 20px; margin: 20px 0;">
+                        <div style="font-size: 16px; color: #666; margin-bottom: 10px;">本次获得奖励：</div>
+                        <div style="font-size: 20px; color: #333;">
+                            💰 <span id="comboTotalCoins">0</span> 金币 | ⭐ <span id="comboTotalExp">0</span> 经验
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-secondary" onclick="showMainMenu()" style="flex: 1;">返回主页</button>
+                        <button class="btn" onclick="startComboGame()" style="flex: 1;">再玩一次</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         // 版本号（必须在最前面定义）
-        var GAME_VERSION = 'v9.0.35';
-        var GAME_BUILD_DATE = '2026-03-15 16:25';
+        var GAME_VERSION = 'v9.1.0';
+        var GAME_BUILD_DATE = '2026-03-20 20:50';
         
         // 完整拼音数据
         var pinyinData = {
@@ -1010,6 +1124,372 @@
             { word: '虎头蛇尾', pinyin: 'hǔ tóu shé wěi', chars: [{char: '虎', pinyin: 'hǔ', initial: 'h', final: 'u', tone: '3', whole: 'hu'}, {char: '头', pinyin: 'tóu', initial: 't', final: 'ou', tone: '2', whole: 'tou'}, {char: '蛇', pinyin: 'shé', initial: 'sh', final: 'e', tone: '2', whole: 'she'}, {char: '尾', pinyin: 'wěi', initial: 'w', final: 'ei', tone: '3', whole: 'wei'}] },
             { word: '一心一意', pinyin: 'yī xīn yī yì', chars: [{char: '一', pinyin: 'yī', initial: 'y', final: 'i', tone: '1', whole: 'yi'}, {char: '心', pinyin: 'xīn', initial: 'x', final: 'in', tone: '1', whole: 'xin'}, {char: '一', pinyin: 'yī', initial: 'y', final: 'i', tone: '1', whole: 'yi'}, {char: '意', pinyin: 'yì', initial: 'y', final: 'i', tone: '4', whole: 'yi'}] }
         ];
+
+        // ========== v9.1.0 拼音组合挑战汉字库（三年级到六年级）==========
+        var pinyinComboData = {
+            // 三年级汉字
+            grade3: [
+                { char: '藏', pinyin: 'cáng', initial: 'c', final: 'ang', meaning: '隐藏' },
+                { char: '遍', pinyin: 'biàn', initial: 'b', final: 'ian', meaning: '到处' },
+                { char: '戴', pinyin: 'dài', initial: 'd', final: 'ai', meaning: '穿戴' },
+                { char: '朴', pinyin: 'pǔ', initial: 'p', final: 'u', meaning: '朴实' },
+                { char: '爆', pinyin: 'bào', initial: 'b', final: 'ao', meaning: '爆炸' },
+                { char: '恼', pinyin: 'nǎo', initial: 'n', final: 'ao', meaning: '烦恼' },
+                { char: '娇', pinyin: 'jiāo', initial: 'j', final: 'iao', meaning: '娇气' },
+                { char: '恰', pinyin: 'qià', initial: 'q', final: 'ia', meaning: '恰好' },
+                { char: '湿', pinyin: 'shī', initial: 'sh', final: 'i', meaning: '湿润' },
+                { char: '耍', pinyin: 'shuǎ', initial: 'sh', final: 'ua', meaning: '玩耍' },
+                { char: '适', pinyin: 'shì', initial: 'sh', final: 'i', meaning: '适合' },
+                { char: '轰', pinyin: 'hōng', initial: 'h', final: 'ong', meaning: '轰鸣' },
+                { char: '蜗', pinyin: 'wō', initial: 'w', final: 'o', meaning: '蜗牛' },
+                { char: '拜', pinyin: 'bài', initial: 'b', final: 'ai', meaning: '拜访' },
+                { char: '毅', pinyin: 'yì', initial: 'y', final: 'i', meaning: '毅力' }
+            ],
+            // 四年级汉字
+            grade4: [
+                { char: '鼎', pinyin: 'dǐng', initial: 'd', final: 'ing', meaning: '铜鼎' },
+                { char: '穗', pinyin: 'suì', initial: 's', final: 'ui', meaning: '稻穗' },
+                { char: '巢', pinyin: 'cháo', initial: 'ch', final: 'ao', meaning: '鸟巢' },
+                { char: '坝', pinyin: 'bà', initial: 'b', final: 'a', meaning: '堤坝' },
+                { char: '繁', pinyin: 'fán', initial: 'f', final: 'an', meaning: '繁多' },
+                { char: '衍', pinyin: 'yǎn', initial: 'y', final: 'an', meaning: '繁衍' },
+                { char: '禽', pinyin: 'qín', initial: 'q', final: 'in', meaning: '家禽' },
+                { char: '捷', pinyin: 'jié', initial: 'j', final: 'ie', meaning: '敏捷' },
+                { char: '晌', pinyin: 'shǎng', initial: 'sh', final: 'ang', meaning: '晌午' },
+                { char: '蹲', pinyin: 'dūn', initial: 'd', final: 'un', meaning: '蹲下' },
+                { char: '倘', pinyin: 'tǎng', initial: 't', final: 'ang', meaning: '倘若' },
+                { char: '惰', pinyin: 'duò', initial: 'd', final: 'uo', meaning: '懒惰' },
+                { char: '谴', pinyin: 'qiǎn', initial: 'q', final: 'ian', meaning: '谴责' },
+                { char: '绰', pinyin: 'chuò', initial: 'ch', final: 'uo', meaning: '绰号' },
+                { char: '序', pinyin: 'xù', initial: 'x', final: 'u', meaning: '顺序' }
+            ],
+            // 五年级汉字
+            grade5: [
+                { char: '璧', pinyin: 'bì', initial: 'b', final: 'i', meaning: '和氏璧' },
+                { char: '臣', pinyin: 'chén', initial: 'ch', final: 'en', meaning: '大臣' },
+                { char: '蔺', pinyin: 'lìn', initial: 'l', final: 'in', meaning: '姓蔺' },
+                { char: '卿', pinyin: 'qīng', initial: 'q', final: 'ing', meaning: '上卿' },
+                { char: '绅', pinyin: 'shēn', initial: 'sh', final: 'en', meaning: '绅士' },
+                { char: '诺', pinyin: 'nuò', initial: 'n', final: 'uo', meaning: '承诺' },
+                { char: '御', pinyin: 'yù', initial: 'y', final: 'u', meaning: '防御' },
+                { char: '辱', pinyin: 'rǔ', initial: 'r', final: 'u', meaning: '侮辱' },
+                { char: '袍', pinyin: 'páo', initial: 'p', final: 'ao', meaning: '长袍' },
+                { char: '荆', pinyin: 'jīng', initial: 'j', final: 'ing', meaning: '荆棘' },
+                { char: '谴', pinyin: 'qiǎn', initial: 'q', final: 'ian', meaning: '谴责' },
+                { char: '畏', pinyin: 'wèi', initial: 'w', final: 'ei', meaning: '畏惧' },
+                { char: '潴', pinyin: 'zhū', initial: 'zh', final: 'u', meaning: '潴留' },
+                { char: '幔', pinyin: 'màn', initial: 'm', final: 'an', meaning: '帷幔' },
+                { char: '擂', pinyin: 'léi', initial: 'l', final: 'ei', meaning: '擂鼓' }
+            ],
+            // 六年级汉字
+            grade6: [
+                { char: '邀', pinyin: 'yāo', initial: 'y', final: 'ao', meaning: '邀请' },
+                { char: '俯', pinyin: 'fǔ', initial: 'f', final: 'u', meaning: '俯视' },
+                { char: '瀑', pinyin: 'pù', initial: 'p', final: 'u', meaning: '瀑布' },
+                { char: '峭', pinyin: 'qiào', initial: 'q', final: 'iao', meaning: '陡峭' },
+                { char: '躯', pinyin: 'qū', initial: 'q', final: 'u', meaning: '身躯' },
+                { char: '津', pinyin: 'jīn', initial: 'j', final: 'in', meaning: '津津有味' },
+                { char: '蕴', pinyin: 'yùn', initial: 'y', final: 'un', meaning: '蕴藏' },
+                { char: '韵', pinyin: 'yùn', initial: 'y', final: 'un', meaning: '韵味' },
+                { char: '凿', pinyin: 'záo', initial: 'z', final: 'ao', meaning: '凿子' },
+                { char: '慷', pinyin: 'kāng', initial: 'k', final: 'ang', meaning: '慷慨' },
+                { char: '慨', pinyin: 'kǎi', initial: 'k', final: 'ai', meaning: '慷慨' },
+                { char: '睹', pinyin: 'dǔ', initial: 'd', final: 'u', meaning: '目睹' },
+                { char: '躇', pinyin: 'chú', initial: 'ch', final: 'u', meaning: '踌躇' },
+                { char: '羹', pinyin: 'gēng', initial: 'g', final: 'eng', meaning: '蛋羹' },
+                { char: '蜇', pinyin: 'zhē', initial: 'zh', final: 'e', meaning: '海蜇' }
+            ]
+        };
+
+        // 拼音组合挑战游戏状态
+        var comboChallengeState = {
+            isActive: false,
+            questions: [],
+            currentIndex: 0,
+            correctCount: 0,
+            selectedInitial: '',
+            selectedFinal: ''
+        };
+
+        // 开始拼音组合挑战
+        function startPinyinComboChallenge() {
+            showPage('pinyinComboChallenge');
+            document.getElementById('comboChallengeStart').style.display = 'block';
+            document.getElementById('comboChallengeGame').style.display = 'none';
+            document.getElementById('comboFeedback').style.display = 'none';
+            document.getElementById('comboChallengeEnd').style.display = 'none';
+        }
+
+        // 开始游戏
+        function startComboGame() {
+            // 生成10道随机题目（从所有年级中随机选取）
+            var allChars = [];
+            allChars = allChars.concat(
+                pinyinComboData.grade3.map(function(c) { c.grade = '三'; return c; }),
+                pinyinComboData.grade4.map(function(c) { c.grade = '四'; return c; }),
+                pinyinComboData.grade5.map(function(c) { c.grade = '五'; return c; }),
+                pinyinComboData.grade6.map(function(c) { c.grade = '六'; return c; })
+            );
+
+            // 随机打乱并选取10题
+            allChars.sort(function() { return Math.random() - 0.5; });
+            comboChallengeState.questions = allChars.slice(0, 10);
+            comboChallengeState.currentIndex = 0;
+            comboChallengeState.correctCount = 0;
+            comboChallengeState.isActive = true;
+
+            document.getElementById('comboChallengeStart').style.display = 'none';
+            document.getElementById('comboChallengeGame').style.display = 'block';
+            document.getElementById('comboFeedback').style.display = 'none';
+            document.getElementById('comboChallengeEnd').style.display = 'none';
+
+            showComboQuestion();
+        }
+
+        // 显示当前题目
+        function showComboQuestion() {
+            var q = comboChallengeState.questions[comboChallengeState.currentIndex];
+            comboChallengeState.selectedInitial = '';
+            comboChallengeState.selectedFinal = '';
+
+            // 更新进度
+            var progress = (comboChallengeState.currentIndex / 10) * 100;
+            document.getElementById('comboProgress').style.width = progress + '%';
+            document.getElementById('comboCurrent').textContent = comboChallengeState.currentIndex + 1;
+
+            // 显示汉字
+            document.getElementById('comboChar').textContent = q.char;
+
+            // 重置选择显示
+            updateComboSelectionDisplay();
+
+            // 生成声母选择器
+            renderInitialSelector(q.initial);
+
+            // 生成韵母选择器
+            renderFinalSelector(q.final);
+        }
+
+        // 更新选择显示
+        function updateComboSelectionDisplay() {
+            document.getElementById('selectedInitial').textContent = comboChallengeState.selectedInitial || '?';
+            document.getElementById('selectedFinal').textContent = comboChallengeState.selectedFinal || '?';
+            
+            var combined = '';
+            if (comboChallengeState.selectedInitial && comboChallengeState.selectedFinal) {
+                combined = comboChallengeState.selectedInitial + comboChallengeState.selectedFinal;
+            } else if (comboChallengeState.selectedInitial) {
+                combined = comboChallengeState.selectedInitial;
+            } else if (comboChallengeState.selectedFinal) {
+                combined = comboChallengeState.selectedFinal;
+            } else {
+                combined = '?';
+            }
+            document.getElementById('combinedPinyin').textContent = combined;
+        }
+
+        // 生成声母选择器
+        function renderInitialSelector(correctInitial) {
+            var initials = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h',
+                           'j', 'q', 'x', 'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w', ''];
+            
+            // 确保正确答案在选项中
+            var options = [correctInitial];
+            var pool = initials.filter(function(i) { return i !== correctInitial; });
+            
+            // 随机选取7个干扰项
+            pool.sort(function() { return Math.random() - 0.5; });
+            options = options.concat(pool.slice(0, 7));
+            options.sort(function() { return Math.random() - 0.5; });
+
+            var html = '';
+            options.forEach(function(initial) {
+                var display = initial || '无';
+                var isSelected = comboChallengeState.selectedInitial === initial ? 
+                    'background: linear-gradient(135deg, #667eea, #764ba2); color: white;' : 
+                    'background: #f5f5f5; color: #333;';
+                html += '<button onclick="selectComboInitial(\'' + initial + '\')" style="' + isSelected + ' border: none; padding: 12px 15px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; min-width: 50px;" class="combo-btn">' + display + '</button>';
+            });
+            document.getElementById('initialSelector').innerHTML = html;
+        }
+
+        // 生成韵母选择器
+        function renderFinalSelector(correctFinal) {
+            var finals = ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu',
+                         'ie', 'üe', 'er', 'an', 'en', 'in', 'un', 'ün',
+                         'ang', 'eng', 'ing', 'ong', 'iao', 'ian', 'ua', 'uo', 'uang', 'iang'];
+            
+            // 确保正确答案在选项中
+            var options = [correctFinal];
+            var pool = finals.filter(function(f) { return f !== correctFinal; });
+            
+            // 随机选取7个干扰项
+            pool.sort(function() { return Math.random() - 0.5; });
+            options = options.concat(pool.slice(0, 7));
+            options.sort(function() { return Math.random() - 0.5; });
+
+            var html = '';
+            options.forEach(function(final) {
+                var isSelected = comboChallengeState.selectedFinal === final ? 
+                    'background: linear-gradient(135deg, #f5576c, #d32f2f); color: white;' : 
+                    'background: #f5f5f5; color: #333;';
+                html += '<button onclick="selectComboFinal(\'' + final + '\')" style="' + isSelected + ' border: none; padding: 12px 15px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; min-width: 50px;" class="combo-btn">' + final + '</button>';
+            });
+            document.getElementById('finalSelector').innerHTML = html;
+        }
+
+        // 选择声母
+        function selectComboInitial(initial) {
+            comboChallengeState.selectedInitial = initial;
+            updateComboSelectionDisplay();
+            
+            // 更新按钮样式
+            var buttons = document.querySelectorAll('#initialSelector .combo-btn');
+            buttons.forEach(function(btn) {
+                if (btn.textContent === (initial || '无')) {
+                    btn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                    btn.style.color = 'white';
+                } else {
+                    btn.style.background = '#f5f5f5';
+                    btn.style.color = '#333';
+                }
+            });
+        }
+
+        // 选择韵母
+        function selectComboFinal(final) {
+            comboChallengeState.selectedFinal = final;
+            updateComboSelectionDisplay();
+            
+            // 更新按钮样式
+            var buttons = document.querySelectorAll('#finalSelector .combo-btn');
+            buttons.forEach(function(btn) {
+                if (btn.textContent === final) {
+                    btn.style.background = 'linear-gradient(135deg, #f5576c, #d32f2f)';
+                    btn.style.color = 'white';
+                } else {
+                    btn.style.background = '#f5f5f5';
+                    btn.style.color = '#333';
+                }
+            });
+        }
+
+        // 重置选择
+        function resetComboSelection() {
+            comboChallengeState.selectedInitial = '';
+            comboChallengeState.selectedFinal = '';
+            updateComboSelectionDisplay();
+            
+            // 重置按钮样式
+            var buttons = document.querySelectorAll('.combo-btn');
+            buttons.forEach(function(btn) {
+                btn.style.background = '#f5f5f5';
+                btn.style.color = '#333';
+            });
+        }
+
+        // 提交答案
+        function submitComboAnswer() {
+            if (!comboChallengeState.selectedInitial && !comboChallengeState.selectedFinal) {
+                alert('请先选择声母和韵母！');
+                return;
+            }
+
+            var q = comboChallengeState.questions[comboChallengeState.currentIndex];
+            var isCorrect = (comboChallengeState.selectedInitial === q.initial) && 
+                           (comboChallengeState.selectedFinal === q.final);
+
+            // 显示反馈
+            document.getElementById('comboChallengeGame').style.display = 'none';
+            document.getElementById('comboFeedback').style.display = 'block';
+
+            if (isCorrect) {
+                comboChallengeState.correctCount++;
+                document.getElementById('comboFeedbackIcon').textContent = '✅';
+                document.getElementById('comboFeedbackText').textContent = '回答正确！';
+                document.getElementById('comboFeedbackText').style.color = '#4CAF50';
+                document.getElementById('comboFeedbackDetail').innerHTML = 
+                    '获得：💰 10金币 | ⭐ 5经验';
+                
+                // 发放奖励
+                coins += 10;
+                addPetExp(5);
+            } else {
+                document.getElementById('comboFeedbackIcon').textContent = '❌';
+                document.getElementById('comboFeedbackText').textContent = '回答错误';
+                document.getElementById('comboFeedbackText').style.color = '#f44336';
+                document.getElementById('comboFeedbackDetail').innerHTML = 
+                    '正确答案：' + q.initial + ' + ' + q.final + ' = ' + q.pinyin + 
+                    '<br>释义：' + q.meaning;
+                
+                // 记录错题
+                recordError(q.char, 
+                    comboChallengeState.selectedInitial + comboChallengeState.selectedFinal, 
+                    q.pinyin, 'combo');
+            }
+
+            // 检查是否是最后一题
+            if (comboChallengeState.currentIndex >= 9) {
+                document.getElementById('comboNextBtn').textContent = '查看结果';
+                document.getElementById('comboNextBtn').onclick = showComboEnd;
+            } else {
+                document.getElementById('comboNextBtn').textContent = '下一题';
+                document.getElementById('comboNextBtn').onclick = nextComboQuestion;
+            }
+
+            updateUI();
+            saveGameData();
+        }
+
+        // 下一题
+        function nextComboQuestion() {
+            comboChallengeState.currentIndex++;
+            document.getElementById('comboFeedback').style.display = 'none';
+            document.getElementById('comboChallengeGame').style.display = 'block';
+            showComboQuestion();
+        }
+
+        // 显示结束界面
+        function showComboEnd() {
+            document.getElementById('comboFeedback').style.display = 'none';
+            document.getElementById('comboChallengeEnd').style.display = 'block';
+
+            var score = comboChallengeState.correctCount;
+            document.getElementById('comboScore').textContent = score;
+
+            // 计算总奖励
+            var totalCoins = score * 10;
+            var totalExp = score * 5;
+
+            // 全对额外奖励
+            if (score === 10) {
+                totalCoins += 50;
+                totalExp += 25;
+                
+                // 随机宝石奖励
+                var gems = ['ruby', 'sapphire', 'emerald', 'topaz', 'amethyst', 'diamond'];
+                var gemEmojis = {ruby: '🔴', sapphire: '🔵', emerald: '🟢', topaz: '🟡', amethyst: '🟣', diamond: '💎'};
+                var gemNames = {ruby: '红宝石', sapphire: '蓝宝石', emerald: '绿宝石', topaz: '黄宝石', amethyst: '紫水晶', diamond: '钻石'};
+                var randomGem = gems[Math.floor(Math.random() * gems.length)];
+                
+                document.getElementById('comboPerfectReward').style.display = 'block';
+                document.getElementById('comboGemReward').innerHTML = gemEmojis[randomGem] + ' ' + gemNames[randomGem];
+                
+                // 添加宝石到背包
+                addToInventory('treasure', randomGem);
+                
+                // 触发宠物技能
+                triggerPetSkill('extra_gem', 0);
+            } else {
+                document.getElementById('comboPerfectReward').style.display = 'none';
+            }
+
+            document.getElementById('comboTotalCoins').textContent = totalCoins;
+            document.getElementById('comboTotalExp').textContent = totalExp;
+
+            // 更新任务进度
+            updateTaskProgress('task_explore', 1);
+        }
 
         // 声母选项池
         var allInitials = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h',
