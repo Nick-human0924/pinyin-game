@@ -9,12 +9,12 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.1.5 - 修复背诵挑战返回和排行榜</title>
-    <!-- Build: v9.1.5 Time: 20250324 -->
+    <title>拼音大冒险 v9.2.0 - 39徽章系统升级</title>
+    <!-- Build: v9.2.0 Time: 20250331 -->
     <script>
         // 版本检测与强制刷新机制
         (function() {
-            const CURRENT_VERSION = '9.1.5';
+            const CURRENT_VERSION = '9.2.0';
             const storedVersion = localStorage.getItem('pinyin_game_version');
             const urlParams = new URLSearchParams(window.location.search);
             const forceReload = urlParams.has('force_reload');
@@ -29,6 +29,8 @@
         })();
     </script>
     <link rel="stylesheet" href="v8-styles.css">
+    <!-- 新版39徽章系统 -->
+    <script src="new-badges-system.js"></script>
     <style>
         /* v7.0 强制覆盖样式 */
         body {
@@ -1722,18 +1724,9 @@
         };
 
         // ===== 成就系统数据 =====
-        var achievements = [
-            { id: 'first_win', name: '初次胜利', desc: '首次通关任意关卡', icon: '🏆', reward: 10, condition: function() { return completedLevels >= 1; }, unlocked: false },
-            { id: 'level_master', name: '闯关达人', desc: '通关5个关卡', icon: '⭐', reward: 15, condition: function() { return completedLevels >= 5; }, unlocked: false },
-            { id: 'level_king', name: '闯关王者', desc: '通关全部15关', icon: '👑', reward: 20, icon: '👑', reward: 20, condition: function() { return completedLevels >= 15; }, unlocked: false },
-            { id: 'battle_hero', name: '战斗英雄', desc: '赢得5场战斗胜利', icon: '⚔️', reward: 15, condition: function() { return battleWins >= 5; }, unlocked: false },
-            { id: 'rich', name: '小有积蓄', desc: '拥有500金币', icon: '💰', reward: 10, condition: function() { return coins >= 500; }, unlocked: false },
-            { id: 'streak_3', name: '坚持不懈', desc: '连续打卡3天', icon: '🔥', reward: 15, condition: function() { return streak >= 3; }, unlocked: false },
-            { id: 'shopaholic', name: '购物达人', desc: '购买5件商品', icon: '🛍️', reward: 15, condition: function() { return ownedItems.length >= 5; }, unlocked: false },
-            { id: 'perfect', name: '完美答题', desc: '一关中3题全对', icon: '💯', reward: 10, condition: function() { return perfectLevels > 0; }, unlocked: false }
-        ];
-        var perfectLevels = 0;
-
+        // v9.2.0: 39徽章系统已移至 new-badges-system.js
+        var achievements = [];
+        
         // ===== 任务系统数据 =====
         var dailyTasks = [
             { id: 'task_login', name: '每日登录', desc: '登录游戏即可领取', reward: 5, progress: 1, target: 1, completed: true, claimed: false },
@@ -1759,6 +1752,14 @@
         var initialTestAnswered = false; // 基础教学-声母答题状态
         var finalTestAnswered = false;   // 基础教学-韵母答题状态
         var wholeTestAnswered = false;   // 基础教学-整体认读答题状态
+
+        // v9.2.0: 新版39徽章系统所需数据
+        var totalCheckInDays = 0;        // 累计打卡天数
+        var basicTutorialCompleted = false;  // 基础教学完成标记
+        var totalItemsBought = 0;        // 累计购买商品数
+        var dailyBattleStreak = 0;       // 单日连胜次数
+        var totalExplorations = 0;       // 累计探险次数
+        var perfectLevels = 0;           // 完美通关次数
 
         // ========== v8.2.0 宠物系统 ==========
         var pets = {
@@ -2083,6 +2084,14 @@
             streak = user.streak;
             checkedIn = user.checkedIn;
             ownedItems = user.ownedItems || [];
+
+            // v9.2.0: 加载新版39徽章系统数据
+            totalCheckInDays = user.totalCheckInDays || 0;
+            basicTutorialCompleted = user.basicTutorialCompleted || false;
+            totalItemsBought = user.totalItemsBought || 0;
+            dailyBattleStreak = user.dailyBattleStreak || 0;
+            totalExplorations = user.totalExplorations || 0;
+
             // 修复：确保正确加载关卡进度
             if (user.levels && user.levels.length === 15) {
                 levels = user.levels;
@@ -2292,6 +2301,12 @@
                 storyChapters: storyChapters.map(function(c) { return { id: c.id, unlocked: c.unlocked, completed: c.completed }; }),
                 // v9.0.2 新增：保存perfectLevels
                 perfectLevels: perfectLevels,
+                // v9.2.0 新增：39徽章系统数据
+                totalCheckInDays: totalCheckInDays,
+                basicTutorialCompleted: basicTutorialCompleted,
+                totalItemsBought: totalItemsBought,
+                dailyBattleStreak: dailyBattleStreak,
+                totalExplorations: totalExplorations,
                 lastSave: new Date().toISOString()
             };
             // 只保存到localStorage，不调用saveUsersData避免循环
