@@ -9,12 +9,12 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>拼音大冒险 v9.2.0 - 39徽章系统升级</title>
-    <!-- Build: v9.2.0 Time: 20250331 -->
+    <title>拼音大冒险 v9.2.1 - 修复每日任务</title>
+    <!-- Build: v9.2.1 Time: 20250401 -->
     <script>
         // 版本检测与强制刷新机制
         (function() {
-            const CURRENT_VERSION = '9.2.0';
+            const CURRENT_VERSION = '9.2.1';
             const storedVersion = localStorage.getItem('pinyin_game_version');
             const urlParams = new URLSearchParams(window.location.search);
             const forceReload = urlParams.has('force_reload');
@@ -2171,7 +2171,17 @@
                     }
                 });
             }
-            tasks = user.tasks || tasks;
+            dailyTasks = user.dailyTasks || dailyTasks;
+
+            // 检查是否需要重置每日任务（新的一天）
+            var lastLoginDate = user.lastLoginDate;
+            var today = new Date().toDateString();
+            if (lastLoginDate !== today) {
+                console.log('新的一天，重置每日任务');
+                resetDailyTasks();
+            }
+
+            // v9.2.0: 加载新版39徽章系统数据
             errorLog = user.errorLog || [];
 
             // 加载故事章节进度
@@ -2294,7 +2304,7 @@
                 playerLevel, coins, hp, maxHp, energy, exp,
                 petAttack, petDefense, battleWins, completedLevels,
                 totalCorrect, totalWrong, streak, checkedIn,
-                ownedItems, levels, achievements, tasks, errorLog,
+                ownedItems, levels, achievements, dailyTasks, errorLog,
                 // v8.2.0 新数据
                 pets, inventory, equipment, equipped, errorBook,
                 // v9.0.1 新增：保存故事章节进度
@@ -2307,6 +2317,8 @@
                 totalItemsBought: totalItemsBought,
                 dailyBattleStreak: dailyBattleStreak,
                 totalExplorations: totalExplorations,
+                // v9.2.1: 新增：记录最后登录日期（用于每日任务重置）
+                lastLoginDate: new Date().toDateString(),
                 lastSave: new Date().toISOString()
             };
             // 只保存到localStorage，不调用saveUsersData避免循环
@@ -3971,6 +3983,21 @@
                 renderTasks();
                 alert('🎉 领取成功！+' + task.reward + '金币');
             }
+        }
+
+        // 重置每日任务（新的一天调用）
+        function resetDailyTasks() {
+            dailyTasks = [
+                { id: 'task_login', name: '每日登录', desc: '登录游戏即可领取', reward: 5, progress: 1, target: 1, completed: true, claimed: false },
+                { id: 'task_practice', name: '练习拼音', desc: '完成1次基础教学', reward: 8, progress: 0, target: 1, completed: false, claimed: false },
+                { id: 'task_level', name: '闯关挑战', desc: '通关1个关卡', reward: 10, progress: 0, target: 1, completed: false, claimed: false },
+                { id: 'task_explore', name: '野外探险', desc: '进行1次野外探险', reward: 8, progress: 0, target: 1, completed: false, claimed: false },
+                { id: 'task_checkin', name: '每日打卡', desc: '完成今日打卡', reward: 10, progress: 0, target: 1, completed: false, claimed: false }
+            ];
+            // 重置单日连胜计数
+            dailyBattleStreak = 0;
+            checkedIn = false;
+            saveGameData();
         }
 
         function switchTab(tabName) {
